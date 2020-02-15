@@ -1,0 +1,330 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Windows核心编程读书笔记6（第13、14、15、16章） | Lyon&#39;s blog</title>
+  <meta name="author" content="Lyon">
+  
+  <meta name="description" content="Walk steps step by step">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="Windows核心编程读书笔记6（第13、14、15、16章）"/>
+  <meta property="og:site_name" content="Lyon&#39;s blog"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  #<link href="/favicon.ico" rel="icon">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="alternate" href="/atom.xml" title="Lyon&#39;s blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  <script src="/js/jquery.min.js"></script>
+  <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?0fe72895c9bcfd0d09da12b5378b1b91";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+</head>
+
+
+<body>
+  <!--[if lte IE 8]> <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'> <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0027_Simplified Chinese.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." style='margin-left:auto;margin-right:auto;display: block;'/></a></div> <![endif]-->
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">Lyon&#39;s blog</a></h1>
+  <h2><a href="/">I hear and I forget.I see and I remember.I do and I understand.</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">首页</a></li>
+    
+      <li><a href="/archives">归档</a></li>
+    
+      <li><a href="/about">关于</a></li>
+    
+	<li> <a href="/atom.xml">RSS</a> </li>
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <time datetime="2015-11-14T01:25:46.000Z"><a href="/2015/11/14/Read-Notes/Read-Notes-Windows-Via-C-C-6/">2015-11-14</a></time>
+      
+      
+  
+    <h1 class="title">Windows核心编程读书笔记6（第13、14、15、16章）</h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+  <div id="toc" class="toc-article">
+  <strong class="toc-title">文章目录</strong>
+  
+  </div>
+
+
+	
+    <div class="entry">
+      
+        <p>#第13章 Windows内存体系结构</p>
+<p>##进程的虚拟地址空间</p>
+<p><div align="center"><br><img src="/img/windos_exe_xxxx.gif" alt="进程内存模型" align="center"><br></div><br>1.在32位系统上，虚拟地址空间大致分为4段（64位系统也分为4段，只是大小不同）：</p>
+<pre><code>- <span class="number">0x00000000</span>~<span class="number">0x0000ffff</span>，空指针赋值区，辅助调试，禁止任何方式的访问。捕获对空指针的赋值
+- <span class="number">0x00010000</span>~<span class="number">0x7ffeffff</span>，用户模式分区，各进程单独维护，同一地址值在不同的进程可以有不同解释，各种映像文件（dll、exe）和内存映射文件也载入本区，近<span class="number">2</span>G。
+- <span class="number">0x7fff0000</span>~<span class="number">0x7fffffff</span>，<span class="number">64</span>k禁入分区。
+- <span class="number">0x80000000</span>~<span class="number">0xffffffff</span>，内核模式分区，系统存放内核代码、设备驱动代码、输入输出高速缓存、进程页表等，<span class="number">2</span>G。
+</code></pre><p>2.每个进程都有自己的私有地址空间，不能访问其他进程的地址空间（win98以后的系统中也不能访问系统本省的内存）<br>3.前面所说的都是虚拟地址空间，在你能够成功地访问数据而不会出现违规访问之前，必须赋予物理存储器，或者将物理存储器映射到各个部分的地址空<br>间。<br>4.32位系统可以配置系统参数让进程用户模式分区达到3G，内核减小为1G。内核内存减小，会影响可以创建的总线程、内核对象数量等。（Visita系统以上，使用bcdedit /set IncreaseUserVa 3072；xp使用…）。如果需要利用3G的内存空间程序链接需要启用大地址（/LARGEADDRESSAWARE）<br><a id="more"></a></p>
+<p>##地址空间中的区域预定与调拨<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">LPVOID <span class="title">VirtualAlloc</span><span class="params">(  </span><br><span class="line">  LPVOID lpAddress,        <span class="comment">// region to reserve or commit</span></span><br><span class="line">  SIZE_T dwSize,           <span class="comment">// size of region</span></span><br><span class="line">  DWORD flAllocationType,  <span class="comment">// type of allocation</span></span><br><span class="line">  DWORD flProtect          <span class="comment">// type of access protection);</span></span></span></span><br></pre></td></tr></table></figure></p>
+<p>1.当进程被创建并被赋予它的地址空间时，该可用地址空间的主体是空闲的，即未分配的。若要使用该地址空间的各个部分，必须通过调用VirtualAlloc函数来分配（或则叫预定MEM_RESERVE）它里边的各个区域。不使用该地址空间时使用virtualfree释放。<br>2.分配的起始地址正好是分配粒度的整数倍（一般是64k），分配的大小正好是系统页面大小的整数倍（4kb/8kb）。操作系统自己分配的起始地址不受分配粒度的影响。<br>3.VirtualAlloc的MEM_COMMIT参数表示将区域commit给虚拟存储器，系统会在使用时将对应的页缓存到物理存储器。</p>
+<p>##物理存储器和页面交换文件<br>1.将磁盘文件当作内存使用，这部分磁盘区域被称为页交换文件。包含了可供所有进程使用的虚拟内存，页交换文件透明地增加了应用程序能够使用的R A M（即内存）的数<br>量。<br>2.在操作系统内存管理模型中，虚拟地址用于访问虚拟存储器，后者存放于磁盘上，主存作为虚拟存储器和CPU之间的缓存（DRAM）被叫做物理存储器。当CPU要访问内存时：</p>
+<p><div align="center"><br><img src="/img/cputomem.png" alt="将虚拟地址转换成物理存储器地址" align="center"><br></div></p>
+<ul>
+<li>（1）检查该虚拟地址是否对应合法的虚拟存储器（是否commit），如果否则报错表示无效地址，如果是，然后判断该虚拟页（VP，Virtual Page）是否被缓存到内存，即是否有对应的物理页(PP, Physical Page)，如果否则产生缺页错误（Page Fault）进而判断主存中是否有闲置页面，如果没有闲置页面，则尝试释放一个物理页，先判断要释放的物理页是否被修改，如果被修改了则Flush到对应的虚拟页上然后释放物理页，有了闲置的物理页后，将虚拟地址对应的虚拟页缓存到空闲的物理页上进而更新虚拟地址到物理地址的映射表，</li>
+<li>（2）然后CPU的MMU（memory management unit，内存管理单元）将虚拟地址翻译为物理地址，再判断该地址对应的内容是否已经在Cache上，如果否则Cache Miss然后再将对应的Cache Line缓存到Cache中，最后读取到CPU寄存器中。<br>3.在Windows中，虚拟存储器对应的磁盘空间进一步细分到页交换文件（page file）、映像文件（exe、dll）、内存映射文件（mapped file）中，后两者被当做虚拟存储器的时候还可以在多个进程间共享（写时拷贝），由于存在共享机制因而Windows的虚拟存储器占的磁盘空间远小于所有进程提交的用户模式内存之和。</li>
+</ul>
+<p>##页面保护属性<br>1.DEP数据执行保护，拥有PAGE_EXECUTE*的的区域才能执行代码。进一步的保护使用SEH /SAFESEH<br>2.VirtualAlloc、VirtualProtect等函数可以设置页保护属性：PAGE_EXECUTE（只能运行代码不能读写）、PAGE_EXECUTE_READ（只读和运行代码）、PAGE_NOACCESS等。其中PAGE_WRITECOPY、PAGE_EXECUTE_WRITECOPY属性表示页面可以被多个进程共享，直到被修改，修改时是先拷贝到进程私有页中再修改私有页，这是copy-on-write。Reserve状态下的保护属性会被Commit下的属性覆盖，但两者都可以在VirtualQuery中查询到。</p>
+<p>##数据对齐的重要性<br>1.在CPU体系结构中，CPU要访问的数据需要按数据大小对齐（WORD地址按2对齐，DWORD地址按4对齐），否则会产生异常。修复数据未对齐异常有几种途径：</p>
+<pre><code>-<span class="ruby"> x86 <span class="constant">CPU</span>会自动进行硬件修复，访问没对齐的数据只是更慢。
+</span>-<span class="ruby"> <span class="constant">SetErrorMode</span>传入<span class="constant">SEM_NOALIGNMENTFAULTEXCEPT</span>参数，通知<span class="constant">Windows</span>通过软件修复未对齐问题。
+</span>-<span class="ruby"> 编译选项__unaligned会自动产生额外代码修复问题。综上，后两种软件修复方案适用于非x86 <span class="constant">CPU</span>速度更慢，最好还是按数据大小对齐内存。</span>
+</code></pre><p>#第14章 探索虚拟内存<br>通过Windows函数学习系统内存管理和进程虚拟地址空间相关信息</p>
+<p>##系统信息及虚拟内存状态<br>1.页面大小、分配粒度等都是由主机决定，可通过GetSystemInfo来获取系统信息。64位系统中的32位程序（IsWow64Process返回TRUE）用GetNativeSystemInfo。获取处理器信息用GetLogicalProcessorInformation，获取内存信息用GlobalMemoryStatus/GlobalMemoryStatusEx。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">VOID <span class="title">GetSystemInfo</span><span class="params">(  </span><br><span class="line">LPSYSTEM_INFO lpSystemInfo  <span class="comment">// system information</span></span><br><span class="line">)</span></span>;</span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> _SYSTEM_INFO &#123;</span><br><span class="line">  <span class="keyword">union</span> &#123;</span><br><span class="line">    DWORD  dwOemId;</span><br><span class="line">    <span class="keyword">struct</span> &#123;</span><br><span class="line">      WORD wProcessorArchitecture;</span><br><span class="line">      WORD wReserved;</span><br><span class="line">    &#125;;</span><br><span class="line">  &#125;;</span><br><span class="line">  DWORD     dwPageSize;          页面大小</span><br><span class="line">  LPVOID    lpMinimumApplicationAddress;</span><br><span class="line">  LPVOID    lpMaximumApplicationAddress; 用户模式内存大小</span><br><span class="line">  DWORD_PTR dwActiveProcessorMask;       CPU掩码</span><br><span class="line">  DWORD     dwNumberOfProcessors;        处理器个数    </span><br><span class="line">  DWORD     dwProcessorType;</span><br><span class="line">  DWORD     dwAllocationGranularity;</span><br><span class="line">  WORD      wProcessorLevel;</span><br><span class="line">  WORD      wProcessorRevision;</span><br><span class="line">&#125; SYSTEM_INFO;</span><br></pre></td></tr></table></figure></p>
+<p>2.NUMA（非统一内存访问，Non-Uniform Memory Access。一种分布式计算机系统内存模型）机器中的内存管理：GlobalMemoryStatusEx获取各节点总内存。GetNumaHighestNodeNumber-获取系统中总的节点个数。GetNumaAvailableMemoryNode-获取某节点的内存。GetNumaNodeProcessorMask-获取某节点的CPU掩码。GetNumaProcessorNode-判断某CPU位于的哪个节点。</p>
+<p>##地址空间的状态<br>1.MEMORY_BASIC_INFORMATION（VirtualQuery）各字段解释：BaseAddress-内存块起始地址。RegionSize-内存块长度（jeffrey把reserve的叫区域把这儿的叫内存块，而Windows只把这儿叫region，我姑且同前者的概念）。State-块状态，可以是free、commited、reserved。Protect-保护属性，状态是commited时有效。Type-类型，可以是private（私有内存，虚拟存储器在页交换文件）、image（在写拷贝之前，其虚拟存储器就是映像文件（exe、dll），写拷贝（修改dll代码或全局变量等）之后虚拟存储器转移到page file）、mapped（类似image，写拷贝之前虚拟存储器是内存映射文件），状态是commited时有效。AllocationBase、AllocationProtect-reserve时候的基地址和保护属性，状态非free的时候字段有效。<br>2.Windows进程内存布局：分成很多内存块，其中部分内存块属于同一个区域（reserve的region）。如果要实现内存搜索的功能，可以用VirtualQuery遍历各块，在commited的块中搜索。<br>3.线程栈的内存块具有PAGE_GUARD保护属性。<br>4.一个进程内存使用的统计分析：输出见最后（单位均为KB）。第一部分是用VirtualQuery遍历各块进行统计，可见进程commit了5.8M内存到虚拟存储器，其中4.5M是映像文件（部分在pagefile中），1.1M是内存映射文件（部分在pagefile中），159K是私有内存（全部在pagefile中）。第二部分使用GetProcessMemoryInfo，可见进程占用主存（物理存储器）1.6M，虚拟存储器中有425K在pagefile中（包括第一部分中全部的private和部分的image、mapped），也说明进程使用的5.8M内存中有5.4M是共享的（5.8-425）。第三部分用GlobalMemoryStatus看出该进程可用虚拟内存为2G。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">VirtualQuery : </span><br><span class="line">commitedBytes = <span class="number">5865.47</span> </span><br><span class="line">readAllowedBytes = <span class="number">5865.47</span> </span><br><span class="line">imageBytes = <span class="number">4517.89</span> </span><br><span class="line">mappedBytes = <span class="number">1187.84</span> </span><br><span class="line">privateBytes = <span class="number">159.744</span> </span><br><span class="line"></span><br><span class="line">GetProcessMemoryInfo : </span><br><span class="line">WorkingSetSize = <span class="number">1658.88</span> </span><br><span class="line">PagefileUsage = <span class="number">425.984</span> </span><br><span class="line">PrivateUsage = <span class="number">425.984</span> </span><br><span class="line"></span><br><span class="line">GlobalMemoryStatus :</span><br><span class="line">dwAvailVirtual = <span class="number">2.13826e+006</span></span><br></pre></td></tr></table></figure></p>
+<p>#第15章 在应用程序中使用虚拟内存<br>Windows提供三种操作内存的机制：虚拟内存（大型对象数组）、内存映射文件（大型数据流文件、多个进程之间）、堆（大量小型对象）。</p>
+<p>##预定地址空间区域<br>1.用VirtualAlloc来reserve区域的时候：pvAddress为空表示由系统分配区域起始地址，同时使用MEM_TOP_DOWN标志，提示系统优先选择高地址，适用于长时间占用的内存。自定义起始地址的时候，实际reserve到的区域会包含自定义的范围（自定义的起始地址+长度），即返回的地址可能比自定义起始地址小，同时保证该区域起始地址与系统的分配粒度对齐，长度与分页大小对齐。如果找不到这样长的闲置连续空间，返回NULL。reserve和commit的保护属性相同，性能更好。</p>
+<p>##给区域调拨物理存储器<br>1.预订区域后需要给区域调拨物理存储器，系统会从页交换文件划拨物理存储器。<br>2.用VirtualAlloc来commit内存块的时候：实际提交的块会包含自定义范围，并且起始地址和长度都与页面大小对齐。提交的块不应该跨两个区域。<br>3.在Visita以上的系统中，可以分配大页面，大页面是常驻内存的需要有锁定页面的权限（Lock Pages In Memory），同时要求在VirtualAlloc时满足三个条件：（1）大小必须与GetLargePageMinimum对齐（自然该函数必须返回非0）。（2）同时reserve和commit。（3）保护属性必须是PAGE_READWRITE。</p>
+<p>##何时调拨撤销物理存储器<br>1.数据方便操作访问，但耗费内存较大 链表节约内存，访问元素复杂<br>2.在需要使用有空洞的大段连续内存的时候，有一个技巧：reserve一大段，根据需要commit。因为只有commit了才占用虚拟存储器，因此很节省内存。结合SEH电子表格程序<br>3.VirtualFree可以反提交和释放内存，其中MEM_RELEASE时的长度参数必须为0，表示释放整个区域。</p>
+<p>##改变保护属性<br>1.VirtualProtect改变保护属性，注意一次调用不要跨多个区域。</p>
+<p>##重置物理存储器中的内容<br>1.VirtualAlloc的MEM_RESET标志，表示愿意暂时放弃一段内存的当前内容，如果系统的物理内存使用紧张，reset的这段内存对应的物理内存可能会被挪用，直到再次访问这段内存。<br>2.即使通过VirtualAlloc来commit了，只要没有访问过这段地址，系统也不会分配内存。即如果commit的1.5G内存不读写，开销很小。</p>
+<p>##地址窗口的扩展<br>1.地址窗口扩展（AWE，Address Windowing Extension）：可以指定一段地址直接映射到物理内存，具有常驻内存和增加可用内存量的优点。以MEM_PHYSIC调用VirtualAlloc来指定要用于映射的虚拟地址段，然后AllocateUserPhysicalPages分配物理页面，再MapUserPhysicalPages将虚拟地址段和分配的物理页面关联，之后随意读写，使用完毕后以NULL作为参数调用MapUserPhysicalPages解除关联，最后FreeUserPhysicalPages、VirtualFree释放物理页面和地址段。一段虚拟地址可以通过Map和Unmap轮流访问多段物理内存，明显增加了进程可访问的内存总量。AWE也要求用户有锁定页面的权限。</p>
+<p>#第16章 线程栈</p>
+<ol>
+<li>链接选项“/statck:reserve[,commit]”可以在PE文件中记录默认的线程栈保留大小和提交大小，实际栈大小还要结合_beginthreadex时的参数。</li>
+<li><p>PAGE_GUARD属性的作用：第一次访问具有该属性的页面，会触发一个STATUS_GUARD_PAGE_VIOLATION异常，同时该属性被自动抹除，于是后续的访问正常。即该属性用于首次访问的通知。 </p>
+</li>
+<li><p>默认条件下，线程栈创建时先reserve一块1MB的内存，栈底的两块页面被提交，其中较低地址的那块页面具有PAGE_GUARD属性，被称为保护页面（Guard Page）。当栈的调用层次变深需要更多内存时，系统去掉当前保护页面的PAGE_GUARD属性并提交下一个页面作为保护页面（实现方式见条款4）。这个过程进行下去，栈顶所在的提交页面之后始终有一块被提交的保护页面，直到栈的调用层次足够深，当倒数第二个页面被提交并需要标记为保护页面的时候，这个标记行为终止并抛出EXCEPTION_STACK_OVERFLOW异常。栈最低地址的一个页面始终处于reserve状态，用来隔离栈和栈下方的内存空间，避免非法的栈操作访问越界。捕获了栈溢出结构化异常的线程由于没有了保护页面，需要调用_resetstkoflw来重新标记保护页，否则下次调用层次太深的时候会因为没有保护页不触发栈溢出异常直接访问到最低地址的reserve页，造成非法访问错误。 </p>
+</li>
+<li>栈上reserve页被从高到底依次commit的方式：当位于栈顶的函数帧在保护页面中时，访问保护页内存会触发异常，系统捕获异常，提交下一页，并判断下一页是否是倒数第二页，是的话抛出栈溢出异常，否则将一下页标记为保护页。如果栈顶函数帧很大（比如包含大数组），跨越多个分页，由于函数内部可能先访问函数帧中最低地址的reserve页的内存，引起非法访问错误，于是C++编译器对这种栈帧大于1个分页的函数进行了特殊处理：编译器会在大栈帧函数的开始插入_chkstk，后者会沿大栈帧的底部向顶部依次访问每个分页，连续推动保护页，保证后来函数体中的随机访问都作用在commit分页上。 </li>
+<li>Debug版本程序在调用函数前，会备份当前栈的上下文，在函数返回后对比新的栈数据和备份数据，判断是否有栈上的越界错误。Release版本程序开启/Gs开关后能起到类似的效果。</li>
+</ol>
+
+      
+    </div>
+    <footer>
+      
+
+        
+          <div class="alignleft post-nav">
+            <em>上一篇: </em><a href="/2015/11/20/Learning/windowservices/">Window服务学习笔记</a>
+          </div>
+        
+        
+          <div class="alignright post-nav">
+            <em>下一篇: </em><a href="/2015/10/30/Learning/Http-Protocl-learn/">Http协议初学</a>
+          </div>
+          <div class="clearfix"></div>
+        
+
+        
+          <div class="copyright">
+            
+              <span class="claim">转载请注明youngroe.com</span>
+            
+            
+              <span class="from-link">
+                <em>本文链接地址:</em>
+                <a href="/2015/11/14/Read-Notes/Read-Notes-Windows-Via-C-C-6/">
+                  http://www.youngroe.com/2015/11/14/Read-Notes/Read-Notes-Windows-Via-C-C-6/
+                </a>
+              </span>
+            
+          </div>
+        
+		<span id="busuanzi_container_site_pv">
+    本站总访问量<span id="busuanzi_value_site_pv"></span>次
+        
+  
+  <div class="categories">
+    <a href="/categories/Read-Notes/">Read Notes</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/Windows核心编程/">Windows核心编程</a>
+  </div>
+
+        <div class="bdsharebuttonbox"><a href="#" class="bds_more" data-cmd="more"></a><a href="#" class="bds_qzone" data-cmd="qzone"></a><a href="#" class="bds_tsina" data-cmd="tsina"></a><a href="#" class="bds_tqq" data-cmd="tqq"></a><a href="#" class="bds_renren" data-cmd="renren"></a><a href="#" class="bds_weixin" data-cmd="weixin"></a></div>
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdPic":"","bdStyle":"0","bdSize":"16"},"share":{},"image":{"viewList":["qzone","tsina","tqq","renren","weixin"],"viewText":"������","viewSize":"16"},"selectShare":{"bdContainerClass":null,"bdSelectMiniList":["qzone","tsina","tqq","renren","weixin"]}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</span>
+</article>
+
+
+<section id="comment">
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+<div class="widget tag">
+  <h3 class="title">分类</h3>
+  <ul class="entry">
+  
+    <li><a href="/categories/Cybersecurity/">Cybersecurity</a><small>1</small></li>
+  
+    <li><a href="/categories/Debug/">Debug</a><small>7</small></li>
+  
+    <li><a href="/categories/Kernel/">Kernel</a><small>4</small></li>
+  
+    <li><a href="/categories/Learning/">Learning</a><small>8</small></li>
+  
+    <li><a href="/categories/Life/">Life</a><small>7</small></li>
+  
+    <li><a href="/categories/Others/">Others</a><small>1</small></li>
+  
+    <li><a href="/categories/Read-Notes/">Read Notes</a><small>7</small></li>
+  
+    <li><a href="/categories/Tools/">Tools</a><small>6</small></li>
+  
+    <li><a href="/categories/Vulnerabilities/">Vulnerabilities</a><small>0</small></li>
+  
+    <li><a href="/categories/Windows/">Windows</a><small>14</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2019/07/01/Windows/delphi_reverse_summary/">Delphi程序逆向反汇编技巧小记</a>
+      </li>
+    
+      <li>
+        <a href="/2019/06/25/Kernel/kernel_enum_wfp_callout_function/">Windows内核重拾：如何枚举系统中Windows Filtering Platform (WFP)驱动中的callout函数</a>
+      </li>
+    
+      <li>
+        <a href="/2019/05/06/Kernel/windows-driver-testing-basics/">Windows内核重拾：Windows驱动测试基础：工具、功能和示例（翻译/转载）</a>
+      </li>
+    
+      <li>
+        <a href="/2019/04/06/Windows/how-to-reverse-engineer-software-windows-in-a-right-way/">如何正确的对Windows软件进行逆向工程（翻译/转载）</a>
+      </li>
+    
+      <li>
+        <a href="/2019/01/12/Windows/a_crash_lead_deadlock/">Windows平台下一个崩溃而导致的死锁分析</a>
+      </li>
+    
+      <li>
+        <a href="/2018/12/01/Windows/windows_client_dns_over_https/">Windows客户端如何透明使用DNS-over-HTTPS</a>
+      </li>
+    
+      <li>
+        <a href="/2018/10/06/Cybersecurity/ddos-protection-techniques/">现代DDoS对抗技术概述（翻译/转载）</a>
+      </li>
+    
+      <li>
+        <a href="/2018/09/18/Life/xian/">西安周末游</a>
+      </li>
+    
+      <li>
+        <a href="/2018/01/06/Kernel/WindowsKernel_DebugObject/">Windows内核重拾：DebugObject</a>
+      </li>
+    
+      <li>
+        <a href="/2017/10/23/Tools/IDA-Pro-ClassInformer-Tutorial/">IDA Pro ClassInformer使用指南（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2017/05/23/Windows/Kernel Data and Filtering Support/">Kernel Data and Filtering Support for Windows Server 2008（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2017/05/17/Windows/Windows-x64-Shellcode/">Windows x64 Shellcode编写指南(翻译)</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget tagcloud">
+  <h3 class="title">标签云</h3>
+  <div class="entry">
+    <a href="/tags/ASM/" style="font-size: 12.5px;">ASM</a> <a href="/tags/Boost/" style="font-size: 10px;">Boost</a> <a href="/tags/DDoS/" style="font-size: 10px;">DDoS</a> <a href="/tags/DNS-over-HTTPS/" style="font-size: 10px;">DNS-over-HTTPS</a> <a href="/tags/Delphi/" style="font-size: 10px;">Delphi</a> <a href="/tags/Dll劫持/" style="font-size: 10px;">Dll劫持</a> <a href="/tags/GCC-GDB/" style="font-size: 10px;">GCC&GDB</a> <a href="/tags/GetVersionEx/" style="font-size: 10px;">GetVersionEx</a> <a href="/tags/Http/" style="font-size: 10px;">Http</a> <a href="/tags/IDA-Pro/" style="font-size: 12.5px;">IDA Pro</a> <a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/MSDN/" style="font-size: 12.5px;">MSDN</a> <a href="/tags/Malware/" style="font-size: 12.5px;">Malware</a> <a href="/tags/MiniDumpWriteDump/" style="font-size: 10px;">MiniDumpWriteDump</a> <a href="/tags/PEB/" style="font-size: 10px;">PEB</a> <a href="/tags/Procmon/" style="font-size: 10px;">Procmon</a> <a href="/tags/Runtime-Error/" style="font-size: 10px;">Runtime Error</a> <a href="/tags/SEH/" style="font-size: 10px;">SEH</a> <a href="/tags/Shellcode/" style="font-size: 10px;">Shellcode</a> <a href="/tags/SysinternalsSuite/" style="font-size: 10px;">SysinternalsSuite</a> <a href="/tags/Tips/" style="font-size: 10px;">Tips</a> <a href="/tags/UAC/" style="font-size: 10px;">UAC</a> <a href="/tags/UAF漏洞/" style="font-size: 10px;">UAF漏洞</a> <a href="/tags/VC/" style="font-size: 10px;">VC</a> <a href="/tags/Visual-Studio/" style="font-size: 12.5px;">Visual Studio</a> <a href="/tags/Windbg/" style="font-size: 10px;">Windbg</a> <a href="/tags/Windows/" style="font-size: 20px;">Windows</a> <a href="/tags/Windows核心编程/" style="font-size: 17.5px;">Windows核心编程</a> <a href="/tags/android/" style="font-size: 10px;">android</a> <a href="/tags/getaddrinfo/" style="font-size: 10px;">getaddrinfo</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/libeay32/" style="font-size: 10px;">libeay32</a> <a href="/tags/markdown/" style="font-size: 10px;">markdown</a> <a href="/tags/ndk/" style="font-size: 10px;">ndk</a> <a href="/tags/sublime-text3/" style="font-size: 10px;">sublime text3</a> <a href="/tags/x64/" style="font-size: 12.5px;">x64</a> <a href="/tags/体验/" style="font-size: 10px;">体验</a> <a href="/tags/内核/" style="font-size: 12.5px;">内核</a> <a href="/tags/内核结构/" style="font-size: 15px;">内核结构</a> <a href="/tags/学习/" style="font-size: 10px;">学习</a> <a href="/tags/安全机制/" style="font-size: 10px;">安全机制</a> <a href="/tags/异常处理/" style="font-size: 10px;">异常处理</a> <a href="/tags/提权/" style="font-size: 10px;">提权</a> <a href="/tags/服务/" style="font-size: 10px;">服务</a> <a href="/tags/权限/" style="font-size: 12.5px;">权限</a> <a href="/tags/栈溢出漏洞/" style="font-size: 10px;">栈溢出漏洞</a> <a href="/tags/测试/" style="font-size: 10px;">测试</a> <a href="/tags/浮躁/" style="font-size: 10px;">浮躁</a> <a href="/tags/漏洞调试/" style="font-size: 12.5px;">漏洞调试</a> <a href="/tags/生活/" style="font-size: 15px;">生活</a> <a href="/tags/脱壳/" style="font-size: 10px;">脱壳</a> <a href="/tags/西安/" style="font-size: 10px;">西安</a> <a href="/tags/计划/" style="font-size: 10px;">计划</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a> <a href="/tags/调试/" style="font-size: 15px;">调试</a> <a href="/tags/转换/" style="font-size: 10px;">转换</a> <a href="/tags/进程/" style="font-size: 10px;">进程</a> <a href="/tags/逆向/" style="font-size: 10px;">逆向</a> <a href="/tags/重庆/" style="font-size: 10px;">重庆</a> <a href="/tags/驱动/" style="font-size: 15px;">驱动</a>
+  </div>
+</div>
+
+
+  <div class="widget tag">
+<h3 class="title">Links</h3>
+<ul class="entry">
+<li><a href="http://blog.ourren.com/" title="Ourren">Ourren</a></li>
+<li><a href="http://www.hyjal.net/" title="Hyjal">Hyjal</a></li>
+<li><a href="http://www.jianshu.com/users/fa15f4e416ae/latest_articles" title="Daemonceltics">Daemonceltics</a></li>
+<li><a href="http://papap.info/" title="isee">isee</a></li>
+</ul>
+</div>
+
+  <script type="text/javascript" id="clustrmaps" src="//cdn.clustrmaps.com/map_v2.js?u=putG&d=yoFnN6V-ovhL-H4e9_69LvkTiX4uX7rEYJ15yL3G1Wg"></script>
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <div id="go-pg-top"><i class="icon-arrow-up"></i></div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2020 Lyon
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript" charset="utf-8" src="/js/page.js"></script>
+
+</body>
+
+</html>

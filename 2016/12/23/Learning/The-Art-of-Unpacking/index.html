@@ -1,0 +1,402 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>脱壳的艺术（翻译:The Art of Unpacking） | Lyon&#39;s blog</title>
+  <meta name="author" content="Lyon">
+  
+  <meta name="description" content="Walk steps step by step">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="脱壳的艺术（翻译:The Art of Unpacking）"/>
+  <meta property="og:site_name" content="Lyon&#39;s blog"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  #<link href="/favicon.ico" rel="icon">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="alternate" href="/atom.xml" title="Lyon&#39;s blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  <script src="/js/jquery.min.js"></script>
+  <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?0fe72895c9bcfd0d09da12b5378b1b91";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+</head>
+
+
+<body>
+  <!--[if lte IE 8]> <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'> <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0027_Simplified Chinese.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." style='margin-left:auto;margin-right:auto;display: block;'/></a></div> <![endif]-->
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">Lyon&#39;s blog</a></h1>
+  <h2><a href="/">I hear and I forget.I see and I remember.I do and I understand.</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">首页</a></li>
+    
+      <li><a href="/archives">归档</a></li>
+    
+      <li><a href="/about">关于</a></li>
+    
+	<li> <a href="/atom.xml">RSS</a> </li>
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <time datetime="2016-12-23T11:25:23.000Z"><a href="/2016/12/23/Learning/The-Art-of-Unpacking/">2016-12-23</a></time>
+      
+      
+  
+    <h1 class="title">脱壳的艺术（翻译:The Art of Unpacking）</h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+  <div id="toc" class="toc-article">
+  <strong class="toc-title">文章目录</strong>
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#摘要"><span class="toc-number">1.</span> <span class="toc-text">摘要</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-概述"><span class="toc-number">2.</span> <span class="toc-text">1.概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-调试器检查技术"><span class="toc-number">3.</span> <span class="toc-text">2.调试器检查技术</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1_PEB-BeingDebugged标志：IsDebuggerPresent()"><span class="toc-number">3.1.</span> <span class="toc-text">2.1 PEB.BeingDebugged标志：IsDebuggerPresent()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2_PEB-NtGlobalFlag,Heap_Flags"><span class="toc-number">3.2.</span> <span class="toc-text">2.2 PEB.NtGlobalFlag,Heap Flags</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3_DebugPort:CheckRemoteDebuggerPresent()/NtQueryInformationProcess()"><span class="toc-number">3.3.</span> <span class="toc-text">2.3 DebugPort:CheckRemoteDebuggerPresent()/NtQueryInformationProcess()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-4_调试器中断"><span class="toc-number">3.4.</span> <span class="toc-text">2.4 调试器中断</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-8_DebugObject:NtQueryObject()"><span class="toc-number">3.5.</span> <span class="toc-text">2.8 DebugObject:NtQueryObject()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-9_调试窗口"><span class="toc-number">3.6.</span> <span class="toc-text">2.9 调试窗口</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-10_调试进程"><span class="toc-number">3.7.</span> <span class="toc-text">2.10 调试进程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-11_驱动设备"><span class="toc-number">3.8.</span> <span class="toc-text">2.11 驱动设备</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-12_OllyDbg:Guard_Pages"><span class="toc-number">3.9.</span> <span class="toc-text">2.12 OllyDbg:Guard Pages</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-断点和PARCHING检测技术"><span class="toc-number">4.</span> <span class="toc-text">3.断点和PARCHING检测技术</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1_软件断点检测"><span class="toc-number">4.1.</span> <span class="toc-text">3.1 软件断点检测</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2_硬件断点检测"><span class="toc-number">4.2.</span> <span class="toc-text">3.2 硬件断点检测</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3_通过代码校验和检测Patch（壳代码完整性校验）"><span class="toc-number">4.3.</span> <span class="toc-text">3.3 通过代码校验和检测Patch（壳代码完整性校验）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-反分析技术"><span class="toc-number">5.</span> <span class="toc-text">4.反分析技术</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-_加密和压缩"><span class="toc-number">5.1.</span> <span class="toc-text">4.1. 加密和压缩</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-_垃圾指令和代码扩展"><span class="toc-number">5.2.</span> <span class="toc-text">4.2. 垃圾指令和代码扩展</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-_反反汇编"><span class="toc-number">5.3.</span> <span class="toc-text">4.3. 反反汇编</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-_对抗调试技术"><span class="toc-number">6.</span> <span class="toc-text">5. 对抗调试技术</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#5-1-_通过异常使调试器错误执行和停止执行"><span class="toc-number">6.1.</span> <span class="toc-text">5.1. 通过异常使调试器错误执行和停止执行</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-7-_虚拟机"><span class="toc-number">6.2.</span> <span class="toc-text">6.7. 虚拟机</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-_工具"><span class="toc-number">7.</span> <span class="toc-text">7. 工具</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#7-1-_OllyDbg"><span class="toc-number">7.1.</span> <span class="toc-text">7.1. OllyDbg</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-2-_Ollyscript"><span class="toc-number">7.2.</span> <span class="toc-text">7.2. Ollyscript</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-3_Olly_Advanced"><span class="toc-number">7.3.</span> <span class="toc-text">7.3 Olly Advanced</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-4-_OllyDump"><span class="toc-number">7.4.</span> <span class="toc-text">7.4. OllyDump</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-5-_ImpRec"><span class="toc-number">7.5.</span> <span class="toc-text">7.5. ImpRec</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#8-_参考"><span class="toc-number">8.</span> <span class="toc-text">8. 参考</span></a></li></ol>
+  </div>
+
+
+	
+    <div class="entry">
+      
+        <h2 id="摘要">摘要</h2><p>脱壳是一门艺术，同时也是一种智力挑战，在逆向领域脱壳是最令人头脑兴奋的智力游戏之一。在某些情况下，逆向工作者需要对操作系统内部原理非常熟悉，这样才能识别和绕过壳开发人员的反逆向分析技术，耐心和聪明是成功脱壳的两个主要条件。这些挑战包括壳开发人员开发壳，同时在另一方面也包括逆向工作研究者如何绕过壳的这些保护。<br>这篇文章主要介绍了壳开发人员使用的一些反逆向工程技术，同时也讨论如何绕过和关闭这些保护的技术和一些公开的工具。当遇到被壳保护的恶意代码的时候，这些信息能让逆向工作研究人员尤其是恶意代码分析人员更加容易的去识别这些技术，然后绕过这些反逆向分析技术去进行下一步的分析工作。这篇文章的第二个目的是让一些开发人员能够去使用这些技术在一定程度上减缓被逆向分析的可能，给代码增加更多的保护。当然，遇到逆向分析高手的时候，什么方法都没辙。<br><strong>关键词</strong>：逆向工程，壳，保护，反调试，反逆向分析</p>
+<a id="more"></a>
+<h2 id="1-概述">1.概述</h2><p>在逆向工程领域，壳是最有趣的难题之一，在脱壳的过程中，逆向工作者会学到很多东西，包括操作系统原理、逆向技巧、逆向工具和技术。壳（本文中壳这个术语包含压缩壳和保护壳）是被用于保护可执行文件免受分析的一种技术。壳被商业软件合法使用，以防止信息泄露，篡改和盗版。不幸的是，恶意代码也以相同的目的使用壳，但目的却是恶意的。<br>因为有太多被加壳的恶意代码样本，研究者和恶意代码分析者为了分析这些样本开始去研究脱壳技术。同时，新的反逆向分析技术也不断的被用到壳的保护中，阻止逆向分析者去分析这些被保护的应用程序，同时也阻止这些被保护的应用程序被脱壳。经过不断的轮回发展，新的反逆向技术不断被开发同时在另一边逆向分析者也不断研究各种脱壳技巧、技术和工具。<br>这篇文章主要介绍壳使用的各种反逆向分析技术，同时也讨论如何去绕过和关闭壳的这些保护的工具和技术。在另一方面，内存dump等技术能轻松绕过某些壳的保护，那反逆向分析技术是不是不需要了呢？反调试技术还是必须的，在某些情况下被保护的代码需要被动态调试分析，如：</p>
+<ul>
+<li>部分保护的代码需要动态分析才能绕过，以便内存dump和输入表重建</li>
+<li>需要深入分析被壳保护的代码，以便能提取特征用于反病毒软件使用</li>
+</ul>
+<p>除此之外，当遇到恶意代码使用反逆向分析技术去阻止被动态调试和分析恶意函数的时候，熟悉反逆向分析技术也是很有用的。<br>本文不是一个完整的反逆向分析技术列表，只包含了那些在壳里面经常被使用、有意思的技术。如果想学习更多的反逆向分析及逆向技术，建议读者参考本文最后一节提到的参考链接和书籍。<br>作者希望读者能够在本文中找到一些有用的技术、技巧。希望大家能在脱壳中找到乐趣。</p>
+<h2 id="2-调试器检查技术">2.调试器检查技术</h2><p>本小结主要列举壳用于检测进程是否被调试的以及一个调试器是否运行的技术。调试器检测技术包含从非常简单的（明显）的利用APIs检测到利用内核对象（kernel objects）检测。</p>
+<h3 id="2-1_PEB-BeingDebugged标志：IsDebuggerPresent()">2.1 PEB.BeingDebugged标志：IsDebuggerPresent()</h3><p>检测调试器最基本的方式是检查PEB(Process Environment Block,在windbg中的结构为_PEB)的BeingDebugged标志位。可以直接使用kernel32!IsDebuggerPresent()函数取这个标志位，检查进程是否被用户态调试器调试。<br>下面的代码展示了IsDebuggerPresent()这个API实际执行的代码，通过访问TEB（Thread Environment Block,在windbg中结构为_TEB）结构可以获得PEB的地址，BeingDebugged标志位在PEB偏移0x2处。<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mov     eax,large fs:18h&#10;mov     eax,[eax+30h]&#10;movzx   eax,byte ptr [eax+2]&#10;retn</span><br></pre></td></tr></table></figure></p>
+<p>为了防止逆向工作者在IsDebuggerPresent()函数下断点或则patch这个函数，一些壳会直接通过检查PEB的BeingDebugged标志而不调用IsDebuggerPresent()。<br><em>例子</em><br>下面的例子展示了使用IsDebuggerPresent()和PEB.BeingDebugged检测调试器的区别：<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">;call kernel32!IsDebuggerPresent()&#10;call    [IsDebuggerPresent]&#10;test    eax,eax&#10;jnz     .debugger_found&#10;&#10;;check PEB.BeingDebugged directly&#10;mov     eax,dword [fs:0x30] ;EAX=TEB.ProcessENvironmentBlock&#10;movzx   eax,byte [eax+0x02] ;AL= PEB.BeingDebugged&#10;test    eax,eax&#10;jnz     .debugger_found</span><br></pre></td></tr></table></figure></p>
+<p>因为这种检测方式是非常明显的，所以壳一般会使用花指令或则反汇编方法去混淆这部分代码，这部分将会在后面的章节讨论。<br><em>解决方案</em><br>可以通过手工清零PEB.BeingDebugged标志位非常容易的绕过这种检测调试器的方法。在OllyDbg中可以通过在数据窗口按Ctrl+G快捷键然后输入fs:[30]查看PEB结构数据。<br>除此之外，可以通过Ollyscript（在工具章节会提到）命令“dbh” patch上面提到的标志位：<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dbh</span><br></pre></td></tr></table></figure></p>
+<p>最后，olly Advanced插件暂时没有选项去设置BeingDebugged标志位清零。</p>
+<h3 id="2-2_PEB-NtGlobalFlag,Heap_Flags">2.2 PEB.NtGlobalFlag,Heap Flags</h3><p>PEB.NtGlobalFlag:NtGlobalFlag是PEB中另一个标志位（PEB偏移0x68,名称为NtGlobalFlag）可以用来检测程序是否被调试器加载。正常情况下，当一个进程没有被调试NtGlobalFlag的值为0x0,当一个进程被调试的是否这个值一般为0x70,值为0x70是因为以下的标志位被设置：</p>
+<ul>
+<li>FLG_HEAP_ENABLE_TAIL_CHECK(0x10)</li>
+<li>FLG_HEAP_EBABLE_FREE_CHECK(0x20)</li>
+<li>FLG_HEAP_VALIDATE_PARAMETERS(0x40)</li>
+</ul>
+<p>这些标志位在函数ntdll!LdrpInitializeExecutionOptions()中被设置，同时需要注意PEB.NtGlobalFlag的默认值可以通过gflags.exe工具设置或则通过在注册表中设置键值改变：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">HKLM\Software\Microsoft\Windows NT\CurrentVersion\Image File Execution Options</span><br></pre></td></tr></table></figure></p>
+<p>Heap Flags:由于NtGlobalFlag的某些标志位被设置，创建堆的时候某些标志位也会被设置，这些设置主要在函数ntdll!RtlCreateHeap()函数中。最典型的，非调试状态下进程（PEB.ProcessHeap）创建的初始堆的标志位Flags和ForceFlags将会被设置为0x02（HEAP_GROWABLE）和0x0。然而当进程被调试的时候这两个标志位将会被设置为0x50000062(依赖NTGlobalFLag的值)和0x40000060(Flags和0x6001007D与运算得到)。默认情况下，当一个进程被调试的时候，堆创建的时候堆的这些标志位将会被设置：</p>
+<ul>
+<li>HEAP_TAIL_CHECKING_ENABLED(0x20)</li>
+<li>HEAP_FREE_CHECKING_ENABLED(0x40)</li>
+</ul>
+<p><em>例子</em><br>下面的代码展示了当PEB.NtGlobalFlag不等于0的时候，PEB.ProcessHeap中一些标志位将会被设置：<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">;ebx = PEB&#10;mov     ebx,[fs:0x30]&#10;&#10;;check if PEB.NtGlobalFlag!=0&#10;cmp     dword [ebx+0x68],0&#10;jne     .debugger_found&#10;&#10;;eax = PEB.ProcessHeap&#10;mov     eax,[ebx+0x18]&#10;&#10;;check PEB.ProcessHeap.Flags&#10;cmp     dword [eax+0x0c],2&#10;jne     .debuger_found&#10;&#10;;check PEB.ProcessHeap.ForceFlags&#10;cmp     dword [eax+0x10],0&#10;jne     .debugger_found</span><br></pre></td></tr></table></figure></p>
+<p><em>解决方法</em><br>解决方法就是将PEB.NtGlobalFlag和PEB.HeapProcess标志位设置为未调制状态下的值，下面展示了一个通过ollyscript去这只标志位的例子：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">var     peb</span><br><span class="line">var     patch_addr</span><br><span class="line">var     process_heap</span><br><span class="line"></span><br><span class="line"><span class="comment">//retrieve PEB via a hardcoded TEB address (first thread:0x7ffde000)</span></span><br><span class="line">mov     peb,[<span class="number">7f</span>fde000+<span class="number">30</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment">//patch PEB.NtGlobalFlag</span></span><br><span class="line">lea     patch_addr,[peb+<span class="number">68</span>]</span><br><span class="line">mov     [patch_addr],<span class="number">0</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//patch PEB.ProcessHeap.Flag/ForceFlags</span></span><br><span class="line">mov     process_heap,[peb+<span class="number">18</span>]</span><br><span class="line">lea     patch_addr,[process_heap+<span class="number">0</span>c]</span><br><span class="line">mov     [patch_addr],<span class="number">2</span></span><br><span class="line">lea     patch_addr,[process_heap+<span class="number">10</span>]</span><br><span class="line">mov     [patch_addr],<span class="number">0</span></span><br></pre></td></tr></table></figure></p>
+<p>olly Advanced 插件也没有选项去设置PEB.NtGlobalFLags和PEB.ProcessHeap标志位。</p>
+<h3 id="2-3_DebugPort:CheckRemoteDebuggerPresent()/NtQueryInformationProcess()">2.3 DebugPort:CheckRemoteDebuggerPresent()/NtQueryInformationProcess()</h3><p>Kernel32!CheckRemoteDebuggerPresent()是另一个可以检测进程是否正在被调试的API,这个API内部调用ntdll!NtQueryInformationProcess()参数ProcessInformationClass设置为ProcecssDebugPort(7)。而在内核中，NtQueryInformationProcess()通过查询EPROCESS(windbg中_EPROCESS结构)中的DebugPort字段。当被用户态调试器调试时，DebugPort的值将为非零，而ProcessINformation的值将会被设置为0xFFFFFFFF,否则正常情况下ProcessInformation的值为0x0。<br>Kernel32!CheckRemoteDebuggerPresent()函数有两个参数，第一个参数为进程句柄，第二个参数为一个指向BOOL类型的一个指针，当进程被调试的时候这个值将会被设置为TRUE。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">BOOL <span class="title">CheckRemoteDebuggerPresent</span><span class="params">(</span><br><span class="line">    HANDLE hProcess,</span><br><span class="line">    PBOOL pbDebuggerPresent</span><br><span class="line">)</span></span></span><br></pre></td></tr></table></figure></p>
+<p>Ntdll!NtQueryInformationProcess()有5个参数，为了检测调试器，参数ProcessInformationClass将会被设置为ProcessDebugPort(7):<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">NTSTATUS NTAPI <span class="title">NtQueryInformationProcess</span><span class="params">(</span><br><span class="line">    HANDLE              ProcessHandle,</span><br><span class="line">    PROCESSINFOCLASS    ProcessInformationClass,</span><br><span class="line">    PVOID               ProcessInformation,</span><br><span class="line">    ULONG               ProcessInformationLength,</span><br><span class="line">    PULONG              RturnLength</span><br><span class="line">)</span></span></span><br></pre></td></tr></table></figure></p>
+<p><em>例子</em><br>下面的例子展示了调用CheckRemoteDebuggerPresent()和NtQueryInformationProcess()去检测一个进程是否在被调试：<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">;using kernel32!CheckRemoteDebuggerPresent()&#10;lea     eax,[.bDebuggerPresent]&#10;push    eax                     ;pbDebuggerPresent&#10;push    0xffffffff              ;hProcess&#10;call    [CheckRemoteDebuggerPresent]&#10;cmp     dword [.bDebuggerPresent], 0&#10;jne     .debugger_found&#10;&#10;;using ntdll!NtQueryInformationProcess(ProcessDebugPort)&#10;lea     eax,[.dwReturnPort]&#10;push    eax                 ;ReturnLength&#10;push    4                   ;ProcessInformationLength&#10;lea     eax,[.dwDebugPort]&#10;push    eax                 ;ProcessInformation&#10;push    ProcessDebugPort    ;ProcessInformationClass(7)&#10;push    0xffffffff&#10;call    [NtQUeryInformationProcess]&#10;cmp     dword [.dwDebugPort],0&#10;jne     .debugger_found</span><br></pre></td></tr></table></figure></p>
+<p><em>解决方法</em><br>一种解决方案是在NtQueryInformationProcess()函数返回的地方设置断点，当断点命中后，将ProcessInformation设置为0，下面是一个自动设置该值为0的ollyscript脚本：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">var     bp_NtQueryInformationProcess</span><br><span class="line"></span><br><span class="line"><span class="comment">//set a breakpoint handler</span></span><br><span class="line">eob     bp_handler_NtQueryInformationProcess</span><br><span class="line"></span><br><span class="line"><span class="comment">//set a breakpoint where NtQueryInformationProcess returns</span></span><br><span class="line">gpa     <span class="string">"NtQueryInformationProcess"</span>, <span class="string">"ntdll.dll"</span></span><br><span class="line">find    $RESULT, <span class="preprocessor">#C21400#     <span class="comment">//return 14</span></span></span><br><span class="line">mov     bp_NtQueryInformationProcess,$RESULT</span><br><span class="line">bphws   bp_NtQueryInfomationProcess,<span class="string">"x"</span></span><br><span class="line">run</span><br><span class="line"></span><br><span class="line">bp_handler_NtQueryInformationProcess:</span><br><span class="line"><span class="comment">//ProcessInformationClass ==ProcessDebugPort?</span></span><br><span class="line">cmp     [esp+<span class="number">8</span>],<span class="number">7</span></span><br><span class="line">jne     bp_handler_NtQueryInformationProcess_continue</span><br><span class="line"></span><br><span class="line"><span class="comment">//patch ProcessInformation to 0</span></span><br><span class="line">mov     patch_addr,[esp+c]</span><br><span class="line">mov     [patch_addr],<span class="number">0</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//clear breakpoint</span></span><br><span class="line">bphwc   bp_NtQUeryInformationProcess</span><br><span class="line"></span><br><span class="line">bp_handle_NtQueryInformationProcess_continue:</span><br><span class="line">run</span><br></pre></td></tr></table></figure></p>
+<p>Olly Advanced插件有一个选项去patch NtQueryInformationProcess()，实现通过注入操作NtQUeryInformationProcess()返回值的代码实现。</p>
+<h3 id="2-4_调试器中断">2.4 调试器中断</h3><p>当软件断点指令INT3（断点）和INT1(单步)在调试器中触发的时候，正常情况下异常处理函数不会被调用因为调试器会首先处理这些中断产生的异常。因此壳可以在一场处理函数中设置一个标志位，如果这个标志位在中断指令执行后没有被设置，那就意味着这个进程正在被调试。另外一些壳会使用API代替中断指令，因为kernel32!DebugBreak()内部会调用INT3。<br><em>例子</em><br>在本例中当异常处理函数被调用的时候将会通过线程上线文（CONTEXT record）将EAX设置为0xFFFFFFFF:<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">;set exception handler&#10;push    .exception_handler&#10;push    dword [fs:0]&#10;mov     [fs:0],esp&#10;&#10;;reset flag(EAX) invoke int3&#10;xor     eax,eax&#10;int3&#10;&#10;;restore exception handler&#10;pop     dword [fs:0]&#10;add     esp,4&#10;&#10;;check if the flag had been set&#10;test    eax, eax&#10;je      .debugger_found&#10;&#10;.exception_handler:&#10;;EAX = ContextRecord&#10;mov     eax,[esp+0xc]&#10;;set flag (COntextRecord.EAX)&#10;mov     dword [eax+0xb0],0xfffffff&#10;;set ContextRecord.EIP&#10;inc     dword [eax+0xb8]&#10;xor     eax,eax&#10;retn</span><br></pre></td></tr></table></figure></p>
+<p><em>解决方案</em><br>当使用ollydbg时，当由于调试中断引发步入或则执行终止，应该首先确定异常处理函数的地址（通过View-&gt;SEH Chain）,在异常处理函数地址设置断点。然后使用Shift+F9，当单步调试或则设置断点调试时这些异常将会被被一场处理函数处理。这样前面设置的断点就会命中，就可以找到一场处理函数。</p>
+<div align="center"><br><img src="/img/2018_0523_02_04_.png" alt="设置忽略调试异常" align="center"><br></div><br>另一种解决方案是设置将单步/断点异常自动传递给一场处理函数，可以通过ollydbg选项设置：Options-&gt;Debugging Options-&gt;Exceptions-&gt;”Ignor following exceptions”，选中“INT 3 Breaks”和“Single-step break”。<br><br>### 2.5 时间检测<br>当进程正在被调试时，将会花几个CPU时钟周期去处理调试事件、单步调试等。壳就可以利用这多出来的指令执行时间的差异去检测调试器，如果时间花费比正常执行更长，则这个进程很可能正在被调试。<br><em>例子</em><br>下面是一个利用时间检测调试器的简单例子，使用RDTSC(Read Time-Stamp Counter)在指令执行前后读取时间，然后计算执行时间增量。这里这个增量为0x200,具体的增量取决于两个RDTSC指令之间需要执行的指令的数量。<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rdtsc&#10;mov     ecx,eax&#10;mov     ebx,edx&#10;;...more instructions&#10;nop&#10;push    eax&#10;pop     eax&#10;nop&#10;;...mor instructions&#10;&#10;;compute delta between RDTSC instructions&#10;rdtsc&#10;&#10;;Check high order bits&#10;cmp     ebx,ebx&#10;ja      .debugger_found&#10;;Check  low order bits&#10;sub     eax,ecx&#10;cmp     eax,0x200&#10;ja      .debugger_found</span><br></pre></td></tr></table></figure><br><br>时间变化还可以使用kernel32!GetTickCount()或则检查SharedUserData（_KUSER_SHARED_DATA）结构的偏移0xC处的TickCountLow和TickCountMultiplier。<br>当使用垃圾代码或则其他混淆技术去隐藏基于时间检测调试器技术时，将会很难去定位，特别是使用RDTSC指令时。<br><em>解决方案</em><br>一种绕过的方案是定位到时间检测的代码然后避免在这部分代码单步调试。调试者也可以在这在时间增量比较代码之前设置断点然后直接执行而不是单步，直到断点命中。除此之外也可以在GetTickCount()函数中设置断点，以确定它在那里被调用或修改GetTickCount的返回值。<br>Olly Advanced提供了另外一种解决方案，主要动过内核驱动程序实现，关键实现如下：<br>- 设置CR4寄存器的TSD标志位。当TSD标志位被设置时，如果RDTSC指令在内核模式之外被执行，GP(General Protection)异常将会被触发。<br>- 设置中断描述符表（IDT）,以便处理GP异常，过滤RTDSC指令执行，如果是因为执行RDTSC指令而出发GP异常的话，只需要在前一次返回的时间戳上加1返回即可。<br><br>需要注意的是因为驱动可能会造成系统不稳定，因此最好在非生产机或则虚拟机进行这个实验。<br><br>### 2.6. SeDebugPrivilege<br>默认情况下，进程的SeDebugPrivilege权限是没有启用的，但是当一个进程是被Ollydbg或则Windbg启动的时候,进程的SeDebugPrivilege权限是启用的。这是因为调试器一般会调整自己的token会启用SeDebugPrivilege权限，并且当调试器调试启动进程的时候权限会继承，因此被调试进程的SeDebugPrivilege也会被启用。<br>一些壳会通过试图去打开CSRSS.exe进程的句柄间接判断是否启用了SeDebugPrivilege权限判断是否正在被调试，如果能够打开CSRSS.exe进程就意味进程的SeDebugPrivilege权限已经被启用，同时暗示该进程有可能正在被调试。因为CSRSS.exe进程的安全描述符（security descriptor）只允许SYSTEM权限去打开，但是如果一个进程又SeDebugPrivilege权限，它就可以打开任意进程而无视折别描述符。注意默认情况下SeDebugPrivilege权限只能被赋予给Administrators组用户。<br><em>例子</em><br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">;query for the pid of csrss.exe&#10;call    [CsrGetProcessId]&#10;&#10;;try to open the csrss.exe process&#10;push    eax&#10;push    FALSE&#10;push    PROCESS_QUERY_INFORMATION&#10;call    [OpenProcess]&#10;&#10;;if OpenProcess() was successful&#10;;process is probably being debugged&#10;test     eax,eax&#10;jnz      .debugger_found</span><br></pre></td></tr></table></figure><br><br>上面的例子通过ntdll!CsrGetProcessId()获取csrss.exe的pid，但是壳可能会通过进程枚举的方式去获得csrss.exe的pid，如果OpenProcess()成功，则意味SeDebugPrivilege权限被启用，进程有可能正在被调试。<br><em>解决方案</em><br>一种解决方案是在ntdll!NtOpenProcess()返回处设置一个断点，如果传递的参数是进程csrss.exe的pid，一旦断点命中，将返回值EAX设置为0xC0000022(STATUS_ACCESS_DENIED)。<br><br>### 2.7 父进程检测<br>正常情况下一个进程的父进程应该是explorer.exe（如进程被双击执行），如果进程的父进程不是explorer.exe则进程有可能被其他进程启动则表明进程有可能正在被调试。<br>一种检测方式如下：<br>- 1.获得当前进程的pid通过TEB.ClientId或者使用GetCurrentProcessId()<br>- 2.通过Process32First/Next()进程遍历的方式记录下explorer.exe的PID（比较PROCESSENTRY32.szExeFile）和当前进程父进程的PID(PROCESSENTRY32.th32ParentProcessID)<br>- 3.如果当前进程的父进程PID不是explorer.exe的则表明当前进程可能正在被调试。<br>然而需要注意的是如果进程是通过命令行或则默认shell不是explorer.exe的时候这种调试器检测的方式将会出错。<br><em>解决方案</em><br>一种解决方案是使用Olly Advance去将Process32Next()执行设置为失败，这样壳列举进程的代码将会执行失败，就有可能因为列举进程失败跳过PID检查<br>。实现的方式是将EAX置零然后返回的代码去patch kernel32!Process32NextW()函数的入口。<br><div align="center"><br><img src="/img/2018_0523_2_7.png" alt align="center"><br></div>
+
+<h3 id="2-8_DebugObject:NtQueryObject()">2.8 DebugObject:NtQueryObject()</h3><p>另一种反调试技术是检测当前系统调试器是否在运行，而不是检测当前进程是否正在被调试。<br>在逆向论坛中讨论的一个有趣的方式是检查<a href="http://www.openrce.org/articles/full_view/25" target="_blank" rel="external">DebugObject</a>内核对象的数量。这种检测方式的原理是只要一个进程被调试，在内核中肯定会为调试会话创建一个DebugObject内核对象。<br>DebugObject的数量可以通过ntdll!NtQueryObject()查询所有Object类型的信息获得。NtQueryObject需要5个参数，为了查询所有对象类型，ObjectHandle参数需要设置为NULL，ObjectInformationClass需要设置为ObjectAllTypeInformation(3)。<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">NTSTATUS NTAPI NtQueryObject(&#10;                            HANDLE ObjectHandle,&#10;                            OBJECT_INFORMATION_CLASS ObjectInformationClass,&#10;                            PVOID ObjectInformation,&#10;                            ULONG Length,&#10;                            PULONG ResultLength&#10;                            )</span><br></pre></td></tr></table></figure></p>
+<p>NtQueryObject会返回一个OBJECT_ALL_INFORMATION结构，结构中类型为ObjectTypeInformation的参数NumberOfObjectsTypes是Object类型数量的一个数组。<br>然后检测函数会遍历ObjectTypeInformation类型的数组，数组中元素结构如下：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> _OBJECT_TYPE_INFORMATION &#123;</span><br><span class="line">[<span class="number">00</span>] UNICODE_STRING TypeName;</span><br><span class="line">[<span class="number">08</span>] ULONG TotalNumberOfHandles;</span><br><span class="line">[<span class="number">0</span>C] ULONG TotalNumberOfObjects;</span><br><span class="line">... more fields ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>比较TypeName字段类型为UNICODE字符串是否为“DebugObject”，然后检查TotalNumberOfObjects或则TotalNumberOfHandles是否为非0。<br><em>解决方案</em><br>和NtQueryInformationProcess()的解决方案相似，可以在NtQueryObject()返回的地方设置一个断点，然后修改返回的OBJECT_ALL_INFORMATION结构。<br>具体操作方式就是将NumberOfobjectsTypes字段设置为0，这样就能阻止壳去遍历ObjectTypeInformation数组。可以通过创建一个Ollydbg脚本完成，类似之前的NtQueryInformationProcess()的解决方案。同样的，可以通过Olly advanced插件去修改NtQueryObject()这个API，如果查询类型是ObjectAllTypeInformation的话会将返回的buffer清零。</p>
+<h3 id="2-9_调试窗口">2.9 调试窗口</h3><p>调试器窗口是否存在是系统中调试器是否运行的一个标志，因为调试器会创建的特定Class名称(OLLYDBG是OllyDbg,Windbg是WinDbgFrameClass)的窗口,调试器窗口可以通过user32!FindWindow()或者user32!FindWindowEx()找到。<br><em>例子</em><br>下面的例子会通过Findwindow()找Ollydbg、Windbg创建的窗口名称去检测Ollydbg或者Windbg是否在运行<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">push    NULL&#10;push    .szWindowClassOllyDbg&#10;call    [FindWindowA]&#10;test    eax,eax&#10;jnz     .debugger_found&#10;push    NULL&#10;push    .szWindowClassWinDbg&#10;call    [FindWindowA]&#10;test    eax,eax&#10;jnz     .debugger_found&#10;.szWindowClassOllyDbg db &#34;OLLYDBG&#34;,0&#10;.szWindowClassWinDbg db &#34;WinDbgFrameClass&#34;,0</span><br></pre></td></tr></table></figure></p>
+<p><em>解决方案</em><br>一种解决方案是在FindWindow()/FindWindowEx()入口设置断点。当断点命中的时候，修改参数lpClassName字符串使程序返回失败。另一种解决方案是直接将返回值设置为NULL。</p>
+<h3 id="2-10_调试进程">2.10 调试进程</h3><p>另一种检测调试器的方法是枚举系统中所有的进程，检查进程名是否是调试器（如OllyDbg.exe、windbg.exe等），实现方式也特别简单，只需要调用Process32First/Next()然后检查进程名是否是一个调试器。<br>一些壳也会使用kernel32!ReadProcessMemory()读取进程的内存然后搜索调试器相关的字符串（如OLLYDBG）,以防止逆向者重命名调试器文件名。一旦检查到一个调试器，壳会展示一条错误信息，然后静默退出或则终止调试器。<br><em>解决方案</em><br>和父进程名检查相似，这里的解决方案也可以patch kernel32!Process32NextW()使函数总是返回失败阻止壳去枚举进程。</p>
+<h3 id="2-11_驱动设备">2.11 驱动设备</h3><p>检查系统中是否运行内核调试器经典的方法是去访问内核调试器的设备驱动程序，这项技术非常简单，只需要调用kernel31!CreateFile()打开内核调试器（如SoftICE）公开的设备驱动名称。<br><em>例子</em><br>一个简单的检测如下：<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">push    NULL&#10;push    0&#10;push    OPEN_EXISTING&#10;push    NULL&#10;push    FILE_SHARE_READ&#10;push    GENERIC_READ&#10;push    .szDeviceNameNtice&#10;call    [CreateFileA]&#10;cmp     eax,INVALID_HANDLE_VALUE&#10;jne     .debugger_found&#10;.szDeviceNameNtice db &#34;\\.\NTICE&#34;,0</span><br></pre></td></tr></table></figure></p>
+<p>一些版本的SoftICE也会在设备名称后面加数字就会使这种检测方法失效。在逆向论坛中提到了一种解决方法是在设备名称后面暴力附加数字直到正确的设备名称被找到。一些比较新版本的壳也会通过设备驱动名称去检测系统监控程序，如Regmon和FileMon。<br><em>解决方案</em><br>一种简单解决方案是在Kernel32!CreateFileW()中设置断点，当断点命中的时候，修改FileName参数或则修改返回值为INVALID_HANDLE_VALUE (0xFFFFFFFF)。</p>
+<h3 id="2-12_OllyDbg:Guard_Pages">2.12 OllyDbg:Guard Pages</h3><p>这种检测方式只针对OllyDbg，因为这和Ollydbg设置内存访问/写断点的特点相关。<br>除了硬件断点和软件断点之外，OllyDbg还允许内存访问/写断点；这种类型的断点是通过<a href="http://msdn2.microsoft.com/en-us/library/aa366549.aspx" target="_blank" rel="external">Guard Pages</a>实现的。简单的说，guard pages提供了一种当内存被访问的时候能被通知的方法。<br>Guard pages通过PAGE_GUARD内存熟悉设置，如果guard page所在的地址被访问将会触发一个STATUS_GUARD_PAGE_VIOLATION (0x80000001)异常。壳检测的原理是如果进程正在被OllyDbg调试，当guard page被访问的时候将没有异常抛出，这个异常访问将会被当作一个内存断点。<br><em>例子</em><br>在下面的示例代码中，分配了一段内存，在这段内存中存一段代码然后设置这段内存属性为PAGE_GUARD属性。然后将标志位(EAX)初始化为0，然后在这段page pages中执行代码触发STATUS_GUARD_PAGE_VIOLATION异常，如果正在被OllyDbg调试，标志位不会被改变，因为异常处理函数不会被调用。<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">; set up exception handler&#10;push    .exception_handler&#10;push    dword [fs:0]&#10;mov     [fs:0], esp&#10;&#10;; allocate memory&#10;push    PAGE_READWRITE&#10;push    MEM_COMMIT&#10;push    0x1000&#10;push    NULL&#10;call    [VirtualAlloc]&#10;test    eax,eax&#10;jz      .failed&#10;mov     [.pAllocatedMem],eax&#10;&#10;; store a RETN on the allocated memory&#10;mov     byte [eax],0xC3&#10;&#10;; then set the PAGE_GUARD attribute of the allocated memory&#10;lea     eax,[.dwOldProtect]&#10;push    eax&#10;push    PAGE_EXECUTE_READ | PAGE_GUARD&#10;push    0x1000&#10;push    dword [.pAllocatedMem]&#10;call    [VirtualProtect]&#10;&#10;; set marker (EAX) as 0&#10;xor     eax,eax&#10;&#10;; trigger a STATUS_GUARD_PAGE_VIOLATION exception&#10;call    [.pAllocatedMem]&#10;&#10;; check if marker had not been changed (exception handler not called)&#10;test    eax,eax&#10;je      .debugger_found&#10;:::&#10;&#10;.exception_handler&#10;;EAX = CONTEXT record&#10;mov     eax,[esp+0xc]&#10;;set marker (CONTEXT.EAX) to 0xffffffff&#10;; to signal that the exception handler was called&#10;mov     dword [eax+0xb0],0xffffffff&#10;xor     eax,eax&#10;retn</span><br></pre></td></tr></table></figure></p>
+<p><em>解决方案</em><br>因为guard pages会触发一个异常，逆向者可以故意触发一个异常，这样一场处理函数会被调用。在上面的例子中逆向者可以使用“INT3”加“RETN”替换RETN指令，一旦INT3被执行，可以通过Shift+F9强制调试器执行异常处理函数，然后异常处理函数执行之后，EAX将会被设置为正确的值,最后RETN指令也会正常执行。<br>如果异常处理函数确实是检查STATUS_GUARD_PAGE_VIOLATION异常，逆向者可以在异常处理函数中设置一个断点，然后修改ExceptionRecord参数，具体来说就是将ExceptionCode手动设置为STATUS_GUARD_PAGE_VIOLATION。</p>
+<h2 id="3-断点和PARCHING检测技术">3.断点和PARCHING检测技术</h2><p>这一节将会列举常见检测软件断点、硬件断点及Patch的方法。</p>
+<h3 id="3-1_软件断点检测">3.1 软件断点检测</h3><p>软件断点是通过将断点地址处的指令修改为0xcc(INT3断点)实现的。壳可以在壳代码或则API中扫描0xcc指令检测软件断点。<br><em>例子</em><br>一种检测方式可以像下面一样简单：<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cld&#10;mov     edi,Protected_Code_Start&#10;mov     ecx,Protected_Code_End - Protected_Code_Start&#10;mov     al,0xcc&#10;repne   scasb&#10;jz      .breakpoint_found</span><br></pre></td></tr></table></figure></p>
+<p>一些壳会对比较指令做一些操作，使得检测指令不是很明显，例如：<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">if(byte XOR 0x55 == 0x99) then breakpoint found&#10;Where: 0x99 == 0xCC XOR 0x55</span><br></pre></td></tr></table></figure></p>
+<p><em>解决方案</em><br>如果软件断点容易被检测可以使用硬件断点替代，要在系统API代码上设置断点，如果壳会检测API上的断点，可以UNICODE版本API上设置断点，因为ANSI版本API最终会调用UNICODE版本API（如使用LoadLibraryExW替代LoadLibraryA），或则使用Native API替代（如ntdll!LdrLoadDll）。</p>
+<h3 id="3-2_硬件断点检测">3.2 硬件断点检测</h3><p>另一种类型的断点是硬件断点，硬件断点通过调试寄存器（debug registers）设置，寄存器包含Dr0到Dr7。其中DR0-Dr3用于记录断点地址信息，最多4个，DR6用来标识断点是否被触发，而Dr7用于包含用于控制4个断点的标识，如启用/禁用断电及读/写点。<br>因为在Ring3不能直接访问调试寄存器，因此硬件断点需要一些代码才能检测。因为CONTEXT结构中包含调试寄存器，所以壳主要利用CONTEXT结构检测硬件断点。CONTEXT结构可以通过传递给异常处理函数的参数ContextRecord访问。<br><em>例子</em><br>下面是一个查询调试寄存器的示例代码<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">; set up exception handler&#10;push    .exception_handler&#10;push    dword [fs:0]&#10;mov     [fs:0], esp&#10;&#10;; eax will be 0xffffffff if hardware breakpoints are identified&#10;xor     eax,eax&#10;&#10;; throw an exception&#10;mov     dword [eax],0&#10;&#10;; restore exception handler&#10;pop     dword [fs:0]&#10;add     esp,4&#10;&#10;; test if EAX was updated (breakpoint identified)&#10;test    eax,eax&#10;jnz     .breakpoint_found&#10;:::&#10;&#10;.exception_handler&#10;;EAX = CONTEXT record&#10;mov     eax,[esp+0xc]&#10;&#10;;check if Debug Registers Context.Dr0-Dr3 is not zero&#10;cmp     dword [eax+0x04],0&#10;jne     .hardware_bp_found&#10;cmp     dword [eax+0x08],0&#10;jne     .hardware_bp_found&#10;cmp     dword [eax+0x0c],0&#10;jne     .hardware_bp_found&#10;cmp     dword [eax+0x10],0&#10;jne     .hardware_bp_found&#10;jmp     .exception_ret&#10;&#10;.hardware_bp_found&#10;;set Context.EAX to signal breakpoint found&#10;mov     dword [eax+0xb0],0xffffffff&#10;.exception_ret&#10;;set Context.EIP upon return&#10;add     dword [eax+0xb8],6&#10;xor     eax,eax&#10;retn</span><br></pre></td></tr></table></figure></p>
+<p>一些壳会将解密密钥一部分放在调试寄存器，这样调试寄存器会被初始化为一个特定的值或则为0，如果被解密的代码是需要被脱壳的导入表或则可执行代码，当这些调试寄存器被修改了，壳解密将会失败并且会因为无效指令导致异常而意外终止。<br><em>解决方案</em><br>如果软件断点没有被检测，可以使用软件断点代替。同时也可以使用ollydbg的读/写内存断点代替。如果需要设置API断点可以在UNICODE/Native版本API设置软件断点。</p>
+<h3 id="3-3_通过代码校验和检测Patch（壳代码完整性校验）">3.3 通过代码校验和检测Patch（壳代码完整性校验）</h3><p>代码完整性校验是校验壳代码是否被修改，修改可能是因为patch了壳反调试函数或则设置了软件断点。壳完整性校验通过代码校验和实现，校验和算法可以是简单的校验和也可以是复杂的散列算法。<br><em>例子</em><br>下面是一个计算校验和的简单计算方式：<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mov     esi,Protected_Code_Start&#10;mov     ecx,Protected_Code_End - Protected_Code_Start&#10;xor     eax,eax&#10;&#10;.checksum_loop&#10;movzx   ebx,byte [esi]&#10;add     eax,ebx&#10;rol     eax,1&#10;inc     esi&#10;loop    .checksum_loop&#10;cmp     eax,dword [.dwCorrectChecksum]&#10;jne     .patch_found</span><br></pre></td></tr></table></figure></p>
+<p><em>解决方案</em><br>如果是软件断点被校验和检测到了，可以用硬件断点替代。如果因为patch代码被检测到了，逆向人员可以在patch位置代码设置内存访问断点确定校验和检测函数的地址，一旦找到了校验和函数就可以将校验和修改为正常值或则直接修改校验和失败的标志位。</p>
+<h2 id="4-反分析技术">4.反分析技术</h2><p>反分析技术主要目的是减缓逆向人员分析和理解壳代码和被壳保护的代码，主要技术如加密/压缩、垃圾指令、乱序代码（permutation）及反汇编技术。这些反分析技术主要目的是去混淆代码、使人知难而退和浪费分析者的时间，这就需要分析者有耐心、足够聪明等特性才能绕过这些反分析技术。</p>
+<h3 id="4-1-_加密和压缩">4.1. 加密和压缩</h3><p>加密和压缩式反分析最基本的技术，最初的目的是防止分析者毫无困难的使用反汇编工具分析被保护的代码。<br><strong>加密</strong>：壳通常会加密壳代码及被保护的代码。加密算法因壳的不同而各异，从非常简单的循环异或加密到运算量很大的复杂算法。一些多态型的壳在不同的样本会使用不同的加密算法，解密算法也不同，生成的每一个样本都非常不一样，并且可能影响壳识别工具的正确性。<br>解密函数通常是一个执行取数据、计算数据、存储数据的循环，下面是一个简单揭秘函数包含几条简单的XOR操作去解密一个被加密的DWORD值。<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">0040A07C LODS   DWORD PTR DS:[ESI]&#10;0040A07D XOR    EAX,EBX&#10;0040A07F SUB    EAX,12338CC3&#10;0040A084 ROL    EAX,10&#10;0040A087 XOR    EAX,799F82D0&#10;0040A08C STOS   DWORD PTR ES:[EDI]&#10;0040A08D INC    EBX&#10;0040A08E LOOPD  SHORT 0040A07C ;decryption loop</span><br></pre></td></tr></table></figure></p>
+<p>下面是另一个多态壳解密函数<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">00476056 MOV    BH,BYTE PTR DS:[EAX]  //&#10;00476058 INC    ESI&#10;00476059 ADD    BH,0BD                //&#10;0047605C XOR    BH,CL                 //&#10;0047605E INC    ESI&#10;0047605F DEC    EDX&#10;00476060 MOV    BYTE PTR DS:[EAX],BH  //&#10;00476062 CLC&#10;00476063 SHL    EDI,CL&#10;::: More garbage code&#10;00476079 INC    EDX&#10;0047607A DEC    EDX&#10;0047607B DEC    EAX                   //&#10;0047607C JMP    SHORT 0047607E&#10;0047607E DEC    ECX                   //&#10;0047607F JNZ    00476056 ;decryption loop  //</span><br></pre></td></tr></table></figure></p>
+<p>下面是另一个解密函数，和上面是同样的多态壳<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">0040C045 MOV    CH,BYTE PTR DS:[EDI]  //&#10;0040C047 ADD    EDX,EBX&#10;0040C049 XOR    CH,AL                //&#10;0040C04B XOR    CH,0D9               //&#10;0040C04E CLC&#10;0040C04F MOV    BYTE PTR DS:[EDI],CH //&#10;0040C051 XCHG   AH,AH&#10;0040C053 BTR    EDX,EDX&#10;0040C056 MOVSX EBX,CL&#10;::: More garbage code&#10;0040C067 SAR    EDX,CL&#10;0040C06C NOP&#10;0040C06D DEC    EDI                  //&#10;0040C06E DEC    EAX                  //&#10;0040C06F JMP    SHORT 0040C071&#10;0040C071 JNZ    0040C045 ;decryption loop  //</span><br></pre></td></tr></table></figure></p>
+<p>上面两个多态壳解密代码例子，高亮（后面有//的）语句是主要的解密指令，剩下的指令都是些垃圾指令用来混淆逆向者的。注意寄存器是如何交换数据以及这两个加密函数是如何变换的。<br><strong>压缩</strong>：压缩的主要目的是减小可执行文件代码和数据的大小，原始可执行文件被压缩后它的可读字符串也将会被压缩，这样也有了混淆的作用。壳使用压缩软法的情况：UPX使用NRV、LZMA，FSG使用aPLib,Upack使用LZMA,yoda使用LZO。一些压缩引擎是免费非商业用途的，当用于商业用途时需要许可/注册。<br><em>解决方案</em><br>解密和解压缩函数循环都很容易绕过，逆向者只需要在解密/解压缩循环结束的地方设置一个断点。不过需要注意的是一些壳在解密循环可能会包含断点检测代码。</p>
+<h3 id="4-2-_垃圾指令和代码扩展">4.2. 垃圾指令和代码扩展</h3><p><strong>垃圾指令</strong>：在壳的解码算法中插入垃圾指令是另一种混淆逆向分析者的有效办法。旨在隐藏代码真正的目的，包括解密函数、反分析函数如检测调试器。垃圾代码将检测调试器、断点、patch等代码隐藏在一大堆无用并且令人困惑的指令中，增加了这些反分析技术的有效性。除此之外，有效的垃圾代码看起来和正常代码很相似。<br><em>例子</em><br>下面是一个解密函数，在函数中插入了很多垃圾指令：<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">0044A21A JMP    SHORT sample.0044A21F&#10;0044A21C XOR    DWORD PTR SS:[EBP],6E4858D&#10;0044A223 INT    23&#10;0044A225 MOV    ESI,DWORD PTR SS:[ESP]&#10;0044A228 MOV    EBX,2C322FF0&#10;0044A22D LEA    EAX,DWORD PTR SS:[EBP+6EE5B321]&#10;0044A233 LEA    ECX,DWORD PTR DS:[ESI+543D583E]&#10;0044A239 ADD    EBP,742C0F15&#10;0044A23F ADD    DWORD PTR DS:[ESI],3CB3AA25&#10;0044A245 XOR    EDI,7DAC77F3&#10;0044A24B CMP    EAX,ECX&#10;0044A24D MOV    EAX,5ACAC514&#10;0044A252 JMP    SHORT sample.0044A257&#10;0044A254 XOR    DWORD PTR SS:[EBP],AAE47425&#10;0044A25B PUSH   ES&#10;0044A25C ADD    EBP,5BAC5C22&#10;0044A262 ADC    ECX,3D71198C&#10;0044A268 SUB    ESI,-4&#10;0044A26B ADC    ECX,3795A210&#10;0044A271 DEC    EDI&#10;0044A272 MOV    EAX,2F57113F&#10;0044A277 PUSH   ECX&#10;0044A278 POP    ECX&#10;0044A279 LEA    EAX,DWORD PTR SS:[EBP+3402713D]&#10;0044A27F DEC    EDI&#10;0044A280 XOR    DWORD PTR DS:[ESI],33B568E3&#10;0044A286 LEA    EBX,DWORD PTR DS:[EDI+57DEFEE2]&#10;0044A28C DEC    EDI&#10;0044A28D SUB    EBX,7ECDAE21&#10;0044A293 MOV    EDI,185C5C6C&#10;0044A298 MOV    EAX,4713E635&#10;0044A29D MOV    EAX,4&#10;0044A2A2 ADD    ESI,EAX&#10;0044A2A4 MOV    ECX,1010272F&#10;0044A2A9 MOV    ECX,7A49B614&#10;0044A2AE CMP    EAX,ECX&#10;0044A2B0 NOT    DWORD PTR DS:[ESI]</span><br></pre></td></tr></table></figure></p>
+<p>上面这个例子中有用的指令只有下面这几句：<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">0044A225 MOV    ESI,DWORD PTR SS:[ESP]&#10;0044A23F ADD    DWORD PTR DS:[ESI],3CB3AA25&#10;0044A268 SUB    ESI,-4&#10;0044A280 XOR    DWORD PTR DS:[ESI],33B568E3&#10;0044A29D MOV    EAX,4&#10;0044A2A2 ADD    ESI,EAX&#10;0044A2B0 NOT    DWORD PTR DS:[ESI]</span><br></pre></td></tr></table></figure></p>
+<p><strong>指令变换（Code Permutation）</strong>:code permutation是一种壳使用的比较高级的反分析技术。通过指令变换一些简单的指令将会被转换成一串相同功能的但是复杂的指令。<br>下面是一个简单的code permutation的例子，简单指令如下：<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mov     eax,ebx&#10;test    eax,eax</span><br></pre></td></tr></table></figure></p>
+<p>经过转换的等价功能的指令如下：<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">push    ebx&#10;pop     eax&#10;or      eax,eax</span><br></pre></td></tr></table></figure></p>
+<p>结合垃圾指令，指令变换是一种有效的技术手段去减缓逆向者去理解被保护的代码。<br><em>例子</em><br>为了说明指令变换变换的作用，下面是一个检测调试器的函数，函数已经被指令变换并且在指令间插入了垃圾代码，代码如下：<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">004018A3 MOV    EBX,A104B3FA&#10;004018A8 MOV    ECX,A104B412&#10;004018AD PUSH   004018C1&#10;004018B2 RETN&#10;004018B3 SHR    EDX,5&#10;004018B6 ADD    ESI,EDX&#10;004018B8 JMP    SHORT 004018BA&#10;004018BA XOR    EDX,EDX&#10;004018BC MOV    EAX,DWORD PTR DS:[ESI]&#10;004018BE STC&#10;004018BF JB     SHORT 004018DE&#10;004018C1 SUB    ECX,EBX&#10;004018C3 MOV    EDX,9A01AB1F&#10;004018C8 MOV    ESI,DWORD PTR FS:[ECX]&#10;004018CB LEA    ECX,DWORD PTR DS:[EDX+FFFF7FF7]&#10;004018D1 MOV    EDX,600&#10;004018D6 TEST   ECX,2B73&#10;004018DC JMP    SHORT 004018B3&#10;004018DE MOV    ESI,EAX&#10;004018E0 MOV    EAX,A35ABDE4&#10;004018E5 MOV    ECX,FAD1203A&#10;004018EA MOV    EBX,51AD5EF2&#10;004018EF DIV    EBX&#10;004018F1 ADD    BX,44A5&#10;004018F6 ADD    ESI,EAX&#10;004018F8 MOVZX  EDI,BYTE PTR DS:[ESI]&#10;004018FB OR     EDI,EDI&#10;004018FD JNZ    SHORT 00401906</span><br></pre></td></tr></table></figure></p>
+<p>上面的例子仅仅是一个简单的检测调试器的函数：<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">00401081 MOV    EAX,DWORD PTR FS:[18]&#10;00401087 MOV    EAX,DWORD PTR DS:[EAX+30]&#10;0040108A MOVZX  EAX,BYTE PTR DS:[EAX+2]&#10;0040108E TEST   EAX,EAX&#10;00401090 JNZ    SHORT 00401099</span><br></pre></td></tr></table></figure></p>
+<p><em>解决方案</em><br>垃圾指令和指令变换是一种无聊的浪费逆向时间的方式。因此知道在混淆技术中的隐藏代码是否值得去理解是很重要的（如只执行解密，壳的初始化等）。<br>避免去跟踪调试这些被混淆的代码是在壳经常使用的API上设置断点（如VirtualAlloc/VirtualProtect/LoadLibrary/GetProcAddress等）或则使用API logging工具记录那些API被使用，然后将这些API作为调试跟踪的标记。如果在调试跟踪过程中出现了什么异常（如调试器/断点被检测），这时候才去跟踪调试这部分代码。此外可以通过设置内存读/写断点找到那些试图去修改/访问受保护进程特定内存的代码，而不是通过大量调试跟踪代码去找到这部分函数。<br>最后，在虚拟机中使用ollydbg调试的时候可以通过快照记录特定的调试状态，如果调试过程中出了问题可以通过快照恢复到特定的调试状态。</p>
+<h3 id="4-3-_反反汇编">4.3. 反反汇编</h3><p>混淆汇编是另一种混淆分析的方式。反汇编是一种有效的反静态分析技术，如果结合垃圾指令和指令变换会使其更加有效。<br>反汇编的一个例子是在代码中插入一个字节的垃圾指令，然后添加一个条件分支使代码执行到垃圾指令。然而条件分支的条件永远都是FALSE。因此垃圾指令永远都不会执行，但是会触发反汇编工具去反汇编垃圾指令所在的地址，最后导致反汇编错误输出。<br><em>例子</em><br>下面是一个简单的通过PEB检测调试器的代码，PEB.BeingDebugged检查代码中使用了一些反反汇编代码。高亮部分代码是主要的代码，剩余部分主要是反反汇编代码，通过使用垃圾指令0xff和假的条件跳转使反汇编错误反汇编垃圾指令，反汇编输出如下：<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">;Anti-disassembly sequence #1&#10;push    .jmp_real_01&#10;stc&#10;jnc     .jmp_fake_01&#10;retn&#10;.jmp_fake_01:&#10;db      0xff&#10;.jmp_real_01:&#10;;--------------------------&#10;mov eax,dword [fs:0x18]           //&#10;&#10;;Anti-disassembly sequence #2&#10;push    .jmp_real_02&#10;clc&#10;jc      .jmp_fake_02&#10;retn&#10;.jmp_fake_02:&#10;db      0xff&#10;.jmp_real_02:&#10;;--------------------------&#10;mov     eax,dword [eax+0x30]&#10;movzx   eax,byte [eax+0x02]&#10;test    eax,eax&#10;jnz     .debugger_found</span><br></pre></td></tr></table></figure></p>
+<p>windbg的反汇编输出：<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">0040194a 6854194000     push 0x401954&#10;0040194f f9             stc&#10;00401950 7301           jnb image00400000+0x1953 (00401953)&#10;00401952 c3             ret&#10;00401953 ff64a118       jmp dword ptr [ecx+0x18]&#10;00401957 0000           add [eax],al&#10;00401959 006864         add [eax+0x64],ch&#10;0040195c 194000         sbb [eax],eax&#10;0040195f f8             clc&#10;00401960 7201           jb image00400000+0x1963 (00401963)&#10;00401962 c3             ret&#10;00401963 ff8b40300fb6   dec dword ptr [ebx+0xb60f3040]&#10;00401969 40             inc eax&#10;0040196a 0285c0750731   add al,[ebp+0x310775c0]</span><br></pre></td></tr></table></figure></p>
+<p>ollydbg反汇编输出：<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">0040194A 68 54194000    PUSH 00401954&#10;0040194F F9             STC&#10;00401950 73 01          JNB SHORT 00401953&#10;00401952 C3             RETN&#10;00401953 FF64A1 18      JMP DWORD PTR DS:[ECX+18]&#10;00401957 0000           ADD BYTE PTR DS:[EAX],AL&#10;00401959 0068 64        ADD BYTE PTR DS:[EAX+64],CH&#10;0040195C 1940 00        SBB DWORD PTR DS:[EAX],EAX&#10;0040195F F8             CLC&#10;00401960 72 01          JB SHORT 00401963&#10;00401962 C3             RETN&#10;00401963 FF8B 40300FB6  DEC DWORD PTR DS:[EBX+B60F3040]&#10;00401969 40             INC EAX&#10;0040196A 0285 C0750731  ADD AL,BYTE PTR SS:[EBP+310775C0]</span><br></pre></td></tr></table></figure></p>
+<p>最后是IAD的反汇编输出：<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">0040194A            push (offset loc_401953+1)&#10;0040194F            stc&#10;00401950            jnb short loc_401953&#10;00401952            retn&#10;00401953 ; --------------------------------------------------------------&#10;00401953&#10;00401953 loc_401953: ; CODE XREF: sub_401946+A&#10;00401953 ; DATA XREF: sub_401946+4&#10;00401953            jmp dword ptr [ecx+18h]&#10;00401953            sub_401946 endp&#10;00401953&#10;00401953 ; --------------------------------------------------------------&#10;00401957            db 0&#10;00401958            db 0&#10;00401959            db 0&#10;0040195A            db 68h ; h&#10;0040195B            dd offset unk_401964&#10;0040195F            db 0F8h ; &#176;&#10;00401960            db 72h ; r&#10;00401961            db 1&#10;00401962            db 0C3h ; +&#10;00401963            db 0FFh&#10;00401964 unk_401964 db 8Bh ; &#239; ; DATA XREF: text:0040195B&#10;00401965            db 40h ; @&#10;00401966            db 30h ; 0&#10;00401967            db 0Fh&#10;00401968            db 0B6h ; ?&#10;00401969            db 40h ; @&#10;0040196A            db 2&#10;0040196B            db 85h ; &#224;&#10;0040196C            db 0C0h ; +&#10;0040196D            db 75h ; u</span><br></pre></td></tr></table></figure></p>
+<p>注意分析这三个反汇编器/调试器是如何被陷入反反汇编中的，这些将会让逆向工作者很烦恼和困惑。这里仅仅描述了一种反反汇编的例子，还有几种其他的反反汇编技术。另外可以通过宏编写反反汇编代码，可以使汇编代码看起来比较整洁。<br>建议读者参考Eldad Eliam编写的一边优秀的关于逆向的书籍（Reversing: Secrects of Reverse Engineering），详细学习关于反反汇编及其他逆向技术。</p>
+<h2 id="5-_对抗调试技术">5. 对抗调试技术</h2><p>这部分将列举壳主动对抗调试器的技术如当进程正在被调试时会突然中止或者断点失效等，和之前描述的技术相同，如果结合使用其他反分析技术将这部分代码隐藏会使这些技术更加有效。</p>
+<h3 id="5-1-_通过异常使调试器错误执行和停止执行">5.1. 通过异常使调试器错误执行和停止执行</h3><p>一直线性的跟踪调试代码可以使逆向者更加轻松的掌握和理解代码的目的。因此，一些壳会采用多种技术使跟踪代码非线性的且耗时的。<br>一种常用的方式是在壳在恢复代码过程中抛出异常，通过抛出异常，这就需要逆向者明白异常执行的时候EIP将指向何处，以及异常处理函数执行之后EIP指向的位置。<br>此外，异常也是壳实现重复终止脱壳恢复代码的一种方式。当异常抛出时，如果进程正在被调试，调试器会暂停执行解包代码。<br>壳通常使用结构化异常处理（SEH）机制处理异常，较新版本的壳也会使用VEH异常处理。<br><em>例子</em><br>下面是一个示例代码，当循环执行后溢出标志位被ROL指令设置会抛出一个溢出异常（使用INTO指令），实现代码错误执行。但是因为溢出异是一个trap异常，EIP将执行JMP指令。如果逆向者使用OllyDbg并且逆向者没有将异常传递给异常处理函数（使用Shift+F7/F8/F9）并持续使用单步调试，逆向者将会进入到一个死循环中。<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">; set up exception handler&#10;push    .exception_handler&#10;push    dword [fs:0]&#10;mov     [fs:0], esp&#10;&#10;; throw an exception&#10;mov     ecx,1&#10;.loop:&#10;rol     ecx,1&#10;into&#10;jmp     .loop&#10;; restore exception handler&#10;pop     dword [fs:0]&#10;add     esp,4&#10;:::&#10;.exception_handler&#10;;EAX = CONTEXT record&#10;mov     eax,[esp+0xc]&#10;;set Context.EIP upon return&#10;add     dword [eax+0xb8],2&#10;xor     eax,eax&#10;retn</span><br></pre></td></tr></table></figure></p>
+<p>壳常抛出的异常有访问异常（0xC0000005）、断点异常（0xC0000003）和单步异常（0xC0000004）。<br><em>解决方案</em></p>
+<div align="center"><br><img src="/img/2018_0523_05_01.png" alt align="center"><br></div><br>对于壳使用异常捕获方式实现无条件跳转的代码，OllyDbg可以设置将异常自动传递给一场处理函数，配置方式为ptions -&gt;<br>Debugging Options -&gt; Exceptions。上图展示了配置的异常处理的截图对话框。逆向者也可以添加勾选框中未出现的自定义异常处理。<br>对在异常处理中执行重要操作的壳，逆向者可以在异常处理中设置断点，异常处理函数的地址可以在Ollydbg中使用View-&gt;SEH Chain查看，然后使用Shift+F7/F8/F9将执行权限交给异常处理函数。<br><br>### 5.2. 屏蔽输入<br>为了阻止逆向者操作调试器，壳会在主要的脱壳函数执行时使用user32!BlockInput()屏蔽键盘和鼠标输入，将这个操作隐藏在垃圾指令和反反汇编代码中，如果逆向者不能识别，壳的这种操作将会很有效。如果BlockInput执行了，系统将会像失去响应一样，会令逆向者非常困惑。<br>一个典型的例子就是当逆向者在函数GetProcAddress()中设置了一个断点，然后跳过几个垃圾代码的执行，这时候壳已经执行了BloockInput()。一旦GetProcAddress()断点命中，逆向者会突然发现自己不能操作调试器并会困惑刚刚发生了什么。<br><em>例子</em><br>BlockInput()需要一个布尔型参数fBlockIt。如果fBlockIt为true，键盘和鼠标事件将会被屏蔽，如果为false，键盘和鼠标屏蔽将会解锁。<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">; Block input&#10;push    TRUE&#10;call    [BlockInput]&#10;; ...Unpacking code...&#10;; Unblock input&#10;push    FALSE&#10;call    [BlockInput]</span><br></pre></td></tr></table></figure><br><br><em>解决方案</em><br>幸运的是这里有一个简单的方法绕过，直接patch BlockInput()的入口为RETN，下面是一个patch user32!BlockInput()入口的ollyscript。<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gpa     &#34;BlockInput&#34;, &#34;user32.dll&#34;&#10;mov     [$RESULT], #C20400# //retn 4</span><br></pre></td></tr></table></figure><br><br>Olly Advanced插件也有patch BlockInput()的选项。除此之外，也可以手动的使用CTRL+ALT+DELETE解锁输入屏蔽。<br><br>### 5.3. 对调试器隐藏线程<br>这项技术实现通过ntdll!NtSetInformationThread()，这个API主要常常被用来设置线程优先级。然而，这个API也可以用来阻止调试事件发送到调试器。<br>NtSetInformationThread()的参数如下所示，为了实现在调试器中隐藏线程，ThreadInformationClass参数需要设置为TheadHideFromDebugger (0x11)，ThreadHandle常设置为当前线程(0xfffffffe)：<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">NTSTATUS NTAPI NtSetInformationThread(&#10;                    HANDLE ThreadHandle,&#10;                    THREAD_INFORMATION_CLASS ThreadInformationClass,&#10;                    PVOID ThreadInformation,&#10;                    ULONG ThreadInformationLength&#10;                    );</span><br></pre></td></tr></table></figure><br><br>在NtSetInformationThread函数内部，ThreadHideFromDebugger参数将会设置ETHREAD（_ETHREAD）的HideThreadFromDebugger字段。一旦被设置了，函数DbgkpSendApiMessage()将不会被调用，DbgkpSendApiMessage函数的主要目的是将事件发往调试器。<br><em>例子</em><br>一个典型的调用NtSetInformationThread()函数的例子如下：<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">push    0 ;InformationLength&#10;push    NULL ;ThreadInformation&#10;push    ThreadHideFromDebugger ;0x11&#10;push    0xfffffffe ;GetCurrentThread()&#10;call    [NtSetInformationThread]</span><br></pre></td></tr></table></figure><br><br><em>解决方案</em><br>可以在ntdll!NtSetInformationThread()设置断点，一旦命中，逆向者可以操作EIP阻止API调用到内核中。也可以通过ollyscript脚本自动完成这个操作。另外Olly Advanced插件也有patch ntdll!NtSetInformationThread()函数的选项，如果参数ThreadInformationClass为HideThreadFromDebugger，函数只会直接返回而不会进入内核。<br><br>### 5.4. 禁用断点<br>另一种攻击调试器的方式为禁用调试器。为了禁用硬件断点，壳可以通过CONTEXT结构去修改调试寄存器。<br><em>例子</em><br>在下面例子中，调试寄存器将会被清零，实现方法是在异常处理函数中修改传递过来的CONTEXT记录。<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">; set up exception handler&#10;push    .exception_handler&#10;push    dword [fs:0]&#10;mov     [fs:0], esp&#10;&#10;; throw an exception&#10;xor     eax,eax&#10;mov     dword [eax],0&#10;; restore exception handler&#10;pop     dword [fs:0]&#10;add     esp,4&#10;:::&#10;.exception_handler&#10;;EAX = CONTEXT record&#10;mov     eax,[esp+0xc]&#10;;Clear Debug Registers: Context.Dr0-Dr3,Dr6,Dr7&#10;mov     dword [eax+0x04],0&#10;mov     dword [eax+0x08],0&#10;mov     dword [eax+0x0c],0&#10;mov     dword [eax+0x10],0&#10;mov     dword [eax+0x14],0&#10;mov     dword [eax+0x18],0&#10;;set Context.EIP upon return&#10;add     dword [eax+0xb8],6&#10;xor     eax,eax&#10;retn</span><br></pre></td></tr></table></figure><br><br>另一方面，对于软件断点，壳可以只搜索INT3（0xCC）指令，然后使用任意操作码替换；这样操作之后软件断点会失效并且原始的指令也会被破坏。<br><em>解决方案</em><br>显然，如果硬件断点会被检测到，可以使用软件断点替代，反之亦然。如果这两种断点都会被检测到，可以尝试使用ollydbg的内存访问/写断点替代。<br><br>### 5.5 未处理异常过滤<br>MSDN文档指出如果一个异常到达未处理异常过滤器（kernel32!UnhandledExceptionFilter）且该进程没有被调试，未处理异常过滤器将会调用顶层异常处理函数，该函数是函数通过kernel32!SetUnhandledExceptionFilter()被设置为顶层异常处理函数，是kernel32!SetUnhandledExceptionFilter()的参数。壳可以设置一个异常处理函数然后抛出一个异常，如果进程正在被调试调试器会作为第二优先级接受到这个异常，否则代码控制权将传递给异常过滤函数并继续执行。<br><em>例子</em><br>下面是一个使用SetUnhandledExceptionFilter（）设置顶层异常过滤器使用的示例，然后会抛出一个访问异常。如果进程正在被调试，调试器将会作为第二优先级接收到这个一场，否则异常将会设置CONTEXT.EIP然后继续执行。<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">;set the exception filter&#10;push    .exception_filter&#10;call    [SetUnhandledExceptionFilter]&#10;mov     [.original_filter],eax&#10;&#10;;throw an exception&#10;xor     eax,eax&#10;mov     dword [eax],0&#10;;restore exception filter&#10;push    dword [.original_filter]&#10;call    [SetUnhandledExceptionFilter]&#10;:::&#10;.exception_filter:&#10;;EAX = ExceptionInfo.ContextRecord&#10;mov     eax,[esp+4]&#10;mov     eax,[eax+4]&#10;;set return EIP upon return&#10;add     dword [eax+0xb8],6&#10;;return EXCEPTION_CONTINUE_EXECUTION&#10;mov     eax,0xffffffff&#10;retn</span><br></pre></td></tr></table></figure><br><br>一些壳也可能直接手动使用kernel32!_BasepCurrentTopLevelFilter设置异常过滤取代SetUnhandledExceptionFilter()，利用这种方式防止逆向者使用API断点。<br><em>解决方案</em><br>有趣的是，在kernel32!UnhandledExceptionFilter()函数内部使用ntdll!NtQueryInformationProcess (ProcessDebugPort)去判断当前进程是否正在被调试，然后决定是否调用注册的一场过滤器。因此这里的解决方案和DebugPort的检测方案相同。<br><br>### 5.6 Ollydbg:OutputDebugString()字符格式Bug<br>这里的调试器攻击只针对Ollydbg。Ollydbg已知的一个格式化字符串漏洞，会造成调试器崩溃或者执行任意代码，这个bug可以通过一个不正确的字符串参数传递给kernel32!OutputDebugString()而触发，这个bug仍然存在当前版本的OllyDbg（1.10）并且仍然没有被修复。<br><em>例子</em><br>这个简单的例子会导致OllyDbg抛出一个访问异常或则意外终止：<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">push    .szFormatString&#10;call    [OutputDebugStringA]&#10;:::&#10;.szFormatString db &#34;%s%s&#34;,0</span><br></pre></td></tr></table></figure><br><br><em>解决方案</em><br>解决方案是直接Patch kernel32!OutputDebugStringA()函数头部，让函数仅仅执行一个RETN。<br><br>## 6. ADVANCED 和其他技术<br>本小结将列举一些高级的以及一些其他未在之前反逆向小结提及的技术。<br><br>### 6.1 进程注入<br><div align="center"><br><img src="/img/2018_0523_06_01_1.png" alt align="center"><br></div><br>进程注入已经成为一些壳的功能，有了这个功能，壳的脱壳stub会选择特定的宿主进程（如自己进程/explorer.exe/iexplorer.exe等），然后将脱壳后的可执行程序注入到宿主进程中。<br><div align="center"><br><img src="/img/2018_0523_06_01_2.png" alt align="center"><br></div><br>上面是一个支持进程注入功能的壳的屏幕截图。<br>恶意代码利用壳的这种特性绕过允许白名单进程联网的防火墙。<br>壳执行进程注入的一种方法如下所示：<br><br>- 1.创建一个宿主作为一个挂起的子进程。使用CREATE_SUSPENDED标志kernel32!CreateProcess()创建进程。这样创建的初始线程将会被创建并被挂起，DLLs这会还没有开始加载，因为加载函数（ntdll!LrdInitializeThunk）还没有被调用。初始线程的的线程上下文被设置，如寄存器信息、PEB地址、宿主进程的入口点。<br>- 2.调用kernel32!GetThreadContext()，获取子进程的的Context。<br>- 3.通过CONTEXT.EBX获取获取子进程的PEB地址。<br>- 4.通过PEB.ImageBase(PEB+0x8)获得子进程的映像基地址。<br>- 5.使用ntdll!NtUnmapViewOfSection()参数为指向子进程映像基地址的指针卸载子进程的内存空间数据。<br>- 6.脱壳stub使用kernel32！VirtualAllocEx()在紫禁城中分配内存空间，dwsize参数等于脱壳后的可执行文件大小。<br>- 7.使用kernel32！WriteProcessMemory()将脱壳后的可执行文件PE头及每个节写入到子进程内存空间。<br>- 8.更新子进程的PEB.ImageBase匹配脱壳后的可执行文件的基地址。<br>- 9.使用kernel32!SetThreadContext()修改子进程的初始线程的CONTEXT.EAX为脱壳后的可执行文件的入口地址。<br>- 10.使用kernel32!ResumeThread()恢复子进程运行。<br><br>为了调试被寄生的子进程的入口点，逆向者可以在被脱壳可执行文件包含入口节被写入到子进程的时候在函数WriteProcessMemory()中设置一个断点，然后将patch脱壳可执行文件的入口点为一个死循环（0xEB 0xFE）。当子进程的初始线程被恢复执行的时候，子进程将会在入口点进入一个死循环，然后逆向者可以使用调试器挂上子进程，恢复入口点的代码，并继续调试。<br><br>### 6.2 拦截调试器（Debugger Blocker）<br>Armadillo壳引入了一种被称为Debugger Blocker的特性。这种特性可以防止逆向者使用调试器attach被保护的进程。这种保护功能是通过windows提供的调试功能实现的。<br><div align="center"><br><img src="/img/2018_0523_06_02_1.png" alt align="center"><br></div><br>具体来说就是，壳的脱壳stub会充当一个调试器（父进程），执行调试/控制包含脱壳后可执行文件的子进程。<br>因为被保护的进程已经正在被调试了，当调试器使用kernel32!DebugActiveProcess()挂接时会失败因为native API ntdll!NtDebugActiveProcess()会返回STATUS_PORT_ALREADY_SET错误码。在函数NtDebugActiveProcess()内部失败的原因是该进程的EPROCESS的DebugPort已经被设置。<br>为了去挂上被保护的进程进行调试，在几个逆向论坛中发布了一种解决方案，可以在父进程的进程上下文中调用kernel32!DebugActiveProcessStop()。可以使用调试器挂上父进程调试，然后在函数kernel32!WaitForDebugEvent()上设置断点，一旦断点命中，就使用代码注入执行DebugActiveProcessStop(ChildProcessPID)。执行成功后就可以使用调试器调试被保护的进程。<br><br>### 6.3 TLS回调<br>壳使用的另一种技术是在实际入口点代码执行之前执行代码。通过线程本地回调实现（Thread Local Storage,TLS）。壳可能会通过TLS实现调试器检测和代码解密，这样逆向者就不能调试这些函数。<br>TLS可以通过PE解析工具识别，如pedump。如果可执行文件存在TLS目录，使用pedump将可以在PE文件的Data Directory entries看到。<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Data Directory&#10;EXPORT rva: 00000000 size: 00000000&#10;IMPORT rva: 00061000 size: 000000E0&#10;:::&#10;TLS rva: 000610E0 size: 00000018                       //&#10;:::&#10;IAT rva: 00000000 size: 00000000&#10;DELAY_IMPORT rva: 00000000 size: 00000000&#10;COM_DESCRPTR rva: 00000000 size: 00000000&#10;unused rva: 00000000 size: 00000000</span><br></pre></td></tr></table></figure><br><br>然后可以看到TLS目录实际的内容，AddressOfCallBacks字段会指向一个以null为结束符的回调函数数组。<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">TLS directory:&#10;StartAddressOfRawData: 00000000&#10;EndAddressOfRawData: 00000000&#10;AddressOfIndex: 004610F8&#10;AddressOfCallBacks: 004610FC      //&#10;SizeOfZeroFill: 00000000&#10;Characteristics: 00000000</span><br></pre></td></tr></table></figure><br><br>在本例中，相对虚拟地址RVA 0x4610fc指向回掉函数指针（0x490f43和0x44654e）。<br><div align="center"><br><img src="/img/2018_0523_06_03_1.png" alt align="center"><br></div><br>默认情况下，Ollydbg加载样本文件后会停在入口点。因为TLS回调试在入口点调用之前执行，OllyDbg应该重新配置以便能够停在TLS回调执行之前。<br>可以通过Options -&gt; Debugging Options -&gt; Events -&gt; Make first pause at -&gt; System breakpoint设置以便能够断在ntdll.dll中。<br><div align="center"><br><img src="/img/2018_0523_06_03_2.png" alt align="center"><br></div><br>设置后，OllyDbg会断在函数ntdll!  _LdrpInitializeProcess()中，该函数在ntdll!_LdrpRunInitializeRoutines()函数执行TLS回调之前。这样就可以在TLS回调函数中设置断点并调试。<br>更多关于PE文件格式的信息，包括pedump的二进制文件和源代码可以在下面的链接中找到:An In-Depth Look into the Win32 Portable Executable File Format by Matt Pietrek(<a href="http://msdn.microsoft.com/msdnmag/issues/02/02/PE/default.aspx)、An" target="_blank" rel="external">http://msdn.microsoft.com/msdnmag/issues/02/02/PE/default.aspx)、An</a> In-Depth Look into the Win32 Portable Executable File Format, Part 2 by Matt Pietrek(<a href="https://msdn.microsoft.com/msdnmag/issues/02/03/PE2/" target="_blank" rel="external">https://msdn.microsoft.com/msdnmag/issues/02/03/PE2/</a>)<br>最新版本的PE文件格式信息:Microsoft Portable Executable and Common Object File Format Specification(<a href="http://www.microsoft.com/whdc/system/platform/firmware/PECOFF.mspx" target="_blank" rel="external">http://www.microsoft.com/whdc/system/platform/firmware/PECOFF.mspx</a>)<br><br>### 6.4 偷字节<br>壳偷的字节基本都是被保护可执行文件代码的一部分（通常是入口点的少量代码），壳会删除这部分代码并在分配的内存中执行这部分代码。这是一种保护可执行文件的一种方式，如果被保护的代码从内存中被dump出来，被偷的那部分指令将无法恢复。<br>下面是一个可执行文件原始的入口点代码：<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">004011CB MOV    EAX,DWORD PTR FS:[0]&#10;004011D1 PUSH   EBP&#10;004011D2 MOV    EBP,ESP&#10;004011D4 PUSH   -1&#10;004011D6 PUSH   0047401C&#10;004011DB PUSH   0040109A&#10;004011E0 PUSH   EAX&#10;004011E1 MOV    DWORD PTR FS:[0],ESP&#10;004011E8 SUB    ESP,10&#10;004011EB PUSH   EBX&#10;004011EC PUSH   ESI&#10;004011ED PUSH   EDI</span><br></pre></td></tr></table></figure><br><br>接下来是同一个样本但是前两行指令被Enigma保护壳偷了的代码：<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">004011CB POP    EBX       //&#10;004011CC CMP    EBX,EBX   //&#10;004011CE DEC    ESP       //&#10;004011CF POP    ES        //&#10;004011D0 JECXZ  SHORT 00401169&#10;004011D2 MOV    EBP,ESP&#10;004011D4 PUSH   -1&#10;004011D6 PUSH   0047401C&#10;004011DB PUSH   0040109A&#10;004011E0 PUSH   EAX&#10;004011E1 MOV    DWORD PTR FS:[0],ESP&#10;004011E8 SUB    ESP,10&#10;004011EB PUSH   EBX&#10;004011EC PUSH   ESI&#10;004011ED PUSH   EDI</span><br></pre></td></tr></table></figure><br><br>下面是同一个样本被ASProtect保护壳偷了几个指令的代码，它在被偷字节的函数前添加了跳转指令，然后将偷来的字节和垃圾代码混合在一起，很难恢复被盗的指令。<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">004011CB JMP    00B70361         //&#10;004011D0 JNO    SHORT 00401198&#10;004011D3 INC    EBX&#10;004011D4 ADC    AL,0B3&#10;004011D6 JL     SHORT 00401196&#10;004011D8 INT1&#10;004011D9 LAHF&#10;004011DA PUSHFD&#10;004011DB MOV    EBX,1D0F0294&#10;004011E0 PUSH   ES&#10;004011E1 MOV    EBX,A732F973&#10;004011E6 ADC    BYTE PTR DS:[EDX-E],CH&#10;004011E9 MOV    ECX,EBP&#10;004011EB DAS&#10;004011EC DAA&#10;004011ED AND    DWORD PTR DS:[EBX+58BA76D7],ECX</span><br></pre></td></tr></table></figure><br><br>### 6.5 API重定向<br>API重定向是一种防止逆向者轻松重建被保护可执行文件导入表的方法。通常情况下，原始的导入表将会被销毁，调用API将会被重定向到一片被分配的内存的函数中，这些函数负责调用这些API。<br>下面的例子展示了调用kernel32!CopyFileA()这个API的代码：<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">00404F05 LEA    EDI,DWORD PTR SS:[EBP-20C]&#10;00404F0B PUSH   EDI&#10;00404F0C PUSH   DWORD PTR SS:[EBP-210]&#10;00404F12 CALL   &#60;JMP.&#38;KERNEL32.CopyFileA</span><br></pre></td></tr></table></figure><br><br>这种调用方式是一个执行JMP的stub，跳转地址是从导入表引用的：<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">004056B8 JMP DWORD PTR DS:[&#60;&#38;KERNEL32.CopyFileA&#62;]</span><br></pre></td></tr></table></figure><br><br>然而当ASProtect重定向kernel32!CopyFileA()这个API时，这个stub被替换成CALL一个函数，这个函数地址位于一片被分配出来的内存并最终会执行偷来的指令调用kernel32!CopyFileA():<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">004056B8   CALL     00D90000</span><br></pre></td></tr></table></figure><br><br>下面是一个如何放置偷来的指令的说明。kernel32!CopyFileA()函数的前7条指令已经被复制。另外，在地址0x7c83005e处指向的call指令也被复制。然后通过RETN指令控制权被转到0x7c830063，该地址位于kernel32!CopyFileA()函数中。<br><div align="center"><br><img src="/img/2018_0523_06_05_1.png" alt align="center"><br></div><br>一些壳还会还会尽可能将整个DLL映像文件映射到内存，然后将API调用重定向到这个DLL副本中。这种技术使在实际API下断点变得很困难。<br><br>### 6.6. 多线程壳<br>使用多线程壳时候，通常会启另一个线程执行一些重要的操作如解密被保护的数据。使用多线程壳会增加复杂性和理解代码的难度，因为调试跟踪壳代码将会比较复杂。<br>多线程壳的一个例子是PECrypt，它使用第二个线程来解密主线程获取的数据，这些线程通过事件对象进行同步。<br>PECrypt执行和线程同步如下所示：<br><div align="center"><br><img src="/img/2018_0523_06_06_1.png" alt align="center"><br></div>
+
+
+<h3 id="6-7-_虚拟机">6.7. 虚拟机</h3><p>使用虚拟机的原因很简单：逆向者最终会弄清楚如何绕过/解决反调试和反分析技术，最终被保护的代码也会在内存中解密，这样就很容易静态分析。<br>随着虚拟机的出现，代码被保护的部分被转换为p-code，然后会转换为机器码执行。因此，原始的机器码被替换，被替换后的代码的理解难度也呈指数型增长。<br>下面是这个概念的一个相当简单的例子：</p>
+<p><div align="center"><br><img src="/img/2018_0523_06_07_1.png" alt align="center"><br></div><br>Oreans公司的CodeVirtualizer和StarForce等现代壳使用虚拟机这一概念来保护可执行文件。<br>虚拟机的解决方案显然不简单，要去分析p-code的结构及p-code如何被虚拟机翻译。并且通过获得的信息，设计反汇编程序解析p-code并将其翻译成机器码或则开发出可以理解的说明。<br>可以从下面的链接中找到一个开发p-code反汇编程序及关于虚拟机如何实现的例子：Defeating HyperUnpackMe2 With an IDA Processor Module, Rolf Rolles III<br><a href="http://www.openrce.org/articles/full_view/28" target="_blank" rel="external">http://www.openrce.org/articles/full_view/28</a></p>
+<h2 id="7-_工具">7. 工具</h2><p>本节将列举逆向工程师和恶意代码分析师用于分析壳和脱壳公开的可用工具。<br>免责声明：这些工具是第三方工具，本文作者不承担任何责任。工具可能会导致系统不稳定或其他可能影响系统的问题。永远建议在测试环境或则病毒分析环境测试这些工具。<a href="http://www.ollydbg.de/" target="_blank" rel="external">http://www.ollydbg.de/</a></p>
+<h3 id="7-1-_OllyDbg">7.1. OllyDbg</h3><p>一个强大的ring3层调试器，经常被逆向工程师和恶意代码分析师使用。它的插件功能允许其他逆向工程师开发插件使逆向和脱壳更加容易。</p>
+<h3 id="7-2-_Ollyscript">7.2. Ollyscript</h3><p>Ollydbg插件，允许自动设置和处理断点、patch代码和数据等功能。使用的脚本语言和汇编相似，在执行重复任务和脱壳时最有用。<a href="http://www.openrce.org/downloads/details/106/OllyScript" target="_blank" rel="external">http://www.openrce.org/downloads/details/106/OllyScript</a></p>
+<h3 id="7-3_Olly_Advanced">7.3 Olly Advanced</h3><p>如果壳包含反逆向的代码，这个插件是一个逆向调试很有用的插件。它有几个选项可以绕过反调试技术和隐藏ollydbg不被壳检测到等。<a href="http://www.openrce.org/downloads/details/241/Olly_Advanced" target="_blank" rel="external">http://www.openrce.org/downloads/details/241/Olly_Advanced</a></p>
+<h3 id="7-4-_OllyDump">7.4. OllyDump</h3><p>成功脱壳后这个插件可用于dump和重建导入表。<a href="http://www.openrce.org/downloads/details/108/OllyDump" target="_blank" rel="external">http://www.openrce.org/downloads/details/108/OllyDump</a></p>
+<h3 id="7-5-_ImpRec">7.5. ImpRec</h3><p>最后是另一个dump和重建导入表的工具。这是一个独立的工具，它提供了最强大的导入表重建功能。<a href="http://www.woodmann.com/crackz/Unpackers/Imprec16.zip" target="_blank" rel="external">http://www.woodmann.com/crackz/Unpackers/Imprec16.zip</a></p>
+<h2 id="8-_参考">8. 参考</h2><p><strong>Books: Reverse Engineering, Software Protection</strong></p>
+<ul>
+<li>Reversing: Secrets of Reverse Engineering. E.Eilam. Wiley, 2005.</li>
+<li>Crackproof Your Software, P.Cerven.No Starch Press, 2002.</li>
+</ul>
+<p><strong>Books: Windows and Processor Internals</strong></p>
+<ul>
+<li>Microsoft Windows Internal, 4 th Edition. M. Russinovich, D. Solomon, Microsoft Press,<br>2005</li>
+<li>IA-32 Intel® Architecture Software Developer’s Manual. Volume 1-3, Intel Corporation,<br>2006.<a href="http://www.intel.com/products/processor/manuals/index.htm" target="_blank" rel="external">http://www.intel.com/products/processor/manuals/index.htm</a></li>
+</ul>
+<p><strong>Links: Windows Internals</strong></p>
+<ul>
+<li>ReactOS Project <a href="http://www.reactos.org/en/index.html" target="_blank" rel="external">http://www.reactos.org/en/index.html</a></li>
+<li>Source Search: <a href="http://www.reactos.org/generated/doxygen/" target="_blank" rel="external">http://www.reactos.org/generated/doxygen/</a></li>
+<li>Wine Project <a href="http://www.winehq.org/" target="_blank" rel="external">http://www.winehq.org/</a></li>
+<li><p>Source Search: <a href="http://source.winehq.org/source/" target="_blank" rel="external">http://source.winehq.org/source/</a></p>
+</li>
+<li><p>The Undocumented Functions <a href="http://undocumented.ntinternals.net" target="_blank" rel="external">http://undocumented.ntinternals.net</a></p>
+</li>
+<li>MSDN <a href="http://msdn2.microsoft.com/en-us/default.aspx" target="_blank" rel="external">http://msdn2.microsoft.com/en-us/default.aspx</a></li>
+</ul>
+<p><strong>Links: Reverse Engineering, Software Protection, Unpacking</strong></p>
+<ul>
+<li>OpenRCE <a href="http://www.openrce.org" target="_blank" rel="external">http://www.openrce.org</a></li>
+<li>OpenRCE Anti Reverse Engineering Techniques Database <a href="http://www.openrce.org/reference_library/anti_reversing" target="_blank" rel="external">http://www.openrce.org/reference_library/anti_reversing</a></li>
+<li>RCE Forums <a href="http://www.woodmann.com/forum/index.php" target="_blank" rel="external">http://www.woodmann.com/forum/index.php</a></li>
+<li>EXETOOLS Forums <a href="http://forum.exetools.com" target="_blank" rel="external">http://forum.exetools.com</a></li>
+</ul>
+
+      
+    </div>
+    <footer>
+      
+
+        
+          <div class="alignleft post-nav">
+            <em>上一篇: </em><a href="/2017/05/17/Windows/Windows-x64-Shellcode/">Windows x64 Shellcode编写指南(翻译)</a>
+          </div>
+        
+        
+          <div class="alignright post-nav">
+            <em>下一篇: </em><a href="/2016/10/02/Debug/the-reasons-of-Dll-hijiacking-msimg32-fail/">msimg32.dll劫持失败原因分析</a>
+          </div>
+          <div class="clearfix"></div>
+        
+
+        
+          <div class="copyright">
+            
+              <span class="claim">转载请注明youngroe.com</span>
+            
+            
+              <span class="from-link">
+                <em>本文链接地址:</em>
+                <a href="/2016/12/23/Learning/The-Art-of-Unpacking/">
+                  http://www.youngroe.com/2016/12/23/Learning/The-Art-of-Unpacking/
+                </a>
+              </span>
+            
+          </div>
+        
+		<span id="busuanzi_container_site_pv">
+    本站总访问量<span id="busuanzi_value_site_pv"></span>次
+        
+  
+  <div class="categories">
+    <a href="/categories/Learning/">Learning</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/脱壳/">脱壳</a>
+  </div>
+
+        <div class="bdsharebuttonbox"><a href="#" class="bds_more" data-cmd="more"></a><a href="#" class="bds_qzone" data-cmd="qzone"></a><a href="#" class="bds_tsina" data-cmd="tsina"></a><a href="#" class="bds_tqq" data-cmd="tqq"></a><a href="#" class="bds_renren" data-cmd="renren"></a><a href="#" class="bds_weixin" data-cmd="weixin"></a></div>
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdPic":"","bdStyle":"0","bdSize":"16"},"share":{},"image":{"viewList":["qzone","tsina","tqq","renren","weixin"],"viewText":"������","viewSize":"16"},"selectShare":{"bdContainerClass":null,"bdSelectMiniList":["qzone","tsina","tqq","renren","weixin"]}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</span>
+</article>
+
+
+<section id="comment">
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+<div class="widget tag">
+  <h3 class="title">分类</h3>
+  <ul class="entry">
+  
+    <li><a href="/categories/Cybersecurity/">Cybersecurity</a><small>1</small></li>
+  
+    <li><a href="/categories/Debug/">Debug</a><small>7</small></li>
+  
+    <li><a href="/categories/Kernel/">Kernel</a><small>4</small></li>
+  
+    <li><a href="/categories/Learning/">Learning</a><small>8</small></li>
+  
+    <li><a href="/categories/Life/">Life</a><small>7</small></li>
+  
+    <li><a href="/categories/Others/">Others</a><small>1</small></li>
+  
+    <li><a href="/categories/Read-Notes/">Read Notes</a><small>7</small></li>
+  
+    <li><a href="/categories/Tools/">Tools</a><small>6</small></li>
+  
+    <li><a href="/categories/Vulnerabilities/">Vulnerabilities</a><small>0</small></li>
+  
+    <li><a href="/categories/Windows/">Windows</a><small>14</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2019/07/01/Windows/delphi_reverse_summary/">Delphi程序逆向反汇编技巧小记</a>
+      </li>
+    
+      <li>
+        <a href="/2019/06/25/Kernel/kernel_enum_wfp_callout_function/">Windows内核重拾：如何枚举系统中Windows Filtering Platform (WFP)驱动中的callout函数</a>
+      </li>
+    
+      <li>
+        <a href="/2019/05/06/Kernel/windows-driver-testing-basics/">Windows内核重拾：Windows驱动测试基础：工具、功能和示例（翻译/转载）</a>
+      </li>
+    
+      <li>
+        <a href="/2019/04/06/Windows/how-to-reverse-engineer-software-windows-in-a-right-way/">如何正确的对Windows软件进行逆向工程（翻译/转载）</a>
+      </li>
+    
+      <li>
+        <a href="/2019/01/12/Windows/a_crash_lead_deadlock/">Windows平台下一个崩溃而导致的死锁分析</a>
+      </li>
+    
+      <li>
+        <a href="/2018/12/01/Windows/windows_client_dns_over_https/">Windows客户端如何透明使用DNS-over-HTTPS</a>
+      </li>
+    
+      <li>
+        <a href="/2018/10/06/Cybersecurity/ddos-protection-techniques/">现代DDoS对抗技术概述（翻译/转载）</a>
+      </li>
+    
+      <li>
+        <a href="/2018/09/18/Life/xian/">西安周末游</a>
+      </li>
+    
+      <li>
+        <a href="/2018/01/06/Kernel/WindowsKernel_DebugObject/">Windows内核重拾：DebugObject</a>
+      </li>
+    
+      <li>
+        <a href="/2017/10/23/Tools/IDA-Pro-ClassInformer-Tutorial/">IDA Pro ClassInformer使用指南（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2017/05/23/Windows/Kernel Data and Filtering Support/">Kernel Data and Filtering Support for Windows Server 2008（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2017/05/17/Windows/Windows-x64-Shellcode/">Windows x64 Shellcode编写指南(翻译)</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget tagcloud">
+  <h3 class="title">标签云</h3>
+  <div class="entry">
+    <a href="/tags/ASM/" style="font-size: 12.5px;">ASM</a> <a href="/tags/Boost/" style="font-size: 10px;">Boost</a> <a href="/tags/DDoS/" style="font-size: 10px;">DDoS</a> <a href="/tags/DNS-over-HTTPS/" style="font-size: 10px;">DNS-over-HTTPS</a> <a href="/tags/Delphi/" style="font-size: 10px;">Delphi</a> <a href="/tags/Dll劫持/" style="font-size: 10px;">Dll劫持</a> <a href="/tags/GCC-GDB/" style="font-size: 10px;">GCC&GDB</a> <a href="/tags/GetVersionEx/" style="font-size: 10px;">GetVersionEx</a> <a href="/tags/Http/" style="font-size: 10px;">Http</a> <a href="/tags/IDA-Pro/" style="font-size: 12.5px;">IDA Pro</a> <a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/MSDN/" style="font-size: 12.5px;">MSDN</a> <a href="/tags/Malware/" style="font-size: 12.5px;">Malware</a> <a href="/tags/MiniDumpWriteDump/" style="font-size: 10px;">MiniDumpWriteDump</a> <a href="/tags/PEB/" style="font-size: 10px;">PEB</a> <a href="/tags/Procmon/" style="font-size: 10px;">Procmon</a> <a href="/tags/Runtime-Error/" style="font-size: 10px;">Runtime Error</a> <a href="/tags/SEH/" style="font-size: 10px;">SEH</a> <a href="/tags/Shellcode/" style="font-size: 10px;">Shellcode</a> <a href="/tags/SysinternalsSuite/" style="font-size: 10px;">SysinternalsSuite</a> <a href="/tags/Tips/" style="font-size: 10px;">Tips</a> <a href="/tags/UAC/" style="font-size: 10px;">UAC</a> <a href="/tags/UAF漏洞/" style="font-size: 10px;">UAF漏洞</a> <a href="/tags/VC/" style="font-size: 10px;">VC</a> <a href="/tags/Visual-Studio/" style="font-size: 12.5px;">Visual Studio</a> <a href="/tags/Windbg/" style="font-size: 10px;">Windbg</a> <a href="/tags/Windows/" style="font-size: 20px;">Windows</a> <a href="/tags/Windows核心编程/" style="font-size: 17.5px;">Windows核心编程</a> <a href="/tags/android/" style="font-size: 10px;">android</a> <a href="/tags/getaddrinfo/" style="font-size: 10px;">getaddrinfo</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/libeay32/" style="font-size: 10px;">libeay32</a> <a href="/tags/markdown/" style="font-size: 10px;">markdown</a> <a href="/tags/ndk/" style="font-size: 10px;">ndk</a> <a href="/tags/sublime-text3/" style="font-size: 10px;">sublime text3</a> <a href="/tags/x64/" style="font-size: 12.5px;">x64</a> <a href="/tags/体验/" style="font-size: 10px;">体验</a> <a href="/tags/内核/" style="font-size: 12.5px;">内核</a> <a href="/tags/内核结构/" style="font-size: 15px;">内核结构</a> <a href="/tags/学习/" style="font-size: 10px;">学习</a> <a href="/tags/安全机制/" style="font-size: 10px;">安全机制</a> <a href="/tags/异常处理/" style="font-size: 10px;">异常处理</a> <a href="/tags/提权/" style="font-size: 10px;">提权</a> <a href="/tags/服务/" style="font-size: 10px;">服务</a> <a href="/tags/权限/" style="font-size: 12.5px;">权限</a> <a href="/tags/栈溢出漏洞/" style="font-size: 10px;">栈溢出漏洞</a> <a href="/tags/测试/" style="font-size: 10px;">测试</a> <a href="/tags/浮躁/" style="font-size: 10px;">浮躁</a> <a href="/tags/漏洞调试/" style="font-size: 12.5px;">漏洞调试</a> <a href="/tags/生活/" style="font-size: 15px;">生活</a> <a href="/tags/脱壳/" style="font-size: 10px;">脱壳</a> <a href="/tags/西安/" style="font-size: 10px;">西安</a> <a href="/tags/计划/" style="font-size: 10px;">计划</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a> <a href="/tags/调试/" style="font-size: 15px;">调试</a> <a href="/tags/转换/" style="font-size: 10px;">转换</a> <a href="/tags/进程/" style="font-size: 10px;">进程</a> <a href="/tags/逆向/" style="font-size: 10px;">逆向</a> <a href="/tags/重庆/" style="font-size: 10px;">重庆</a> <a href="/tags/驱动/" style="font-size: 15px;">驱动</a>
+  </div>
+</div>
+
+
+  <div class="widget tag">
+<h3 class="title">Links</h3>
+<ul class="entry">
+<li><a href="http://blog.ourren.com/" title="Ourren">Ourren</a></li>
+<li><a href="http://www.hyjal.net/" title="Hyjal">Hyjal</a></li>
+<li><a href="http://www.jianshu.com/users/fa15f4e416ae/latest_articles" title="Daemonceltics">Daemonceltics</a></li>
+<li><a href="http://papap.info/" title="isee">isee</a></li>
+</ul>
+</div>
+
+  <script type="text/javascript" id="clustrmaps" src="//cdn.clustrmaps.com/map_v2.js?u=putG&d=yoFnN6V-ovhL-H4e9_69LvkTiX4uX7rEYJ15yL3G1Wg"></script>
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <div id="go-pg-top"><i class="icon-arrow-up"></i></div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2020 Lyon
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript" charset="utf-8" src="/js/page.js"></script>
+
+</body>
+
+</html>

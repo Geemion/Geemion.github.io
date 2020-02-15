@@ -1,0 +1,360 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>关于Windows自动提权autoElevate | Lyon&#39;s blog</title>
+  <meta name="author" content="Lyon">
+  
+  <meta name="description" content="Walk steps step by step">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="关于Windows自动提权autoElevate"/>
+  <meta property="og:site_name" content="Lyon&#39;s blog"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  #<link href="/favicon.ico" rel="icon">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="alternate" href="/atom.xml" title="Lyon&#39;s blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  <script src="/js/jquery.min.js"></script>
+  <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?0fe72895c9bcfd0d09da12b5378b1b91";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+</head>
+
+
+<body>
+  <!--[if lte IE 8]> <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'> <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0027_Simplified Chinese.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." style='margin-left:auto;margin-right:auto;display: block;'/></a></div> <![endif]-->
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">Lyon&#39;s blog</a></h1>
+  <h2><a href="/">I hear and I forget.I see and I remember.I do and I understand.</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">首页</a></li>
+    
+      <li><a href="/archives">归档</a></li>
+    
+      <li><a href="/about">关于</a></li>
+    
+	<li> <a href="/atom.xml">RSS</a> </li>
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      
+        <img src="http://7xkam4.com1.z0.glb.clouddn.com/autoevlate.jpg">
+      
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <time datetime="2015-07-15T12:23:41.000Z"><a href="/2015/07/15/Windows/windows-auto-elevated-binaries/">2015-07-15</a></time>
+      
+      
+  
+    <h1 class="title">关于Windows自动提权autoElevate</h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+  <div id="toc" class="toc-article">
+  <strong class="toc-title">文章目录</strong>
+  
+  </div>
+
+
+	
+    <div class="entry">
+      
+        <p><strong>参考资料：</strong><br><a href="https://technet.microsoft.com/zh-cn/magazine/2009.07.uac.aspx" target="_blank" rel="external">深入了解 Windows 7 用户帐户控制</a><br><a href="http://withinwindows.com/blog/2009/02/05/list-of-windows-7-beta-build-7000-auto-elevated-binaries" target="_blank" rel="external">List of Windows 7 (beta build 7000) auto-elevated binaries</a><br><strong>工具：</strong><br>Strings.exe<br>Sigcheck.exe<br>Procexp.exe<br>Procmon.exe<br><strong>知识点：</strong><br>Manifest文件<br>UAC</p>
+<p>一直想怎么才能找到类似sysprep.exe这样可以有UAC权限但是运行的时候不会触发UAC弹框（即我们常说的Windows白名单程序），在网络上搜寻良久也未成发现有什么可用的信息。最后只有重头看看UAC相关信息，终于在MSDN上发现相关信息即参考资料1。<em>(其实之前微软是一直公布这份名单的，而且连rundll32都是)</em><br>从参考资料1中我们可以获得很多信息，由于vista在启用uac时貌似平等对待不管是Windows系统的还是第三方应用获得uac权限都要弹框获得用户许可，所以在win7上微软启用了白名单机制，对于某些系统应用可以直接获得uac权限。<br>条件就是：</p>
+<ul>
+<li>1.该可执行文件必须经过 Windows Publisher 的数字签名，Windows Publisher 是用于对 Windows 附带的所有代码进行签名的证书（仅由 Microsoft 进行签名是不够的，因此 Windows 未附带的 Microsoft 软件不包括在内）；</li>
+<li>2.该可执行文件必须位于其中一个为数不多的“安全”目录中。安全目录是指标准用户无法修改的目录，并且它们包括 %SystemRoot%\System32（例如，\Windows\System32）及其大多数子目录、%SystemRoot%\Ehome，以及 %ProgramFiles% 下的少许目录（其中包括 Windows Defender 和 Windows 日记本）。<br>而要能够autoElevate还必须满足的一点就是要在程序的manifest文件中申明成类似这个样子的<autoelevate>true</autoelevate>，而且参考资料1还提供了两个工具来获得这个manifest文件搜寻满足条件的exe。<br><strong>strings.exe  -s *.exe | findstr /i “autoElevate”&gt;”D:\Program Files (x86)\SysinternalsSuite\autoevate.txt”</strong></li>
+</ul>
+<a id="more"></a>
+<p>最后贴个win7 64位system32下面的结果：</p>
+<pre><code><span class="string">c:</span>\Windows\System32\AdapterTroubleshooter.<span class="string">exe:</span>         &lt;autoElevatexmlns=<span class="string">"http://schemas.microsoft.com/SMI/2005/WindowsSettings"</span>&gt;<span class="literal">true</span>&lt;/autoElevate&gt;
+<span class="string">c:</span>\Windows\System32\BitLockerWizardElev.<span class="string">exe:</span>       &lt;autoElevatexmlns=<span class="string">"http://schemas.microsoft.com/SMI/2005/WindowsSettings"</span>&gt;<span class="literal">true</span>&lt;/autoElevate&gt;
+<span class="string">c:</span>\Windows\System32\bthudtask.<span class="string">exe:</span>          &lt;autoElevate&gt;<span class="literal">true</span>&lt;/autoElevate&gt;
+<span class="string">c:</span>\Windows\System32\chkntfs.<span class="string">exe:</span>        &lt;autoElevate&gt;<span class="literal">true</span>&lt;/autoElevate&gt;
+<span class="string">c:</span>\Windows\System32\cleanmgr.<span class="string">exe:</span>         &lt;autoElevatexmlns=<span class="string">"http://schemas.microsoft.com/SMI/2005/WindowsSettings"</span>&gt;<span class="literal">true</span>&lt;/autoElevate&gt;
+<span class="string">c:</span>\Windows\System32\cliconfg.<span class="string">exe:</span>         &lt;autoElevate&gt;<span class="literal">true</span>&lt;/autoElevate&gt;
+<span class="string">c:</span>\Windows\System32\CompMgmtLauncher.<span class="string">exe:</span>            &lt;autoElevate&gt;<span class="literal">true</span>&lt;/autoElevate&gt;
+<span class="string">c:</span>\Windows\System32\ComputerDefaults.<span class="string">exe:</span>        &lt;autoElevate&gt;<span class="literal">true</span>&lt;/autoElevate&gt;
+<span class="string">c:</span>\Windows\System32\dccw.<span class="string">exe:</span>      &lt;autoElevate&gt;<span class="literal">true</span>&lt;/autoElevate&gt;
+<span class="string">c:</span>\Windows\System32\dcomcnfg.<span class="string">exe:</span>          &lt;autoElevate&gt;<span class="literal">true</span>&lt;/autoElevate&gt;
+<span class="string">c:</span>\Windows\System32\DeviceEject.<span class="string">exe:</span>            &lt;autoElevate&gt;<span class="literal">true</span>&lt;/autoElevate&gt;
+<span class="string">c:</span>\Windows\System32\DeviceProperties.<span class="string">exe:</span>        &lt;autoElevate&gt;<span class="literal">true</span>&lt;/autoElevate&gt;
+<span class="string">c:</span>\Windows\System32\dfrgui.<span class="string">exe:</span>        &lt;autoElevate xmlns=<span class="string">"http://schemas.microsoft.com/SMI/2005/WindowsSettings"</span>&gt;<span class="literal">true</span>&lt;/autoElevate&gt;
+<span class="string">c:</span>\Windows\System32\djoin.<span class="string">exe:</span>        &lt;autoElevate&gt;<span class="literal">true</span>&lt;/autoElevate&gt;
+<span class="string">c:</span>\Windows\System32\eudcedit.<span class="string">exe:</span>         &lt;autoElevate&gt;<span class="literal">true</span>&lt;/autoElevate&gt;
+<span class="string">c:</span>\Windows\System32\eventvwr.<span class="string">exe:</span>        &lt;autoElevate&gt;<span class="literal">true</span>&lt;/autoElevate&gt;
+<span class="string">c:</span>\Windows\System32\FXSUNATD.<span class="string">exe:</span>          &lt;autoElevate&gt;<span class="literal">true</span>&lt;/autoElevate&gt;
+<span class="string">c:</span>\Windows\System32\hdwwiz.<span class="string">exe:</span>            &lt;autoElevate&gt;<span class="literal">true</span>&lt;/autoElevate&gt;
+<span class="string">c:</span>\Windows\System32\ieUnatt.<span class="string">exe:</span>            &lt;autoElevate&gt;<span class="literal">true</span>&lt;/autoElevate&gt;
+<span class="string">c:</span>\Windows\System32\iscsicli.<span class="string">exe:</span>        &lt;autoElevate&gt;<span class="literal">true</span>&lt;/autoElevate&gt;
+<span class="string">c:</span>\Windows\System32\iscsicpl.<span class="string">exe:</span>        &lt;autoElevate&gt;<span class="literal">true</span>&lt;/autoElevate&gt;
+<span class="string">c:</span>\Windows\System32\lpksetup.<span class="string">exe:</span>        &lt;autoElevate&gt;<span class="literal">true</span>&lt;/autoElevate&gt;
+<span class="string">c:</span>\Windows\System32\MdSched.<span class="string">exe:</span>             &lt;autoElevatexmlns=<span class="string">"http://schemas.microsoft.com/SMI/2005/WindowsSettings"</span>&gt;<span class="literal">true</span>&lt;/autoElevate&gt;
+<span class="string">c:</span>\Windows\System32\msconfig.<span class="string">exe:</span>        &lt;autoElevate&gt;<span class="literal">true</span>&lt;/autoElevate&gt;
+<span class="string">c:</span>\Windows\System32\msdt.<span class="string">exe:</span>      &lt;autoElevatexmlns=<span class="string">"http://schemas.microsoft.com/SMI/2005/WindowsSettings"</span>&gt;<span class="literal">true</span>&lt;/autoElevate&gt;
+<span class="string">c:</span>\Windows\System32\msra.<span class="string">exe:</span>        &lt;autoElevate&gt;<span class="literal">true</span>&lt;/autoElevate&gt;
+<span class="string">c:</span>\Windows\System32\MultiDigiMon.<span class="string">exe:</span>         &lt;autoElevate&gt;<span class="literal">true</span>&lt;/autoElevate&gt;
+<span class="string">c:</span>\Windows\System32\Netplwiz.<span class="string">exe:</span>         &lt;autoElevate xmlns=<span class="string">"http://schemas.microsoft.com/SMI/2005/WindowsSettings"</span>&gt;<span class="literal">true</span>&lt;/autoElevate&gt;
+<span class="string">c:</span>\Windows\System32\newdev.<span class="string">exe:</span>        &lt;autoElevate&gt;<span class="literal">true</span>&lt;/autoElevate&gt;
+<span class="string">c:</span>\Windows\System32\ntprint.<span class="string">exe:</span>        &lt;autoElevate&gt;<span class="literal">true</span>&lt;/autoElevate&gt;
+<span class="string">c:</span>\Windows\System32\ocsetup.<span class="string">exe:</span>        &lt;autoElevate&gt;<span class="literal">true</span>&lt;/autoElevate&gt;
+<span class="string">c:</span>\Windows\System32\odbcad32.<span class="string">exe:</span>            &lt;autoElevate&gt;<span class="literal">true</span>&lt;/autoElevate&gt;
+<span class="string">c:</span>\Windows\System32\OptionalFeatures.<span class="string">exe:</span>         &lt;autoElevate  xmlns=<span class="string">"http://schemas.microsoft.com/SMI/2005/WindowsSettings"</span>&gt;<span class="literal">true</span>&lt;/autoElevate&gt;
+<span class="string">c:</span>\Windows\System32\perfmon.<span class="string">exe:</span>      &lt;autoElevate&gt;<span class="literal">true</span>&lt;/autoElevate&gt;
+<span class="string">c:</span>\Windows\System32\printui.<span class="string">exe:</span>             &lt;autoElevate xmlns=<span class="string">"http://schemas.microsoft.com/SMI/2005/WindowsSettings"</span>&gt;<span class="literal">true</span>&lt;/autoElevate&gt;
+<span class="string">c:</span>\Windows\System32\rdpshell.<span class="string">exe:</span>        &lt;autoElevate&gt;<span class="literal">true</span>&lt;/autoElevate&gt;
+<span class="string">c:</span>\Windows\System32\recdisc.<span class="string">exe:</span>        &lt;autoElevate&gt;<span class="literal">true</span>&lt;/autoElevate&gt;
+<span class="string">c:</span>\Windows\System32\rrinstaller.<span class="string">exe:</span>             &lt;autoElevate&gt;<span class="literal">true</span>&lt;/autoElevate&gt;
+<span class="string">c:</span>\Windows\System32\rstrui.<span class="string">exe:</span>        &lt;autoElevate xmlns=<span class="string">"http://schemas.microsoft.com/SMI/2005/WindowsSettings"</span>&gt;<span class="literal">true</span>&lt;/autoElevate&gt;
+<span class="string">c:</span>\Windows\System32\sdbinst.<span class="string">exe:</span>        &lt;autoElevate&gt;<span class="literal">true</span>&lt;/autoElevate&gt;
+<span class="string">c:</span>\Windows\System32\sdclt.<span class="string">exe:</span>        &lt;autoElevate xmlns=<span class="string">"http://schemas.microsoft.com/SMI/2005/WindowsSettings"</span>&gt;<span class="literal">true</span>&lt;/autoElevate&gt;
+<span class="string">c:</span>\Windows\System32\shrpubw.<span class="string">exe:</span>        &lt;autoElevate&gt;<span class="literal">true</span>&lt;/autoElevate&gt;
+<span class="string">c:</span>\Windows\System32\slui.<span class="string">exe:</span>        &lt;autoElevate&gt;<span class="literal">true</span>&lt;/autoElevate&gt;
+<span class="string">c:</span>\Windows\System32\SndVol.<span class="string">exe:</span>             &lt;autoElevatexmlns=<span class="string">"http://schemas.microsoft.com/SMI/2005/WindowsSettings"</span>&gt;<span class="literal">true</span>&lt;/autoElevate&gt;
+<span class="string">c:</span>\Windows\System32\SystemPropertiesAdvanced.<span class="string">exe:</span>        &lt;autoElevate&gt;<span class="literal">true</span>&lt;/autoElevate&gt;
+<span class="string">c:</span>\Windows\System32\SystemPropertiesComputerName.<span class="string">exe:</span>        &lt;autoElevate&gt;<span class="literal">true</span>&lt;/autoElevate&gt;
+<span class="string">c:</span>\Windows\System32\SystemPropertiesDataExecutionPrevention.<span class="string">exe:</span>        &lt;autoElevate&gt;<span class="literal">true</span>&lt;/autoElevate&gt;
+<span class="string">c:</span>\Windows\System32\SystemPropertiesHardware.<span class="string">exe:</span>         &lt;autoElevate&gt;<span class="literal">true</span>&lt;/autoElevate&gt;
+<span class="string">c:</span>\Windows\System32\SystemPropertiesPerformance.<span class="string">exe:</span>        &lt;autoElevate&gt;<span class="literal">true</span>&lt;/autoElevate&gt;
+<span class="string">c:</span>\Windows\System32\SystemPropertiesProtection.<span class="string">exe:</span>        &lt;autoElevate&gt;<span class="literal">true</span>&lt;/autoElevate&gt;
+<span class="string">c:</span>\Windows\System32\SystemPropertiesRemote.<span class="string">exe:</span>        &lt;autoElevate&gt;<span class="literal">true</span>&lt;/autoElevate&gt;
+<span class="string">c:</span>\Windows\System32\taskmgr.<span class="string">exe:</span>        &lt;autoElevate&gt;<span class="literal">true</span>&lt;/autoElevate&gt;
+<span class="string">c:</span>\Windows\System32\tcmsetup.<span class="string">exe:</span>        &lt;autoElevate&gt;<span class="literal">true</span>&lt;/autoElevate&gt;
+<span class="string">c:</span>\Windows\System32\TpmInit.<span class="string">exe:</span>             &lt;autoElevate&gt;<span class="literal">true</span>&lt;/autoElevate&gt;
+<span class="string">c:</span>\Windows\System32\verifier.<span class="string">exe:</span>        &lt;autoElevate&gt;<span class="literal">true</span>&lt;/autoElevate&gt;
+<span class="string">c:</span>\Windows\System32\wisptis.<span class="string">exe:</span>      &lt;autoElevate&gt;<span class="literal">true</span>&lt;/autoElevate&gt;
+<span class="string">c:</span>\Windows\System32\wusa.<span class="string">exe:</span>            &lt;autoElevate&gt;<span class="literal">true</span>&lt;/autoElevate&gt;
+<span class="string">c:</span>\Windows\System32\DriverStore\FileRepository\bth.inf_amd64_neutral_e54666f6a3e5af91\fsquirt.<span class="string">exe:</span>        &lt;autoElevate&gt;<span class="literal">true</span>&lt;/autoElevate&gt;
+<span class="string">c:</span>\Windows\System32\oobe\setupsqm.<span class="string">exe:</span>        &lt;autoElevate&gt;<span class="literal">true</span>&lt;/autoElevate&gt;
+<span class="string">c:</span>\Windows\System32\sysprep\sysprep.<span class="string">exe:</span>         &lt;autoElevate&gt;<span class="literal">true</span>&lt;/autoElevate&gt;
+</code></pre><p>这些做完之后就在google中再搜寻了相关结果发现原来老外在09年就贴出来了，就是参考资料2。所以学习好E文很重要啊，参考资料1也是09年的可能翻译过来比较晚。<br>但是最后我发现个问题migwiz.exe也和sysprep.exe一样但是怎么没那个autoElevate标志啊，求大神指点<br>这里也希望大家把SysinternalsSuite工具使用的例子给明示哈谢谢，哈哈</p>
+<p>##后记更新<br><em>2015-12-21 相关资料</em><br><a href="http://drops.wooyun.org/tips/10912" target="_blank" rel="external">給初學者的DLL Side Loading的UAC繞過</a><br><a href="https://github.com/hfiref0x/UACME" target="_blank" rel="external">UACME</a><br><a href="https://rstforums.com/forum/topic/89060-autoelevated-com-objects-list-win7-win10/" target="_blank" rel="external">Autoelevated COM objects, list (win7-win10)</a></p>
+
+      
+    </div>
+    <footer>
+      
+
+        
+          <div class="alignleft post-nav">
+            <em>上一篇: </em><a href="/2015/08/01/Debug/peb-analysis/">Peb(Process Environment Block)简单学习及分析</a>
+          </div>
+        
+        
+          <div class="alignright post-nav">
+            <em>下一篇: </em><a href="/2015/07/13/Tools/aboutVisual_Studio/">Visual Studio使用备注</a>
+          </div>
+          <div class="clearfix"></div>
+        
+
+        
+          <div class="copyright">
+            
+              <span class="claim">转载请注明youngroe.com</span>
+            
+            
+              <span class="from-link">
+                <em>本文链接地址:</em>
+                <a href="/2015/07/15/Windows/windows-auto-elevated-binaries/">
+                  http://www.youngroe.com/2015/07/15/Windows/windows-auto-elevated-binaries/
+                </a>
+              </span>
+            
+          </div>
+        
+		<span id="busuanzi_container_site_pv">
+    本站总访问量<span id="busuanzi_value_site_pv"></span>次
+        
+  
+  <div class="categories">
+    <a href="/categories/Windows/">Windows</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/UAC/">UAC</a>, <a href="/tags/Windows/">Windows</a>, <a href="/tags/提权/">提权</a>
+  </div>
+
+        <div class="bdsharebuttonbox"><a href="#" class="bds_more" data-cmd="more"></a><a href="#" class="bds_qzone" data-cmd="qzone"></a><a href="#" class="bds_tsina" data-cmd="tsina"></a><a href="#" class="bds_tqq" data-cmd="tqq"></a><a href="#" class="bds_renren" data-cmd="renren"></a><a href="#" class="bds_weixin" data-cmd="weixin"></a></div>
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdPic":"","bdStyle":"0","bdSize":"16"},"share":{},"image":{"viewList":["qzone","tsina","tqq","renren","weixin"],"viewText":"������","viewSize":"16"},"selectShare":{"bdContainerClass":null,"bdSelectMiniList":["qzone","tsina","tqq","renren","weixin"]}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</span>
+</article>
+
+
+<section id="comment">
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+<div class="widget tag">
+  <h3 class="title">分类</h3>
+  <ul class="entry">
+  
+    <li><a href="/categories/Cybersecurity/">Cybersecurity</a><small>1</small></li>
+  
+    <li><a href="/categories/Debug/">Debug</a><small>7</small></li>
+  
+    <li><a href="/categories/Kernel/">Kernel</a><small>4</small></li>
+  
+    <li><a href="/categories/Learning/">Learning</a><small>8</small></li>
+  
+    <li><a href="/categories/Life/">Life</a><small>7</small></li>
+  
+    <li><a href="/categories/Others/">Others</a><small>1</small></li>
+  
+    <li><a href="/categories/Read-Notes/">Read Notes</a><small>7</small></li>
+  
+    <li><a href="/categories/Tools/">Tools</a><small>6</small></li>
+  
+    <li><a href="/categories/Vulnerabilities/">Vulnerabilities</a><small>0</small></li>
+  
+    <li><a href="/categories/Windows/">Windows</a><small>14</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2019/07/01/Windows/delphi_reverse_summary/">Delphi程序逆向反汇编技巧小记</a>
+      </li>
+    
+      <li>
+        <a href="/2019/06/25/Kernel/kernel_enum_wfp_callout_function/">Windows内核重拾：如何枚举系统中Windows Filtering Platform (WFP)驱动中的callout函数</a>
+      </li>
+    
+      <li>
+        <a href="/2019/05/06/Kernel/windows-driver-testing-basics/">Windows内核重拾：Windows驱动测试基础：工具、功能和示例（翻译/转载）</a>
+      </li>
+    
+      <li>
+        <a href="/2019/04/06/Windows/how-to-reverse-engineer-software-windows-in-a-right-way/">如何正确的对Windows软件进行逆向工程（翻译/转载）</a>
+      </li>
+    
+      <li>
+        <a href="/2019/01/12/Windows/a_crash_lead_deadlock/">Windows平台下一个崩溃而导致的死锁分析</a>
+      </li>
+    
+      <li>
+        <a href="/2018/12/01/Windows/windows_client_dns_over_https/">Windows客户端如何透明使用DNS-over-HTTPS</a>
+      </li>
+    
+      <li>
+        <a href="/2018/10/06/Cybersecurity/ddos-protection-techniques/">现代DDoS对抗技术概述（翻译/转载）</a>
+      </li>
+    
+      <li>
+        <a href="/2018/09/18/Life/xian/">西安周末游</a>
+      </li>
+    
+      <li>
+        <a href="/2018/01/06/Kernel/WindowsKernel_DebugObject/">Windows内核重拾：DebugObject</a>
+      </li>
+    
+      <li>
+        <a href="/2017/10/23/Tools/IDA-Pro-ClassInformer-Tutorial/">IDA Pro ClassInformer使用指南（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2017/05/23/Windows/Kernel Data and Filtering Support/">Kernel Data and Filtering Support for Windows Server 2008（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2017/05/17/Windows/Windows-x64-Shellcode/">Windows x64 Shellcode编写指南(翻译)</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget tagcloud">
+  <h3 class="title">标签云</h3>
+  <div class="entry">
+    <a href="/tags/ASM/" style="font-size: 12.5px;">ASM</a> <a href="/tags/Boost/" style="font-size: 10px;">Boost</a> <a href="/tags/DDoS/" style="font-size: 10px;">DDoS</a> <a href="/tags/DNS-over-HTTPS/" style="font-size: 10px;">DNS-over-HTTPS</a> <a href="/tags/Delphi/" style="font-size: 10px;">Delphi</a> <a href="/tags/Dll劫持/" style="font-size: 10px;">Dll劫持</a> <a href="/tags/GCC-GDB/" style="font-size: 10px;">GCC&GDB</a> <a href="/tags/GetVersionEx/" style="font-size: 10px;">GetVersionEx</a> <a href="/tags/Http/" style="font-size: 10px;">Http</a> <a href="/tags/IDA-Pro/" style="font-size: 12.5px;">IDA Pro</a> <a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/MSDN/" style="font-size: 12.5px;">MSDN</a> <a href="/tags/Malware/" style="font-size: 12.5px;">Malware</a> <a href="/tags/MiniDumpWriteDump/" style="font-size: 10px;">MiniDumpWriteDump</a> <a href="/tags/PEB/" style="font-size: 10px;">PEB</a> <a href="/tags/Procmon/" style="font-size: 10px;">Procmon</a> <a href="/tags/Runtime-Error/" style="font-size: 10px;">Runtime Error</a> <a href="/tags/SEH/" style="font-size: 10px;">SEH</a> <a href="/tags/Shellcode/" style="font-size: 10px;">Shellcode</a> <a href="/tags/SysinternalsSuite/" style="font-size: 10px;">SysinternalsSuite</a> <a href="/tags/Tips/" style="font-size: 10px;">Tips</a> <a href="/tags/UAC/" style="font-size: 10px;">UAC</a> <a href="/tags/UAF漏洞/" style="font-size: 10px;">UAF漏洞</a> <a href="/tags/VC/" style="font-size: 10px;">VC</a> <a href="/tags/Visual-Studio/" style="font-size: 12.5px;">Visual Studio</a> <a href="/tags/Windbg/" style="font-size: 10px;">Windbg</a> <a href="/tags/Windows/" style="font-size: 20px;">Windows</a> <a href="/tags/Windows核心编程/" style="font-size: 17.5px;">Windows核心编程</a> <a href="/tags/android/" style="font-size: 10px;">android</a> <a href="/tags/getaddrinfo/" style="font-size: 10px;">getaddrinfo</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/libeay32/" style="font-size: 10px;">libeay32</a> <a href="/tags/markdown/" style="font-size: 10px;">markdown</a> <a href="/tags/ndk/" style="font-size: 10px;">ndk</a> <a href="/tags/sublime-text3/" style="font-size: 10px;">sublime text3</a> <a href="/tags/x64/" style="font-size: 12.5px;">x64</a> <a href="/tags/体验/" style="font-size: 10px;">体验</a> <a href="/tags/内核/" style="font-size: 12.5px;">内核</a> <a href="/tags/内核结构/" style="font-size: 15px;">内核结构</a> <a href="/tags/学习/" style="font-size: 10px;">学习</a> <a href="/tags/安全机制/" style="font-size: 10px;">安全机制</a> <a href="/tags/异常处理/" style="font-size: 10px;">异常处理</a> <a href="/tags/提权/" style="font-size: 10px;">提权</a> <a href="/tags/服务/" style="font-size: 10px;">服务</a> <a href="/tags/权限/" style="font-size: 12.5px;">权限</a> <a href="/tags/栈溢出漏洞/" style="font-size: 10px;">栈溢出漏洞</a> <a href="/tags/测试/" style="font-size: 10px;">测试</a> <a href="/tags/浮躁/" style="font-size: 10px;">浮躁</a> <a href="/tags/漏洞调试/" style="font-size: 12.5px;">漏洞调试</a> <a href="/tags/生活/" style="font-size: 15px;">生活</a> <a href="/tags/脱壳/" style="font-size: 10px;">脱壳</a> <a href="/tags/西安/" style="font-size: 10px;">西安</a> <a href="/tags/计划/" style="font-size: 10px;">计划</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a> <a href="/tags/调试/" style="font-size: 15px;">调试</a> <a href="/tags/转换/" style="font-size: 10px;">转换</a> <a href="/tags/进程/" style="font-size: 10px;">进程</a> <a href="/tags/逆向/" style="font-size: 10px;">逆向</a> <a href="/tags/重庆/" style="font-size: 10px;">重庆</a> <a href="/tags/驱动/" style="font-size: 15px;">驱动</a>
+  </div>
+</div>
+
+
+  <div class="widget tag">
+<h3 class="title">Links</h3>
+<ul class="entry">
+<li><a href="http://blog.ourren.com/" title="Ourren">Ourren</a></li>
+<li><a href="http://www.hyjal.net/" title="Hyjal">Hyjal</a></li>
+<li><a href="http://www.jianshu.com/users/fa15f4e416ae/latest_articles" title="Daemonceltics">Daemonceltics</a></li>
+<li><a href="http://papap.info/" title="isee">isee</a></li>
+</ul>
+</div>
+
+  <script type="text/javascript" id="clustrmaps" src="//cdn.clustrmaps.com/map_v2.js?u=putG&d=yoFnN6V-ovhL-H4e9_69LvkTiX4uX7rEYJ15yL3G1Wg"></script>
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <div id="go-pg-top"><i class="icon-arrow-up"></i></div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2020 Lyon
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript" charset="utf-8" src="/js/page.js"></script>
+
+</body>
+
+</html>

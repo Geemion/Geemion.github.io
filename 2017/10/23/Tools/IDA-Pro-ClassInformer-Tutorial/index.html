@@ -1,0 +1,323 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>IDA Pro ClassInformer使用指南（翻译） | Lyon&#39;s blog</title>
+  <meta name="author" content="Lyon">
+  
+  <meta name="description" content="Walk steps step by step">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="IDA Pro ClassInformer使用指南（翻译）"/>
+  <meta property="og:site_name" content="Lyon&#39;s blog"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  #<link href="/favicon.ico" rel="icon">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="alternate" href="/atom.xml" title="Lyon&#39;s blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  <script src="/js/jquery.min.js"></script>
+  <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?0fe72895c9bcfd0d09da12b5378b1b91";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+</head>
+
+
+<body>
+  <!--[if lte IE 8]> <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'> <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0027_Simplified Chinese.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." style='margin-left:auto;margin-right:auto;display: block;'/></a></div> <![endif]-->
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">Lyon&#39;s blog</a></h1>
+  <h2><a href="/">I hear and I forget.I see and I remember.I do and I understand.</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">首页</a></li>
+    
+      <li><a href="/archives">归档</a></li>
+    
+      <li><a href="/about">关于</a></li>
+    
+	<li> <a href="/atom.xml">RSS</a> </li>
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <time datetime="2017-10-23T09:55:21.000Z"><a href="/2017/10/23/Tools/IDA-Pro-ClassInformer-Tutorial/">2017-10-23</a></time>
+      
+      
+  
+    <h1 class="title">IDA Pro ClassInformer使用指南（翻译）</h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+  <div id="toc" class="toc-article">
+  <strong class="toc-title">文章目录</strong>
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x00_介绍"><span class="toc-number">1.</span> <span class="toc-text">0x00 介绍</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x01_例子"><span class="toc-number">2.</span> <span class="toc-text">0x01 例子</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x02_准备工作"><span class="toc-number">3.</span> <span class="toc-text">0x02 准备工作</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x03_设置IDA环境"><span class="toc-number">4.</span> <span class="toc-text">0x03 设置IDA环境</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x05_最后致谢"><span class="toc-number">5.</span> <span class="toc-text">0x05 最后致谢</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#外部参考"><span class="toc-number">6.</span> <span class="toc-text">外部参考</span></a></li></ol>
+  </div>
+
+
+	
+    <div class="entry">
+      
+        <h2 id="0x00_介绍">0x00 介绍</h2><p>本文主要针对几乎没有使用IDA Pro经验及逆向水平一般的人。IDA对初学者还是有一定的门槛的，主要是由于IMO没有详细介绍IDA使用环境设置和插件使用的指南。我的目标是展示当我在客户端（这里应该是开发外挂）开发遇到困难的时候，我是如何解决这个问题的方法和策略。在本指南中我将演示如何从SDK中的一个字符串识别出二进制文件中反汇编代码中的函数。目标是将IDA中原始的汇编代码转换为ClientMode::CreateMove函数。<br><a id="more"></a></p>
+<h2 id="0x01_例子">0x01 例子</h2><p>在开始之前，下面是一个能直观展示IDA强大功能的例子。这是两张图片但都是steamclient.dll中同一个函数反汇编后的结果，第一张图片是原始的反汇编代码，第二张是相同函数反汇编结果但是经过人工逆向解析。</p>
+<div align="center"><br><img src="/img/idaclassinformer1.png" alt align="center"><br></div>
+
+<div align="center"><br><img src="/img/idaclassinformer2.png" alt align="center"><br></div>
+
+<p>使用IDA逆向就像解决成千上万个难题一样。未命名的全局变量（dword_X）和函数（sub_Y）就像拼图碎片。在逆向过程中识别全局变量和函数会对整个逆向过程产生连锁反应。举例说明下，当你逆向一个函数时识别出了全局变量g_pGlobals,然后你将变量名从dword_Z重命名为g_PGlobals。现在模块中访问此变量的所有函数中都会使用g_pGlobals这个名称。如果你想知道一个使用g_pGlobals变量函数的作用，那么你又将需要逆向一个函数。<br>逆向出来的越多，后面逆向会更容易，这将会很有成就感，这种成就感会让你上瘾，停不下来。</p>
+<h2 id="0x02_准备工作">0x02 准备工作</h2><p>开始之前，我建议你安装下载如下工具：<br><strong>IDA</strong>:</p>
+<ul>
+<li><a href="https://www.hex-rays.com/products/ida/" target="_blank" rel="external">IDA Professional</a>:免费版本的IDA Pro</li>
+<li><a href>Class Informer</a>:由Sirmabus开发的开源一款IDA插件，通过RTTI信息解析汇编代码重构类信息。</li>
+<li><a href>Function String Associate</a>：由Sirmabus开发的开源IDA插件，将函数中引用的字符生成函数的注释。</li>
+</ul>
+<p><strong>其他</strong></p>
+<ul>
+<li><a href="https://github.com/ValveSoftware/source-sdk-2013" target="_blank" rel="external">SDK 2013</a>:库中的本地保存的副本</li>
+<li>Leaked 2007 SDK：通过论坛中搜索下载</li>
+<li><a href="http://www.mingw.org/wiki/msys" target="_blank" rel="external">Mingw MSYS</a>: 你可以从SDK库中获得<a href="http://www.mingw.org/wiki/msys" target="_blank" rel="external">http://www.mingw.org/wiki/msys</a></li>
+</ul>
+<h2 id="0x03_设置IDA环境">0x03 设置IDA环境</h2><p>每个客户端(应该是外挂程序)都需要hook CreateMove去改变用户命令，并且Hook clientMode模块的函数是最好的因为不需要像Hook CHLClient模块之后还需要修复CRC校验值，我们猜测ClientMode类是在CS:GO客户端模块中定义的。使用IDA打开CS:GO游戏模块client.dll。将该文件拖入IDA你将会看到下图所示界面：</p>
+<div align="center"><br><img src="/img/idaclassinformer3.png" alt align="center"><br></div>
+
+<p>我们需要关注“Manual load”这个选项，选中它将会有一系列的提示，提醒我是否需要反汇编/解析模块的某些部分。</p>
+<div align="center"><br><img src="/img/idaclassinformer4.png" alt align="center"><br></div><br>第一个提示是设置模块基地址，将其设置为0，以便从相对地址从0开始。<br><div align="center"><br><img src="/img/idaclassinformer5.png" alt align="center"><br></div><br>接下来一系列提示会询问我们是否分析某些模块，一直选择”Yes”直到提示是否加载.pdb文件：<br><div align="center"><br><img src="/img/idaclassinformer6.png" alt align="center"><br></div><br>因为我们没有pdb，所以选择“No”。现在IDA会花一些时间完成反汇编。当左下脚信息栏显示“AU:idle”时，说明IDA已经完成了分析：<br><div align="center"><br><img src="/img/idaclassinformer7.png" alt align="center"><br></div><br>现在看到的是IDA反汇编程序的关键部分，IDA View-A选项卡是client.dll的完整反汇编代码。IDA递归的反编译原始二进制为asm汇编文件。<br>首选我们需要设置几个默认选项以显示一些默认情况下不显示的有用信息，通过点击菜单栏“Options-&gt;General”进行设置，下面我会对我已经设置的选项进行说明。<br><div align="center"><br><img src="/img/idaclassinformer8.png" alt align="center"><br></div><br>1.这是主要的不同。设置后在左边的地址显示会被改变，改变后的地址会变成如’sub_7E0CB7+offset’的形式，而不是默认的’.text:0035235A’。<br>2.设置后会在地址显示的右侧增加一个3位数值，可以通过函数跟踪当前栈指针的值。<br>3.该选项会为所有的汇编操作指令生成简单的注释，如果你对汇编不熟悉，可能会有帮助。但当你熟悉常见的汇编指令后，你会想要禁用该选项，因为这些评论可能会扰乱IDA的反汇编显示。<br>4.该选项表示指令和左边显示栏的宽度。这纯粹是个人喜好，我喜欢小数字因为减少了死角。<br><br>## 0x04 识别ClientMode::CreateMove函数<br>现在我们准备好开始逆向了，我们从启动Class Informer开始。在目录栏选择“Edit-&gt;Plugins-&gt;Class Informer”。如果你没有发现这个选项可能是你没有安装插件到正常的目录（安装插件后记得重启IDA）。你会看到下面这个默认界面弹出，然后点击”CONTINUE“继续。<br><div align="center"><br><img src="/img/idaclassinformer9.png" alt align="center"><br></div><br>Class Informer将会解析反汇编的RTTI。如果还没有阅读<a href="http://www.openrce.org/articles/full_view/23" target="_blank" rel="external">OpenRCE关于RTTI的文章</a>，请马上去看一下。RTTI是非常重要的，这是Class Informer插件实现的基础。如果解析完成，会在IDA上弹出一个新的选项卡。<br><div align="center"><br><img src="/img/idaclassinformer10.png" alt align="center"><br></div><br>[Class Informer]选项卡（图中用黄色框勾选），Vftable:类的RTTI在反汇编中的地址。Methods:该类虚函数的个数。Flag:’M’意味这个类有多重继承。Type:类的名称，通常和SDK中定义的有相同的类名。Hierarchy:该类继承的类名称的列表。<br>点击列表中任何一个类将转到汇编窗口中该类的虚函数列表。搜索“ClientMode”,将会有很多结果，因为“ClientMode”也是其他类名称的子字符串，向下滚动直到找到“IClientMode”函数：<br><div align="center"><br><img src="/img/idaclassinformer11.png" alt align="center"><br></div><br>这里有一个问题，我们在向下滚动时会看到ClientMode的抽象类及该类的几个派生类。我们如何确定哪一个类的虚表包含我们想要hook的CreateMove函数呢？<br>在sdk中搜索！打开命令行，通过cd命令切换到2013 SDK目录。然后执行下面的命令：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">grep -lir <span class="string">"::CreateMove"</span></span><br></pre></td></tr></table></figure><br><br>-l:查询多文件时只输出包含匹配字符的文件名,-i:忽略大小写,-r:递归搜索。执行该命令后将打印类或命名空间中定义了CreateMove的文件名。<br>输出类似下面的：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">./src/game/client/cdll_client_int.cpp</span><br><span class="line">./src/game/client/clientmode_shared.cpp</span><br><span class="line">./src/game/client/c_baseplayer.cpp</span><br><span class="line">./src/game/client/hl2/c_basehlplayer.cpp</span><br><span class="line">./src/game/client/hl2/hl2_clientmode.cpp</span><br><span class="line">./src/game/client/hltvcamera.cpp</span><br><span class="line">./src/game/client/in_main.cpp</span><br><span class="line">./src/game/client/replay/replaycamera.cpp</span><br><span class="line">./src/game/server/ai_basenpc.cpp</span><br><span class="line">./src/game/shared/weapon_ifmsteadycam.cpp</span><br></pre></td></tr></table></figure><br><br>clientmode_shared.cpp很可能是我们要找的，打开这个文件，搜索”::CreateMove“定位到定义的位置：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">bool</span> ClientModeShared::CreateMove( <span class="keyword">float</span> flInputSampleTime, CUserCmd *cmd )</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// Let the player override the view.</span></span><br><span class="line">    C_BasePlayer *pPlayer = C_BasePlayer::GetLocalPlayer();</span><br><span class="line">    <span class="keyword">if</span>(!pPlayer)</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Let the player at it</span></span><br><span class="line">    <span class="keyword">return</span> pPlayer-&gt;CreateMove( flInputSampleTime, cmd );</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br><br>ClientModeShared肯定是要找的类，但是在ClassInformer选项卡中有两行都是ClientModeShared。这种情况主要是由于ClientModeShared类使用了多重继承的原因（注意M标志）。通过分析clientmode_shared.h中类的继承结构定义我们可以确定有57个函数的类是我们要找的类。双击所在的行直接转到ClientModeShared虚表：<br><div align="center"><br><img src="/img/idaclassinformer12.png" alt align="center"><br></div><br>现在的位置是一个可点击的函数指针列表，点击任何黄色字段都会跳转到该函数实现的位置。nullsub_X表示该函数没有实现，有很多原因都会造成这种情况但现在这些都不重要。我们的目标是确定哪一个函数是CreateMove.Function String Associate插件会使这个任务更加容易。和执行Class Informer插件一样在目录中执行Function String Associate插件，选择”Continue“在命令行中，IDA显示应该会像下面一样：<br><div align="center"><br><img src="/img/idaclassinformer13.png" alt align="center"><br></div><br>右边空白处的注释是该行函数引用的字符串。如你双击”sub_2694A0“你将会看到<code>LevelInit</code>, <code>game_newmap&#39;和</code>mapname`在该函数的实现中使用。 当我们对一个虚函数表进行分析的时候，需要确定一些函数，我们可以通过比较SDK进行参考。我们来看一下能不能通过这三个字符串找到这个函数。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd <span class="number">2013</span>_SDK_src</span><br><span class="line">grep -lir game_newmap .</span><br></pre></td></tr></table></figure><br><br>输出如下：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">./src/game/client/clientmode_shared.cpp</span><br><span class="line">./src/game/client/game_controls/basemodelpanel.cpp</span><br><span class="line">./src/game/client/game_controls/baseviewport.cpp</span><br><span class="line">./src/game/client/game_controls/MapOverview.cpp</span><br><span class="line">./src/game/client/hltvcamera.cpp</span><br><span class="line">./src/game/client/playerspawncache.cpp</span><br><span class="line">./src/game/client/replay/replaycamera.cpp</span><br></pre></td></tr></table></figure><br><br>我们可以根据这个结果继续进行分析。打开clientmode_shared.cpp搜索’game_newmap‘,可以找到3个结果，只有在函数ClientModeShared::LevelInit有出现使用。双击函数sub_2694A0,可以在IDA中看到这个函数的定义，你会看到如下内容，部分相关信息我已经标出来了：<br><div align="center"><br><img src="/img/idaclassinformer14.png" alt align="center"><br></div><br>- 1.IDA在函数的开头声明函数的参数和每个局部变量，IDA已经确定这个函数有一个4字节的（dword ptr 8）参数（arg_0）。8表示该变量在EBP+8(返回地址在EBP+4)。不过也需要注意IDA可能无法正确分析出函数参数数量和参数的大小。<br>- 2.这是一个字符串引用。表示该行会访问全局字符串变量”LevelInit“。除了IDA自动根据字符串内容重命名的的字符串，其他情况下字符串变量的名称为”dword_x“。<br>如果你有hexrays,将鼠标停留在函数体中然后按’F1‘(默认反编译快捷键)，你会看到一个包含C代码的新页面。你可以通过在空白处右键然后取消选中”Show Casts“来清除它。下面是你将会看到的注释：<br><div align="center"><br><img src="/img/idaclassinformer15.png" alt align="center"><br></div><br>- 1.函数定义有两个参数。IDA会将类表示为显示指针的结果，如果一个函数是类的成员函数，第一个参数是指向类实例的指针，即this指针，a2才是真正的第一个参数。<br>- 2.局部变量声明。如果IDA在模块某些部分分析出现错误，这里的结果可能是不精确的，某些变量可能是重复、错误大小或则类型等。你需要及时学会去识别和修复这些错误。<br>- 3.这是虚函数调用在反编译中的形式。你可以分解者一样代码：v4=(<em>(</em>v3+156))(v3);(<em>v3 + 156):v3是一个将要被解引的一个指针然后加上156。如果v3是一个多态对象，这个表达式就是计算第39个虚函数的地址。(</em>v3::method_39)(v3)这就是一个函数调用。解引用这个函数指针并将类的实例对象作为唯一的参数。由于IDA会显式显示C++类指针，因此此函数真实的参数是0个。v4是函数调用后返回的结果，v3::method_39函数的返回值。<br>- 4.只要你看到一个前缀是一个数据类型的变量，那么表示该变量是一个全家变量（可能是静态或则是一个声明的全局变量）。’dword‘前缀表示这个变量是一个4字节变量。在源代码中声明的形式可能是：static int g_iState;//在函数体外声明。<br>和sdk中的函数对比：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> ClientModeShared::LevelInit( <span class="keyword">const</span> <span class="keyword">char</span> *newmap )</span><br><span class="line">&#123;</span><br><span class="line">    m_pViewport-&gt;GetAnimationController()-&gt;StartAnimationSequence(<span class="string">"LevelInit"</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Tell the Chat Interface</span></span><br><span class="line">    <span class="keyword">if</span> ( m_pChatElement )</span><br><span class="line">    &#123;</span><br><span class="line">        m_pChatElement-&gt;LevelInit( newmap );</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// we have to fake this event clientside, because clients connect after that</span></span><br><span class="line">    IGameEvent *event = gameeventmanager-&gt;CreateEvent( <span class="string">"game_newmap"</span> );</span><br><span class="line">    <span class="keyword">if</span> ( event )</span><br><span class="line">    &#123;</span><br><span class="line">        event-&gt;SetString(<span class="string">"mapname"</span>, newmap );</span><br><span class="line">        gameeventmanager-&gt;FireEventClientSide( event );</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Create a vgui context for all of the in-game vgui panels...</span></span><br><span class="line">    <span class="keyword">if</span> ( s_hVGuiContext == DEFAULT_VGUI_CONTEXT )</span><br><span class="line">    &#123;</span><br><span class="line">        s_hVGuiContext = vgui::ivgui()-&gt;CreateContext();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Reset any player explosion/shock effects</span></span><br><span class="line">    CLocalPlayerFilter filter;</span><br><span class="line">    enginesound-&gt;SetPlayerDSP( filter, <span class="number">0</span>, <span class="literal">true</span> );</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br><br>函数结构几乎完全一致。这个未标记的函数肯定是ClientModeShared::LevelInit,点击’IDA View-A‘选项卡返回到汇编代码，将鼠标移动到函数”sub_2694a0“然后按键盘”N“重命名这个函数。<br><div align="center"><br><img src="/img/idaclassinformer16.png" alt align="center"><br></div><br>选择”Yes“忽略长文件名弹窗。然后返回到ClientModeShared的虚表。现在将LevelInit函数作为一个参考点，我喜欢在虚表中将函数的索引附加到函数。计算可得这个函数是虚函数表中的第25个函数（从0开始）。如果你会使用python，你可以将屏幕底部的窗口作为python解释器进行计算，如：<br><div align="center"><br><img src="/img/idaclassinformer17.png" alt align="center"><br></div><br>让我们开始使用这个参考函数。我们知道ClientModeShared继承自IClientMode抽象类和CGameEventListener类。我们正在处理的虚表代表的是IClientMode的继承。在Class Informer选项卡发现的另一个虚表是代表CGameEventListener。在iclientmode.h中CTRL+F搜索’LevelInit‘:<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">virtual</span> vgui::<span class="function">Panel *<span class="title">GetMessagePanel</span><span class="params">()</span> </span>= <span class="number">0</span>;</span><br><span class="line"><span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span>    <span class="title">OverrideMouseInput</span><span class="params">( <span class="keyword">float</span> *x, <span class="keyword">float</span> *y )</span> </span>= <span class="number">0</span>;</span><br><span class="line"><span class="function"><span class="keyword">virtual</span> <span class="keyword">bool</span>    <span class="title">CreateMove</span><span class="params">( <span class="keyword">float</span> flInputSampleTime, CUserCmd *cmd )</span> </span>= <span class="number">0</span>;</span><br><span class="line"><span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span>    <span class="title">LevelInit</span><span class="params">( <span class="keyword">const</span> <span class="keyword">char</span> *newmap )</span> </span>= <span class="number">0</span>;</span><br><span class="line"><span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span>    <span class="title">LevelShutdown</span><span class="params">( <span class="keyword">void</span> )</span> </span>= <span class="number">0</span>;</span><br><span class="line"><span class="function"><span class="keyword">virtual</span> <span class="keyword">bool</span>    <span class="title">ShouldDrawViewModel</span><span class="params">( <span class="keyword">void</span> )</span> </span>= <span class="number">0</span>;</span><br><span class="line"><span class="function"><span class="keyword">virtual</span> <span class="keyword">bool</span>    <span class="title">ShouldDrawCrosshair</span><span class="params">( <span class="keyword">void</span> )</span> </span>= <span class="number">0</span>;</span><br></pre></td></tr></table></figure><br><br>我们知道虚函数时按照源文件中声明的顺序开始排序的。我们可以得出结论，CreateMove应该是LevelInit函数之前的函数。需要注意的是SDK通常不是最新的，函数的顺序可能不完全相同。你应该使用SDK作为一个简单的指南，去找到这些函数的引用。<br>返回IDA,双击函数指针”dd offset ClientModeShared__LevelInit”。我们可以通过比较IDA反汇编中参数的数量和SDK CreateMove函数原型是否一致，证明这就是CreateMove。hex view声明了两个与CreateMove原型匹配的函数参数，这看起来是有希望的。比较下ClientModeShared::CreateMove在sdk clientmode_shared.cpp中的声明是否和反编译的中的一致。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">bool</span> ClientModeShared::CreateMove( <span class="keyword">float</span> flInputSampleTime, CUserCmd *cmd )</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// Let the player override the view.</span></span><br><span class="line">    C_BasePlayer *pPlayer = C_BasePlayer::GetLocalPlayer();</span><br><span class="line">    <span class="keyword">if</span>(!pPlayer)</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Let the player at it</span></span><br><span class="line">    <span class="keyword">return</span> pPlayer-&gt;CreateMove( flInputSampleTime, cmd );</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br><br><div align="center"><br><img src="/img/idaclassinformer18.png" alt align="center"><br></div><br>找到了，切换到hex view然后重命名这个函数。<br><div align="center"><br><img src="/img/idaclassinformer19.png" alt align="center"><br></div>
+
+<h2 id="0x05_最后致谢">0x05 最后致谢</h2><p>感谢<a href="https://www.unknowncheats.me/forum/members/171990.html" target="_blank" rel="external">@Sirmabus</a>开发了上面两个好用的插件：</p>
+<ul>
+<li>1.上面提到的方法不是找到函数CreateMove函数最简便最直观的方法</li>
+<li>2.鼓励每个人发布他们自定义的环境并指出我的文章中的任何错误。</li>
+</ul>
+<h2 id="外部参考">外部参考</h2><ul>
+<li>[1] <a href="https://www.unknowncheats.me/forum/counterstrike-global-offensive/148360-reversing-ida-walkthrough-finding-clientmode-createmove.html" target="_blank" rel="external">Original post “Reversing in IDA: a walkthrough for finding ClientMode::CreateMove” by qwerty9384</a></li>
+<li>[2] <a href="https://github.com/ValveSoftware/source-sdk-2013" target="_blank" rel="external">ValveSoftware/source-sdk-2013 - GitHub</a></li>
+<li>[3] IDA-Hex-Rays:<br>  -<a href="https://sourceforge.net/projects/classinformer/" target="_blank" rel="external">IDA ClassInformer Plugin - SourceForge</a><br>  -<a href="https://sourceforge.net/projects/idafunctionstringassociate/" target="_blank" rel="external">IDA FunctionStringAssociate PlugIn - SourceForge</a></li>
+</ul>
+
+      
+    </div>
+    <footer>
+      
+
+        
+          <div class="alignleft post-nav">
+            <em>上一篇: </em><a href="/2018/01/06/Kernel/WindowsKernel_DebugObject/">Windows内核重拾：DebugObject</a>
+          </div>
+        
+        
+          <div class="alignright post-nav">
+            <em>下一篇: </em><a href="/2017/05/23/Windows/Kernel Data and Filtering Support/">Kernel Data and Filtering Support for Windows Server 2008（翻译）</a>
+          </div>
+          <div class="clearfix"></div>
+        
+
+        
+          <div class="copyright">
+            
+              <span class="claim">转载请注明youngroe.com</span>
+            
+            
+              <span class="from-link">
+                <em>本文链接地址:</em>
+                <a href="/2017/10/23/Tools/IDA-Pro-ClassInformer-Tutorial/">
+                  http://www.youngroe.com/2017/10/23/Tools/IDA-Pro-ClassInformer-Tutorial/
+                </a>
+              </span>
+            
+          </div>
+        
+		<span id="busuanzi_container_site_pv">
+    本站总访问量<span id="busuanzi_value_site_pv"></span>次
+        
+  
+  <div class="categories">
+    <a href="/categories/Tools/">Tools</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/IDA-Pro/">IDA Pro</a>
+  </div>
+
+        <div class="bdsharebuttonbox"><a href="#" class="bds_more" data-cmd="more"></a><a href="#" class="bds_qzone" data-cmd="qzone"></a><a href="#" class="bds_tsina" data-cmd="tsina"></a><a href="#" class="bds_tqq" data-cmd="tqq"></a><a href="#" class="bds_renren" data-cmd="renren"></a><a href="#" class="bds_weixin" data-cmd="weixin"></a></div>
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdPic":"","bdStyle":"0","bdSize":"16"},"share":{},"image":{"viewList":["qzone","tsina","tqq","renren","weixin"],"viewText":"������","viewSize":"16"},"selectShare":{"bdContainerClass":null,"bdSelectMiniList":["qzone","tsina","tqq","renren","weixin"]}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</span>
+</article>
+
+
+<section id="comment">
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+<div class="widget tag">
+  <h3 class="title">分类</h3>
+  <ul class="entry">
+  
+    <li><a href="/categories/Cybersecurity/">Cybersecurity</a><small>1</small></li>
+  
+    <li><a href="/categories/Debug/">Debug</a><small>7</small></li>
+  
+    <li><a href="/categories/Kernel/">Kernel</a><small>4</small></li>
+  
+    <li><a href="/categories/Learning/">Learning</a><small>8</small></li>
+  
+    <li><a href="/categories/Life/">Life</a><small>7</small></li>
+  
+    <li><a href="/categories/Others/">Others</a><small>1</small></li>
+  
+    <li><a href="/categories/Read-Notes/">Read Notes</a><small>7</small></li>
+  
+    <li><a href="/categories/Tools/">Tools</a><small>6</small></li>
+  
+    <li><a href="/categories/Vulnerabilities/">Vulnerabilities</a><small>0</small></li>
+  
+    <li><a href="/categories/Windows/">Windows</a><small>14</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2019/07/01/Windows/delphi_reverse_summary/">Delphi程序逆向反汇编技巧小记</a>
+      </li>
+    
+      <li>
+        <a href="/2019/06/25/Kernel/kernel_enum_wfp_callout_function/">Windows内核重拾：如何枚举系统中Windows Filtering Platform (WFP)驱动中的callout函数</a>
+      </li>
+    
+      <li>
+        <a href="/2019/05/06/Kernel/windows-driver-testing-basics/">Windows内核重拾：Windows驱动测试基础：工具、功能和示例（翻译/转载）</a>
+      </li>
+    
+      <li>
+        <a href="/2019/04/06/Windows/how-to-reverse-engineer-software-windows-in-a-right-way/">如何正确的对Windows软件进行逆向工程（翻译/转载）</a>
+      </li>
+    
+      <li>
+        <a href="/2019/01/12/Windows/a_crash_lead_deadlock/">Windows平台下一个崩溃而导致的死锁分析</a>
+      </li>
+    
+      <li>
+        <a href="/2018/12/01/Windows/windows_client_dns_over_https/">Windows客户端如何透明使用DNS-over-HTTPS</a>
+      </li>
+    
+      <li>
+        <a href="/2018/10/06/Cybersecurity/ddos-protection-techniques/">现代DDoS对抗技术概述（翻译/转载）</a>
+      </li>
+    
+      <li>
+        <a href="/2018/09/18/Life/xian/">西安周末游</a>
+      </li>
+    
+      <li>
+        <a href="/2018/01/06/Kernel/WindowsKernel_DebugObject/">Windows内核重拾：DebugObject</a>
+      </li>
+    
+      <li>
+        <a href="/2017/10/23/Tools/IDA-Pro-ClassInformer-Tutorial/">IDA Pro ClassInformer使用指南（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2017/05/23/Windows/Kernel Data and Filtering Support/">Kernel Data and Filtering Support for Windows Server 2008（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2017/05/17/Windows/Windows-x64-Shellcode/">Windows x64 Shellcode编写指南(翻译)</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget tagcloud">
+  <h3 class="title">标签云</h3>
+  <div class="entry">
+    <a href="/tags/ASM/" style="font-size: 12.5px;">ASM</a> <a href="/tags/Boost/" style="font-size: 10px;">Boost</a> <a href="/tags/DDoS/" style="font-size: 10px;">DDoS</a> <a href="/tags/DNS-over-HTTPS/" style="font-size: 10px;">DNS-over-HTTPS</a> <a href="/tags/Delphi/" style="font-size: 10px;">Delphi</a> <a href="/tags/Dll劫持/" style="font-size: 10px;">Dll劫持</a> <a href="/tags/GCC-GDB/" style="font-size: 10px;">GCC&GDB</a> <a href="/tags/GetVersionEx/" style="font-size: 10px;">GetVersionEx</a> <a href="/tags/Http/" style="font-size: 10px;">Http</a> <a href="/tags/IDA-Pro/" style="font-size: 12.5px;">IDA Pro</a> <a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/MSDN/" style="font-size: 12.5px;">MSDN</a> <a href="/tags/Malware/" style="font-size: 12.5px;">Malware</a> <a href="/tags/MiniDumpWriteDump/" style="font-size: 10px;">MiniDumpWriteDump</a> <a href="/tags/PEB/" style="font-size: 10px;">PEB</a> <a href="/tags/Procmon/" style="font-size: 10px;">Procmon</a> <a href="/tags/Runtime-Error/" style="font-size: 10px;">Runtime Error</a> <a href="/tags/SEH/" style="font-size: 10px;">SEH</a> <a href="/tags/Shellcode/" style="font-size: 10px;">Shellcode</a> <a href="/tags/SysinternalsSuite/" style="font-size: 10px;">SysinternalsSuite</a> <a href="/tags/Tips/" style="font-size: 10px;">Tips</a> <a href="/tags/UAC/" style="font-size: 10px;">UAC</a> <a href="/tags/UAF漏洞/" style="font-size: 10px;">UAF漏洞</a> <a href="/tags/VC/" style="font-size: 10px;">VC</a> <a href="/tags/Visual-Studio/" style="font-size: 12.5px;">Visual Studio</a> <a href="/tags/Windbg/" style="font-size: 10px;">Windbg</a> <a href="/tags/Windows/" style="font-size: 20px;">Windows</a> <a href="/tags/Windows核心编程/" style="font-size: 17.5px;">Windows核心编程</a> <a href="/tags/android/" style="font-size: 10px;">android</a> <a href="/tags/getaddrinfo/" style="font-size: 10px;">getaddrinfo</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/libeay32/" style="font-size: 10px;">libeay32</a> <a href="/tags/markdown/" style="font-size: 10px;">markdown</a> <a href="/tags/ndk/" style="font-size: 10px;">ndk</a> <a href="/tags/sublime-text3/" style="font-size: 10px;">sublime text3</a> <a href="/tags/x64/" style="font-size: 12.5px;">x64</a> <a href="/tags/体验/" style="font-size: 10px;">体验</a> <a href="/tags/内核/" style="font-size: 12.5px;">内核</a> <a href="/tags/内核结构/" style="font-size: 15px;">内核结构</a> <a href="/tags/学习/" style="font-size: 10px;">学习</a> <a href="/tags/安全机制/" style="font-size: 10px;">安全机制</a> <a href="/tags/异常处理/" style="font-size: 10px;">异常处理</a> <a href="/tags/提权/" style="font-size: 10px;">提权</a> <a href="/tags/服务/" style="font-size: 10px;">服务</a> <a href="/tags/权限/" style="font-size: 12.5px;">权限</a> <a href="/tags/栈溢出漏洞/" style="font-size: 10px;">栈溢出漏洞</a> <a href="/tags/测试/" style="font-size: 10px;">测试</a> <a href="/tags/浮躁/" style="font-size: 10px;">浮躁</a> <a href="/tags/漏洞调试/" style="font-size: 12.5px;">漏洞调试</a> <a href="/tags/生活/" style="font-size: 15px;">生活</a> <a href="/tags/脱壳/" style="font-size: 10px;">脱壳</a> <a href="/tags/西安/" style="font-size: 10px;">西安</a> <a href="/tags/计划/" style="font-size: 10px;">计划</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a> <a href="/tags/调试/" style="font-size: 15px;">调试</a> <a href="/tags/转换/" style="font-size: 10px;">转换</a> <a href="/tags/进程/" style="font-size: 10px;">进程</a> <a href="/tags/逆向/" style="font-size: 10px;">逆向</a> <a href="/tags/重庆/" style="font-size: 10px;">重庆</a> <a href="/tags/驱动/" style="font-size: 15px;">驱动</a>
+  </div>
+</div>
+
+
+  <div class="widget tag">
+<h3 class="title">Links</h3>
+<ul class="entry">
+<li><a href="http://blog.ourren.com/" title="Ourren">Ourren</a></li>
+<li><a href="http://www.hyjal.net/" title="Hyjal">Hyjal</a></li>
+<li><a href="http://www.jianshu.com/users/fa15f4e416ae/latest_articles" title="Daemonceltics">Daemonceltics</a></li>
+<li><a href="http://papap.info/" title="isee">isee</a></li>
+</ul>
+</div>
+
+  <script type="text/javascript" id="clustrmaps" src="//cdn.clustrmaps.com/map_v2.js?u=putG&d=yoFnN6V-ovhL-H4e9_69LvkTiX4uX7rEYJ15yL3G1Wg"></script>
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <div id="go-pg-top"><i class="icon-arrow-up"></i></div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2020 Lyon
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript" charset="utf-8" src="/js/page.js"></script>
+
+</body>
+
+</html>

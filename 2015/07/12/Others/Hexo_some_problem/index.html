@@ -1,0 +1,343 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Hexo搭建中的一些问题 | Lyon&#39;s blog</title>
+  <meta name="author" content="Lyon">
+  
+  <meta name="description" content="Walk steps step by step">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="Hexo搭建中的一些问题"/>
+  <meta property="og:site_name" content="Lyon&#39;s blog"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  #<link href="/favicon.ico" rel="icon">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="alternate" href="/atom.xml" title="Lyon&#39;s blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  <script src="/js/jquery.min.js"></script>
+  <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?0fe72895c9bcfd0d09da12b5378b1b91";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+</head>
+
+
+<body>
+  <!--[if lte IE 8]> <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'> <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0027_Simplified Chinese.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." style='margin-left:auto;margin-right:auto;display: block;'/></a></div> <![endif]-->
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">Lyon&#39;s blog</a></h1>
+  <h2><a href="/">I hear and I forget.I see and I remember.I do and I understand.</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">首页</a></li>
+    
+      <li><a href="/archives">归档</a></li>
+    
+      <li><a href="/about">关于</a></li>
+    
+	<li> <a href="/atom.xml">RSS</a> </li>
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      
+        <img src="/img/hexo.jpg">
+      
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <time datetime="2015-07-12T07:23:36.000Z"><a href="/2015/07/12/Others/Hexo_some_problem/">2015-07-12</a></time>
+      
+      
+  
+    <h1 class="title">Hexo搭建中的一些问题</h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+  <div id="toc" class="toc-article">
+  <strong class="toc-title">文章目录</strong>
+  
+  </div>
+
+
+	
+    <div class="entry">
+      
+        <p><strong>参考资料:</strong><br>    <a href="http://ibruce.info/2013/11/22/hexo-your-blog/" target="_blank" rel="external">hexo你的博客</a><br>    <a href="http://blog.lmintlcx.com/post/blog-with-hexo.html" target="_blank" rel="external">使用Hexo搭建博客</a><br>    <a href="http://bubkoo.com/2013/12/16/hexo-issure/" target="_blank" rel="external">关于 Hexo 的若干问题</a><br>    <a href="http://xote.tk/7.html" target="_blank" rel="external">快速开始Hexo的正确姿势</a><br>    <a href="http://xote.tk/9.html" target="_blank" rel="external">把Hexo同时部署到GitHub和GitCafe</a></p>
+<p> 一直想自己搭个blog玩玩，主要是在别人平台总是感觉有所束缚不管写什么东西都要审核半天，同时也想自己学习下一些网页知识。但行动一直没有。在今年5月份的时候终于有了行动，租了个digitalocean的ubuntu的vps想自己在上面搭个vpn自己用然后也能跑个wordpress的博客。开始还用得很舒服，但是之后就是每天崩溃也不知道是自己搭的问题还是vps的问题最后人也崩溃了就果断放弃了。。。。。。<br> 然后之后看了github也能搭blog，而且看了效果也不错。就果断试试效果果然不错哈哈，而且搭建也简单再也不用什么apache，mysql什么的了。而且免费还能自己绑定域名。<br> 搭建方法就是参考资料中的，先看1然后一步步跟着来然后搭好了再看2 3 很详细。但是中间也遇到过一些问题所以这里也总结一下。</p>
+<p>##a.整个blog系统的架构<br>由于web不是很懂，这里就只是我的理解。本地端就是自己电脑上需要的主要是mygit+node.js+hexo（主要作用主要是将本地的网页组合成静态的网页就不需要什么服务器解析了只需要访问的浏览器解析）,然后服务端需要一个gitbub pages项目（这边主要作用就是一个云存储器）。然后分享和统计用的百度、评论用的多说<br><a id="more"></a></p>
+<p>##b.本地端hexo目录<br>.<br>├── .deploy<br>├── public<br>├── scaffolds<br>├── scripts<br>|——–node_modules<br>├── source<br>|   ├── _drafts<br>|   └── _posts<br>├── themes<br>├── _config.yml<br>└── package.json<br><strong>.deploy：</strong>执行hexo deploy命令部署到GitHub上的内容目录和public目录下文件差不多，最终的显示效果由这个目录下文件决定<br><strong>public：</strong>执行hexo generate命令，输出的静态网页内容目录，即由hexo各个小部件主题模版然后生成的静态网页</p>
+<ul>
+<li><strong>scaffolds：</strong>layout模板文件目录，其中的md文件可以添加编辑，就是你使用hexo n命令生成的md文件的模版。<br><strong>scripts：</strong>扩展脚本目录，这里可以自定义一些javascript脚本<br><strong>node_modules:</strong>使用npm install <plugin-name> –save安装的插件目录<br><strong>source：</strong>文章源码目录，该目录下的markdown和html文件均会被hexo处理。该页面对应repo的根目录，404文件、favicon.ico文件，CNAME文件等都应该放这里，该目录下可新建页面目录。这个目录相当重要就是你blog首先生成的位置。你写的blog网页这些都应该先放到这个目录下然后由这个目录下的文件生成hexo g的源目录就是这个<br><strong>_drafts：</strong>草稿文章<br><strong>_posts：</strong>发布文章<br><strong>themes：</strong>主题文件目录<br><strong>_config.yml：</strong>全局配置文件，大多数的设置都在这里<br><strong> package.json：</strong>应用程序数据，指明hexo的版本等信息，类似于一般软件中的关于按钮</plugin-name></li>
+</ul>
+<p>##c.在后期模块配置可能会遇到的问题<br> npm install <plugin-name> –save 安装插件后，也按照网上的教程配置了但插件没有被最终显示出来。比如hexo-generator-feed应该生成的Rss  auto.xml未生成。这里主要还是网上的教程和现在的不一样导致的其实在安装后的插件目录下有应该怎样配置的信息README.md按照这里面说的配置就没错了。比如rss就该这样<br>feed:<br>  type: atom<br>  path: atom.xml<br>  limit: 20</plugin-name></p>
+<p>##d.常用命令</p>
+<ul>
+<li>npm install -g hexo      安装</li>
+<li>hexo help #查看帮助</li>
+<li>hexo init #初始化一个目录</li>
+<li>hexo new “postName” #新建文章</li>
+<li>hexo new page “pageName” #新建页面</li>
+<li>hexo generate #生成网页，可以在 public 目录查看整个网站的文件</li>
+<li>hexo server #本地预览，’Ctrl+C’关闭</li>
+<li>hexo deploy #部署.deploy目录</li>
+<li>hexo clean #清除缓存，<strong>强烈建议每次执行命令前先清理缓存，每次部署前先删除 .deploy 文件夹</strong></li>
+<li>hexo deploy -g = hexo d -g</li>
+<li>hexo server -g = hexo s -g<br>简写：</li>
+<li>hexo n == hexo new</li>
+<li>hexo g == hexo generate</li>
+<li>hexo s == hexo server</li>
+<li>hexo d == hexo deploy<br>安装插件，<plugin-name>为插件名</plugin-name></li>
+<li>npm install <plugin-name> –save</plugin-name></li>
+<li>npm update #升级</li>
+<li>npm uninstall <plugin-name> #卸载<br>安装主题</plugin-name></li>
+<li>git clone <repository> themes/<theme-name><br>主题列表：<a href="https://github.com/hexojs/hexo/wiki/Themes" target="_blank" rel="external">hexo themes</a><br>写文章<br>$ hexo new [layout] <title>     #建立新文章，默认在_posts下，layout=”draft”时发布的是草稿<br>$ hexo publish <filename>       #将_drafts下的文件放到_posts下，也就是发布草稿</filename></title></theme-name></repository></li>
+</ul>
+<p>##e.不同电脑使用hexo写blog<br>由于hexo是生成静态blog的工具，所以只要在不同的电脑上安装了git+node.js+hexo，然后将不同的blog目录拷贝到不同的电脑就可以了。这里我使用的是onedriver同步到不同的电脑</p>
+<p>##f.不想文章马上同步到服务器上<br>hexo n draft “文件名”  这样就创建了一个草稿页面</p>
+<p>##g.不想文章链接中含有中文</p>
+<ul>
+<li>直接把生成的md文件名改成英文的或则不含有中文的就可以了。。。。。。。。。。至少我现在只知道这个方法</li>
+<li>不想hexo文章链接是时间格式的只需要把_config.yml文件中的permalink项改了就好，我的是permalink: :category/:title/<br><em>另一种方式：</em><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">---</span><br><span class="line">title: Hexo搭建中的一些问题	//标题</span><br><span class="line">date: 2014-12-24		   // 日期</span><br><span class="line">categories: 代码笔记	  //文章分类</span><br><span class="line">tags: Hexo			      //文章tags</span><br><span class="line">permalink: 7			  //文章的url别名</span><br><span class="line">---</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>##h.新建页面<br>hexo new page “about”<br>然后你会发现source里面多了个目录about，里面有个index.md。其实你也可以手动建立。页面的格式和文章一样。<br>接着把链接加上，themes/&lt;theme_name&gt;/_config.yml里面的menu一项，添加一行About: /about</p>
+<p>##i.为hexo中文章生成一个目录<br><a href="http://kuangqi.me/tricks/enable-table-of-contents-on-hexo/" target="_blank" rel="external">详细</a></p>
+<p>##j.同时上传到gitcafe和github，国内用gitcafe国外github加速<br><a href="http://xote.tk/9.html" target="_blank" rel="external">把Hexo同时部署到GitHub和GitCafe</a></p>
+<div align="center"><br><img src="/img/dns.png" alt="DNSPOD解析设置" align="center"><br></div>
+
+<p>注意在整个过程中可能出现更改了设置但是没反应，试试清空哈dns缓存系统和浏览器的pconfig /flushdns、chrome://net-internals/#dns i。</p>
+<p>##j.为blog添加站内搜索</p>
+<p>##k.出现一些意想不到的问题<br>有时候当你做出了一些修改后，但是hexo d -g之后出现的结果不是你想要的。基本上有两种可能性：</p>
+<ul>
+<li>1.修改了生成正确但部署不成功（g成功d不成功）</li>
+<li>2.修改了生成不成功部署成功（g不成功d成功）<br>对于第一种情况可以查看浏览器中的页面是否和本地生成的html文件是否相同，可以等待一段时间等待github端更新成功后就可以成功了。<br>第二种情况就是你操作全部正确且部署成功，但是就是得不到想要的结果。本地缓存.deploy_git也删除了，但还是不成功 这种就是hexo自身的问题直接先<code>hexo clean</code>再hexo d -g基本就可以成功了，类似这个问题<a href="http://www.zhihu.com/question/27459927" target="_blank" rel="external">hexo 如何删除“分类”？</a><em>自己发布文章时，把分类写错了，并且deploy了，现在文章的分类已经是正确的，但发现“分类”这里写错的仍存在(如下图)。如何删除呢？</em></li>
+</ul>
+<p>##l.从GitCafe迁徙到Coding可能出现的问题</p>
+<p></p><p><strike>1.从GitCafe迁移过来后最大变化是Coding的Pages服务支持Hexo不是很有好，只有使用Coding的演示代替但是Coding的免费演示不支持绑定自定义域名。</strike></p>基本和GitCafe完美兼容，能达到之前的效果，之前是因为资源没加载完导致显示不正确，以为不兼容，Pages服务也支持自定义域名也支持（coding有pages服务和演示功能这两个不一样）<p></p>
+<p>2.公钥部署不成功，ssh: connect to host coding.net port 22: Connection refused<a href="https://coding.net/u/coding/p/Coding-Feedback/topic/63317" target="_blank" rel="external">上传公钥之后ssh -T不成功，求解决办法</a><br><strong>由于是弄完之后写的，后续再更新吧。。。</strong></p>
+
+      
+    </div>
+    <footer>
+      
+
+        
+          <div class="alignleft post-nav">
+            <em>上一篇: </em><a href="/2015/07/12/Tools/sublime text3_markdown/">Sublime Text使用写markdown</a>
+          </div>
+        
+        
+          <div class="alignright post-nav">
+            <em>下一篇: </em><a href="/2015/07/10/Life/hello-world/">Hello World</a>
+          </div>
+          <div class="clearfix"></div>
+        
+
+        
+          <div class="copyright">
+            
+              <span class="claim">转载请注明youngroe.com</span>
+            
+            
+              <span class="from-link">
+                <em>本文链接地址:</em>
+                <a href="/2015/07/12/Others/Hexo_some_problem/">
+                  http://www.youngroe.com/2015/07/12/Others/Hexo_some_problem/
+                </a>
+              </span>
+            
+          </div>
+        
+		<span id="busuanzi_container_site_pv">
+    本站总访问量<span id="busuanzi_value_site_pv"></span>次
+        
+  
+  <div class="categories">
+    <a href="/categories/Others/">Others</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/hexo/">hexo</a>
+  </div>
+
+        <div class="bdsharebuttonbox"><a href="#" class="bds_more" data-cmd="more"></a><a href="#" class="bds_qzone" data-cmd="qzone"></a><a href="#" class="bds_tsina" data-cmd="tsina"></a><a href="#" class="bds_tqq" data-cmd="tqq"></a><a href="#" class="bds_renren" data-cmd="renren"></a><a href="#" class="bds_weixin" data-cmd="weixin"></a></div>
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdPic":"","bdStyle":"0","bdSize":"16"},"share":{},"image":{"viewList":["qzone","tsina","tqq","renren","weixin"],"viewText":"������","viewSize":"16"},"selectShare":{"bdContainerClass":null,"bdSelectMiniList":["qzone","tsina","tqq","renren","weixin"]}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</span>
+</article>
+
+
+<section id="comment">
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+<div class="widget tag">
+  <h3 class="title">分类</h3>
+  <ul class="entry">
+  
+    <li><a href="/categories/Cybersecurity/">Cybersecurity</a><small>1</small></li>
+  
+    <li><a href="/categories/Debug/">Debug</a><small>7</small></li>
+  
+    <li><a href="/categories/Kernel/">Kernel</a><small>4</small></li>
+  
+    <li><a href="/categories/Learning/">Learning</a><small>8</small></li>
+  
+    <li><a href="/categories/Life/">Life</a><small>7</small></li>
+  
+    <li><a href="/categories/Others/">Others</a><small>1</small></li>
+  
+    <li><a href="/categories/Read-Notes/">Read Notes</a><small>7</small></li>
+  
+    <li><a href="/categories/Tools/">Tools</a><small>6</small></li>
+  
+    <li><a href="/categories/Vulnerabilities/">Vulnerabilities</a><small>0</small></li>
+  
+    <li><a href="/categories/Windows/">Windows</a><small>14</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2019/07/01/Windows/delphi_reverse_summary/">Delphi程序逆向反汇编技巧小记</a>
+      </li>
+    
+      <li>
+        <a href="/2019/06/25/Kernel/kernel_enum_wfp_callout_function/">Windows内核重拾：如何枚举系统中Windows Filtering Platform (WFP)驱动中的callout函数</a>
+      </li>
+    
+      <li>
+        <a href="/2019/05/06/Kernel/windows-driver-testing-basics/">Windows内核重拾：Windows驱动测试基础：工具、功能和示例（翻译/转载）</a>
+      </li>
+    
+      <li>
+        <a href="/2019/04/06/Windows/how-to-reverse-engineer-software-windows-in-a-right-way/">如何正确的对Windows软件进行逆向工程（翻译/转载）</a>
+      </li>
+    
+      <li>
+        <a href="/2019/01/12/Windows/a_crash_lead_deadlock/">Windows平台下一个崩溃而导致的死锁分析</a>
+      </li>
+    
+      <li>
+        <a href="/2018/12/01/Windows/windows_client_dns_over_https/">Windows客户端如何透明使用DNS-over-HTTPS</a>
+      </li>
+    
+      <li>
+        <a href="/2018/10/06/Cybersecurity/ddos-protection-techniques/">现代DDoS对抗技术概述（翻译/转载）</a>
+      </li>
+    
+      <li>
+        <a href="/2018/09/18/Life/xian/">西安周末游</a>
+      </li>
+    
+      <li>
+        <a href="/2018/01/06/Kernel/WindowsKernel_DebugObject/">Windows内核重拾：DebugObject</a>
+      </li>
+    
+      <li>
+        <a href="/2017/10/23/Tools/IDA-Pro-ClassInformer-Tutorial/">IDA Pro ClassInformer使用指南（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2017/05/23/Windows/Kernel Data and Filtering Support/">Kernel Data and Filtering Support for Windows Server 2008（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2017/05/17/Windows/Windows-x64-Shellcode/">Windows x64 Shellcode编写指南(翻译)</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget tagcloud">
+  <h3 class="title">标签云</h3>
+  <div class="entry">
+    <a href="/tags/ASM/" style="font-size: 12.5px;">ASM</a> <a href="/tags/Boost/" style="font-size: 10px;">Boost</a> <a href="/tags/DDoS/" style="font-size: 10px;">DDoS</a> <a href="/tags/DNS-over-HTTPS/" style="font-size: 10px;">DNS-over-HTTPS</a> <a href="/tags/Delphi/" style="font-size: 10px;">Delphi</a> <a href="/tags/Dll劫持/" style="font-size: 10px;">Dll劫持</a> <a href="/tags/GCC-GDB/" style="font-size: 10px;">GCC&GDB</a> <a href="/tags/GetVersionEx/" style="font-size: 10px;">GetVersionEx</a> <a href="/tags/Http/" style="font-size: 10px;">Http</a> <a href="/tags/IDA-Pro/" style="font-size: 12.5px;">IDA Pro</a> <a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/MSDN/" style="font-size: 12.5px;">MSDN</a> <a href="/tags/Malware/" style="font-size: 12.5px;">Malware</a> <a href="/tags/MiniDumpWriteDump/" style="font-size: 10px;">MiniDumpWriteDump</a> <a href="/tags/PEB/" style="font-size: 10px;">PEB</a> <a href="/tags/Procmon/" style="font-size: 10px;">Procmon</a> <a href="/tags/Runtime-Error/" style="font-size: 10px;">Runtime Error</a> <a href="/tags/SEH/" style="font-size: 10px;">SEH</a> <a href="/tags/Shellcode/" style="font-size: 10px;">Shellcode</a> <a href="/tags/SysinternalsSuite/" style="font-size: 10px;">SysinternalsSuite</a> <a href="/tags/Tips/" style="font-size: 10px;">Tips</a> <a href="/tags/UAC/" style="font-size: 10px;">UAC</a> <a href="/tags/UAF漏洞/" style="font-size: 10px;">UAF漏洞</a> <a href="/tags/VC/" style="font-size: 10px;">VC</a> <a href="/tags/Visual-Studio/" style="font-size: 12.5px;">Visual Studio</a> <a href="/tags/Windbg/" style="font-size: 10px;">Windbg</a> <a href="/tags/Windows/" style="font-size: 20px;">Windows</a> <a href="/tags/Windows核心编程/" style="font-size: 17.5px;">Windows核心编程</a> <a href="/tags/android/" style="font-size: 10px;">android</a> <a href="/tags/getaddrinfo/" style="font-size: 10px;">getaddrinfo</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/libeay32/" style="font-size: 10px;">libeay32</a> <a href="/tags/markdown/" style="font-size: 10px;">markdown</a> <a href="/tags/ndk/" style="font-size: 10px;">ndk</a> <a href="/tags/sublime-text3/" style="font-size: 10px;">sublime text3</a> <a href="/tags/x64/" style="font-size: 12.5px;">x64</a> <a href="/tags/体验/" style="font-size: 10px;">体验</a> <a href="/tags/内核/" style="font-size: 12.5px;">内核</a> <a href="/tags/内核结构/" style="font-size: 15px;">内核结构</a> <a href="/tags/学习/" style="font-size: 10px;">学习</a> <a href="/tags/安全机制/" style="font-size: 10px;">安全机制</a> <a href="/tags/异常处理/" style="font-size: 10px;">异常处理</a> <a href="/tags/提权/" style="font-size: 10px;">提权</a> <a href="/tags/服务/" style="font-size: 10px;">服务</a> <a href="/tags/权限/" style="font-size: 12.5px;">权限</a> <a href="/tags/栈溢出漏洞/" style="font-size: 10px;">栈溢出漏洞</a> <a href="/tags/测试/" style="font-size: 10px;">测试</a> <a href="/tags/浮躁/" style="font-size: 10px;">浮躁</a> <a href="/tags/漏洞调试/" style="font-size: 12.5px;">漏洞调试</a> <a href="/tags/生活/" style="font-size: 15px;">生活</a> <a href="/tags/脱壳/" style="font-size: 10px;">脱壳</a> <a href="/tags/西安/" style="font-size: 10px;">西安</a> <a href="/tags/计划/" style="font-size: 10px;">计划</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a> <a href="/tags/调试/" style="font-size: 15px;">调试</a> <a href="/tags/转换/" style="font-size: 10px;">转换</a> <a href="/tags/进程/" style="font-size: 10px;">进程</a> <a href="/tags/逆向/" style="font-size: 10px;">逆向</a> <a href="/tags/重庆/" style="font-size: 10px;">重庆</a> <a href="/tags/驱动/" style="font-size: 15px;">驱动</a>
+  </div>
+</div>
+
+
+  <div class="widget tag">
+<h3 class="title">Links</h3>
+<ul class="entry">
+<li><a href="http://blog.ourren.com/" title="Ourren">Ourren</a></li>
+<li><a href="http://www.hyjal.net/" title="Hyjal">Hyjal</a></li>
+<li><a href="http://www.jianshu.com/users/fa15f4e416ae/latest_articles" title="Daemonceltics">Daemonceltics</a></li>
+<li><a href="http://papap.info/" title="isee">isee</a></li>
+</ul>
+</div>
+
+  <script type="text/javascript" id="clustrmaps" src="//cdn.clustrmaps.com/map_v2.js?u=putG&d=yoFnN6V-ovhL-H4e9_69LvkTiX4uX7rEYJ15yL3G1Wg"></script>
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <div id="go-pg-top"><i class="icon-arrow-up"></i></div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2020 Lyon
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript" charset="utf-8" src="/js/page.js"></script>
+
+</body>
+
+</html>

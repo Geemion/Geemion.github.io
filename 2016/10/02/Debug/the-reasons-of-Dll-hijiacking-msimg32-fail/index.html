@@ -1,0 +1,303 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>msimg32.dll劫持失败原因分析 | Lyon&#39;s blog</title>
+  <meta name="author" content="Lyon">
+  
+  <meta name="description" content="Walk steps step by step">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="msimg32.dll劫持失败原因分析"/>
+  <meta property="og:site_name" content="Lyon&#39;s blog"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  #<link href="/favicon.ico" rel="icon">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="alternate" href="/atom.xml" title="Lyon&#39;s blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  <script src="/js/jquery.min.js"></script>
+  <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?0fe72895c9bcfd0d09da12b5378b1b91";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+</head>
+
+
+<body>
+  <!--[if lte IE 8]> <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'> <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0027_Simplified Chinese.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." style='margin-left:auto;margin-right:auto;display: block;'/></a></div> <![endif]-->
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">Lyon&#39;s blog</a></h1>
+  <h2><a href="/">I hear and I forget.I see and I remember.I do and I understand.</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">首页</a></li>
+    
+      <li><a href="/archives">归档</a></li>
+    
+      <li><a href="/about">关于</a></li>
+    
+	<li> <a href="/atom.xml">RSS</a> </li>
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <time datetime="2016-10-02T07:27:11.000Z"><a href="/2016/10/02/Debug/the-reasons-of-Dll-hijiacking-msimg32-fail/">2016-10-02</a></time>
+      
+      
+  
+    <h1 class="title">msimg32.dll劫持失败原因分析</h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+  <div id="toc" class="toc-article">
+  <strong class="toc-title">文章目录</strong>
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#问题描述"><span class="toc-number">1.</span> <span class="toc-text">问题描述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#问题分析调试"><span class="toc-number">2.</span> <span class="toc-text">问题分析调试</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#问题1"><span class="toc-number">2.1.</span> <span class="toc-text">问题1</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#问题2"><span class="toc-number">3.</span> <span class="toc-text">问题2</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-number">4.</span> <span class="toc-text">总结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考文献"><span class="toc-number">5.</span> <span class="toc-text">参考文献</span></a></li></ol>
+  </div>
+
+
+	
+    <div class="entry">
+      
+        <h2 id="问题描述">问题描述</h2><p>前一段事件做一个题的时候，需要修改主程序执行逻辑，当时想想应该很简单，直接做dll劫持然后在该DllMain中去修改主程序Exe的执行逻辑（因为之前看到飘云阁的 Visual Assist X劫持用的msimg32）。很顺利的在调试系统(win xp)做完了，达到了预期目的。但是拿到win7和win10上运行顿时就不行了。<br>主要问题有两个：</p>
+<ul>
+<li>win7上直接不加载劫持dll,msimg32.dll了</li>
+<li>win10上会加载msimg32.dll，但是加载时间靠后，在主程序逻辑执行后才被加载，这会修改逻辑也没用了</li>
+</ul>
+<p>当时时间紧急，也比较慌。没有分析，改了方案直接修改主程序二进制，文件补丁方式做的<br><a id="more"></a></p>
+<h2 id="问题分析调试">问题分析调试</h2><h3 id="问题1">问题1</h3><div align="center"><br><img src="/img/20161002msimg32_depnds.png" alt="主程序dll依赖情况" align="center"><br></div><br>首先depends看下主程序dll依赖情况，发现确实有msimg32.dll啊。怎么会出现win7不加载呢？好像前面有个沙漏，F1查看depends帮助发现这个沙漏标志msimg32.dll是延迟加载dll（延迟加载的dll是在该dll中的函数被调用的时候才被加载，延迟加载提高的程序的启动速度）。那为什么winxp会加载呢？<br><div align="center"><br><img src="/img/20161002msimg32_procmon.png" alt="winxp加载msimg32.dll堆栈情况" align="center"><br></div><br>上神器procmon,发现是在imm32.dll中加载了msimg32.dll，搜索imm32.dll发现是和输入法相关。对比两个系统发现winxp调试系统安装了qq拼音输入法而win7上没有，应该qq拼音的原因。将xp的qq输入法卸载，果然xp系统也不加载了。但是具体什么原因还不知道，直接上调试器，但开始不知道怎么下断点，就直接将msimg32.dll的入口点修改二进制为0xcc,直接断下(其实可以直接对bu ntdll!LdrLoadDll “dU /c 50 poi(@ebp+8)”<br>,开始下的LoadLibaryExW以为加载dll都会通过这个函数),堆栈情况如下<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">ChildEBP RetAddr  Args to Child              </span><br><span class="line">WARNING: Stack unwind information not available. Following frames may be wrong.</span><br><span class="line"><span class="number">0012e3</span>cc <span class="number">7</span>c93c4da <span class="number">762f</span>110c <span class="number">762f</span>0000 <span class="number">00000001</span> MSIMG32!DllInitialize</span><br><span class="line"><span class="number">0012e4</span>d4 <span class="number">7</span>c936351 <span class="number">00000000</span> c0150008 <span class="number">00000000</span> ntdll!LdrFindResourceDirectory_U+<span class="number">0x28d</span></span><br><span class="line"><span class="number">0012e780</span> <span class="number">7</span>c9364b3 <span class="number">00000000</span> <span class="number">00148818</span> <span class="number">0012</span>ea74 ntdll!RtlValidateUnicodeString+<span class="number">0x507</span></span><br><span class="line"><span class="number">0012</span>ea28 <span class="number">7</span>c801bbd <span class="number">00148818</span> <span class="number">0012</span>ea74 <span class="number">0012</span>ea54 ntdll!LdrLoadDll+<span class="number">0x110</span></span><br><span class="line"><span class="number">0012</span>ea90 <span class="number">7</span>c80aeec <span class="number">0012</span>eac4 <span class="number">00000000</span> <span class="number">00000000</span> kernel32!LoadLibraryExW+<span class="number">0xc8</span></span><br><span class="line">*** ERROR: Symbol file could not be found.  Defaulted to <span class="keyword">export</span> symbols <span class="keyword">for</span> C:\WINDOWS\system32\IMM32.DLL - </span><br><span class="line"><span class="number">0012</span>eaa4 <span class="number">763071f</span>4 <span class="number">0012</span>eac4 <span class="number">00000000</span> <span class="number">00147790</span> kernel32!LoadLibraryW+<span class="number">0x11</span></span><br><span class="line"><span class="number">0012</span>ecd0 <span class="number">76307680</span> <span class="number">0012</span>ed08 <span class="number">00147790</span> <span class="number">001464e0</span> IMM32!ImmNotifyIME+<span class="number">0x21c</span></span><br><span class="line"><span class="number">0012</span>ee64 <span class="number">763077</span>bb e0200804 <span class="number">00000000</span> <span class="number">0012</span>ee84 IMM32!ImmNotifyIME+<span class="number">0x6a8</span></span><br><span class="line"><span class="number">0012</span>ee74 <span class="number">77</span>d6b570 e0200804 <span class="number">001464e0</span> <span class="number">0012f</span>0d4 IMM32!ImmLoadIME+<span class="number">0x4c</span></span><br><span class="line"><span class="number">0012</span>ee84 <span class="number">77</span>d6be00 <span class="number">001464e0</span> <span class="number">00647</span>ac8 <span class="number">00000287</span> USER32!IMPSetIMEA+<span class="number">0x6c</span></span><br><span class="line"><span class="number">0012f</span>0d4 <span class="number">77</span>d6c8cf <span class="number">001464e0</span> <span class="number">00000287</span> <span class="number">00000021</span> USER32!IMPSetIMEA+<span class="number">0x8fc</span></span><br><span class="line"><span class="number">0012f</span>0f8 <span class="number">77</span>d6c952 <span class="number">00010</span>b7c <span class="number">00000287</span> <span class="number">00000021</span> USER32!IMPSetIMEA+<span class="number">0x13cb</span></span><br><span class="line"><span class="number">0012f</span>114 <span class="number">77</span>d18734 <span class="number">00010</span>b7c <span class="number">00000287</span> <span class="number">00000021</span> USER32!IMPSetIMEA+<span class="number">0x144e</span></span><br><span class="line"><span class="number">0012f</span>140 <span class="number">77</span>d18816 <span class="number">77</span>d6c930 <span class="number">00010</span>b7c <span class="number">00000287</span> USER32!GetDC+<span class="number">0x6d</span></span><br><span class="line"><span class="number">0012f</span>1a8 <span class="number">77</span>d2a013 <span class="number">00000000</span> <span class="number">77</span>d6c930 <span class="number">00010</span>b7c USER32!GetDC+<span class="number">0x14f</span></span><br><span class="line"><span class="number">0012f</span>1d8 <span class="number">77</span>d2a998 <span class="number">77</span>d6c930 <span class="number">00010</span>b7c <span class="number">00000287</span> USER32!IsWindowUnicode+<span class="number">0xa1</span></span><br><span class="line">*** WARNING: Unable to verify checksum <span class="keyword">for</span> image00400000</span><br><span class="line">*** ERROR: Module load completed but symbols could not be loaded <span class="keyword">for</span> image00400000</span><br><span class="line"><span class="number">0012f</span>1f8 <span class="number">0040</span>d08f <span class="number">77</span>d6c930 <span class="number">00010</span>b7c <span class="number">00000287</span> USER32!CallWindowProcA+<span class="number">0x1b</span></span><br><span class="line"><span class="number">0012f</span>26c <span class="number">77</span>d18734 <span class="number">00010</span>b7c <span class="number">00000287</span> <span class="number">00000021</span> image00400000+<span class="number">0xd08f</span></span><br><span class="line"><span class="number">0012f</span>298 <span class="number">77</span>d18816 <span class="number">0040</span>cf74 <span class="number">00010</span>b7c <span class="number">00000287</span> USER32!GetDC+<span class="number">0x6d</span></span><br><span class="line"><span class="number">0012f</span>300 <span class="number">77</span>d28ea0 <span class="number">00000000</span> <span class="number">0040</span>cf74 <span class="number">00010</span>b7c USER32!GetDC+<span class="number">0x14f</span></span><br><span class="line"><span class="number">0012f</span>354 <span class="number">77</span>d28eec <span class="number">00647</span>ac8 <span class="number">00000287</span> <span class="number">00000021</span> USER32!DefWindowProcW+<span class="number">0x180</span></span><br><span class="line"><span class="number">0012f</span>37c <span class="number">7</span>c92e453 <span class="number">0012f</span>38c <span class="number">00000018</span> <span class="number">00647</span>ac8 USER32!DefWindowProcW+<span class="number">0x1cc</span></span><br><span class="line"><span class="number">0012f</span>844 <span class="number">77</span>d26423 <span class="number">80050101</span> <span class="number">00008002</span> <span class="number">0012f</span>8a8 ntdll!KiUserCallbackDispatcher+<span class="number">0x13</span></span><br><span class="line"><span class="number">0012f</span>91c <span class="number">77</span>d2683e <span class="number">00400000</span> <span class="number">00008002</span> <span class="number">00000110</span> USER32!IsDlgButtonChecked+<span class="number">0x1629</span></span><br><span class="line"><span class="number">0012f</span>940 <span class="number">77</span>d39b43 <span class="number">00400000</span> <span class="number">00420988</span> <span class="number">00000000</span> USER32!CreateDialogIndirectParamAorW+<span class="number">0x33</span></span><br><span class="line"><span class="number">0012f</span>960 <span class="number">0040</span>c465 <span class="number">00400000</span> <span class="number">00420988</span> <span class="number">00000000</span> USER32!CreateDialogIndirectParamA+<span class="number">0x1b</span></span><br><span class="line"><span class="number">0012f</span>9c8 <span class="number">0040</span>c68e <span class="number">00420988</span> <span class="number">00000000</span> <span class="number">00400000</span> image00400000+<span class="number">0xc465</span></span><br><span class="line"><span class="number">0012f</span>a0c <span class="number">004010e4</span> <span class="number">0041</span>c5d0 ffffffff <span class="number">00414518</span> image00400000+<span class="number">0xc68e</span></span><br><span class="line"><span class="number">0012f</span>fc0 <span class="number">7</span>c817067 <span class="number">00</span>bcf6ee <span class="number">00</span>bcf774 <span class="number">7f</span>fd9000 image00400000+<span class="number">0x10e4</span></span><br><span class="line"><span class="number">0012f</span>ff0 <span class="number">00000000</span> <span class="number">0040283</span>e <span class="number">00000000</span> <span class="number">78746341</span> kernel32!RegisterWaitForInputIdle+<span class="number">0x49</span></span><br><span class="line"><span class="number">0</span>:<span class="number">000</span>&gt; du <span class="number">0012</span>eac4</span><br><span class="line"><span class="number">0012</span>eac4  <span class="string">"C:\WINDOWS\system32\QQPINYIN.IME"</span></span><br><span class="line"><span class="number">0012</span>eb04  <span class="string">""</span></span><br></pre></td></tr></table></figure><br><br>发现在加载QQPINYIN.IME的时候，在解决QQPINYIN.IME依赖dll的时候加载了msimg32.dll。<br><div align="center"><br><img src="/img/20161002qqime_depends.png" alt="QQPINYIN.ime的DLL依赖项" align="center"><br></div>
+
+<h2 id="问题2">问题2</h2><p>好了，问题1解决了，该问题2了。win10上同样装的qq输入法，但是输入法劫持dll的加载时机却靠后了，这是怎么回事呢？<br>在procmon观察，在win10系统QQpinyin.ime是被QQPinyinTSF.dll这个dll加载的，而在winxp上是imm32.dll。上调试器观察下有什么不同<br>winxp<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">0012</span>eac4  <span class="string">"C:\WINDOWS\system32\QQPINYIN.IME"</span></span><br><span class="line"><span class="number">00</span> <span class="number">0012</span>eaa4 <span class="number">763071f</span>4 kernel32!LoadLibraryW+<span class="number">0x5</span></span><br><span class="line"><span class="number">01</span> <span class="number">0012</span>ecd0 <span class="number">76307680</span> IMM32!ImmNotifyIME+<span class="number">0x21c</span></span><br><span class="line"><span class="number">02</span> <span class="number">0012</span>ee64 <span class="number">763077</span>bb IMM32!ImmNotifyIME+<span class="number">0x6a8</span></span><br><span class="line"><span class="number">03</span> <span class="number">0012</span>ee74 <span class="number">77</span>d6b570 IMM32!ImmLoadIME+<span class="number">0x4c</span></span><br><span class="line"><span class="number">04</span> <span class="number">0012</span>ee84 <span class="number">77</span>d6be00 USER32!IMPSetIMEA+<span class="number">0x6c</span></span><br><span class="line"><span class="number">05</span> <span class="number">0012f</span>0d4 <span class="number">77</span>d6c8cf USER32!IMPSetIMEA+<span class="number">0x8fc</span></span><br><span class="line"><span class="number">06</span> <span class="number">0012f</span>0f8 <span class="number">77</span>d6c952 USER32!IMPSetIMEA+<span class="number">0x13cb</span></span><br><span class="line"><span class="number">07</span> <span class="number">0012f</span>114 <span class="number">77</span>d18734 USER32!IMPSetIMEA+<span class="number">0x144e</span></span><br><span class="line"><span class="number">08</span> <span class="number">0012f</span>140 <span class="number">77</span>d18816 USER32!GetDC+<span class="number">0x6d</span></span><br><span class="line"><span class="number">09</span> <span class="number">0012f</span>1a8 <span class="number">77</span>d2a013 USER32!GetDC+<span class="number">0x14f</span></span><br><span class="line"><span class="number">0</span>a <span class="number">0012f</span>1d8 <span class="number">77</span>d2a998 USER32!IsWindowUnicode+<span class="number">0xa1</span></span><br><span class="line"><span class="number">0</span>b <span class="number">0012f</span>1f8 <span class="number">0040</span>d08f USER32!CallWindowProcA+<span class="number">0x1b</span></span><br><span class="line"><span class="number">0</span>c <span class="number">0012f</span>26c <span class="number">77</span>d18734 image00400000+<span class="number">0xd08f</span></span><br><span class="line"><span class="number">0</span>d <span class="number">0012f</span>298 <span class="number">77</span>d18816 USER32!GetDC+<span class="number">0x6d</span></span><br><span class="line"><span class="number">0</span>e <span class="number">0012f</span>300 <span class="number">77</span>d28ea0 USER32!GetDC+<span class="number">0x14f</span></span><br><span class="line"><span class="number">0f</span> <span class="number">0012f</span>354 <span class="number">77</span>d28eec USER32!DefWindowProcW+<span class="number">0x180</span></span><br><span class="line"><span class="number">10</span> <span class="number">0012f</span>37c <span class="number">7</span>c92e453 USER32!DefWindowProcW+<span class="number">0x1cc</span></span><br><span class="line"><span class="number">11</span> <span class="number">0012f</span>844 <span class="number">77</span>d26423 ntdll!KiUserCallbackDispatcher+<span class="number">0x13</span></span><br><span class="line"><span class="number">12</span> <span class="number">0012f</span>91c <span class="number">77</span>d2683e USER32!IsDlgButtonChecked+<span class="number">0x1629</span></span><br><span class="line"><span class="number">13</span> <span class="number">0012f</span>940 <span class="number">77</span>d39b43 USER32!CreateDialogIndirectParamAorW+<span class="number">0x33</span></span><br><span class="line"><span class="number">14</span> <span class="number">0012f</span>960 <span class="number">0040</span>c465 USER32!CreateDialogIndirectParamA+<span class="number">0x1b</span></span><br><span class="line"><span class="number">15</span> <span class="number">0012f</span>9c8 <span class="number">0040</span>c68e image00400000+<span class="number">0xc465</span></span><br><span class="line"><span class="number">16</span> <span class="number">0012f</span>a0c <span class="number">004010e4</span> image00400000+<span class="number">0xc68e</span></span><br><span class="line"><span class="number">17</span> <span class="number">0012f</span>fc0 <span class="number">7</span>c817067 image00400000+<span class="number">0x10e4</span></span><br><span class="line"><span class="number">18</span> <span class="number">0012f</span>ff0 <span class="number">00000000</span> kernel32!RegisterWaitForInputIdle+<span class="number">0x49</span></span><br></pre></td></tr></table></figure></p>
+<p>win10<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">0019</span>d848  <span class="string">"C:\WINDOWS\SysWow64\IME\QQPinyinTSF\QQPinyinTSF.dll"</span></span><br><span class="line"><span class="number">00</span> <span class="number">0019</span>d794 <span class="number">752</span>ac012 KERNELBASE!LoadLibraryExW+<span class="number">0x5</span></span><br><span class="line"><span class="number">01</span> <span class="number">0019</span>d7b8 <span class="number">752</span>abf8a combase!LoadLibraryWithLogging+<span class="number">0x1b</span> </span><br><span class="line"><span class="number">02</span> <span class="number">0019</span>d7e4 <span class="number">752</span>ac136 combase!CClassCache::CDllPathEntry::LoadDll+<span class="number">0x50</span> </span><br><span class="line"><span class="number">03</span> <span class="number">0019</span>d824 <span class="number">752</span>ad6f7 combase!CClassCache::CDllPathEntry::Create+<span class="number">0x3c</span> </span><br><span class="line"><span class="number">04</span> <span class="number">0019</span>da74 <span class="number">752f</span>98ce combase!CClassCache::CClassEntry::CreateDllClassEntry+<span class="number">0xe3</span> </span><br><span class="line"><span class="number">05</span> <span class="number">0019</span>dda4 <span class="number">752</span>accb2 combase!CClassCache::GetClassObjectActivator+<span class="number">0x82e</span> </span><br><span class="line"><span class="number">06</span> <span class="number">0019</span>ddd8 <span class="number">752</span>ac898 combase!CClassCache::GetClassObject+<span class="number">0x30</span> </span><br><span class="line"><span class="number">07</span> <span class="number">0019</span>de48 <span class="number">752</span>b6dfa combase!CServerContextActivator::CreateInstance+<span class="number">0x128</span> </span><br><span class="line"><span class="number">08</span> <span class="number">0019</span>de94 <span class="number">752</span>acef2 combase!ActivationPropertiesIn::DelegateCreateInstance+<span class="number">0xba</span> </span><br><span class="line"><span class="number">09</span> <span class="number">0019</span>deec <span class="number">752</span>b1575 combase!CApartmentActivator::CreateInstance+<span class="number">0xa2</span> </span><br><span class="line"><span class="number">0</span>a <span class="number">0019</span>df1c <span class="number">752</span>b1640 combase!CProcessActivator::CCICallback+<span class="number">0x65</span> </span><br><span class="line"><span class="number">0</span>b <span class="number">0019</span>df40 <span class="number">752</span>b16d7 combase!CProcessActivator::AttemptActivation+<span class="number">0x40</span> </span><br><span class="line"><span class="number">0</span>c <span class="number">0019</span>df80 <span class="number">752</span>b18f7 combase!CProcessActivator::ActivateByContext+<span class="number">0x77</span> </span><br><span class="line"><span class="number">0</span>d <span class="number">0019</span>dfb0 <span class="number">752</span>b6ddb combase!CProcessActivator::CreateInstance+<span class="number">0x67</span> </span><br><span class="line"><span class="number">0</span>e <span class="number">0019</span>dffc <span class="number">752</span>b2e7d combase!ActivationPropertiesIn::DelegateCreateInstance+<span class="number">0x9b</span> </span><br><span class="line"><span class="number">0f</span> <span class="number">0019e260</span> <span class="number">752</span>b6de2 combase!CClientContextActivator::CreateInstance+<span class="number">0xfd</span> </span><br><span class="line"><span class="number">10</span> <span class="number">0019e2</span>ac <span class="number">752f</span>77a0 combase!ActivationPropertiesIn::DelegateCreateInstance+<span class="number">0xa2</span> </span><br><span class="line"><span class="number">11</span> <span class="number">0019</span>ec18 <span class="number">752f</span>6ba2 combase!ICoCreateInstanceEx+<span class="number">0xae0</span> </span><br><span class="line"><span class="number">12</span> <span class="number">0019</span>ecc8 <span class="number">752f</span>8209 combase!CComActivator::DoCreateInstance+<span class="number">0x162</span> </span><br><span class="line"><span class="number">13</span> <span class="number">0019</span>ed08 <span class="number">7510</span>dece combase!CoCreateInstance+<span class="number">0xa9</span> </span><br><span class="line"><span class="number">14</span> <span class="number">0019</span>ee44 <span class="number">7510e28</span>f MSCTF!CThreadInputMgr::_CreateTip+<span class="number">0x1be</span></span><br><span class="line"><span class="number">15</span> <span class="number">0019</span>ee84 <span class="number">7510</span>c458 MSCTF!CThreadInputMgr::ActivateInputProfile+<span class="number">0x10f</span></span><br><span class="line"><span class="number">16</span> <span class="number">0019</span>efb0 <span class="number">7510</span>c85d MSCTF!CThreadInputMgr::OnActiveProfileChange+<span class="number">0x668</span></span><br><span class="line"><span class="number">17</span> <span class="number">0019f</span>1e0 <span class="number">7511e12</span>f MSCTF!CThreadInputMgr::OnInputFocusEvent+<span class="number">0x2cd</span></span><br><span class="line"><span class="number">18</span> <span class="number">0019f</span>8a0 <span class="number">743</span>a9733 MSCTF!WinEventProc+<span class="number">0x5bf</span></span><br><span class="line"><span class="number">19</span> <span class="number">0019f</span>8e8 <span class="number">777608</span>c6 USER32!__ClientCallWinEventProc+<span class="number">0x43</span></span><br><span class="line"><span class="number">1</span>a <span class="number">0019f</span>920 <span class="number">775</span>d24ec ntdll!KiUserCallbackDispatcher+<span class="number">0x36</span></span><br><span class="line"><span class="number">1</span>b <span class="number">0019f</span>924 <span class="number">743</span>b24d3 win32u!NtUserGetMessage+<span class="number">0xc</span></span><br><span class="line"><span class="number">1</span>c <span class="number">0019f</span>950 <span class="number">0040</span>bc09 USER32!GetMessageA+<span class="number">0x53</span></span><br><span class="line">WARNING: Stack unwind information not available. Following frames may be wrong.</span><br><span class="line"><span class="number">1</span>d <span class="number">0019f</span>96c <span class="number">0040</span>eff5 image00400000+<span class="number">0xbc09</span></span><br><span class="line"><span class="number">1</span>e <span class="number">0019f</span>9dc <span class="number">00000000</span> image00400000+<span class="number">0xeff5</span></span><br><span class="line"></span><br><span class="line"><span class="number">00670</span>ab0  <span class="string">"C:\WINDOWS\system32\IME\QQPinyinTSF\QQPinyin.ime"</span></span><br><span class="line"><span class="number">00</span> <span class="number">0019e974</span> <span class="number">7578</span>c711 KERNELBASE!LoadLibraryExW+<span class="number">0x5</span></span><br><span class="line"><span class="number">01</span> <span class="number">0019e988</span> <span class="number">568</span>cb24f KERNELBASE!LoadLibraryW+<span class="number">0x11</span></span><br><span class="line">WARNING: Stack unwind information not available. Following frames may be wrong.</span><br><span class="line"><span class="number">02</span> <span class="number">0019</span>ecf4 <span class="number">568</span>cd764 QQPinyinTSF!DllGetClassObject+<span class="number">0x24cf</span></span><br><span class="line"><span class="number">03</span> <span class="number">0019</span>ed18 <span class="number">568</span>cb8da QQPinyinTSF!DllGetClassObject+<span class="number">0x49e4</span></span><br><span class="line"><span class="number">04</span> <span class="number">0019</span>eda8 <span class="number">750f</span>4939 QQPinyinTSF!DllGetClassObject+<span class="number">0x2b5a</span></span><br><span class="line"><span class="number">05</span> <span class="number">0019</span>eddc <span class="number">7510</span>dc53 MSCTF!CTip::Activate+<span class="number">0x63</span></span><br><span class="line"><span class="number">06</span> <span class="number">0019</span>ee48 <span class="number">7510e2</span>d9 MSCTF!CThreadInputMgr::_ActivateTip+<span class="number">0x9f</span></span><br><span class="line"><span class="number">07</span> <span class="number">0019</span>ee84 <span class="number">7510</span>c458 MSCTF!CThreadInputMgr::ActivateInputProfile+<span class="number">0x159</span></span><br><span class="line"><span class="number">08</span> <span class="number">0019</span>efb0 <span class="number">7510</span>c85d MSCTF!CThreadInputMgr::OnActiveProfileChange+<span class="number">0x668</span></span><br><span class="line"><span class="number">09</span> <span class="number">0019f</span>1e0 <span class="number">7511e12</span>f MSCTF!CThreadInputMgr::OnInputFocusEvent+<span class="number">0x2cd</span></span><br><span class="line"><span class="number">0</span>a <span class="number">0019f</span>8a0 <span class="number">743</span>a9733 MSCTF!WinEventProc+<span class="number">0x5bf</span></span><br><span class="line"><span class="number">0</span>b <span class="number">0019f</span>8e8 <span class="number">777608</span>c6 USER32!__ClientCallWinEventProc+<span class="number">0x43</span></span><br><span class="line"><span class="number">0</span>c <span class="number">0019f</span>920 <span class="number">775</span>d24ec ntdll!KiUserCallbackDispatcher+<span class="number">0x36</span></span><br><span class="line"><span class="number">0</span>d <span class="number">0019f</span>924 <span class="number">743</span>b24d3 win32u!NtUserGetMessage+<span class="number">0xc</span></span><br><span class="line"><span class="number">0</span>e <span class="number">0019f</span>950 <span class="number">0040</span>bc09 USER32!GetMessageA+<span class="number">0x53</span></span><br><span class="line"><span class="number">0f</span> <span class="number">0019f</span>96c <span class="number">0040</span>eff5 image00400000+<span class="number">0xbc09</span></span><br><span class="line"><span class="number">10</span> <span class="number">0019f</span>9dc <span class="number">00000000</span> image00400000+<span class="number">0xeff5</span></span><br></pre></td></tr></table></figure></p>
+<p>总结一下QQpinyin.ime在winxp和win10上的不同调用序列：<br>winxp:kernel32!RegisterWaitForInputIdle———&gt;user32!CreateDialogIndirectParamA———-&gt;USER32!IMPSetIMEA+0x13cb———&gt;IMM32!ImmNotifyIME+0x21c<br>win10:USER32!GetMessageA+0x53————&gt;MSCTF!CThreadInputMgr::_CreateTip+0x1be——-&gt;combase!CClassCache::CDllPathEntry::LoadDll+0x50 ——–&gt;MSCTF!CTip::Activate+0x63———-&gt;QQPinyinTSF!DllGetClassObject+0x24cf</p>
+<p>基本描述了问题(在xp上在exe主函数未执行前QQpinyin.ime就已经被加载了，在win10是在exez主函数执行完成后开始获取消息的时候加载的ime),但是没有解释为什么会这样</p>
+<p>google搜索一下发现了在xp与win10上输入法的框架的不同：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Windows提供了两套输入法框架： Windows XP及之前，是IMM （Input Method Manager），</span><br><span class="line">基于纯函数API的。目前市面上非微软中文输入法基本上都是只实现IMM框架。Windows XP开</span><br><span class="line">始及以后，Windows提供新的输入框架TSF，是基于COM的实际上，到了WindowsVista，Windows7，</span><br><span class="line">所有的应用程序和各种输入控件都是优先使用TSF的实现。但之所以Windows Vista，Windows <span class="number">7</span></span><br><span class="line">用户还能使用各种基于IMM的输入法，是因为Windows提供了一个组件来将所有TSF的请求转为IMM的API。</span><br><span class="line">（PunCha：难道Win8开始就不提供了吗？！很有可能，因为Win8下很多Imm的函数</span><br><span class="line">都不能使用了）按照微软的说法，TSF会最终取代IMM框架。而微软拼音基于兼容，</span><br><span class="line">功能和性能方面的原因，将这两个框架都实现了。</span><br></pre></td></tr></table></figure></p>
+<h2 id="总结">总结</h2><p>总结一下就是，由于使用QQ输入法而引入了Dll劫持漏洞但是由于输入法框架的不同导致劫持dll的加载时机的不同。</p>
+<h2 id="参考文献">参考文献</h2><p><a href="http://www.chinapyg.com/thread-79995-1-1.html" target="_blank" rel="external">Visual Assist X 劫持破解 Patch With Key (通杀1041~2118) 解决变灰问题</a><br><a href="http://blog.csdn.net/otishiono/article/details/7084079" target="_blank" rel="external">动态链接库的静态链接导致程序的DLL劫持漏洞-借助QQ程序xGraphic32.dll描述</a><br><a href="http://blog.csdn.net/mspinyin/article/details/6137709" target="_blank" rel="external"> TSF（Text Service Framework）简介</a><br><a href="http://andrewyang.cn/post.php?id=1078" target="_blank" rel="external">逗比的输入法实现（一）：基本情况</a></p>
+
+      
+    </div>
+    <footer>
+      
+
+        
+          <div class="alignleft post-nav">
+            <em>上一篇: </em><a href="/2016/12/23/Learning/The-Art-of-Unpacking/">脱壳的艺术（翻译:The Art of Unpacking）</a>
+          </div>
+        
+        
+          <div class="alignright post-nav">
+            <em>下一篇: </em><a href="/2016/08/25/Learning/Linux-malware-billgates-XORDDOS-analyze-first-time/">Linux木马分析初体验（BillGates及XORDDOS查杀）</a>
+          </div>
+          <div class="clearfix"></div>
+        
+
+        
+          <div class="copyright">
+            
+              <span class="claim">转载请注明youngroe.com</span>
+            
+            
+              <span class="from-link">
+                <em>本文链接地址:</em>
+                <a href="/2016/10/02/Debug/the-reasons-of-Dll-hijiacking-msimg32-fail/">
+                  http://www.youngroe.com/2016/10/02/Debug/the-reasons-of-Dll-hijiacking-msimg32-fail/
+                </a>
+              </span>
+            
+          </div>
+        
+		<span id="busuanzi_container_site_pv">
+    本站总访问量<span id="busuanzi_value_site_pv"></span>次
+        
+  
+  <div class="categories">
+    <a href="/categories/Debug/">Debug</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/Dll劫持/">Dll劫持</a>, <a href="/tags/Windows/">Windows</a>
+  </div>
+
+        <div class="bdsharebuttonbox"><a href="#" class="bds_more" data-cmd="more"></a><a href="#" class="bds_qzone" data-cmd="qzone"></a><a href="#" class="bds_tsina" data-cmd="tsina"></a><a href="#" class="bds_tqq" data-cmd="tqq"></a><a href="#" class="bds_renren" data-cmd="renren"></a><a href="#" class="bds_weixin" data-cmd="weixin"></a></div>
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdPic":"","bdStyle":"0","bdSize":"16"},"share":{},"image":{"viewList":["qzone","tsina","tqq","renren","weixin"],"viewText":"������","viewSize":"16"},"selectShare":{"bdContainerClass":null,"bdSelectMiniList":["qzone","tsina","tqq","renren","weixin"]}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</span>
+</article>
+
+
+<section id="comment">
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+<div class="widget tag">
+  <h3 class="title">分类</h3>
+  <ul class="entry">
+  
+    <li><a href="/categories/Cybersecurity/">Cybersecurity</a><small>1</small></li>
+  
+    <li><a href="/categories/Debug/">Debug</a><small>7</small></li>
+  
+    <li><a href="/categories/Kernel/">Kernel</a><small>4</small></li>
+  
+    <li><a href="/categories/Learning/">Learning</a><small>8</small></li>
+  
+    <li><a href="/categories/Life/">Life</a><small>7</small></li>
+  
+    <li><a href="/categories/Others/">Others</a><small>1</small></li>
+  
+    <li><a href="/categories/Read-Notes/">Read Notes</a><small>7</small></li>
+  
+    <li><a href="/categories/Tools/">Tools</a><small>6</small></li>
+  
+    <li><a href="/categories/Vulnerabilities/">Vulnerabilities</a><small>0</small></li>
+  
+    <li><a href="/categories/Windows/">Windows</a><small>14</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2019/07/01/Windows/delphi_reverse_summary/">Delphi程序逆向反汇编技巧小记</a>
+      </li>
+    
+      <li>
+        <a href="/2019/06/25/Kernel/kernel_enum_wfp_callout_function/">Windows内核重拾：如何枚举系统中Windows Filtering Platform (WFP)驱动中的callout函数</a>
+      </li>
+    
+      <li>
+        <a href="/2019/05/06/Kernel/windows-driver-testing-basics/">Windows内核重拾：Windows驱动测试基础：工具、功能和示例（翻译/转载）</a>
+      </li>
+    
+      <li>
+        <a href="/2019/04/06/Windows/how-to-reverse-engineer-software-windows-in-a-right-way/">如何正确的对Windows软件进行逆向工程（翻译/转载）</a>
+      </li>
+    
+      <li>
+        <a href="/2019/01/12/Windows/a_crash_lead_deadlock/">Windows平台下一个崩溃而导致的死锁分析</a>
+      </li>
+    
+      <li>
+        <a href="/2018/12/01/Windows/windows_client_dns_over_https/">Windows客户端如何透明使用DNS-over-HTTPS</a>
+      </li>
+    
+      <li>
+        <a href="/2018/10/06/Cybersecurity/ddos-protection-techniques/">现代DDoS对抗技术概述（翻译/转载）</a>
+      </li>
+    
+      <li>
+        <a href="/2018/09/18/Life/xian/">西安周末游</a>
+      </li>
+    
+      <li>
+        <a href="/2018/01/06/Kernel/WindowsKernel_DebugObject/">Windows内核重拾：DebugObject</a>
+      </li>
+    
+      <li>
+        <a href="/2017/10/23/Tools/IDA-Pro-ClassInformer-Tutorial/">IDA Pro ClassInformer使用指南（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2017/05/23/Windows/Kernel Data and Filtering Support/">Kernel Data and Filtering Support for Windows Server 2008（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2017/05/17/Windows/Windows-x64-Shellcode/">Windows x64 Shellcode编写指南(翻译)</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget tagcloud">
+  <h3 class="title">标签云</h3>
+  <div class="entry">
+    <a href="/tags/ASM/" style="font-size: 12.5px;">ASM</a> <a href="/tags/Boost/" style="font-size: 10px;">Boost</a> <a href="/tags/DDoS/" style="font-size: 10px;">DDoS</a> <a href="/tags/DNS-over-HTTPS/" style="font-size: 10px;">DNS-over-HTTPS</a> <a href="/tags/Delphi/" style="font-size: 10px;">Delphi</a> <a href="/tags/Dll劫持/" style="font-size: 10px;">Dll劫持</a> <a href="/tags/GCC-GDB/" style="font-size: 10px;">GCC&GDB</a> <a href="/tags/GetVersionEx/" style="font-size: 10px;">GetVersionEx</a> <a href="/tags/Http/" style="font-size: 10px;">Http</a> <a href="/tags/IDA-Pro/" style="font-size: 12.5px;">IDA Pro</a> <a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/MSDN/" style="font-size: 12.5px;">MSDN</a> <a href="/tags/Malware/" style="font-size: 12.5px;">Malware</a> <a href="/tags/MiniDumpWriteDump/" style="font-size: 10px;">MiniDumpWriteDump</a> <a href="/tags/PEB/" style="font-size: 10px;">PEB</a> <a href="/tags/Procmon/" style="font-size: 10px;">Procmon</a> <a href="/tags/Runtime-Error/" style="font-size: 10px;">Runtime Error</a> <a href="/tags/SEH/" style="font-size: 10px;">SEH</a> <a href="/tags/Shellcode/" style="font-size: 10px;">Shellcode</a> <a href="/tags/SysinternalsSuite/" style="font-size: 10px;">SysinternalsSuite</a> <a href="/tags/Tips/" style="font-size: 10px;">Tips</a> <a href="/tags/UAC/" style="font-size: 10px;">UAC</a> <a href="/tags/UAF漏洞/" style="font-size: 10px;">UAF漏洞</a> <a href="/tags/VC/" style="font-size: 10px;">VC</a> <a href="/tags/Visual-Studio/" style="font-size: 12.5px;">Visual Studio</a> <a href="/tags/Windbg/" style="font-size: 10px;">Windbg</a> <a href="/tags/Windows/" style="font-size: 20px;">Windows</a> <a href="/tags/Windows核心编程/" style="font-size: 17.5px;">Windows核心编程</a> <a href="/tags/android/" style="font-size: 10px;">android</a> <a href="/tags/getaddrinfo/" style="font-size: 10px;">getaddrinfo</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/libeay32/" style="font-size: 10px;">libeay32</a> <a href="/tags/markdown/" style="font-size: 10px;">markdown</a> <a href="/tags/ndk/" style="font-size: 10px;">ndk</a> <a href="/tags/sublime-text3/" style="font-size: 10px;">sublime text3</a> <a href="/tags/x64/" style="font-size: 12.5px;">x64</a> <a href="/tags/体验/" style="font-size: 10px;">体验</a> <a href="/tags/内核/" style="font-size: 12.5px;">内核</a> <a href="/tags/内核结构/" style="font-size: 15px;">内核结构</a> <a href="/tags/学习/" style="font-size: 10px;">学习</a> <a href="/tags/安全机制/" style="font-size: 10px;">安全机制</a> <a href="/tags/异常处理/" style="font-size: 10px;">异常处理</a> <a href="/tags/提权/" style="font-size: 10px;">提权</a> <a href="/tags/服务/" style="font-size: 10px;">服务</a> <a href="/tags/权限/" style="font-size: 12.5px;">权限</a> <a href="/tags/栈溢出漏洞/" style="font-size: 10px;">栈溢出漏洞</a> <a href="/tags/测试/" style="font-size: 10px;">测试</a> <a href="/tags/浮躁/" style="font-size: 10px;">浮躁</a> <a href="/tags/漏洞调试/" style="font-size: 12.5px;">漏洞调试</a> <a href="/tags/生活/" style="font-size: 15px;">生活</a> <a href="/tags/脱壳/" style="font-size: 10px;">脱壳</a> <a href="/tags/西安/" style="font-size: 10px;">西安</a> <a href="/tags/计划/" style="font-size: 10px;">计划</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a> <a href="/tags/调试/" style="font-size: 15px;">调试</a> <a href="/tags/转换/" style="font-size: 10px;">转换</a> <a href="/tags/进程/" style="font-size: 10px;">进程</a> <a href="/tags/逆向/" style="font-size: 10px;">逆向</a> <a href="/tags/重庆/" style="font-size: 10px;">重庆</a> <a href="/tags/驱动/" style="font-size: 15px;">驱动</a>
+  </div>
+</div>
+
+
+  <div class="widget tag">
+<h3 class="title">Links</h3>
+<ul class="entry">
+<li><a href="http://blog.ourren.com/" title="Ourren">Ourren</a></li>
+<li><a href="http://www.hyjal.net/" title="Hyjal">Hyjal</a></li>
+<li><a href="http://www.jianshu.com/users/fa15f4e416ae/latest_articles" title="Daemonceltics">Daemonceltics</a></li>
+<li><a href="http://papap.info/" title="isee">isee</a></li>
+</ul>
+</div>
+
+  <script type="text/javascript" id="clustrmaps" src="//cdn.clustrmaps.com/map_v2.js?u=putG&d=yoFnN6V-ovhL-H4e9_69LvkTiX4uX7rEYJ15yL3G1Wg"></script>
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <div id="go-pg-top"><i class="icon-arrow-up"></i></div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2020 Lyon
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript" charset="utf-8" src="/js/page.js"></script>
+
+</body>
+
+</html>

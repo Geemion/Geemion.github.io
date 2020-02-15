@@ -1,0 +1,308 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Windows内核重拾：DebugObject | Lyon&#39;s blog</title>
+  <meta name="author" content="Lyon">
+  
+  <meta name="description" content="Walk steps step by step">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="Windows内核重拾：DebugObject"/>
+  <meta property="og:site_name" content="Lyon&#39;s blog"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  #<link href="/favicon.ico" rel="icon">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="alternate" href="/atom.xml" title="Lyon&#39;s blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  <script src="/js/jquery.min.js"></script>
+  <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?0fe72895c9bcfd0d09da12b5378b1b91";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+</head>
+
+
+<body>
+  <!--[if lte IE 8]> <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'> <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0027_Simplified Chinese.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." style='margin-left:auto;margin-right:auto;display: block;'/></a></div> <![endif]-->
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">Lyon&#39;s blog</a></h1>
+  <h2><a href="/">I hear and I forget.I see and I remember.I do and I understand.</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">首页</a></li>
+    
+      <li><a href="/archives">归档</a></li>
+    
+      <li><a href="/about">关于</a></li>
+    
+	<li> <a href="/atom.xml">RSS</a> </li>
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <time datetime="2018-01-06T04:45:15.000Z"><a href="/2018/01/06/Kernel/WindowsKernel_DebugObject/">2018-01-06</a></time>
+      
+      
+  
+    <h1 class="title">Windows内核重拾：DebugObject</h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+  <div id="toc" class="toc-article">
+  <strong class="toc-title">文章目录</strong>
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x00_什么是DebugObject"><span class="toc-number">1.</span> <span class="toc-text">0x00 什么是DebugObject</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x01_DebugObject是如何产生的"><span class="toc-number">2.</span> <span class="toc-text">0x01 DebugObject是如何产生的</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x02_DebugObject用于反调试实例"><span class="toc-number">3.</span> <span class="toc-text">0x02 DebugObject用于反调试实例</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x03_简单总结"><span class="toc-number">4.</span> <span class="toc-text">0x03 简单总结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x04_参考资料"><span class="toc-number">5.</span> <span class="toc-text">0x04 参考资料</span></a></li></ol>
+  </div>
+
+
+	
+    <div class="entry">
+      
+        <h2 id="0x00_什么是DebugObject">0x00 什么是DebugObject</h2><p>在Windows系统中对调试的支持主要在三个模块中，分别为内核执行体（多核处理器一般为ntkrnlmp.exe,以Dbgk为前缀,主要负责注册和监听调试事件、管理调试对象等）、原生系统库ntdll.dll（DbgUi为前缀，负责将底层的调试对象封装起来）、子系统dll（kernelbase.dll）。而调试对象（DebugObject）是一个结构体，支持用户模式调试，由一系列的标志（决定对象的状态）、一个事件、一个调试事件双链表组成。<br><a id="more"></a><br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> _DEBUG_OBJECT &#123;</span><br><span class="line">    <span class="comment">// Event thats set when the EventList is populated.</span></span><br><span class="line">    KEVENT EventsPresent;</span><br><span class="line">    <span class="comment">// Mutex to protect the structure</span></span><br><span class="line">    FAST_MUTEX Mutex;</span><br><span class="line">    <span class="comment">// Queue of events waiting for debugger intervention</span></span><br><span class="line">    LIST_ENTRY EventList;</span><br><span class="line">    <span class="comment">// Flags for the object</span></span><br><span class="line">    ULONG Flags;</span><br><span class="line">&#125; DEBUG_OBJECT, *PDEBUG_OBJECT;</span><br></pre></td></tr></table></figure></p>
+<h2 id="0x01_DebugObject是如何产生的">0x01 DebugObject是如何产生的</h2><p>DebugObject在内核中由NtCreateDebugObject函数产生，每次启动调试都需要调用NtCreateDebugObject产生一个DebugObject，在NtCreateDebugObject函数中会调用ObInsertObject将创建的DebugObject插入到一个句柄表中，后续再利用句柄访问这个DebugObject。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">NTSTATUS</span><br><span class="line"><span class="title">NtCreateDebugObject</span> <span class="params">(</span><br><span class="line">    OUT PHANDLE DebugObjectHandle,</span><br><span class="line">    IN ACCESS_MASK DesiredAccess,</span><br><span class="line">    IN POBJECT_ATTRIBUTES ObjectAttributes,</span><br><span class="line">    IN ULONG Flags</span><br><span class="line">    )</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    NTSTATUS Status;</span><br><span class="line">    HANDLE Handle;</span><br><span class="line">    KPROCESSOR_MODE PreviousMode;</span><br><span class="line">    PDEBUG_OBJECT DebugObject;</span><br><span class="line"></span><br><span class="line">    PAGED_CODE();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Get previous processor mode and probe output arguments if necessary.</span></span><br><span class="line">    <span class="comment">// Zero the handle for error paths.</span></span><br><span class="line">    PreviousMode = KeGetPreviousMode();</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (PreviousMode != KernelMode) &#123;</span><br><span class="line">            ProbeForWriteHandle (DebugObjectHandle);</span><br><span class="line">        &#125;</span><br><span class="line">        *DebugObjectHandle = <span class="literal">NULL</span>;</span><br><span class="line">    &#125; except (ExSystemExceptionFilter ()) &#123; <span class="comment">// If previous mode is kernel then don't handle the exception</span></span><br><span class="line">        <span class="keyword">return</span> GetExceptionCode ();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (Flags &amp; ~DEBUG_KILL_ON_CLOSE) &#123;</span><br><span class="line">        <span class="keyword">return</span> STATUS_INVALID_PARAMETER;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// Create a new debug object and initialize it.</span></span><br><span class="line">    Status = ObCreateObject (PreviousMode,</span><br><span class="line">                             DbgkDebugObjectType,</span><br><span class="line">                             ObjectAttributes,</span><br><span class="line">                             PreviousMode,</span><br><span class="line">                             <span class="literal">NULL</span>,</span><br><span class="line">                             <span class="keyword">sizeof</span> (DEBUG_OBJECT),</span><br><span class="line">                             <span class="number">0</span>,</span><br><span class="line">                             <span class="number">0</span>,</span><br><span class="line">                             &amp;DebugObject);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!NT_SUCCESS (Status)) &#123;</span><br><span class="line">        <span class="keyword">return</span> Status;</span><br><span class="line">    &#125;</span><br><span class="line">    ExInitializeFastMutex (&amp;DebugObject-&gt;Mutex);</span><br><span class="line">    InitializeListHead (&amp;DebugObject-&gt;EventList);</span><br><span class="line">    KeInitializeEvent (&amp;DebugObject-&gt;EventsPresent, NotificationEvent, FALSE);</span><br><span class="line">    <span class="keyword">if</span> (Flags &amp; DEBUG_KILL_ON_CLOSE) &#123;</span><br><span class="line">        DebugObject-&gt;Flags = DEBUG_OBJECT_KILL_ON_CLOSE;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        DebugObject-&gt;Flags = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// Insert the object into the handle table</span></span><br><span class="line">    Status = ObInsertObject (DebugObject,</span><br><span class="line">                             <span class="literal">NULL</span>,</span><br><span class="line">                             DesiredAccess,</span><br><span class="line">                             <span class="number">0</span>,</span><br><span class="line">                             <span class="literal">NULL</span>,</span><br><span class="line">                             &amp;Handle);</span><br><span class="line">    <span class="keyword">if</span> (!NT_SUCCESS (Status)) &#123;</span><br><span class="line">        <span class="keyword">return</span> Status;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        *DebugObjectHandle = Handle;</span><br><span class="line">    &#125; except (ExSystemExceptionFilter ()) &#123;</span><br><span class="line">        <span class="comment">//</span></span><br><span class="line">        <span class="comment">// The caller changed the page protection or deleted the memory for the handle.</span></span><br><span class="line">        <span class="comment">// No point closing the handle as process rundown will do that and we don't know its still the same handle</span></span><br><span class="line">        <span class="comment">//</span></span><br><span class="line">        Status = GetExceptionCode();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> Status;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>NtCreateDebugObject函数主要实现在ObCreateObject函数，关键参数为DbgkDebugObjectType，DbgkDebugObjectType是一个全局变量，类型为_OBJECT_TYPE。每次调试生成的DebugObject都会依赖于DbgkDebugObjectType这个全局变量，因此我们可以通过修改DbgkDebugObjectType某些标志位做一些猥琐的事情，比如说反调试，并且由于只是内核中的一个标志位很难找到不能调试的原因。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">kd&gt; dt nt!_OBJECT_TYPE</span><br><span class="line">+<span class="number">0x000</span> TypeList         : _LIST_ENTRY</span><br><span class="line">+<span class="number">0x010</span> Name             : _UNICODE_STRING</span><br><span class="line">+<span class="number">0x020</span> DefaultObject    : Ptr64 Void</span><br><span class="line">+<span class="number">0x028</span> Index            : UChar</span><br><span class="line">+<span class="number">0x02c</span> TotalNumberOfObjects : Uint4B</span><br><span class="line">+<span class="number">0x030</span> TotalNumberOfHandles : Uint4B</span><br><span class="line">+<span class="number">0x034</span> HighWaterNumberOfObjects : Uint4B</span><br><span class="line">+<span class="number">0x038</span> HighWaterNumberOfHandles : Uint4B</span><br><span class="line">+<span class="number">0x040</span> TypeInfo         : _OBJECT_TYPE_INITIALIZER</span><br><span class="line">+<span class="number">0x0b0</span> TypeLock         : _EX_PUSH_LOCK</span><br><span class="line">+<span class="number">0x0b8</span> Key              : Uint4B</span><br><span class="line">+<span class="number">0x0c0</span> CallbackList     : _LIST_ENTRY</span><br></pre></td></tr></table></figure></p>
+<p>DbgkDebugObjectType初始化在DbgkInitialize函数中，也是被ObCreateObjectType创建，关键参数为一个_OBJECT_TYPE_INITIALIZER结构体<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">kd&gt; dt _OBJECT_TYPE_INITIALIZER</span><br><span class="line">ntdll!_OBJECT_TYPE_INITIALIZER</span><br><span class="line">   +<span class="number">0x000</span> Length           : Uint2B</span><br><span class="line">   +<span class="number">0x002</span> ObjectTypeFlags  : UChar</span><br><span class="line">   +<span class="number">0x002</span> CaseInsensitive  : Pos <span class="number">0</span>, <span class="number">1</span> Bit</span><br><span class="line">   +<span class="number">0x002</span> UnnamedObjectsOnly : Pos <span class="number">1</span>, <span class="number">1</span> Bit</span><br><span class="line">   +<span class="number">0x002</span> UseDefaultObject : Pos <span class="number">2</span>, <span class="number">1</span> Bit</span><br><span class="line">   +<span class="number">0x002</span> SecurityRequired : Pos <span class="number">3</span>, <span class="number">1</span> Bit</span><br><span class="line">   +<span class="number">0x002</span> MaintainHandleCount : Pos <span class="number">4</span>, <span class="number">1</span> Bit</span><br><span class="line">   +<span class="number">0x002</span> MaintainTypeList : Pos <span class="number">5</span>, <span class="number">1</span> Bit</span><br><span class="line">   +<span class="number">0x002</span> SupportsObjectCallbacks : Pos <span class="number">6</span>, <span class="number">1</span> Bit</span><br><span class="line">   +<span class="number">0x004</span> ObjectTypeCode   : Uint4B</span><br><span class="line">   +<span class="number">0x008</span> InvalidAttributes : Uint4B</span><br><span class="line">   +<span class="number">0x00c</span> GenericMapping   : _GENERIC_MAPPING</span><br><span class="line">   +<span class="number">0x01c</span> ValidAccessMask  : Uint4B</span><br><span class="line">   +<span class="number">0x020</span> RetainAccess     : Uint4B</span><br><span class="line">   +<span class="number">0x024</span> PoolType         : _POOL_TYPE</span><br><span class="line">   +<span class="number">0x028</span> DefaultPagedPoolCharge : Uint4B</span><br><span class="line">   +<span class="number">0x02c</span> DefaultNonPagedPoolCharge : Uint4B</span><br><span class="line">   +<span class="number">0x030</span> DumpProcedure    : Ptr64     <span class="keyword">void</span> </span><br><span class="line">   +<span class="number">0x038</span> OpenProcedure    : Ptr64     <span class="keyword">long</span> </span><br><span class="line">   +<span class="number">0x040</span> CloseProcedure   : Ptr64     <span class="keyword">void</span> </span><br><span class="line">   +<span class="number">0x048</span> DeleteProcedure  : Ptr64     <span class="keyword">void</span> </span><br><span class="line">   +<span class="number">0x050</span> ParseProcedure   : Ptr64     <span class="keyword">long</span> </span><br><span class="line">   +<span class="number">0x058</span> SecurityProcedure : Ptr64     <span class="keyword">long</span> </span><br><span class="line">   +<span class="number">0x060</span> QueryNameProcedure : Ptr64     <span class="keyword">long</span> </span><br><span class="line">   +<span class="number">0x068</span> OkayToCloseProcedure : Ptr64     <span class="keyword">unsigned</span> <span class="keyword">char</span></span><br></pre></td></tr></table></figure></p>
+<div align="center"><br><img src="/img/20180116Windbg_DbgStruct.png" alt="Win7 X64下DebugObject几个关键结构体关系" align="center"><br></div>
+
+<h2 id="0x02_DebugObject用于反调试实例">0x02 DebugObject用于反调试实例</h2><p>TenProtect反外挂开启后，调试进程会附加失败错误号为0xC0000022（不仅仅是调试游戏进程，调试任何进程都会产生这个错误），具体原因为A process has requested access to an object, but has not been granted those access rights.</p>
+<p><div align="center"><br><img src="/img/20180116Windbg_failed.png" alt="TProtect附加失败错误" align="center"><br></div><br>根据网上公布的bypass的代码，可以很容易的发现TP主要是将DbgkDebugObjectType.TypeInfo.ValidAccessMask标志位清零，ValidAccessMask从名称上就可以知道是和权限相关，而原本默认为DEBUG_ALL_ACCESS(0x1F000F)，被清零后就什么权限都没有了，创建了一个毫无用处的DebugObject，并且由于DbgkDebugObjectType是全局的与特定进程无关，导致调试任意进程都会失败。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">NTSTATUS</span><br><span class="line"><span class="title">NtDebugActiveProcess</span> <span class="params">(</span><br><span class="line">    IN HANDLE ProcessHandle,</span><br><span class="line">    IN HANDLE DebugObjectHandle</span><br><span class="line">    )</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    NTSTATUS Status;</span><br><span class="line">    KPROCESSOR_MODE PreviousMode;</span><br><span class="line">    PDEBUG_OBJECT DebugObject;</span><br><span class="line">    PEPROCESS Process;</span><br><span class="line">    PETHREAD LastThread;</span><br><span class="line">    PAGED_CODE ();</span><br><span class="line">    PreviousMode = KeGetPreviousMode();</span><br><span class="line">    Status = ObReferenceObjectByHandle (ProcessHandle,</span><br><span class="line">                                        PROCESS_SET_PORT,</span><br><span class="line">                                        PsProcessType,</span><br><span class="line">                                        PreviousMode,</span><br><span class="line">                                        &amp;Process,</span><br><span class="line">                                        <span class="literal">NULL</span>);</span><br><span class="line">    <span class="keyword">if</span> (!NT_SUCCESS (Status)) &#123;</span><br><span class="line">        <span class="keyword">return</span> Status;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// Don't let us debug ourselves or the system process.</span></span><br><span class="line">    <span class="keyword">if</span> (Process == PsGetCurrentProcess () || Process == PsInitialSystemProcess) &#123;</span><br><span class="line">        ObDereferenceObject (Process);</span><br><span class="line">        <span class="keyword">return</span> STATUS_ACCESS_DENIED;</span><br><span class="line">    &#125;</span><br><span class="line">    Status = ObReferenceObjectByHandle (DebugObjectHandle,</span><br><span class="line">                                        DEBUG_PROCESS_ASSIGN,</span><br><span class="line">                                        DbgkDebugObjectType,</span><br><span class="line">                                        PreviousMode,</span><br><span class="line">                                        &amp;DebugObject,</span><br><span class="line">                                        <span class="literal">NULL</span>);</span><br><span class="line">    <span class="keyword">if</span> (NT_SUCCESS (Status)) &#123;</span><br><span class="line">        <span class="comment">// We will be touching process address space. Block process rundown.</span></span><br><span class="line">        <span class="keyword">if</span> (ExAcquireRundownProtection (&amp;Process-&gt;RundownProtect)) &#123;</span><br><span class="line">            <span class="comment">// Post the fake process create messages etc.</span></span><br><span class="line">            Status = DbgkpPostFakeProcessCreateMessages (Process,</span><br><span class="line">                                                         DebugObject,</span><br><span class="line">                                                         &amp;LastThread);</span><br><span class="line">            <span class="comment">// Set the debug port. If this fails it will remove any faked messages.</span></span><br><span class="line">            Status = DbgkpSetProcessDebugObject (Process,</span><br><span class="line">                                                 DebugObject,</span><br><span class="line">                                                 Status,</span><br><span class="line">                                                 LastThread);</span><br><span class="line">            ExReleaseRundownProtection (&amp;Process-&gt;RundownProtect);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            Status = STATUS_PROCESS_IS_TERMINATING;</span><br><span class="line">        &#125;</span><br><span class="line">        ObDereferenceObject (DebugObject);</span><br><span class="line">    &#125;</span><br><span class="line">    ObDereferenceObject (Process);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> Status;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>通过双机调试及相关资料，可以找到ValidAccessMask被清零后调试失败的具体代码位置在NtDebugActiveProcess函数中，在NtDebugActiveProcess函数中会通过ObReferenceObjectByHandle对传入的DebugObjectHandle对象句柄的访问权限进行检查，需要DEBUG_PROCESS_ASSIGN权限，但ValidAccessMask被清零后创建的DebugObject没有DEBUG_PROCESS_ASSIGN权限，函数会返回c0000022错误。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">kd&gt; bu nt!NtCreateDebugObject+0x86</span><br><span class="line">kd&gt; g</span><br><span class="line">Breakpoint 1 hit</span><br><span class="line">nt!NtCreateDebugObject+0x86:</span><br><span class="line">fffff800`02ebce26 e8b5bef1ff      call    nt!ObCreateObject (fffff800`02dd8ce0)</span><br><span class="line">kd&gt; .process</span><br><span class="line">Implicit process is now fffffa80`03904b30</span><br><span class="line">kd&gt; .process fffffa80`03904b30</span><br><span class="line">Implicit process is now fffffa80`03904b30</span><br><span class="line">WARNING: .cache forcedecodeuser is not enabled</span><br><span class="line">kd&gt; kv</span><br><span class="line">Child-SP          RetAddr           : Args to Child                                                           : Call Site</span><br><span class="line">fffff880`04ef9b60 fffff800`02ade8d3 : fffffa80`03782b60 00000000`001f000f 00000000`00000000 00000000`00000001 : nt!NtCreateDebugObject+0x95</span><br><span class="line">fffff880`04ef9be0 00000000`77541c4a : 00000000`73d1ebdd 00000000`0059f658 00000000`001f000f 00000000`020eec20 : nt!KiSystemServiceCopyEnd+0x13 (TrapFrame @ fffff880`04ef9be0)</span><br><span class="line">00000000`020ee368 00000000`73d1ebdd : 00000000`0059f658 00000000`001f000f 00000000`020eec20 00000000`020ee350 : ntdll!ZwCreateDebugObject+0xa</span><br><span class="line">00000000`020ee370 00000000`73d0cf87 : 00000000`00000000 00000000`00000000 00000000`020eec20 00000000`01fbf9b4 : wow64!whNtCreateDebugObject+0x6d</span><br><span class="line">00000000`020ee3c0 00000000`73c92776 : 00000000`752e60e2 00000000`00000023 00000000`00000246 00000000`01fbfab4 : wow64!Wow64SystemServiceEx+0xd7</span><br><span class="line">00000000`020eec80 00000000`73d0d07e : 00000000`00000000 00000000`73c91920 00000000`00000000 00000000`00000000 : wow64cpu!TurboDispatchJumpAddressEnd+0x2d</span><br><span class="line">00000000`020eed40 00000000`73d0c549 : 00000000`00000000 00000000`00000000 00000000`00000000 00000000`00000000 : wow64!RunCpuSimulation+0xa</span><br><span class="line">00000000`020eed90 00000000`7756e707 : 00000000`00000000 00000000`fffdf000 00000000`fffd8000 00000000`00000000 : wow64!Wow64LdrpInitialize+0x429</span><br><span class="line">00000000`020ef2e0 00000000`7751c32e : 00000000`020ef3a0 00000000`00000000 00000000`fffdf000 00000000`00000000 : ntdll! ?? ::FNODOBFM::`string'+0x29364</span><br><span class="line">00000000`020ef350 00000000`00000000 : 00000000`00000000 00000000`00000000 00000000`00000000 00000000`00000000 : ntdll!LdrInitializeThunk+0xe</span><br><span class="line">.....</span><br><span class="line">Breakpoint 4 hit</span><br><span class="line">nt!NtDebugActiveProcess+0x100:</span><br><span class="line">fffff800`02f2d2f0 e8ebc5e8ff      call    nt!ObReferenceObjectByHandle (fffff800`02db98e0)</span><br><span class="line">kd&gt; p</span><br><span class="line">nt!NtDebugActiveProcess+0x105:</span><br><span class="line">fffff800`02f2d2f5 8bf8            mov     edi,eax</span><br><span class="line">kd&gt; r rax</span><br><span class="line">rax=00000000c0000022</span><br></pre></td></tr></table></figure>
+<h2 id="0x03_简单总结">0x03 简单总结</h2><ul>
+<li>Debugobject是一个对调试很重要的一个结构体，用于支持用户模式调试。</li>
+<li>Debugobject创建过程中会依赖一个名为DbgkDebugObjectType的内核全局变量，通过修改这个全局变量可以影响调试过程的创建，并且影响是全局的，对所有进程有效。</li>
+<li>TP通过将DbgkDebugObjectType.TypeInfo.ValidAccessMask清零达到反调目的，可能也是无奈之举毕竟X64的PatchGuard让在内核中能干的事越来越少，至于为什么修改ValidAccessMask不会触发PatchGuard可能DbgkDebugObjectType现在还没纳入PatchGuard保护范围。</li>
+<li>代码可以参考<a href="https://gist.github.com/geemion/b61aa49e1b19dc8421b953ec3939fa4f" target="_blank" rel="external">https://gist.github.com/geemion/b61aa49e1b19dc8421b953ec3939fa4f</a><h2 id="0x04_参考资料">0x04 参考资料</h2></li>
+<li>[1] 深入解析Windows操作系统</li>
+<li>[2] WRK1.2</li>
+<li>[3] <a href="https://github.com/jilinxiaohuo/VaildAccessMask" target="_blank" rel="external">VaildAccessMask</a></li>
+</ul>
+
+      
+    </div>
+    <footer>
+      
+
+        
+          <div class="alignleft post-nav">
+            <em>上一篇: </em><a href="/2018/09/18/Life/xian/">西安周末游</a>
+          </div>
+        
+        
+          <div class="alignright post-nav">
+            <em>下一篇: </em><a href="/2017/10/23/Tools/IDA-Pro-ClassInformer-Tutorial/">IDA Pro ClassInformer使用指南（翻译）</a>
+          </div>
+          <div class="clearfix"></div>
+        
+
+        
+          <div class="copyright">
+            
+              <span class="claim">转载请注明youngroe.com</span>
+            
+            
+              <span class="from-link">
+                <em>本文链接地址:</em>
+                <a href="/2018/01/06/Kernel/WindowsKernel_DebugObject/">
+                  http://www.youngroe.com/2018/01/06/Kernel/WindowsKernel_DebugObject/
+                </a>
+              </span>
+            
+          </div>
+        
+		<span id="busuanzi_container_site_pv">
+    本站总访问量<span id="busuanzi_value_site_pv"></span>次
+        
+  
+  <div class="categories">
+    <a href="/categories/Kernel/">Kernel</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/Windows/">Windows</a>, <a href="/tags/内核结构/">内核结构</a>, <a href="/tags/权限/">权限</a>
+  </div>
+
+        <div class="bdsharebuttonbox"><a href="#" class="bds_more" data-cmd="more"></a><a href="#" class="bds_qzone" data-cmd="qzone"></a><a href="#" class="bds_tsina" data-cmd="tsina"></a><a href="#" class="bds_tqq" data-cmd="tqq"></a><a href="#" class="bds_renren" data-cmd="renren"></a><a href="#" class="bds_weixin" data-cmd="weixin"></a></div>
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdPic":"","bdStyle":"0","bdSize":"16"},"share":{},"image":{"viewList":["qzone","tsina","tqq","renren","weixin"],"viewText":"������","viewSize":"16"},"selectShare":{"bdContainerClass":null,"bdSelectMiniList":["qzone","tsina","tqq","renren","weixin"]}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</span>
+</article>
+
+
+<section id="comment">
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+<div class="widget tag">
+  <h3 class="title">分类</h3>
+  <ul class="entry">
+  
+    <li><a href="/categories/Cybersecurity/">Cybersecurity</a><small>1</small></li>
+  
+    <li><a href="/categories/Debug/">Debug</a><small>7</small></li>
+  
+    <li><a href="/categories/Kernel/">Kernel</a><small>4</small></li>
+  
+    <li><a href="/categories/Learning/">Learning</a><small>8</small></li>
+  
+    <li><a href="/categories/Life/">Life</a><small>7</small></li>
+  
+    <li><a href="/categories/Others/">Others</a><small>1</small></li>
+  
+    <li><a href="/categories/Read-Notes/">Read Notes</a><small>7</small></li>
+  
+    <li><a href="/categories/Tools/">Tools</a><small>6</small></li>
+  
+    <li><a href="/categories/Vulnerabilities/">Vulnerabilities</a><small>0</small></li>
+  
+    <li><a href="/categories/Windows/">Windows</a><small>14</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2019/07/01/Windows/delphi_reverse_summary/">Delphi程序逆向反汇编技巧小记</a>
+      </li>
+    
+      <li>
+        <a href="/2019/06/25/Kernel/kernel_enum_wfp_callout_function/">Windows内核重拾：如何枚举系统中Windows Filtering Platform (WFP)驱动中的callout函数</a>
+      </li>
+    
+      <li>
+        <a href="/2019/05/06/Kernel/windows-driver-testing-basics/">Windows内核重拾：Windows驱动测试基础：工具、功能和示例（翻译/转载）</a>
+      </li>
+    
+      <li>
+        <a href="/2019/04/06/Windows/how-to-reverse-engineer-software-windows-in-a-right-way/">如何正确的对Windows软件进行逆向工程（翻译/转载）</a>
+      </li>
+    
+      <li>
+        <a href="/2019/01/12/Windows/a_crash_lead_deadlock/">Windows平台下一个崩溃而导致的死锁分析</a>
+      </li>
+    
+      <li>
+        <a href="/2018/12/01/Windows/windows_client_dns_over_https/">Windows客户端如何透明使用DNS-over-HTTPS</a>
+      </li>
+    
+      <li>
+        <a href="/2018/10/06/Cybersecurity/ddos-protection-techniques/">现代DDoS对抗技术概述（翻译/转载）</a>
+      </li>
+    
+      <li>
+        <a href="/2018/09/18/Life/xian/">西安周末游</a>
+      </li>
+    
+      <li>
+        <a href="/2018/01/06/Kernel/WindowsKernel_DebugObject/">Windows内核重拾：DebugObject</a>
+      </li>
+    
+      <li>
+        <a href="/2017/10/23/Tools/IDA-Pro-ClassInformer-Tutorial/">IDA Pro ClassInformer使用指南（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2017/05/23/Windows/Kernel Data and Filtering Support/">Kernel Data and Filtering Support for Windows Server 2008（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2017/05/17/Windows/Windows-x64-Shellcode/">Windows x64 Shellcode编写指南(翻译)</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget tagcloud">
+  <h3 class="title">标签云</h3>
+  <div class="entry">
+    <a href="/tags/ASM/" style="font-size: 12.5px;">ASM</a> <a href="/tags/Boost/" style="font-size: 10px;">Boost</a> <a href="/tags/DDoS/" style="font-size: 10px;">DDoS</a> <a href="/tags/DNS-over-HTTPS/" style="font-size: 10px;">DNS-over-HTTPS</a> <a href="/tags/Delphi/" style="font-size: 10px;">Delphi</a> <a href="/tags/Dll劫持/" style="font-size: 10px;">Dll劫持</a> <a href="/tags/GCC-GDB/" style="font-size: 10px;">GCC&GDB</a> <a href="/tags/GetVersionEx/" style="font-size: 10px;">GetVersionEx</a> <a href="/tags/Http/" style="font-size: 10px;">Http</a> <a href="/tags/IDA-Pro/" style="font-size: 12.5px;">IDA Pro</a> <a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/MSDN/" style="font-size: 12.5px;">MSDN</a> <a href="/tags/Malware/" style="font-size: 12.5px;">Malware</a> <a href="/tags/MiniDumpWriteDump/" style="font-size: 10px;">MiniDumpWriteDump</a> <a href="/tags/PEB/" style="font-size: 10px;">PEB</a> <a href="/tags/Procmon/" style="font-size: 10px;">Procmon</a> <a href="/tags/Runtime-Error/" style="font-size: 10px;">Runtime Error</a> <a href="/tags/SEH/" style="font-size: 10px;">SEH</a> <a href="/tags/Shellcode/" style="font-size: 10px;">Shellcode</a> <a href="/tags/SysinternalsSuite/" style="font-size: 10px;">SysinternalsSuite</a> <a href="/tags/Tips/" style="font-size: 10px;">Tips</a> <a href="/tags/UAC/" style="font-size: 10px;">UAC</a> <a href="/tags/UAF漏洞/" style="font-size: 10px;">UAF漏洞</a> <a href="/tags/VC/" style="font-size: 10px;">VC</a> <a href="/tags/Visual-Studio/" style="font-size: 12.5px;">Visual Studio</a> <a href="/tags/Windbg/" style="font-size: 10px;">Windbg</a> <a href="/tags/Windows/" style="font-size: 20px;">Windows</a> <a href="/tags/Windows核心编程/" style="font-size: 17.5px;">Windows核心编程</a> <a href="/tags/android/" style="font-size: 10px;">android</a> <a href="/tags/getaddrinfo/" style="font-size: 10px;">getaddrinfo</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/libeay32/" style="font-size: 10px;">libeay32</a> <a href="/tags/markdown/" style="font-size: 10px;">markdown</a> <a href="/tags/ndk/" style="font-size: 10px;">ndk</a> <a href="/tags/sublime-text3/" style="font-size: 10px;">sublime text3</a> <a href="/tags/x64/" style="font-size: 12.5px;">x64</a> <a href="/tags/体验/" style="font-size: 10px;">体验</a> <a href="/tags/内核/" style="font-size: 12.5px;">内核</a> <a href="/tags/内核结构/" style="font-size: 15px;">内核结构</a> <a href="/tags/学习/" style="font-size: 10px;">学习</a> <a href="/tags/安全机制/" style="font-size: 10px;">安全机制</a> <a href="/tags/异常处理/" style="font-size: 10px;">异常处理</a> <a href="/tags/提权/" style="font-size: 10px;">提权</a> <a href="/tags/服务/" style="font-size: 10px;">服务</a> <a href="/tags/权限/" style="font-size: 12.5px;">权限</a> <a href="/tags/栈溢出漏洞/" style="font-size: 10px;">栈溢出漏洞</a> <a href="/tags/测试/" style="font-size: 10px;">测试</a> <a href="/tags/浮躁/" style="font-size: 10px;">浮躁</a> <a href="/tags/漏洞调试/" style="font-size: 12.5px;">漏洞调试</a> <a href="/tags/生活/" style="font-size: 15px;">生活</a> <a href="/tags/脱壳/" style="font-size: 10px;">脱壳</a> <a href="/tags/西安/" style="font-size: 10px;">西安</a> <a href="/tags/计划/" style="font-size: 10px;">计划</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a> <a href="/tags/调试/" style="font-size: 15px;">调试</a> <a href="/tags/转换/" style="font-size: 10px;">转换</a> <a href="/tags/进程/" style="font-size: 10px;">进程</a> <a href="/tags/逆向/" style="font-size: 10px;">逆向</a> <a href="/tags/重庆/" style="font-size: 10px;">重庆</a> <a href="/tags/驱动/" style="font-size: 15px;">驱动</a>
+  </div>
+</div>
+
+
+  <div class="widget tag">
+<h3 class="title">Links</h3>
+<ul class="entry">
+<li><a href="http://blog.ourren.com/" title="Ourren">Ourren</a></li>
+<li><a href="http://www.hyjal.net/" title="Hyjal">Hyjal</a></li>
+<li><a href="http://www.jianshu.com/users/fa15f4e416ae/latest_articles" title="Daemonceltics">Daemonceltics</a></li>
+<li><a href="http://papap.info/" title="isee">isee</a></li>
+</ul>
+</div>
+
+  <script type="text/javascript" id="clustrmaps" src="//cdn.clustrmaps.com/map_v2.js?u=putG&d=yoFnN6V-ovhL-H4e9_69LvkTiX4uX7rEYJ15yL3G1Wg"></script>
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <div id="go-pg-top"><i class="icon-arrow-up"></i></div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2020 Lyon
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript" charset="utf-8" src="/js/page.js"></script>
+
+</body>
+
+</html>

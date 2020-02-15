@@ -1,0 +1,364 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>如何正确的对Windows软件进行逆向工程（翻译/转载） | Lyon&#39;s blog</title>
+  <meta name="author" content="Lyon">
+  
+  <meta name="description" content="Walk steps step by step">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="如何正确的对Windows软件进行逆向工程（翻译/转载）"/>
+  <meta property="og:site_name" content="Lyon&#39;s blog"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  #<link href="/favicon.ico" rel="icon">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="alternate" href="/atom.xml" title="Lyon&#39;s blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  <script src="/js/jquery.min.js"></script>
+  <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?0fe72895c9bcfd0d09da12b5378b1b91";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+</head>
+
+
+<body>
+  <!--[if lte IE 8]> <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'> <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0027_Simplified Chinese.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." style='margin-left:auto;margin-right:auto;display: block;'/></a></div> <![endif]-->
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">Lyon&#39;s blog</a></h1>
+  <h2><a href="/">I hear and I forget.I see and I remember.I do and I understand.</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">首页</a></li>
+    
+      <li><a href="/archives">归档</a></li>
+    
+      <li><a href="/about">关于</a></li>
+    
+	<li> <a href="/atom.xml">RSS</a> </li>
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <time datetime="2019-04-06T04:45:15.000Z"><a href="/2019/04/06/Windows/how-to-reverse-engineer-software-windows-in-a-right-way/">2019-04-06</a></time>
+      
+      
+  
+    <h1 class="title">如何正确的对Windows软件进行逆向工程（翻译/转载）</h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+  <div id="toc" class="toc-article">
+  <strong class="toc-title">文章目录</strong>
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x00_前言"><span class="toc-number">1.</span> <span class="toc-text">0x00 前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x01_什么是逆向工程？"><span class="toc-number">2.</span> <span class="toc-text">0x01 什么是逆向工程？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x01_逆向工程需要什么？"><span class="toc-number">3.</span> <span class="toc-text">0x01 逆向工程需要什么？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x02_理论知识-软件逆向工程过程"><span class="toc-number">4.</span> <span class="toc-text">0x02 理论知识-软件逆向工程过程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x03_逆向工程Windows软件的实用工具"><span class="toc-number">5.</span> <span class="toc-text">0x03 逆向工程Windows软件的实用工具</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#反汇编工具"><span class="toc-number">5.1.</span> <span class="toc-text">反汇编工具</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Windows_Sysinternals"><span class="toc-number">5.2.</span> <span class="toc-text">Windows Sysinternals</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#网络监控工具"><span class="toc-number">5.3.</span> <span class="toc-text">网络监控工具</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#调试器"><span class="toc-number">5.4.</span> <span class="toc-text">调试器</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x05_如何对驱动程序进行反向工程"><span class="toc-number">6.</span> <span class="toc-text">0x05 如何对驱动程序进行反向工程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x06_结论"><span class="toc-number">7.</span> <span class="toc-text">0x06 结论</span></a></li></ol>
+  </div>
+
+
+	
+    <div class="entry">
+      
+        <h2 id="0x00_前言">0x00 前言</h2><p>你有没有想过要拆开某个机械装置了解它的工作原理呢？嗯，谁没有呢。这种欲望也是是逆向工程的主导力量，逆向对于分析产品安全性、在不运行可疑的.exe文件的情况下查明其用途、恢复丢失的文档、开发基于旧软件的新解决方案等非常有用。<br><a id="more"></a><br>在本文中，我们讨论执行逆向工程所需的知识结构、逆向工程的基本原理、Windows软件、反汇编器和工具。我们还提供了对一个程序进行逆向工程的步骤示例。</p>
+<h2 id="0x01_什么是逆向工程？">0x01 什么是逆向工程？</h2><p>逆向工程是发现硬件或软件背后的原理（例如其体系结构和内部结构）的过程。简单来说逆向工程就是搞清楚程序是如何工作的。<br>显然，如果您有文档，那么整个过程将变得更加简单。但是经常会发生这样的情况：没有文档，您需要通过另外的途径来学习某个软件的工作方式。<br>您什么时候需要对软件进行逆向工程，逆向工程对你有什么帮助？<br>逆向工程在计算机科学领域有许多用途，包括：</p>
+<ul>
+<li>研究网络通讯协议</li>
+<li>查找恶意软件中使用的算法，例如计算机病毒，特洛伊木马，勒索软件等。</li>
+<li>研究用于存储任何类型信息的文件格式，例如电子邮件数据库和磁盘映像</li>
+<li>检查您自己的软件抵抗逆向工程的能力</li>
+<li>改善软件与系统和第三方软件的兼容性</li>
+<li>使用未文档化的系统功能<br>逆向工程的合法性取决于其目的以及软件的使用方式。假设您已合法获得该软件的副本，则上述所有目的都是完全合法的。但是，例如，如果您打算对软件某些闭源功能进行逆向工程，然后在另一个软件中使用，则可能会遇到麻烦。</li>
+</ul>
+<p>关于<a href="https://en.wikibooks.org/wiki/Reverse_Engineering/Legal_Aspects" target="_blank" rel="external">法律文件</a>，最终用户许可协议（EULA）通常禁止进行逆向工程。但是美国<a href="https://www.law.cornell.edu/uscode/text/17/1201" target="_blank" rel="external">数字千年版权法案</a>规定，如果为了提高与其他产品的兼容性而逆向某个软件是合法的。<br>法律要求因国家/地区而异，因此请在开始之前花点时间研究一下。<br>现在，让我们看看如何对软件进行逆向工程。</p>
+<h2 id="0x01_逆向工程需要什么？">0x01 逆向工程需要什么？</h2><p>要开始逆向软件，您需要：</p>
+<ul>
+<li>1.您想要使用逆向工程领域的知识</li>
+<li>2.一些能够再反汇编一个软件时应用你专业知识的工具<br>让我们考虑一个与软件不相关的例子。假设您有一只手表，想确定它是机械的、石英的还是自动的。<br>拥有该领域的知识意味着您应该知道有三种类型的手表。此外，您应该知道，如果有电池，它应该在手表内部，打开手表就可以看到它。您还应该了解手表的内部结构，电池的外观以及打开表壳所需的工具的基本知识。拥有可以验证知识的工具，意味着您需要一把螺丝起子或其他专用工具，才能打开手表。<br>就像对手表进行逆向工程需要特定的技能和工具一样，逆向工程软件也需要其自身在特定领域的知识和工具。</li>
+</ul>
+<h2 id="0x02_理论知识-软件逆向工程过程">0x02 理论知识-软件逆向工程过程</h2><p>对于不同的软件逆向工程任务，您需要不同类型的知识。当然，有一些常识可以帮助您完成大多数逆向工程任务：常见的应用程序结构，编程语言，编译器等知识。但是，如果没有特定的理论知识，就无法完成具体的逆向工程任务。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">逆向任务</th>
+<th style="text-align:left">你需要的基础知识</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">对有网络行为的软件进行逆向工程</td>
+<td style="text-align:left">进程间通信、网络的结构、连接、网络数据包等</td>
+</tr>
+<tr>
+<td style="text-align:left">逆向加密算法</td>
+<td style="text-align:left">密码学及最常使用的密码学相关算法</td>
+</tr>
+<tr>
+<td style="text-align:left">逆向文件结构</td>
+<td style="text-align:left">基本文件概念以及不同的系统或组件如何使用文件</td>
+</tr>
+</tbody>
+</table>
+<p>在逆向分析某些软件时使用一些技巧可以节省大量时间。对于有文件交互的软件，可以输入一些比较特殊的数据，然后记录实际存储时候的数据的大小和偏移，这些信息有助于你发现这些文件的内部结构。<br>进行逆向工程过程时，软件开发人员通常使用反汇编程序来查找适当的算法和程序逻辑。有许多不同的可执行文件格式，编译器（提供不同的输出）和操作系统，因为这种多样性，很难通过单一的技术去逆向各种类型的软件。<br>要理解反编译的代码，您需要一些有关汇编语言，函数调用约定，栈结构，堆栈框架等方知识。<br>了解不同语言的汇编程序输出可能有助于您发现原始功能。让我们来看一些Windows x86平台的示例。<br>假设我们有以下代码：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> count = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; ++i)</span><br><span class="line">&#123;</span><br><span class="line">count++;</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; count;</span><br></pre></td></tr></table></figure>
+<p>如果我们将此代码编译为可执行文件，则会在反汇编程序中看到以下内容：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">004113</span>DE loc_4113DE:</span><br><span class="line"><span class="number">004113</span>DE     mov     eax, [ebp-<span class="number">14</span>h]</span><br><span class="line"><span class="number">004113E1</span>     add     eax, <span class="number">1</span></span><br><span class="line"><span class="number">004113E4</span>     mov     [ebp-<span class="number">14</span>h], eax</span><br><span class="line"><span class="number">004113E7</span> loc_4113E7:</span><br><span class="line"><span class="number">004113E7</span>     cmp     [ebp-<span class="number">14</span>h], <span class="number">0</span>Ah</span><br><span class="line"><span class="number">004113</span>EB     jge     <span class="keyword">short</span> loc_4113F8</span><br><span class="line"><span class="number">004113</span>ED     mov     eax, [ebp-<span class="number">8</span>]</span><br><span class="line"><span class="number">004113F</span>0     add     eax, <span class="number">1</span></span><br><span class="line"><span class="number">004113F</span>3     mov     [ebp-<span class="number">8</span>], eax</span><br><span class="line"><span class="number">004113F</span>6     jmp     <span class="keyword">short</span> loc_4113DE</span><br><span class="line"><span class="number">004113F</span>8 loc_4113F8:</span><br><span class="line"><span class="number">004113F</span>8     mov     ecx, ds:?<span class="built_in">cout</span>@<span class="built_in">std</span></span><br><span class="line"><span class="number">004113F</span>E     push    eax</span><br><span class="line"><span class="number">00411400</span>     call    ds:basic_ostream@<span class="keyword">operator</span>&lt;&lt;(<span class="keyword">int</span>)</span><br><span class="line"><span class="number">00411404</span>     xor     eax, eax</span><br><span class="line"><span class="number">00411406</span>     retn</span><br></pre></td></tr></table></figure>
+<p>如上，for循环最后变成了由比较和跳转语句组成的汇编代码，注意这里的汇编代码并未使用ecx作为循环计数器，另外这里的局部变量时[ebp-14h]和[ebp-8]。<br>让我们看看使用release模式编译会汇编代码会有什么变化:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">00401000</span> main     proc near</span><br><span class="line"><span class="number">00401000</span>     mov     ecx, ds:?<span class="built_in">cout</span>@<span class="built_in">std</span></span><br><span class="line"><span class="number">00401006</span>     push    <span class="number">0</span>Ah</span><br><span class="line"><span class="number">00401008</span>     call    ds:basic_ostream@<span class="keyword">operator</span>&lt;&lt;(<span class="keyword">int</span>)</span><br><span class="line"><span class="number">0040100</span>E     xor     eax, eax</span><br><span class="line"><span class="number">00401010</span>     retn</span><br><span class="line"><span class="number">00401010</span> main     endp</span><br></pre></td></tr></table></figure>
+<p>这段代码看起来与之前的代码完全不同。这是因为代码被优化了。删除了该循环，因为除了将count变量增加到10之外，循环没有做任何其他事情，因此优化程序决定仅保留count变量的最终值，并将该值直接作为count输出运算符的参数。<br>目前，我们使用的编译器非常擅长优化代码。这就是为什么在进行逆向工程时，最好理解代码背后的思想（代码原理），而不是尝试获取原始代码本身。如果您了解代码背后的原理，则只需编写适合原始任务的原型即可。<br>如果您编译不同的运算符，结构和其他语言构造，那么你就知道汇编代码将非常有用。了解最终的汇编代码是开始C++逆向工程过程的一种好方法，但是我们在这里不介绍它的技术细节。</p>
+<h2 id="0x03_逆向工程Windows软件的实用工具">0x03 逆向工程Windows软件的实用工具</h2><p>在我们的<a href="https://www.apriorit.com/dev-blog/173-application-architecture-research" target="_blank" rel="external">应用程序架构研究中</a>，我们已经描述了几种逆向工程工具，包括ProcessMonitor和ProcessExplorer。这些工具对于逆向工程绝对是必不可少的。<br>在本节中，我们将回顾最受欢迎的反汇编程序以及用于逆向工程项目的其他一些工具。<br>您可以在有关<a href="https://www.apriorit.com/dev-blog/366-software-reverse-engineering-tools" target="_blank" rel="external">最佳软件逆向工程工具的文章</a>中获得更多详细信息和用法示例。</p>
+<h3 id="反汇编工具">反汇编工具</h3><p>反汇编程序是将可执行文件转换为汇编语言的程序。最受欢迎的是<a href="https://www.hex-rays.com/products/ida/" target="_blank" rel="external">IDA Pro</a><br><strong>IDA Pro</strong></p>
+<div align="center"><br><img src="/img/reverse_idapro.png" alt="IDA Pro" align="center"><br></div><br>IDA Pro是一种方便而强大的反汇编工具。由很多功能，可让您快速反汇编一个软件。它可以显示函数调用树，解析可执行文件的导入和导出，并显示有关它们的信息。它甚至可以用C语言显示代码。它还支持多种CPU架构，因此可以使用IDA Pro对ARM，AVR，M68k和许多其他架构进行逆向工程。<br><br><strong>Radare</strong><br><div align="center"><br><img src="/img/reverse_radare.jpg" alt="Radare" align="center"><br></div>
+
+<p><a href="https://rada.re/r/" target="_blank" rel="external">Radare</a>反汇编工具是IDA的替代产品。它基本上具有IDA的所有功能。虽然没有那么强大和稳定。但是它是免费和开源的。Radare本身是一个控制台工具，但是它具有Cutter前端，这使其成为IDA的可选替代。</p>
+<h3 id="Windows_Sysinternals">Windows Sysinternals</h3><p><a href="https://docs.microsoft.com/en-us/sysinternals/" target="_blank" rel="external">Windows Sysinternals</a>实用程序通常用于Microsoft Windows环境的管理，诊断，故障排除和监视。但它们也适用于逆向Windows软件。<br><strong>TCPView</strong>是一个网络嗅探器，它显示来自所有进程的有关TCP/UDP数据包的所有信息。该工具对于逆向网络协议很有用。<br><strong>PortMon</strong>是一个物理系统端口监视器。它监视串行和并行端口以及通过它们的所有流量。<br><strong>WinObj</strong>以分层结构显示系统中的所有全局对象。当逆向使用同步对象（例如互斥量和信号量）的应用程序以及内核模式驱动程序时，此工具很有用。</p>
+<h3 id="网络监控工具">网络监控工具</h3><p><strong>Wireshark</strong></p>
+<div align="center"><br><img src="/img/reverse_Wireshark.jpg" alt="Wireshark" align="center"><br></div>
+
+<p><a href="https://www.wireshark.org/" target="_blank" rel="external">Wireshark</a>是功能最强大的网络嗅探器之一。它不仅允许您捕获网络流量，而且还包含针对各种网络协议的解析器，这些解析器从诸如以太网，TCP和IP的真正底层开始，到诸如WebSockets和XMPP的特定于应用程序的协议。</p>
+<p><strong>Fiddler</strong></p>
+<div align="center"><br><img src="/img/reverse_Fiddler.jpg" alt="Fiddler" align="center"><br></div><br>Fiddler是一个Web代理，它记录来自浏览器的流量，并允许您分析HTTP/HTTPS请求。与Wireshark不同，它显示HTTP会话而不是单独的网络数据包。Fiddler还允许您在监视SOAP，REST和AJAX请求时分析通过HTTP发送的压缩数据，并分析JSON和XML数据(译者注:搭配proxifier使用更强大)。<br><br><strong>API Monitor</strong><br><br><div align="center"><br><img src="/img/reverse_apimonitor.png" alt="API Monitor" align="center"><br></div>
+
+<p><a href="http://www.rohitab.com/apimonitor" target="_blank" rel="external">API Monitor</a>是非常实用的工具，用于发现应用程序调用了哪些API以及应用程序从这些API期望的行为。该工具具有功能强大的数据库，可让您看到对不仅是kernel32和ntdll的大量API函数的调用，而且还包括对COM，托管环境等的调用。此外，API Monitor提供了方便的过滤机制。</p>
+<h3 id="调试器">调试器</h3><p>对于任何开发人员来说，调试器对于查看程序现在正在做什么时无可替代的。逆向应用程序时从调试中获得的好处与调试实时应用程序时获得的好处相同。<br>最受欢迎的调试器是OllyDbg，WinDbg和Windbg Preview。</p>
+<p><strong>OllyDbg</strong></p>
+<div align="center"><br><img src="/img/reverse_ollydbg.png" alt="OllyDbg" align="center"><br></div><br>当涉及软件逆向工程时，OllyDbg（及其后继x64dbg）可能是最好的调试器。它是专门为满足逆向需求而开发的，并具有用于此目的的所有功能：<br><br>- 内置的反汇编程序，能够分析和识别关键数据结构<br>- 导入和导出分析功能<br>- 内置的assembling和patching引擎<br>解析API函数及其参数的能力使逆向系统的交互变得容易。堆栈视图提供了大量有关调用堆栈的信息。另一个重要的优点是，可以实用OllyDbg调试有调试保护的应用程序，而普通的调试器却无能为力。<br><br><strong>WinDbg</strong><br><div align="center"><br><img src="/img/reverse_Windbg.png" alt="Windbg" align="center"><br></div>
+
+<p>尽管界面简单，但<a href="http://www.windbg.org/" target="_blank" rel="external">WinDbg</a>具有强大的调试工具。它具有内置的反汇编程序，各种命令，可让您几乎了解要调试的进程/系统的所有内容，并具有内核模式调试的能力，这可能是最有价值的功能。对于逆向驱动程序，尤其是内核模式驱动程序，这是一个很大的优势。</p>
+<p><strong>Windbg Preview</strong></p>
+<div align="center"><br><img src="/img/reverse_Windbg_Preview.jpg" alt="Windbg Preview" align="center"><br></div><br>Windbg Preview是Microsoft开发的Windbg的新版本。它仅通过Windows应用商店分发。它具有经典Windbg的所有功能以及新的UI和一些新功能。这些新功能之一是Time Travel Debugging，它使您可以记录一段程序执行时间，然后根据需要重复调试多次。这样您可以通过逐步执行代码中所关心的部分，而不必担心意外运行某些代码并丢失上下文或所有数据。<br><br>## 0x04 现实中的软件逆向工程示例<br><br>现在，我们将看到一个示例，说明如何对软件进行逆向工程。假设您有一个可疑的可执行文件。您需要了解该程序的功能以及对用户而言是否安全。考虑到这种情况，最好不要在工作计算机上运行此可执行文件，而要使用虚拟机。让我们在虚拟机中启动应用程序。<br><div align="center"><br><img src="/img/reverse_CreateService.png" alt="Process creates a service" align="center"><br></div><br>如我们所见，该文件创建一个名为TestDriver的Windows服务，为内核类型，因此我们知道它是一个驱动程序。但是从哪里获取驱动程序文件才能运行？我们可以使用Sysinternals Suite中的ProcessMonitor进行查找。打开ProcessMonitor时，我们可以设置过滤器以仅向我们显示感兴趣的文件活动。其活动日志如下所示：<br><div align="center"><br><img src="/img/reverse_filemon.png" alt="FileMon information" align="center"><br></div>
+
+<p>驱动程序文件是由我们所要进行的逆向的程序创建的，该程序将该文件放置在用户的temp目录中。无需在temp文件夹中查找文件，因为我们发现该过程会在使用后立即将其删除。那么该文件干了什么呢？如果将文件解压缩，我们可能会尝试在流程的资源部分中找到它，因为这是存储此类数据的常用位置。让我们看看那里。我们将使用另一个工具-<a href="http://www.angusj.com/resourcehacker/" target="_blank" rel="external">Resource Hacker</a>-检查资源。运行它：</p>
+<p><div align="center"><br><img src="/img/reverse_reshack.png" alt="使用Resource Hacker检查资源" align="center"><br></div><br>找到了，我们在资源文件中找到了，这可能是Windows可执行文件，因为它以MZ签名开头并且具有字符串“This program cannot be run in DOS mode”。让我们检查一下它是否是我们的驱动程序文件。为此，我们使用Resource Hacker提取资源，然后在反汇编程序中将其打开。</p>
+<p><div align="center"><br><img src="/img/reverse_disdrv.png" alt align="center"><br></div><br>众所周知，DriverEntry是Windows系统中内核模式驱动程序的入口点。似乎我们找到的时一个驱动程序文件，因此我们可以继续进行研究。</p>
+<h2 id="0x05_如何对驱动程序进行反向工程">0x05 如何对驱动程序进行反向工程</h2><p>要开始对驱动程序进行逆向工程，我们逐一检查从DriverEntry调用的函数。转到sub_14005，没有发现任何有趣的事情，因此我们继续进行sub_110F0并找到以下代码：</p>
+<p><div align="center"><br><img src="/img/reverse_assdiver.png" alt align="center"><br></div><br>为了简单起见，此处省略了一些信息。<br>在第一个代码清单中，创建了一个unicode字符串，该字符串指向路径C:\hello.txt。之后，结构OBJECT_ATTRIBUTES填充了常规值；我们知道在调用ZwCreateFile之类的函数时通常需要此结构。<br>在第二个清单中，我们看到确实调用了ZwCreateFile，这使我们非常确定驱动程序已创建文件-并且我们知道该文件在创建之后的位置。<br>从第三和第四代码清单中可以看到，驱动程序采用unicode字符串并将其写入缓冲区（这在sub_11150函数中发生），然后将使用ZwWriteFile函数将缓冲区写入文件。最后，驱动程序使用ZwClose API关闭文件。<br>让我们总结一下。我们发现原始程序从其资源中提取了驱动程序文件，并将其放入当前用户的临时文件夹中，为此驱动程序创建Windows服务并运行它。之后，程序将停止并从temp目录中删除服务和原始驱动程序文件。从这种行为和对反汇编的分析来看，驱动程序除了在C盘中创建一个名为hello.txt的文件并写入字符串“Hello from driver”外，什么都不做。</p>
+<p><div align="center"><br><img src="/img/htre-win-13.png" alt align="center"><br></div><br>精彩！我们已经对该简单程序进行了逆向工程，现在我们知道它可以安全使用。我们可以通过许多不同的方式实现此结果-使用调试或API Mon，编写测试等。您可以找到自己的方式来对适合您的软件进行逆向工程。</p>
+<h2 id="0x06_结论">0x06 结论</h2><p>Windows软件逆向工程需要扎实的教育背景和编程经验。为了开始逆向工程，您需要结合汇编，网络监控，调试，API集成，多种程序语言，编译器等方面的技能。在逆转软件时还必须非常小心，以免违反版权法或损害版权及你的操作系统。</p>
+<p><em>原文地址：<a href="https://www.apriorit.com/dev-blog/364-how-to-reverse-engineer-software-windows-in-a-right-way" target="_blank" rel="external">https://www.apriorit.com/dev-blog/364-how-to-reverse-engineer-software-windows-in-a-right-way</a></em></p>
+
+      
+    </div>
+    <footer>
+      
+
+        
+          <div class="alignleft post-nav">
+            <em>上一篇: </em><a href="/2019/05/06/Kernel/windows-driver-testing-basics/">Windows内核重拾：Windows驱动测试基础：工具、功能和示例（翻译/转载）</a>
+          </div>
+        
+        
+          <div class="alignright post-nav">
+            <em>下一篇: </em><a href="/2019/01/12/Windows/a_crash_lead_deadlock/">Windows平台下一个崩溃而导致的死锁分析</a>
+          </div>
+          <div class="clearfix"></div>
+        
+
+        
+          <div class="copyright">
+            
+              <span class="claim">转载请注明youngroe.com</span>
+            
+            
+              <span class="from-link">
+                <em>本文链接地址:</em>
+                <a href="/2019/04/06/Windows/how-to-reverse-engineer-software-windows-in-a-right-way/">
+                  http://www.youngroe.com/2019/04/06/Windows/how-to-reverse-engineer-software-windows-in-a-right-way/
+                </a>
+              </span>
+            
+          </div>
+        
+		<span id="busuanzi_container_site_pv">
+    本站总访问量<span id="busuanzi_value_site_pv"></span>次
+        
+  
+  <div class="categories">
+    <a href="/categories/Windows/">Windows</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/Windows/">Windows</a>, <a href="/tags/逆向/">逆向</a>
+  </div>
+
+        <div class="bdsharebuttonbox"><a href="#" class="bds_more" data-cmd="more"></a><a href="#" class="bds_qzone" data-cmd="qzone"></a><a href="#" class="bds_tsina" data-cmd="tsina"></a><a href="#" class="bds_tqq" data-cmd="tqq"></a><a href="#" class="bds_renren" data-cmd="renren"></a><a href="#" class="bds_weixin" data-cmd="weixin"></a></div>
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdPic":"","bdStyle":"0","bdSize":"16"},"share":{},"image":{"viewList":["qzone","tsina","tqq","renren","weixin"],"viewText":"������","viewSize":"16"},"selectShare":{"bdContainerClass":null,"bdSelectMiniList":["qzone","tsina","tqq","renren","weixin"]}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</span>
+</article>
+
+
+<section id="comment">
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+<div class="widget tag">
+  <h3 class="title">分类</h3>
+  <ul class="entry">
+  
+    <li><a href="/categories/Cybersecurity/">Cybersecurity</a><small>1</small></li>
+  
+    <li><a href="/categories/Debug/">Debug</a><small>7</small></li>
+  
+    <li><a href="/categories/Kernel/">Kernel</a><small>4</small></li>
+  
+    <li><a href="/categories/Learning/">Learning</a><small>8</small></li>
+  
+    <li><a href="/categories/Life/">Life</a><small>7</small></li>
+  
+    <li><a href="/categories/Others/">Others</a><small>1</small></li>
+  
+    <li><a href="/categories/Read-Notes/">Read Notes</a><small>7</small></li>
+  
+    <li><a href="/categories/Tools/">Tools</a><small>6</small></li>
+  
+    <li><a href="/categories/Vulnerabilities/">Vulnerabilities</a><small>0</small></li>
+  
+    <li><a href="/categories/Windows/">Windows</a><small>14</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2019/07/01/Windows/delphi_reverse_summary/">Delphi程序逆向反汇编技巧小记</a>
+      </li>
+    
+      <li>
+        <a href="/2019/06/25/Kernel/kernel_enum_wfp_callout_function/">Windows内核重拾：如何枚举系统中Windows Filtering Platform (WFP)驱动中的callout函数</a>
+      </li>
+    
+      <li>
+        <a href="/2019/05/06/Kernel/windows-driver-testing-basics/">Windows内核重拾：Windows驱动测试基础：工具、功能和示例（翻译/转载）</a>
+      </li>
+    
+      <li>
+        <a href="/2019/04/06/Windows/how-to-reverse-engineer-software-windows-in-a-right-way/">如何正确的对Windows软件进行逆向工程（翻译/转载）</a>
+      </li>
+    
+      <li>
+        <a href="/2019/01/12/Windows/a_crash_lead_deadlock/">Windows平台下一个崩溃而导致的死锁分析</a>
+      </li>
+    
+      <li>
+        <a href="/2018/12/01/Windows/windows_client_dns_over_https/">Windows客户端如何透明使用DNS-over-HTTPS</a>
+      </li>
+    
+      <li>
+        <a href="/2018/10/06/Cybersecurity/ddos-protection-techniques/">现代DDoS对抗技术概述（翻译/转载）</a>
+      </li>
+    
+      <li>
+        <a href="/2018/09/18/Life/xian/">西安周末游</a>
+      </li>
+    
+      <li>
+        <a href="/2018/01/06/Kernel/WindowsKernel_DebugObject/">Windows内核重拾：DebugObject</a>
+      </li>
+    
+      <li>
+        <a href="/2017/10/23/Tools/IDA-Pro-ClassInformer-Tutorial/">IDA Pro ClassInformer使用指南（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2017/05/23/Windows/Kernel Data and Filtering Support/">Kernel Data and Filtering Support for Windows Server 2008（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2017/05/17/Windows/Windows-x64-Shellcode/">Windows x64 Shellcode编写指南(翻译)</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget tagcloud">
+  <h3 class="title">标签云</h3>
+  <div class="entry">
+    <a href="/tags/ASM/" style="font-size: 12.5px;">ASM</a> <a href="/tags/Boost/" style="font-size: 10px;">Boost</a> <a href="/tags/DDoS/" style="font-size: 10px;">DDoS</a> <a href="/tags/DNS-over-HTTPS/" style="font-size: 10px;">DNS-over-HTTPS</a> <a href="/tags/Delphi/" style="font-size: 10px;">Delphi</a> <a href="/tags/Dll劫持/" style="font-size: 10px;">Dll劫持</a> <a href="/tags/GCC-GDB/" style="font-size: 10px;">GCC&GDB</a> <a href="/tags/GetVersionEx/" style="font-size: 10px;">GetVersionEx</a> <a href="/tags/Http/" style="font-size: 10px;">Http</a> <a href="/tags/IDA-Pro/" style="font-size: 12.5px;">IDA Pro</a> <a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/MSDN/" style="font-size: 12.5px;">MSDN</a> <a href="/tags/Malware/" style="font-size: 12.5px;">Malware</a> <a href="/tags/MiniDumpWriteDump/" style="font-size: 10px;">MiniDumpWriteDump</a> <a href="/tags/PEB/" style="font-size: 10px;">PEB</a> <a href="/tags/Procmon/" style="font-size: 10px;">Procmon</a> <a href="/tags/Runtime-Error/" style="font-size: 10px;">Runtime Error</a> <a href="/tags/SEH/" style="font-size: 10px;">SEH</a> <a href="/tags/Shellcode/" style="font-size: 10px;">Shellcode</a> <a href="/tags/SysinternalsSuite/" style="font-size: 10px;">SysinternalsSuite</a> <a href="/tags/Tips/" style="font-size: 10px;">Tips</a> <a href="/tags/UAC/" style="font-size: 10px;">UAC</a> <a href="/tags/UAF漏洞/" style="font-size: 10px;">UAF漏洞</a> <a href="/tags/VC/" style="font-size: 10px;">VC</a> <a href="/tags/Visual-Studio/" style="font-size: 12.5px;">Visual Studio</a> <a href="/tags/Windbg/" style="font-size: 10px;">Windbg</a> <a href="/tags/Windows/" style="font-size: 20px;">Windows</a> <a href="/tags/Windows核心编程/" style="font-size: 17.5px;">Windows核心编程</a> <a href="/tags/android/" style="font-size: 10px;">android</a> <a href="/tags/getaddrinfo/" style="font-size: 10px;">getaddrinfo</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/libeay32/" style="font-size: 10px;">libeay32</a> <a href="/tags/markdown/" style="font-size: 10px;">markdown</a> <a href="/tags/ndk/" style="font-size: 10px;">ndk</a> <a href="/tags/sublime-text3/" style="font-size: 10px;">sublime text3</a> <a href="/tags/x64/" style="font-size: 12.5px;">x64</a> <a href="/tags/体验/" style="font-size: 10px;">体验</a> <a href="/tags/内核/" style="font-size: 12.5px;">内核</a> <a href="/tags/内核结构/" style="font-size: 15px;">内核结构</a> <a href="/tags/学习/" style="font-size: 10px;">学习</a> <a href="/tags/安全机制/" style="font-size: 10px;">安全机制</a> <a href="/tags/异常处理/" style="font-size: 10px;">异常处理</a> <a href="/tags/提权/" style="font-size: 10px;">提权</a> <a href="/tags/服务/" style="font-size: 10px;">服务</a> <a href="/tags/权限/" style="font-size: 12.5px;">权限</a> <a href="/tags/栈溢出漏洞/" style="font-size: 10px;">栈溢出漏洞</a> <a href="/tags/测试/" style="font-size: 10px;">测试</a> <a href="/tags/浮躁/" style="font-size: 10px;">浮躁</a> <a href="/tags/漏洞调试/" style="font-size: 12.5px;">漏洞调试</a> <a href="/tags/生活/" style="font-size: 15px;">生活</a> <a href="/tags/脱壳/" style="font-size: 10px;">脱壳</a> <a href="/tags/西安/" style="font-size: 10px;">西安</a> <a href="/tags/计划/" style="font-size: 10px;">计划</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a> <a href="/tags/调试/" style="font-size: 15px;">调试</a> <a href="/tags/转换/" style="font-size: 10px;">转换</a> <a href="/tags/进程/" style="font-size: 10px;">进程</a> <a href="/tags/逆向/" style="font-size: 10px;">逆向</a> <a href="/tags/重庆/" style="font-size: 10px;">重庆</a> <a href="/tags/驱动/" style="font-size: 15px;">驱动</a>
+  </div>
+</div>
+
+
+  <div class="widget tag">
+<h3 class="title">Links</h3>
+<ul class="entry">
+<li><a href="http://blog.ourren.com/" title="Ourren">Ourren</a></li>
+<li><a href="http://www.hyjal.net/" title="Hyjal">Hyjal</a></li>
+<li><a href="http://www.jianshu.com/users/fa15f4e416ae/latest_articles" title="Daemonceltics">Daemonceltics</a></li>
+<li><a href="http://papap.info/" title="isee">isee</a></li>
+</ul>
+</div>
+
+  <script type="text/javascript" id="clustrmaps" src="//cdn.clustrmaps.com/map_v2.js?u=putG&d=yoFnN6V-ovhL-H4e9_69LvkTiX4uX7rEYJ15yL3G1Wg"></script>
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <div id="go-pg-top"><i class="icon-arrow-up"></i></div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2020 Lyon
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript" charset="utf-8" src="/js/page.js"></script>
+
+</body>
+
+</html>

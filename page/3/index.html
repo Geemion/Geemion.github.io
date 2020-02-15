@@ -1,0 +1,913 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>第 3 页 | Lyon&#39;s blog</title>
+  <meta name="author" content="Lyon">
+  
+  <meta name="description" content="Walk steps step by step">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+  <meta property="og:site_name" content="Lyon&#39;s blog"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  #<link href="/favicon.ico" rel="icon">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="alternate" href="/atom.xml" title="Lyon&#39;s blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  <script src="/js/jquery.min.js"></script>
+  <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?0fe72895c9bcfd0d09da12b5378b1b91";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+</head>
+
+
+<body>
+  <!--[if lte IE 8]> <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'> <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0027_Simplified Chinese.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." style='margin-left:auto;margin-right:auto;display: block;'/></a></div> <![endif]-->
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">Lyon&#39;s blog</a></h1>
+  <h2><a href="/">I hear and I forget.I see and I remember.I do and I understand.</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">首页</a></li>
+    
+      <li><a href="/archives">归档</a></li>
+    
+      <li><a href="/about">关于</a></li>
+    
+	<li> <a href="/atom.xml">RSS</a> </li>
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper">
+  <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <time datetime="2015-12-23T09:25:11.000Z"><a href="/2015/12/23/Tools/Malware-Regulary-Api/">2015-12-23</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2015/12/23/Tools/Malware-Regulary-Api/">病毒木马常用api</a></h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+
+	
+    <div class="entry">
+      
+        <p><em>提取自MyMonitor TraceDllReport.dll</em><br><strong>发现了个更好的东西<a href="https://www.bnxnet.com/top-maliciously-used-apis/">top-maliciously-used-apis</a></strong></p>
+<p>Sleep<br>WSAConnect<br>connect<br>bind<br>send<br>SetFileAttributesW<br>ExitProcess<br>MessageBoxW<br>MessageBoxA<br>TerminateProcess<br>WriteProcessMemory<br>ReadProcessMemory<br>AdjustTokenPrivileges<br>OpenProcessToken<br>IsDebuggerPresent<br>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/2015/12/23/Tools/Malware-Regulary-Api/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</span>
+</article>
+
+
+
+
+  <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <time datetime="2015-12-17T10:04:32.000Z"><a href="/2015/12/17/Tools/FLARE-IDA-Pro-msdn/">2015-12-17</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2015/12/17/Tools/FLARE-IDA-Pro-msdn/">火眼（FireEye）实验室FLARE IDA Pro脚本系列：MSDN注释插件----实践</a></h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+
+	
+    <div class="entry">
+      
+        <p>主要实践了这篇文章<a href="http://www.freebuf.com/tools/43334.html">火眼（FireEye）实验室FLARE IDA Pro脚本系列：MSDN注释插件</a>,主要是有几个坑需要注意，然后就能实现功能了。</p>
+<p>##原始步骤</p>
+<ul>
+<li><ol>
+<li>下载并安装离线MSDN文档，下载链接：<a href="http://www.microsoft.com/en-us/download/details.aspx?id=18950.尽管不是最新的SDK版本，但是它包含了所需的全部信息，‍‍‍‍‍‍‍‍而且数据可以直接被提取。如图6所示，你可以只选择安装帮助文档，默认的安装目录是C:\ProgramFiles\Microsoft">http://www.microsoft.com/en-us/download/details.aspx?id=18950.尽管不是最新的SDK版本，但是它包含了所需的全部信息，‍‍‍‍‍‍‍‍而且数据可以直接被提取。如图6所示，你可以只选择安装帮助文档，默认的安装目录是C:\ProgramFiles\Microsoft</a> SDKs\Windows\v7.0\Help\1033.‍‍‍‍‍‍‍‍</li>
+</ol>
+</li>
+<li>2.利用解压软件（如7-zip）解压MSDN文档到指定目录。</li>
+<li>3.从Hex-Rays网站上下载tilib.exe，链接如下： <a href="https://www.hex-rays.com/products/ida/support/download.shtml">https://www.hex-rays.com/products/ida/support/download.shtml</a> </li>
+<li>4.运行MSDN_crawler/msdn_crawler.py &lt;已解压的MSDN文件的目录 &gt; &lt; tilib.exe所在的目录&gt; &lt; til文件所在的目录&gt;<br>如果提前条件都满足，你就可以运行位于MSDN_crawler目录中的MSDN_crawler.py脚本。脚本需要TIL文件的目录（通常为%IDADIR%/til/pc/）和已解压的MSDN文档的目录。当脚本运行完之后，最终的XML数据库文件就位于MSDN_data 目录中。‍‍‍‍</li>
+</ul>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/2015/12/17/Tools/FLARE-IDA-Pro-msdn/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</span>
+</article>
+
+
+
+
+  <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <time datetime="2015-12-03T12:24:29.000Z"><a href="/2015/12/03/Read-Notes/Read-Notes-Windows-Via-C-C-7/">2015-12-03</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2015/12/03/Read-Notes/Read-Notes-Windows-Via-C-C-7/">Windows核心编程读书笔记6（第17、18章）</a></h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+
+	
+    <div class="entry">
+      
+        <p>参考资料：<br><a href="http://sist.sysu.edu.cn/CS-course/4-3.asp">在Win32中管理虚拟内存</a></p>
+<p>#第17章 内存映射文件<br>内存映射文件的物理存储器来自磁盘已有的文件，一旦将文件映射到内存就可以访问好像整个文件都被映射到内存一样。主要应用映射的映像文件（exe、dll）、映射的数据文件、共享内存。</p>
+<p>##映射到内存的可执行文件和DLL<br>1.当DLL被LoadLibray时如果发现预定基地址已经被占用时，可能会加载失败（构建DLL时指定了/FIXED链接选项），至少也会重定位，后者会占用额外存储空间和增加DLL载入时间。<br>2.当exe、dll被映射到内存中时，段的大小都按页大小对齐。<br>3.使用dumpbin.exe /headers可以查看PE文件的各种段。常见段：.bss-未经初始化的全局变量等数据。.CRT-只读的C运行时数据。.data-已初始化的全局变量。.debug-调试信息。.didata-延迟导入名字表（delay imported names table）。.idata-导入名字表。.edata-导出名字表。.rdata-只读的运行时数据。.reloc-重定位表信息。.rsrc-资源。.text-代码段。.textbss-启用增量链接（Incremental Linking）时C++编译器生成。.tls-线程本地存储。.xdata-异常处理表。<br>4.默认情况下.data段的页面具有写拷贝属性，因此PE文件的一个实例修改全局变量并不会影响其他进程实例。可执行文件或DLL的多个实例不能共享静态数据<br>5.使用#pragma data_seg(“MyDataSeg1”); #pragma data_seg();可以声明一个新的数据段，其中初始化的变量会自动加入该段。没有初始化的变量可以通过__declspec(allocate(“MyDataSeg1”)) int g_i;来加入数据段。用#pragma comment(linker, “/section:MyDataSeg1, RWS”)来为段指定属性，”S”表示Shared，它通过去掉段页面的写拷贝保护属性，来达到多进程共享的效果。<br>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/2015/12/03/Read-Notes/Read-Notes-Windows-Via-C-C-7/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</span>
+</article>
+
+
+
+
+  <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <time datetime="2015-11-20T08:12:00.000Z"><a href="/2015/11/20/Learning/windowservices/">2015-11-20</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2015/11/20/Learning/windowservices/">Window服务学习笔记</a></h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+
+	
+    <div class="entry">
+      
+        <p>参考资料:<br><a href="http://www.vckbase.com/index.php/wv/1193">用 C 语言编写 Windows 服务程序的五个步骤</a><br><a href="http://blog.csdn.net/zhangpeng_linux/article/details/7001084">如何编写windows服务程序</a><br><a href="https://joway.wang/blog/2015/04/22/WindowsService.html">用C创建并调用Windows服务（守护进程）</a><br><a href="http://www.xfocus.net/articles/200308/601.html">创建SvcHost.exe调用的服务原理与实践</a><br>黑客防线201301</p>
+<div align="center"><br><img src="/img/windows%20Service.png" align="center"/><br></div><br>##关于Windows服务<br>Windows系统中的服务几乎是都是默默无闻的存在的，大部分是一些系统进程，负责电源管理、网络及安全方面等与用户无交互的工作,在客户服务模型中主要是作为服务端存在。<br><div align="center"><br><img src="/img/scm_scp_exe.png" align="center"/><br></div><br>Windows服务主要由3个部分组成，包括服务应用、服务控制程序（scp）及服务控制管理器（scm）。<br>服务应用即运行的服务程序，与普通的Windows可执行程序类似，只是有一些与scm的接口函数，负责与scm通信。<br>服务控制程序（scp）即负责控制服务应用的程序，Windows系统内置了一些scm的功能，比如我们可以sc命令控制服务应用的启动、停止等，有一些服务也自带了scp提供一些自定义的共计功能。服务控制程序就是普通的Windows用户程序。<br>服务控制管理器（scm）就是系统中负责在系统中管理全部服务的应用的，包括安装服务、负责服务自启动。容易和服务控制程序（scp）混淆，scp只是一个工具而scm是一个系统，scp就好比一种方法，scm是一个机构[好吧。。。这个比方不好]。<br>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/2015/11/20/Learning/windowservices/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</span>
+</article>
+
+
+
+
+  <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <time datetime="2015-11-14T01:25:46.000Z"><a href="/2015/11/14/Read-Notes/Read-Notes-Windows-Via-C-C-6/">2015-11-14</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2015/11/14/Read-Notes/Read-Notes-Windows-Via-C-C-6/">Windows核心编程读书笔记6（第13、14、15、16章）</a></h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+
+	
+    <div class="entry">
+      
+        <p>#第13章 Windows内存体系结构</p>
+<p>##进程的虚拟地址空间</p>
+<p><div align="center"><br><img src="/img/windos_exe_xxxx.gif"  alt="进程内存模型" align="center"/><br></div><br>1.在32位系统上，虚拟地址空间大致分为4段（64位系统也分为4段，只是大小不同）：</p>
+<pre><code>- <span class="number">0x00000000</span>~<span class="number">0x0000ffff</span>，空指针赋值区，辅助调试，禁止任何方式的访问。捕获对空指针的赋值
+- <span class="number">0x00010000</span>~<span class="number">0x7ffeffff</span>，用户模式分区，各进程单独维护，同一地址值在不同的进程可以有不同解释，各种映像文件（dll、exe）和内存映射文件也载入本区，近<span class="number">2</span>G。
+- <span class="number">0x7fff0000</span>~<span class="number">0x7fffffff</span>，<span class="number">64</span>k禁入分区。
+- <span class="number">0x80000000</span>~<span class="number">0xffffffff</span>，内核模式分区，系统存放内核代码、设备驱动代码、输入输出高速缓存、进程页表等，<span class="number">2</span>G。
+</code></pre><p>2.每个进程都有自己的私有地址空间，不能访问其他进程的地址空间（win98以后的系统中也不能访问系统本省的内存）<br>3.前面所说的都是虚拟地址空间，在你能够成功地访问数据而不会出现违规访问之前，必须赋予物理存储器，或者将物理存储器映射到各个部分的地址空<br>间。<br>4.32位系统可以配置系统参数让进程用户模式分区达到3G，内核减小为1G。内核内存减小，会影响可以创建的总线程、内核对象数量等。（Visita系统以上，使用bcdedit /set IncreaseUserVa 3072；xp使用…）。如果需要利用3G的内存空间程序链接需要启用大地址（/LARGEADDRESSAWARE）<br>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/2015/11/14/Read-Notes/Read-Notes-Windows-Via-C-C-6/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</span>
+</article>
+
+
+
+
+  <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <time datetime="2015-10-30T11:40:09.000Z"><a href="/2015/10/30/Learning/Http-Protocl-learn/">2015-10-30</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2015/10/30/Learning/Http-Protocl-learn/">Http协议初学</a></h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+
+	
+    <div class="entry">
+      
+        <p>参考资料：<br><a href="http://www.cnblogs.com/it-cen/p/4899692.html?utm_source=tuicool&amp;utm_medium=referral">IP、TCP和DNS与HTTP的密切关系</a><br><a href="http://blog.csdn.net/breaksoftware/article/details/45874191">实现HTTP协议Get、Post和文件上传功能——设计和模块</a><br><a href="http://www.cnblogs.com/starstone/p/4890409.html?utm_source=tuicool&amp;utm_medium=referral">HTTP必知必会</a><br><a href="http://www.cnblogs.com/mengdd/archive/2013/05/25/3099240.html">HTTP协议 通信过程介绍</a><br><a href="http://www.cnblogs.com/zhuqil/archive/2012/07/23/2604572.html">图解HTTPS</a><br>&lt;&lt;图解HTTP&gt;&gt; 上野宣<br><em>全抄袭，仅当监督学习。。。。。。。</em></p>
+<p>##Http协议和TCP、IP协议的关系<br>我们都知道http协议是一种应用层协议，应用层协议又是什么意思呢？就是要利用下层协议的然后通过自定义一种格式的方式生成了一坨数据然后丢给下一层协议拿去发送（反正我是这么理解的，应该还是对的）。这里的自定义的一种格式就是HTTP协议格式，这里的下一层协议就是TCP协议。且Http协议是一种无连接、无状态的协议，即没有tcp的长连接请求然后响应后理解断开，对事务无记忆能力。</p>
+<p><div align="center"><br><img src="/img/http_tcp.jpg" alt="Http协议和其他协议关系"  align="center"/><br></div><br>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/2015/10/30/Learning/Http-Protocl-learn/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</span>
+</article>
+
+
+
+
+  <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <time datetime="2015-10-27T11:25:19.000Z"><a href="/2015/10/27/Read-Notes/Read-Notes-Windows-Via-C-C-5/">2015-10-27</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2015/10/27/Read-Notes/Read-Notes-Windows-Via-C-C-5/">Windows核心编程读书笔记5（第10、11、12章）</a></h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+
+	
+    <div class="entry">
+      
+        <p>##第10章 同步设备I/O和异步设备I/0<br>这一部分内容之前不是很了解，后面再看<br><a href="http://blog.csdn.net/ithzhang/article/details/8307633">《Windows核心编程系列》九谈谈同步设备IO与异步设备IO之同步设备IO</a><br><a href="http://blog.csdn.net/ithzhang/article/details/8316171">《Windows核心编程系列》十谈谈﻿﻿﻿﻿同步设备IO与异步设备IO之异步IO</a><br>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/2015/10/27/Read-Notes/Read-Notes-Windows-Via-C-C-5/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</span>
+</article>
+
+
+
+
+  <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <time datetime="2015-10-23T08:49:04.000Z"><a href="/2015/10/23/Read-Notes/Read-Notes-Windows-Via-C-C-4/">2015-10-23</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2015/10/23/Read-Notes/Read-Notes-Windows-Via-C-C-4/">Windows核心编程读书笔记4（第7、8、9章）</a></h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+
+	
+    <div class="entry">
+      
+        <p>#第7章 线程调度、优先级和关联性</p>
+<p>##关于线程调度</p>
+<ul>
+<li>线程上下文结构存在于线程内核对象中，每隔20ms（GetSystemTimeAdjustment的lpTimeIncrement参数）Windows系统将查看当前存在的所有线程内核对象，只有某些对象被视为可以调度的对象。Windows选择可调度的线程内核对象中的一个，将它加载到CPU的寄存器中，它的值是上次保存在线程的环境中的值。这项操作称为上下文转换。</li>
+<li>可利用spy++工具查看线程已被调度次数，通过CREATE_SUSPENGED标志创建一个暂停的线程</li>
+<li>大多数线程是不可调度的，挂起次数非0(线程内核对象中有一个值表示线程挂起次数SuspendThread增加挂起次数1 ResumeThread减小1)、等待事件发生</li>
+</ul>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/2015/10/23/Read-Notes/Read-Notes-Windows-Via-C-C-4/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</span>
+</article>
+
+
+
+
+  <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <time datetime="2015-10-22T09:38:16.000Z"><a href="/2015/10/22/Windows/Different-From-several-Ways-Create-Process/">2015-10-22</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2015/10/22/Windows/Different-From-several-Ways-Create-Process/">几种创建进程函数的不同</a></h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+
+	
+    <div class="entry">
+      
+        <p>参考资料:<br>1.<a href="http://blog.csdn.net/jinru2560/article/details/5328487">ShellExecute，ShellExecuteEx， WinExec ，CreateProcess区别</a><br>2.<a href="http://www.cnblogs.com/xubin0523/archive/2012/11/01/2749729.html">ShellExecute, WinExec, CreateProcess区别</a><br>3.MSDN</p>
+<p>Windows系统提供了好几种创建进程的方式，对于普通的打开一个exe创建进程这几种方式都可以胜任。那这几种创建进程的方式究竟有什么不同呢？<br>大体上的东西和使用方式可以查看参考资料1、2<br>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/2015/10/22/Windows/Different-From-several-Ways-Create-Process/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</span>
+</article>
+
+
+
+
+  <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <time datetime="2015-10-21T11:22:19.000Z"><a href="/2015/10/21/Read-Notes/Read-Notes-Windows-Via-C-C-3/">2015-10-21</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2015/10/21/Read-Notes/Read-Notes-Windows-Via-C-C-3/">Windows核心编程读书笔记3（第5章 作业 第6章 线程基础）</a></h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+
+	
+    <div class="entry">
+      
+        <h1 id="第5章_作业">第5章 作业</h1><h2 id="为什么需要作业">为什么需要作业</h2><ul>
+<li>因为Windows并不维护进程之间的父/子关系，即使父进程已经终止运行，子进程仍然会继续运行。为了管理一组进程设计了作业内核对象</li>
+<li>将作业对象视为一个进程的容器，通过作业可以对进程施加一些限制。</li>
+<li>作业将一组进程组合在一起创建一个沙箱</li>
+<li>StartRestrictesProcess函数，当一个进程与作业关联后就无法从作业中去除</li>
+<li>Vista开始，通过explorer创建的一个进程自动同一个专用的作业关联 PCA前缀，主要是为了检测兼容性 </li>
+<li>从命令行启动调试器不会同默认作业关联</li>
+<li>CreateJobObject、OPenJobObject<h2 id="对作业中的进程施加限制">对作业中的进程施加限制</h2></li>
+<li>当作业运行时，它会维护一些统计信息，比如作业中的进程已经使用了多少CPU时间。</li>
+<li>对作业施加的最后一种限制类型与安全性相关（注意，一旦使用这种限制，就无法取消安全性限制）</li>
+<li>作业创建后通过设置沙箱对对进程施加限制</li>
+<li>限制包括独占系统资源、改变用户界面、访问安全资源</li>
+<li>当客户的作业句柄变量都被关闭后，即使作业对象还存在（因为进程没有全部结束），也不能再通过作业名打开作业再操作了。</li>
+<li>SetInformationJobObject、QueryInformationJobObject用于设置和查询限制</li>
+</ul>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/2015/10/21/Read-Notes/Read-Notes-Windows-Via-C-C-3/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</span>
+</article>
+
+
+
+
+  <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <time datetime="2015-10-16T12:01:17.000Z"><a href="/2015/10/16/Read-Notes/Read-Notes-Windows-Via-C-C-2/">2015-10-16</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2015/10/16/Read-Notes/Read-Notes-Windows-Via-C-C-2/">Windows核心编程读书笔记2（第4章 进程）</a></h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+
+	
+    <div class="entry">
+      
+        <p>##主要内容：<br>什么是进程、系统如何创建进程内核对象、如何管理进程、如何使用内核对象对进程进行操作、进程不同属性、如何结束运行的进程</p>
+<p>##什么是进程</p>
+<ul>
+<li>进程是一个正在运行的程序实例，进程由两个部分组成：进程内核对象、进程地址空间(执行文件代码和栈堆等动态空间)</li>
+<li>进程内核对象存放关于进程的统计信息，进程地址空间存放执行模块/Dll模块代码和数据（还包含动态分配的空间线程堆栈和堆分配的空间）</li>
+<li>进程是不活泼，由线程完成操作运行（线程负责执行包含在进程的地址空间中的代码）。每个线程都有它自己的一组CPU寄存器和它自己的堆栈。每个进程至少<br>拥有一个线程，来执行进程的地址空间中的代码。如果没有线程来执行进程的地址空间中的代码，那么进程就没有存在的理由了，系统就将自动撤消该进程和它的地址空间。</li>
+</ul>
+<p>##Windows应用程序</p>
+<ul>
+<li>/SUBSYSTEM:CONSOLE  GUI　/SUBSYSTEM:WINDOWS　　CLI</li>
+<li>应用程序入口点</li>
+</ul>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/2015/10/16/Read-Notes/Read-Notes-Windows-Via-C-C-2/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</span>
+</article>
+
+
+
+
+  <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <time datetime="2015-10-11T12:01:17.000Z"><a href="/2015/10/11/Read-Notes/Read-Notes-Windows-Via-C-C-1/">2015-10-11</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2015/10/11/Read-Notes/Read-Notes-Windows-Via-C-C-1/">Windows核心编程读书笔记1（1、2、3章）</a></h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+
+	
+    <div class="entry">
+      
+        <p>##第1章 错误处理</p>
+<p>###1.Windows Api返回值</p>
+<ul>
+<li>各种不同返回值都有自己执行错误的返回方式</li>
+<li>Void类型表示函数一般不会运行错误</li>
+<li>BOOL型判断执行成功的方式最好判断返回值是否不为FALSE</li>
+<li><p>Windows系统函数执行错误时会通过<code>线程本地存储机制</code>产生各个线程不干扰的错误代码,每个线程独有的其他线程无法改变（21章详细介绍）<br>###2.GetLastError</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="comment">// MessageId: ERROR_FILE_NOT_FOUND</span></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="comment">// MessageText:</span></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="comment">// The system cannot find the file specified.</span></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">define</span> ERROR_FILE_NOT_FOUND             <span class="number">2L</span></span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>DWORD WINAPI  GetLastError(VOID);返回一个DWORD 32位最后的错误代码（之前的错误代码将会被覆盖）</p>
+</li>
+<li>VS调试时在监视窗口利用，<code>err,hr</code>监视当前执行语句是否产生错误</li>
+<li>GetLastError也用来返回执行成功的原因，如Creat*类函数返回183表示由于对象存在</li>
+<li>FormatMessage可以把DWORD错误代码转换成易于理解的语句，也可用Vs的Error Lookup工具查看</li>
+</ul>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/2015/10/11/Read-Notes/Read-Notes-Windows-Via-C-C-1/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</span>
+</article>
+
+
+
+
+
+<ul class="page-direction" id="page-direction">
+    <li><a class="page-prev icon-chevron-sign-left" href="javascript:;" title="上一页"></a></li>
+    <li><a class="page-next icon-chevron-sign-right" href="javascript:;" title="下一页"></a></li>
+</ul>
+
+    <nav id="page-list" class="page-list"><a class="extend prev" rel="prev" href="/page/2/">Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" href="/page/4/">Next</a></nav>
+
+<nav id="pagination">
+  
+    <a href="/page/2/" class="alignleft prev">上一页</a>
+  
+  
+    <a href="/page/4/" class="alignright next">下一页</a>
+  
+  <div class="clearfix"></div>
+</nav></div></div>
+    <aside id="sidebar" class="alignright">
+  
+<div class="widget tag">
+  <h3 class="title">分类</h3>
+  <ul class="entry">
+  
+    <li><a href="/categories/Cybersecurity/">Cybersecurity</a><small>1</small></li>
+  
+    <li><a href="/categories/Debug/">Debug</a><small>7</small></li>
+  
+    <li><a href="/categories/Kernel/">Kernel</a><small>4</small></li>
+  
+    <li><a href="/categories/Learning/">Learning</a><small>8</small></li>
+  
+    <li><a href="/categories/Life/">Life</a><small>7</small></li>
+  
+    <li><a href="/categories/Others/">Others</a><small>1</small></li>
+  
+    <li><a href="/categories/Read-Notes/">Read Notes</a><small>7</small></li>
+  
+    <li><a href="/categories/Tools/">Tools</a><small>6</small></li>
+  
+    <li><a href="/categories/Vulnerabilities/">Vulnerabilities</a><small>0</small></li>
+  
+    <li><a href="/categories/Windows/">Windows</a><small>14</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2019/07/01/Windows/delphi_reverse_summary/">Delphi程序逆向反汇编技巧小记</a>
+      </li>
+    
+      <li>
+        <a href="/2019/06/25/Kernel/kernel_enum_wfp_callout_function/">Windows内核重拾：如何枚举系统中Windows Filtering Platform (WFP)驱动中的callout函数</a>
+      </li>
+    
+      <li>
+        <a href="/2019/05/06/Kernel/windows-driver-testing-basics/">Windows内核重拾：Windows驱动测试基础：工具、功能和示例（翻译/转载）</a>
+      </li>
+    
+      <li>
+        <a href="/2019/04/06/Windows/how-to-reverse-engineer-software-windows-in-a-right-way/">如何正确的对Windows软件进行逆向工程（翻译/转载）</a>
+      </li>
+    
+      <li>
+        <a href="/2019/01/12/Windows/a_crash_lead_deadlock/">Windows平台下一个崩溃而导致的死锁分析</a>
+      </li>
+    
+      <li>
+        <a href="/2018/12/01/Windows/windows_client_dns_over_https/">Windows客户端如何透明使用DNS-over-HTTPS</a>
+      </li>
+    
+      <li>
+        <a href="/2018/10/06/Cybersecurity/ddos-protection-techniques/">现代DDoS对抗技术概述（翻译/转载）</a>
+      </li>
+    
+      <li>
+        <a href="/2018/09/18/Life/xian/">西安周末游</a>
+      </li>
+    
+      <li>
+        <a href="/2018/01/06/Kernel/WindowsKernel_DebugObject/">Windows内核重拾：DebugObject</a>
+      </li>
+    
+      <li>
+        <a href="/2017/10/23/Tools/IDA-Pro-ClassInformer-Tutorial/">IDA Pro ClassInformer使用指南（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2017/05/23/Windows/Kernel Data and Filtering Support/">Kernel Data and Filtering Support for Windows Server 2008（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2017/05/17/Windows/Windows-x64-Shellcode/">Windows x64 Shellcode编写指南(翻译)</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget tagcloud">
+  <h3 class="title">标签云</h3>
+  <div class="entry">
+    <a href="/tags/ASM/" style="font-size: 12.5px;">ASM</a> <a href="/tags/Boost/" style="font-size: 10px;">Boost</a> <a href="/tags/DDoS/" style="font-size: 10px;">DDoS</a> <a href="/tags/DNS-over-HTTPS/" style="font-size: 10px;">DNS-over-HTTPS</a> <a href="/tags/Delphi/" style="font-size: 10px;">Delphi</a> <a href="/tags/Dll劫持/" style="font-size: 10px;">Dll劫持</a> <a href="/tags/GCC-GDB/" style="font-size: 10px;">GCC&GDB</a> <a href="/tags/GetVersionEx/" style="font-size: 10px;">GetVersionEx</a> <a href="/tags/Http/" style="font-size: 10px;">Http</a> <a href="/tags/IDA-Pro/" style="font-size: 12.5px;">IDA Pro</a> <a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/MSDN/" style="font-size: 12.5px;">MSDN</a> <a href="/tags/Malware/" style="font-size: 12.5px;">Malware</a> <a href="/tags/MiniDumpWriteDump/" style="font-size: 10px;">MiniDumpWriteDump</a> <a href="/tags/PEB/" style="font-size: 10px;">PEB</a> <a href="/tags/Procmon/" style="font-size: 10px;">Procmon</a> <a href="/tags/Runtime-Error/" style="font-size: 10px;">Runtime Error</a> <a href="/tags/SEH/" style="font-size: 10px;">SEH</a> <a href="/tags/Shellcode/" style="font-size: 10px;">Shellcode</a> <a href="/tags/SysinternalsSuite/" style="font-size: 10px;">SysinternalsSuite</a> <a href="/tags/Tips/" style="font-size: 10px;">Tips</a> <a href="/tags/UAC/" style="font-size: 10px;">UAC</a> <a href="/tags/UAF漏洞/" style="font-size: 10px;">UAF漏洞</a> <a href="/tags/VC/" style="font-size: 10px;">VC</a> <a href="/tags/Visual-Studio/" style="font-size: 12.5px;">Visual Studio</a> <a href="/tags/Windbg/" style="font-size: 10px;">Windbg</a> <a href="/tags/Windows/" style="font-size: 20px;">Windows</a> <a href="/tags/Windows核心编程/" style="font-size: 17.5px;">Windows核心编程</a> <a href="/tags/android/" style="font-size: 10px;">android</a> <a href="/tags/getaddrinfo/" style="font-size: 10px;">getaddrinfo</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/libeay32/" style="font-size: 10px;">libeay32</a> <a href="/tags/markdown/" style="font-size: 10px;">markdown</a> <a href="/tags/ndk/" style="font-size: 10px;">ndk</a> <a href="/tags/sublime-text3/" style="font-size: 10px;">sublime text3</a> <a href="/tags/x64/" style="font-size: 12.5px;">x64</a> <a href="/tags/体验/" style="font-size: 10px;">体验</a> <a href="/tags/内核/" style="font-size: 12.5px;">内核</a> <a href="/tags/内核结构/" style="font-size: 15px;">内核结构</a> <a href="/tags/学习/" style="font-size: 10px;">学习</a> <a href="/tags/安全机制/" style="font-size: 10px;">安全机制</a> <a href="/tags/异常处理/" style="font-size: 10px;">异常处理</a> <a href="/tags/提权/" style="font-size: 10px;">提权</a> <a href="/tags/服务/" style="font-size: 10px;">服务</a> <a href="/tags/权限/" style="font-size: 12.5px;">权限</a> <a href="/tags/栈溢出漏洞/" style="font-size: 10px;">栈溢出漏洞</a> <a href="/tags/测试/" style="font-size: 10px;">测试</a> <a href="/tags/浮躁/" style="font-size: 10px;">浮躁</a> <a href="/tags/漏洞调试/" style="font-size: 12.5px;">漏洞调试</a> <a href="/tags/生活/" style="font-size: 15px;">生活</a> <a href="/tags/脱壳/" style="font-size: 10px;">脱壳</a> <a href="/tags/西安/" style="font-size: 10px;">西安</a> <a href="/tags/计划/" style="font-size: 10px;">计划</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a> <a href="/tags/调试/" style="font-size: 15px;">调试</a> <a href="/tags/转换/" style="font-size: 10px;">转换</a> <a href="/tags/进程/" style="font-size: 10px;">进程</a> <a href="/tags/逆向/" style="font-size: 10px;">逆向</a> <a href="/tags/重庆/" style="font-size: 10px;">重庆</a> <a href="/tags/驱动/" style="font-size: 15px;">驱动</a>
+  </div>
+</div>
+
+
+  <div class="widget tag">
+<h3 class="title">Links</h3>
+<ul class="entry">
+<li><a href="http://blog.ourren.com/" title="Ourren">Ourren</a></li>
+<li><a href="http://www.hyjal.net/" title="Hyjal">Hyjal</a></li>
+<li><a href="http://www.jianshu.com/users/fa15f4e416ae/latest_articles" title="Daemonceltics">Daemonceltics</a></li>
+<li><a href="http://papap.info/" title="isee">isee</a></li>
+</ul>
+</div>
+
+  <script type="text/javascript" id="clustrmaps" src="//cdn.clustrmaps.com/map_v2.js?u=putG&d=yoFnN6V-ovhL-H4e9_69LvkTiX4uX7rEYJ15yL3G1Wg"></script>
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <div id="go-pg-top"><i class="icon-arrow-up"></i></div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2020 Lyon
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript" charset="utf-8" src="/js/page.js"></script>
+
+</body>
+
+</html>

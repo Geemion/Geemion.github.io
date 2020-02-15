@@ -1,0 +1,848 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Lyon&#39;s blog</title>
+  <meta name="author" content="Lyon">
+  
+  <meta name="description" content="Walk steps step by step">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+  <meta property="og:site_name" content="Lyon&#39;s blog"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  #<link href="/favicon.ico" rel="icon">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="alternate" href="/atom.xml" title="Lyon&#39;s blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  <script src="/js/jquery.min.js"></script>
+  <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?0fe72895c9bcfd0d09da12b5378b1b91";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+</head>
+
+
+<body>
+  <!--[if lte IE 8]> <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'> <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0027_Simplified Chinese.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." style='margin-left:auto;margin-right:auto;display: block;'/></a></div> <![endif]-->
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">Lyon&#39;s blog</a></h1>
+  <h2><a href="/">I hear and I forget.I see and I remember.I do and I understand.</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">首页</a></li>
+    
+      <li><a href="/archives">归档</a></li>
+    
+      <li><a href="/about">关于</a></li>
+    
+	<li> <a href="/atom.xml">RSS</a> </li>
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper">
+  <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <time datetime="2019-07-01T12:13:53.000Z"><a href="/2019/07/01/Windows/delphi_reverse_summary/">2019-07-01</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2019/07/01/Windows/delphi_reverse_summary/">Delphi程序逆向反汇编技巧小记</a></h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+
+	
+    <div class="entry">
+      
+        <h2 id="0x00_Delphi语言基础">0x00 Delphi语言基础</h2><h3 id="1-Delphi语言概述">1.Delphi语言概述</h3><p>Delphi本身并非一种独立的语言，而是一种软件开发工具，是Object Pascal语言的一种开发工具。本身是大名鼎鼎的Borland公司开发的一种开发环境，包含IDE、图形界面库Visual Component Library(VCL)及数据库相关功能。其图像界面库VCL类似MFC，使用PME（Property/Method/Event）的开发模式。<br>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/2019/07/01/Windows/delphi_reverse_summary/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</span>
+</article>
+
+
+
+
+  <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <time datetime="2019-06-25T04:45:15.000Z"><a href="/2019/06/25/Kernel/kernel_enum_wfp_callout_function/">2019-06-25</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2019/06/25/Kernel/kernel_enum_wfp_callout_function/">Windows内核重拾：如何枚举系统中Windows Filtering Platform (WFP)驱动中的callout函数</a></h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+
+	
+    <div class="entry">
+      
+        <h2 id="0x00_前言">0x00 前言</h2><p>WFP是Windows提供的一套新的网络数据包过滤框架，用于取代之前的TDI过滤框架，为用户态和内核态都提供API支持，可以很方便的实现网络数据包拦截/编辑，常用于实现防火墙、网速控制及入侵检测等。<br>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/2019/06/25/Kernel/kernel_enum_wfp_callout_function/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</span>
+</article>
+
+
+
+
+  <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <time datetime="2019-05-06T04:45:15.000Z"><a href="/2019/05/06/Kernel/windows-driver-testing-basics/">2019-05-06</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2019/05/06/Kernel/windows-driver-testing-basics/">Windows内核重拾：Windows驱动测试基础：工具、功能和示例（翻译/转载）</a></h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+
+	
+    <div class="entry">
+      
+        <h2 id="0x00_前言">0x00 前言</h2><p>本文旨在帮助你测试Windows驱动程序。因为有很多种不同的驱动程序，因此我们将介绍关于每种类型驱动程序的细节及各种驱动程序测试过程的不同点。我们也将涉及到一些驱动测试辅助工具和另一个重要的主题驱动数字签名。<br>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/2019/05/06/Kernel/windows-driver-testing-basics/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</span>
+</article>
+
+
+
+
+  <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <time datetime="2019-04-06T04:45:15.000Z"><a href="/2019/04/06/Windows/how-to-reverse-engineer-software-windows-in-a-right-way/">2019-04-06</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2019/04/06/Windows/how-to-reverse-engineer-software-windows-in-a-right-way/">如何正确的对Windows软件进行逆向工程（翻译/转载）</a></h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+
+	
+    <div class="entry">
+      
+        <h2 id="0x00_前言">0x00 前言</h2><p>你有没有想过要拆开某个机械装置了解它的工作原理呢？嗯，谁没有呢。这种欲望也是是逆向工程的主导力量，逆向对于分析产品安全性、在不运行可疑的.exe文件的情况下查明其用途、恢复丢失的文档、开发基于旧软件的新解决方案等非常有用。<br>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/2019/04/06/Windows/how-to-reverse-engineer-software-windows-in-a-right-way/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</span>
+</article>
+
+
+
+
+  <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <time datetime="2019-01-12T12:13:53.000Z"><a href="/2019/01/12/Windows/a_crash_lead_deadlock/">2019-01-12</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2019/01/12/Windows/a_crash_lead_deadlock/">Windows平台下一个崩溃而导致的死锁分析</a></h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+
+	
+    <div class="entry">
+      
+        <h2 id="0x00_问题介绍">0x00 问题介绍</h2><p>测试反馈测试过程中发现程序进程存在但是界面没加载出来，看现场很快发现是因为版本不匹配而导致程序崩溃，在写dmp的过程中死锁而导致进程卡死，由于程序是卡死而非退出守护进程也未重启程序，最终导致界面一直没加载出来。<br>现象就如上面所说，但是为什么写dmp为什么会导致程序死锁呢？<br>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/2019/01/12/Windows/a_crash_lead_deadlock/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</span>
+</article>
+
+
+
+
+  <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <time datetime="2018-12-01T12:13:53.000Z"><a href="/2018/12/01/Windows/windows_client_dns_over_https/">2018-12-01</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2018/12/01/Windows/windows_client_dns_over_https/">Windows客户端如何透明使用DNS-over-HTTPS</a></h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+
+	
+    <div class="entry">
+      
+        <h2 id="0x00_现有Windows客户端程序dns查询流程">0x00 现有Windows客户端程序dns查询流程</h2><ul>
+<li>1.client通过系统api（gethostbyname/getaddrinfo/getaddrinfoex）发起查询dns请求</li>
+<li>2.系统api会通过rpc查询本地服务dnscache是否有该host的缓存，如果缓存存在则直接返回返回host对应的ip地址，dns查询完成，如果没有则进入下一步</li>
+<li>3.如果不存在该host的缓存，则首先会通过解析本地hosts文件看是否有该host对应的ip，如果存在，则直接返回该ip，否则进入下一步</li>
+<li>4.如果本地hosts文件中没有该host的记录，则系统会通过发送dns udp包向本地dns服务器发起请求查询该host对应的ip，后面的dns查询过程如下图所示。
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/2018/12/01/Windows/windows_client_dns_over_https/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</span>
+</article>
+
+
+
+
+  <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <time datetime="2018-10-06T04:45:15.000Z"><a href="/2018/10/06/Cybersecurity/ddos-protection-techniques/">2018-10-06</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2018/10/06/Cybersecurity/ddos-protection-techniques/">现代DDoS对抗技术概述（翻译/转载）</a></h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+
+	
+    <div class="entry">
+      
+        <h2 id="0x00_前言">0x00 前言</h2><p>想象一下有人不停的给你打电话，并且你没办法通过加黑名单的方式阻止他，因为他每次都使用了不同的电话号码。你可能会关掉电话，但是这样其他人也不能联系你了，常见的分布式拒绝服务攻击就和这种情况类似。<br>早在乔布斯推出第一部IPhone之前，<a href="https://en.wikipedia.org/wiki/Denial-of-service_attack">DDos攻击</a>就已经出现了。因为DDos攻击攻击效果好、易于使用，并且很难追踪，现在依然非常受黑客喜欢。那么我们如何能够防御DDoS攻击呢？在DDOS攻击面前，你能确保为你的web服务器及应用提供高水平的防护么？在本文中我们将讨论如何防止DDoS攻击并介绍一些实践有效的DDoS保护和防御技术。<br>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/2018/10/06/Cybersecurity/ddos-protection-techniques/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</span>
+</article>
+
+
+
+
+  <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <time datetime="2018-09-18T04:11:15.000Z"><a href="/2018/09/18/Life/xian/">2018-09-18</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2018/09/18/Life/xian/">西安周末游</a></h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+
+	
+    <div class="entry">
+      
+        <p><em>说好的一人一篇游记，3年了，妹子的这篇游记终于出炉了</em><br>自打成都到西安通高铁，周围无数同事到西安打卡，我也是心心念念好久，一直没有机会，趁这次中级会计考完，特想放松放松。周一开会时坐旁边的同事去过西安，心血来潮，跟小哥哥商量去西安可好，小哥哥痛快答应，于是开启了这次断腿的旅程。</p>
+<p><div align="center"><br><img src="/img/xian_1.png" align="center"/><br></div><br>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/2018/09/18/Life/xian/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</span>
+</article>
+
+
+
+
+  <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <time datetime="2018-01-06T04:45:15.000Z"><a href="/2018/01/06/Kernel/WindowsKernel_DebugObject/">2018-01-06</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2018/01/06/Kernel/WindowsKernel_DebugObject/">Windows内核重拾：DebugObject</a></h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+
+	
+    <div class="entry">
+      
+        <h2 id="0x00_什么是DebugObject">0x00 什么是DebugObject</h2><p>在Windows系统中对调试的支持主要在三个模块中，分别为内核执行体（多核处理器一般为ntkrnlmp.exe,以Dbgk为前缀,主要负责注册和监听调试事件、管理调试对象等）、原生系统库ntdll.dll（DbgUi为前缀，负责将底层的调试对象封装起来）、子系统dll（kernelbase.dll）。而调试对象（DebugObject）是一个结构体，支持用户模式调试，由一系列的标志（决定对象的状态）、一个事件、一个调试事件双链表组成。<br>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/2018/01/06/Kernel/WindowsKernel_DebugObject/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</span>
+</article>
+
+
+
+
+  <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <time datetime="2017-10-23T09:55:21.000Z"><a href="/2017/10/23/Tools/IDA-Pro-ClassInformer-Tutorial/">2017-10-23</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2017/10/23/Tools/IDA-Pro-ClassInformer-Tutorial/">IDA Pro ClassInformer使用指南（翻译）</a></h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+
+	
+    <div class="entry">
+      
+        <h2 id="0x00_介绍">0x00 介绍</h2><p>本文主要针对几乎没有使用IDA Pro经验及逆向水平一般的人。IDA对初学者还是有一定的门槛的，主要是由于IMO没有详细介绍IDA使用环境设置和插件使用的指南。我的目标是展示当我在客户端（这里应该是开发外挂）开发遇到困难的时候，我是如何解决这个问题的方法和策略。在本指南中我将演示如何从SDK中的一个字符串识别出二进制文件中反汇编代码中的函数。目标是将IDA中原始的汇编代码转换为ClientMode::CreateMove函数。<br>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/2017/10/23/Tools/IDA-Pro-ClassInformer-Tutorial/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</span>
+</article>
+
+
+
+
+  <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <time datetime="2017-05-23T09:55:21.000Z"><a href="/2017/05/23/Windows/Kernel Data and Filtering Support/">2017-05-23</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2017/05/23/Windows/Kernel Data and Filtering Support/">Kernel Data and Filtering Support for Windows Server 2008（翻译）</a></h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+
+	
+    <div class="entry">
+      
+        <h2 id="1-介绍">1.介绍</h2><p>这仅仅是一份供接受审阅和反馈的初稿。收到独立软件开发商的反馈后，一些内容和函数可能会改变。此外，这份文档仅限于适用Microsoft Windows Server® 2008。这些API是根据ISV社区讨论确定的，按照<a href="https://www.microsoft.com/downloads/details.aspx?FamilyId=4C7561E6-6F9D-4125-8A8C-AEAF8E3342B9&amp;displaylang=en">Kernel Evaluation Criteria</a>。<br>很多系统管理安全类应用程序都需要访问内核信息及过滤系统调用的能力，其中一些操作涉及一些进程、线程对象。之前，当第三方软件开发商（ISV）想实现监控/修改/阻断操作时，但操作系统现有提供的过滤回调不支持时，他们一般采用的方式为挂钩在内核服务表（SSDT）中这些内核对象管理（OB）的API。提供官方支持的文档及过滤和访问内核信息的接口有利于操作系统平台，因为挂钩SSDT从来没有官方支持过并且可能会影响操作系统的稳定性。此外，随着在x64平台采用内核补丁保护技术（KPP）,在x64平台，ISV不能像32位x86平台中那样使用SSDT Hook了。<br>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/2017/05/23/Windows/Kernel Data and Filtering Support/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</span>
+</article>
+
+
+
+
+  <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <time datetime="2017-05-17T02:48:03.000Z"><a href="/2017/05/17/Windows/Windows-x64-Shellcode/">2017-05-17</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2017/05/17/Windows/Windows-x64-Shellcode/">Windows x64 Shellcode编写指南(翻译)</a></h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+
+	
+    <div class="entry">
+      
+        <h1 id="前言">前言</h1><p><em>对Topher Timzen关于x64 Windows平台下关于Shellcode的翻译，原文链接<a href="https://www.tophertimzen.com/blog/windowsx64Shellcode/">Windows x64 Shellcode</a>，第一次翻译特别渣，推荐看原文</em></p>
+<p>最近我重写了几个shellcode，将之前32位平台下实现的shellcode移植到64位平台。在向64位平台移植过程，我发现很难在网上找到相关资料，因此我将我的移植过程写成一篇博客（我的第一篇），希望能帮到像我一样需要移植64位shellcode的人。<br>网上已经有几篇教程介绍关于shellcode的相关基础知识了，因此我不会介绍这些。虽然我会介绍关于调用约定、register clobbering和寄存器相关知识，但是我不会讨论很多汇编基础知识。<br>请参考Skape的<a href="www.nologin.com/Downloads/Papers/win32-shellcode.pdf">Understanding Windows Shell code</a>等文章，或者资源<a href="http://www.projectshellcode.com/">project-shellcode</a>进行深入学习(Understanding Windows Shell code原始链接失效，这里替换了，原始链接为<a href="http://repo.hackerzvoice.net/depot_madchat/windoz/vulns/win32-shellcode.pdf)。">http://repo.hackerzvoice.net/depot_madchat/windoz/vulns/win32-shellcode.pdf)。</a><br>我将介绍32位汇编与64位汇编的差异，以及如何利用Windows系统中的结构体用于开发64位shellcode。我还将介绍我开发的2种漏洞利用辅助开发工具。<br>在开始之前需要说明的是我仍然在学习漏洞利用开发的初级阶段，为简单化，本文实验的系统为Window 7 x64版本。为简化叙述，x86指Win32平台，x64指Win64平台。<br>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/2017/05/17/Windows/Windows-x64-Shellcode/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</span>
+</article>
+
+
+
+
+
+<ul class="page-direction" id="page-direction">
+    <li><a class="page-prev icon-chevron-sign-left" href="javascript:;" title="上一页"></a></li>
+    <li><a class="page-next icon-chevron-sign-right" href="javascript:;" title="下一页"></a></li>
+</ul>
+
+    <nav id="page-list" class="page-list"><span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" href="/page/2/">Next</a></nav>
+
+<nav id="pagination">
+  
+  
+    <a href="/page/2/" class="alignright next">下一页</a>
+  
+  <div class="clearfix"></div>
+</nav></div></div>
+    <aside id="sidebar" class="alignright">
+  
+<div class="widget tag">
+  <h3 class="title">分类</h3>
+  <ul class="entry">
+  
+    <li><a href="/categories/Cybersecurity/">Cybersecurity</a><small>1</small></li>
+  
+    <li><a href="/categories/Debug/">Debug</a><small>7</small></li>
+  
+    <li><a href="/categories/Kernel/">Kernel</a><small>4</small></li>
+  
+    <li><a href="/categories/Learning/">Learning</a><small>8</small></li>
+  
+    <li><a href="/categories/Life/">Life</a><small>7</small></li>
+  
+    <li><a href="/categories/Others/">Others</a><small>1</small></li>
+  
+    <li><a href="/categories/Read-Notes/">Read Notes</a><small>7</small></li>
+  
+    <li><a href="/categories/Tools/">Tools</a><small>6</small></li>
+  
+    <li><a href="/categories/Vulnerabilities/">Vulnerabilities</a><small>0</small></li>
+  
+    <li><a href="/categories/Windows/">Windows</a><small>14</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2019/07/01/Windows/delphi_reverse_summary/">Delphi程序逆向反汇编技巧小记</a>
+      </li>
+    
+      <li>
+        <a href="/2019/06/25/Kernel/kernel_enum_wfp_callout_function/">Windows内核重拾：如何枚举系统中Windows Filtering Platform (WFP)驱动中的callout函数</a>
+      </li>
+    
+      <li>
+        <a href="/2019/05/06/Kernel/windows-driver-testing-basics/">Windows内核重拾：Windows驱动测试基础：工具、功能和示例（翻译/转载）</a>
+      </li>
+    
+      <li>
+        <a href="/2019/04/06/Windows/how-to-reverse-engineer-software-windows-in-a-right-way/">如何正确的对Windows软件进行逆向工程（翻译/转载）</a>
+      </li>
+    
+      <li>
+        <a href="/2019/01/12/Windows/a_crash_lead_deadlock/">Windows平台下一个崩溃而导致的死锁分析</a>
+      </li>
+    
+      <li>
+        <a href="/2018/12/01/Windows/windows_client_dns_over_https/">Windows客户端如何透明使用DNS-over-HTTPS</a>
+      </li>
+    
+      <li>
+        <a href="/2018/10/06/Cybersecurity/ddos-protection-techniques/">现代DDoS对抗技术概述（翻译/转载）</a>
+      </li>
+    
+      <li>
+        <a href="/2018/09/18/Life/xian/">西安周末游</a>
+      </li>
+    
+      <li>
+        <a href="/2018/01/06/Kernel/WindowsKernel_DebugObject/">Windows内核重拾：DebugObject</a>
+      </li>
+    
+      <li>
+        <a href="/2017/10/23/Tools/IDA-Pro-ClassInformer-Tutorial/">IDA Pro ClassInformer使用指南（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2017/05/23/Windows/Kernel Data and Filtering Support/">Kernel Data and Filtering Support for Windows Server 2008（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2017/05/17/Windows/Windows-x64-Shellcode/">Windows x64 Shellcode编写指南(翻译)</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget tagcloud">
+  <h3 class="title">标签云</h3>
+  <div class="entry">
+    <a href="/tags/ASM/" style="font-size: 12.5px;">ASM</a> <a href="/tags/Boost/" style="font-size: 10px;">Boost</a> <a href="/tags/DDoS/" style="font-size: 10px;">DDoS</a> <a href="/tags/DNS-over-HTTPS/" style="font-size: 10px;">DNS-over-HTTPS</a> <a href="/tags/Delphi/" style="font-size: 10px;">Delphi</a> <a href="/tags/Dll劫持/" style="font-size: 10px;">Dll劫持</a> <a href="/tags/GCC-GDB/" style="font-size: 10px;">GCC&GDB</a> <a href="/tags/GetVersionEx/" style="font-size: 10px;">GetVersionEx</a> <a href="/tags/Http/" style="font-size: 10px;">Http</a> <a href="/tags/IDA-Pro/" style="font-size: 12.5px;">IDA Pro</a> <a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/MSDN/" style="font-size: 12.5px;">MSDN</a> <a href="/tags/Malware/" style="font-size: 12.5px;">Malware</a> <a href="/tags/MiniDumpWriteDump/" style="font-size: 10px;">MiniDumpWriteDump</a> <a href="/tags/PEB/" style="font-size: 10px;">PEB</a> <a href="/tags/Procmon/" style="font-size: 10px;">Procmon</a> <a href="/tags/Runtime-Error/" style="font-size: 10px;">Runtime Error</a> <a href="/tags/SEH/" style="font-size: 10px;">SEH</a> <a href="/tags/Shellcode/" style="font-size: 10px;">Shellcode</a> <a href="/tags/SysinternalsSuite/" style="font-size: 10px;">SysinternalsSuite</a> <a href="/tags/Tips/" style="font-size: 10px;">Tips</a> <a href="/tags/UAC/" style="font-size: 10px;">UAC</a> <a href="/tags/UAF漏洞/" style="font-size: 10px;">UAF漏洞</a> <a href="/tags/VC/" style="font-size: 10px;">VC</a> <a href="/tags/Visual-Studio/" style="font-size: 12.5px;">Visual Studio</a> <a href="/tags/Windbg/" style="font-size: 10px;">Windbg</a> <a href="/tags/Windows/" style="font-size: 20px;">Windows</a> <a href="/tags/Windows核心编程/" style="font-size: 17.5px;">Windows核心编程</a> <a href="/tags/android/" style="font-size: 10px;">android</a> <a href="/tags/getaddrinfo/" style="font-size: 10px;">getaddrinfo</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/libeay32/" style="font-size: 10px;">libeay32</a> <a href="/tags/markdown/" style="font-size: 10px;">markdown</a> <a href="/tags/ndk/" style="font-size: 10px;">ndk</a> <a href="/tags/sublime-text3/" style="font-size: 10px;">sublime text3</a> <a href="/tags/x64/" style="font-size: 12.5px;">x64</a> <a href="/tags/体验/" style="font-size: 10px;">体验</a> <a href="/tags/内核/" style="font-size: 12.5px;">内核</a> <a href="/tags/内核结构/" style="font-size: 15px;">内核结构</a> <a href="/tags/学习/" style="font-size: 10px;">学习</a> <a href="/tags/安全机制/" style="font-size: 10px;">安全机制</a> <a href="/tags/异常处理/" style="font-size: 10px;">异常处理</a> <a href="/tags/提权/" style="font-size: 10px;">提权</a> <a href="/tags/服务/" style="font-size: 10px;">服务</a> <a href="/tags/权限/" style="font-size: 12.5px;">权限</a> <a href="/tags/栈溢出漏洞/" style="font-size: 10px;">栈溢出漏洞</a> <a href="/tags/测试/" style="font-size: 10px;">测试</a> <a href="/tags/浮躁/" style="font-size: 10px;">浮躁</a> <a href="/tags/漏洞调试/" style="font-size: 12.5px;">漏洞调试</a> <a href="/tags/生活/" style="font-size: 15px;">生活</a> <a href="/tags/脱壳/" style="font-size: 10px;">脱壳</a> <a href="/tags/西安/" style="font-size: 10px;">西安</a> <a href="/tags/计划/" style="font-size: 10px;">计划</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a> <a href="/tags/调试/" style="font-size: 15px;">调试</a> <a href="/tags/转换/" style="font-size: 10px;">转换</a> <a href="/tags/进程/" style="font-size: 10px;">进程</a> <a href="/tags/逆向/" style="font-size: 10px;">逆向</a> <a href="/tags/重庆/" style="font-size: 10px;">重庆</a> <a href="/tags/驱动/" style="font-size: 15px;">驱动</a>
+  </div>
+</div>
+
+
+  <div class="widget tag">
+<h3 class="title">Links</h3>
+<ul class="entry">
+<li><a href="http://blog.ourren.com/" title="Ourren">Ourren</a></li>
+<li><a href="http://www.hyjal.net/" title="Hyjal">Hyjal</a></li>
+<li><a href="http://www.jianshu.com/users/fa15f4e416ae/latest_articles" title="Daemonceltics">Daemonceltics</a></li>
+<li><a href="http://papap.info/" title="isee">isee</a></li>
+</ul>
+</div>
+
+  <script type="text/javascript" id="clustrmaps" src="//cdn.clustrmaps.com/map_v2.js?u=putG&d=yoFnN6V-ovhL-H4e9_69LvkTiX4uX7rEYJ15yL3G1Wg"></script>
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <div id="go-pg-top"><i class="icon-arrow-up"></i></div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2020 Lyon
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript" charset="utf-8" src="/js/page.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,304 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Http协议初学 | Lyon&#39;s blog</title>
+  <meta name="author" content="Lyon">
+  
+  <meta name="description" content="Walk steps step by step">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="Http协议初学"/>
+  <meta property="og:site_name" content="Lyon&#39;s blog"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  #<link href="/favicon.ico" rel="icon">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="alternate" href="/atom.xml" title="Lyon&#39;s blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  <script src="/js/jquery.min.js"></script>
+  <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?0fe72895c9bcfd0d09da12b5378b1b91";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+</head>
+
+
+<body>
+  <!--[if lte IE 8]> <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'> <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0027_Simplified Chinese.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." style='margin-left:auto;margin-right:auto;display: block;'/></a></div> <![endif]-->
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">Lyon&#39;s blog</a></h1>
+  <h2><a href="/">I hear and I forget.I see and I remember.I do and I understand.</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">首页</a></li>
+    
+      <li><a href="/archives">归档</a></li>
+    
+      <li><a href="/about">关于</a></li>
+    
+	<li> <a href="/atom.xml">RSS</a> </li>
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <time datetime="2015-10-30T11:40:09.000Z"><a href="/2015/10/30/Learning/Http-Protocl-learn/">2015-10-30</a></time>
+      
+      
+  
+    <h1 class="title">Http协议初学</h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+  <div id="toc" class="toc-article">
+  <strong class="toc-title">文章目录</strong>
+  
+  </div>
+
+
+	
+    <div class="entry">
+      
+        <p>参考资料：<br><a href="http://www.cnblogs.com/it-cen/p/4899692.html?utm_source=tuicool&amp;utm_medium=referral" target="_blank" rel="external">IP、TCP和DNS与HTTP的密切关系</a><br><a href="http://blog.csdn.net/breaksoftware/article/details/45874191" target="_blank" rel="external">实现HTTP协议Get、Post和文件上传功能——设计和模块</a><br><a href="http://www.cnblogs.com/starstone/p/4890409.html?utm_source=tuicool&amp;utm_medium=referral" target="_blank" rel="external">HTTP必知必会</a><br><a href="http://www.cnblogs.com/mengdd/archive/2013/05/25/3099240.html" target="_blank" rel="external">HTTP协议 通信过程介绍</a><br><a href="http://www.cnblogs.com/zhuqil/archive/2012/07/23/2604572.html" target="_blank" rel="external">图解HTTPS</a><br>&lt;&lt;图解HTTP&gt;&gt; 上野宣<br><em>全抄袭，仅当监督学习。。。。。。。</em></p>
+<p>##Http协议和TCP、IP协议的关系<br>我们都知道http协议是一种应用层协议，应用层协议又是什么意思呢？就是要利用下层协议的然后通过自定义一种格式的方式生成了一坨数据然后丢给下一层协议拿去发送（反正我是这么理解的，应该还是对的）。这里的自定义的一种格式就是HTTP协议格式，这里的下一层协议就是TCP协议。且Http协议是一种无连接、无状态的协议，即没有tcp的长连接请求然后响应后理解断开，对事务无记忆能力。</p>
+<p><div align="center"><br><img src="/img/http_tcp.jpg" alt="Http协议和其他协议关系" align="center"><br></div><br><a id="more"></a></p>
+<p>首先是，我想访问网站，将域名发送给DNS去解析，DNS解析后将网站的IP地址返回给客户端，然后通过IP地址发起HTTP请求。HTTP此时的作用是 生成针对目标WEB服务器（我们这里指的是网站的服务器）的HTTP请求报文，然后将请求报文传送给传输层，此时为了方便通信，TCP会将HTTP请求报文  分割成报文段，这些报文段会有一个序号，这里的报文段哪一个先发送哪一个先到达，它们是按序传送的。只要建立起TCP连接，客户端与服务器之间的报文交换就不会丢失，不会被破坏，也不会在接收时出现错序。接着到了网络层，此时IP协议的职责是，搜索对方的地址，一边中转一边传送。然后找到了服务器的位置，此时服务器的传输层中 TCP的职责是  接收到对方传送过来的报文段后，对其进行重组，这里的重组是按序号进行重组的。然后到了服务器的应用层，HTTP会对客户端请求的内容进行处理。处理完后，服务器同样会利用TCP/IP通信协议向客户端进行回传响应。最后客户端收到响应后，将内容输出页面显示。即完成了一次HTTP事务。</p>
+<p>##Http消息基本格式<br>HTTP消息（有的文章称之为报文）分为<code>请求消息和响应消息</code>两种基本分类。其中请求消息是客户端发送给服务器的用于请求服务和资源的消息，响应消息是服务器对请求消息的应答。一般来说，一个响应对应一个请求，不多也不少。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">GET /simple.html HTTP/<span class="number">1.1</span>&lt;CRLF&gt;     ----- 首行</span><br><span class="line">Accept: text/html&lt;CRLF&gt;             --|</span><br><span class="line">Accept-Language: zh-cn&lt;CRLF&gt;          |</span><br><span class="line">Accept-Encoding: gzip, deflate&lt;CRLF&gt;  |-- 头部</span><br><span class="line">User-Agent: Mozilla/<span class="number">4.0</span>&lt;CRLF&gt;         |</span><br><span class="line">Host: localhost:<span class="number">8080</span>&lt;CRLF&gt;            |</span><br><span class="line">Connection: Keep-Alive&lt;CRLF&gt;        --|</span><br><span class="line">&lt;CRLF&gt;                              ----- 空白行表示头部的结束</span><br><span class="line">                                    ----- 接下来的内容是正文部分</span><br></pre></td></tr></table></figure></p>
+<p>其中，头部用来指出HTTP消息的一些属性，它们有固定的格式；<code>正文部分是传输的实际内容，它们的格式是任意的，</code>通常用Content-Type头来指定。首行在请求消息和响应消息中具体格式略有区别，它们表示的按理说应该是HTTP消息最基本的部分。不论是<code>HTTP请求还是HTTP响应，首行都是有的，否则会出现不可饶恕的解析错误；然而头部和正文是可选的</code>，不过实际过程中，多多少少都要包含一些基本的头。</p>
+<p>##Http请求、响应</p>
+<p>###请求<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[首行]请求行       方法 路径 版本  GET /simple.html HTTP/<span class="number">1.1</span></span><br><span class="line"></span><br><span class="line">[头部]请求头部     </span><br><span class="line"></span><br><span class="line">[正文]请求正文</span><br></pre></td></tr></table></figure></p>
+<p>http请求方法种类很多,但是最常用的就是Get和Post两种。<br>除Post、Get之外其他http请求<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">方法              描述</span><br><span class="line"></span><br><span class="line">GET       请求获取Request-URI所标识的资源</span><br><span class="line">POST      在Request-URI所标识的资源后附加新的数据</span><br><span class="line">HEAD      请求获取由Request-URI所标识的资源的响应消息报头</span><br><span class="line">PUT       请求服务器存储一个资源，并用Request-URI作为其标识</span><br><span class="line">DELETE    请求服务器删除Request-URI所标识的资源</span><br><span class="line">OPTIONS   请求查询服务器的性能，或者查询与资源相关的选项和需求</span><br><span class="line">TRACE     请求服务器回送收到的请求信息，主要用于测试或诊断</span><br><span class="line">CONNECT   把请求连接转换到透明的 TCP/IP 通道。</span><br></pre></td></tr></table></figure></p>
+<p>Get方法<br><code>/test/demo_form.asp?name1=value1&amp;name2=value2</code><br>Get方法是将数据直接放在URL中发送，Get方法特点如下：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1.</span>GET 传送的数据量较小，不能大于<span class="number">2</span>KB。</span><br><span class="line"><span class="number">2.</span>GET 请求可被缓存</span><br><span class="line"><span class="number">3.</span>GET 请求保留在浏览器历史记录中</span><br><span class="line"><span class="number">4.</span>GET 请求可被收藏为书签</span><br><span class="line"><span class="number">5.</span>GET 请求不应在处理敏感数据时使用</span><br><span class="line"><span class="number">6.</span>GET 请求只应当用于取回数据</span><br></pre></td></tr></table></figure></p>
+<p>Post方法<br>POST请求可以包含请求正文<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">POST /test/demo_form.asp HTTP/<span class="number">1.1</span></span><br><span class="line">Host: w3schools.com</span><br><span class="line">Content-Type: application/json</span><br><span class="line">Content-Length: <span class="number">38</span></span><br><span class="line">&#123;<span class="string">"name1"</span>: <span class="string">"value1"</span>, <span class="string">"name2"</span>: <span class="string">"value2"</span>&#125;</span><br><span class="line"><span class="number">1.</span>POST 请求不会被缓存</span><br><span class="line"><span class="number">2.</span>POST 请求不会保留在浏览器历史记录中</span><br><span class="line"><span class="number">3.</span>POST 不能被收藏为书签</span><br><span class="line"><span class="number">4.</span>POST 请求对数据长度没有要求</span><br></pre></td></tr></table></figure></p>
+<p>Get和Post两种方法对比可以发现：<br>1.Get将请求信息放在URL中安全性较低，可以缓存<br>2.Get发送长度有限制，适合发送小且不含机密信息的消息，Post将信息放在正文中对长度没有限制（可能具体服务器有限制）<br>3.Post将将数据封装在报文实体中，而报文的传递会有加密等方法来保证其安全性，所以其安全性自然很高。</p>
+<p>###响应<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">响应行        版本号 状态码 状态文本    HTTP/1.1 200 OK</span><br><span class="line"></span><br><span class="line">响应头部</span><br><span class="line"></span><br><span class="line">响应正文</span><br><span class="line"></span><br><span class="line">HTTP/1.1 404 Not Found                                  响应行</span><br><span class="line"></span><br><span class="line">Date: Mon, 06 Mar 2006 09:03:14 GMT                     响应头部</span><br><span class="line">Server: Apache/2.0.55 (Unix) PHP/5.0.5</span><br><span class="line">Content-Length: 291</span><br><span class="line">Keep-Alive: timeout=15, max=100</span><br><span class="line">Connection: Keep-Alive</span><br><span class="line">Content-Type: text/html; charset=iso-8859-1</span><br><span class="line"> </span><br><span class="line">&lt;!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN"&gt;      响应正文</span><br><span class="line">&lt;html&gt;&lt;head&gt;</span><br><span class="line">&lt;title&gt;404 Not Found&lt;/title&gt;</span><br><span class="line">&lt;/head&gt;&lt;body&gt;</span><br><span class="line">&lt;h1&gt;Not Found&lt;/h1&gt;</span><br><span class="line">&lt;p&gt;The requested URL /notexist was not found on this server.&lt;/p&gt;</span><br><span class="line">&lt;hr&gt;</span><br><span class="line">&lt;address&gt;Apache/2.0.55 (Unix) PHP/5.0.5 Server at localhost Port 8080&lt;/address&gt;</span><br><span class="line">&lt;/body&gt;&lt;/html&gt;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">HTTP的状态响应码</span><br><span class="line">1XX:指示信息，请求收到，继续处理</span><br><span class="line">2XX:成功，操作成功收到，分析，接受</span><br><span class="line">3XX:完成请求必须进一步处理，重定向</span><br><span class="line">4XX:请求包含一个错误语法，不能完成。指示客户端错误</span><br><span class="line">5XX:服务器执行一个有效请求失败，指示服务端错误</span><br></pre></td></tr></table></figure></p>
+<p>##动手实验<br>客户端直接用vs利用socket通信封装成http消息发送到服务器<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br></pre></td><td class="code"><pre><span class="line">include <span class="string">"stdafx.h"</span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">&lt;winsock2.h&gt;</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">pragma</span> comment(lib,<span class="string">"ws2_32"</span>)</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">HttpPostPacket</span><span class="params">(<span class="keyword">char</span> *packet,<span class="keyword">char</span> *url,<span class="keyword">char</span> *host,<span class="keyword">char</span> *data)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">	wsprintfA(packet,<span class="string">"POST %s HTTP/1.1\r\n"</span></span><br><span class="line">		<span class="string">"Accept: */*\r\n"</span></span><br><span class="line">		<span class="string">"Content-Type: application/x-www-form-urlencoded\r\n"</span></span><br><span class="line">		<span class="string">"Host: %s\r\n"</span></span><br><span class="line">		<span class="string">"Content-Length: %d\r\n"</span></span><br><span class="line">		<span class="string">"Connection: Keep-Alive\r\n"</span></span><br><span class="line">		<span class="string">"Cookie: ASPSESSIONIDSCDCQCTD=DCOJKBECOHEDIJJGNAPJGOKO\r\n\r\n%s"</span>,</span><br><span class="line">		url,host,<span class="built_in">strlen</span>(data),data);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> _tmain(<span class="keyword">int</span> argc, _TCHAR* argv[])</span><br><span class="line">&#123;</span><br><span class="line">	WSADATA wsaData;</span><br><span class="line">	WORD sockVersion = MAKEWORD(<span class="number">2</span>, <span class="number">2</span>);</span><br><span class="line">	<span class="comment">//加载winsock库</span></span><br><span class="line">	<span class="keyword">if</span>(WSAStartup(sockVersion, &amp;wsaData) != <span class="number">0</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	<span class="comment">// 创建套节字</span></span><br><span class="line">	SOCKET sClient = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);</span><br><span class="line">	<span class="keyword">if</span>(sClient == INVALID_SOCKET)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"socket error\n"</span>);</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	&#125;	</span><br><span class="line">	<span class="comment">// 在sockaddr_in结构中装入服务器端地址信息</span></span><br><span class="line">	sockaddr_in servAddr;</span><br><span class="line">	servAddr.sin_family = AF_INET;</span><br><span class="line">	<span class="comment">//设置连接端口</span></span><br><span class="line">	servAddr.sin_port = htons(<span class="number">8080</span>);</span><br><span class="line">	<span class="comment">//服务器端ip</span></span><br><span class="line">	servAddr.sin_addr.S_un.S_addr =inet_addr(<span class="string">"192.168.17.112"</span>);</span><br><span class="line">	<span class="comment">//连接服务器端</span></span><br><span class="line">	<span class="keyword">if</span>(connect(sClient,(sockaddr*)&amp;servAddr,<span class="keyword">sizeof</span>(servAddr))==SOCKET_ERROR)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"connect error\n"</span>);</span><br><span class="line">		closesocket(sClient);</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">char</span> packet[<span class="number">1024</span>];</span><br><span class="line">	<span class="comment">//提交的URL</span></span><br><span class="line">	<span class="keyword">char</span> *url=<span class="string">"/post"</span>;</span><br><span class="line">	<span class="comment">//服务器域名</span></span><br><span class="line">	<span class="keyword">char</span> *host=<span class="string">"192.168.17.112"</span>;</span><br><span class="line">	<span class="comment">//构造POST数据包</span></span><br><span class="line">	<span class="keyword">char</span> *PostText=<span class="string">"&#123;\"name1\": \"value1\", \"name2\": \"value2\"&#125;"</span>;</span><br><span class="line">	HttpPostPacket(packet,url,host,PostText);</span><br><span class="line">	<span class="comment">//发送数据</span></span><br><span class="line">	UINT nSend=send(sClient,packet,<span class="built_in">strlen</span>(packet),<span class="number">0</span>);</span><br><span class="line">	<span class="keyword">if</span> (nSend&lt;<span class="built_in">strlen</span>(packet))</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"Send errno %d\n"</span>,WSAGetLastError());</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"%s\n\n\n"</span>,packet);</span><br><span class="line">	<span class="keyword">char</span> revData[<span class="number">1024</span>]=&#123;<span class="number">0</span>&#125;;</span><br><span class="line">	<span class="comment">//接受数据</span></span><br><span class="line">	<span class="keyword">int</span> ret=recv(sClient,revData,<span class="number">1024</span>,<span class="number">0</span>);</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"revData:\n%s"</span>,revData);</span><br><span class="line">	<span class="comment">//关闭套接字</span></span><br><span class="line">	closesocket(sClient);</span><br><span class="line">	WSACleanup();</span><br><span class="line"></span><br><span class="line">	getchar();</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>服务器端用Python搭建个服务器打印出客户端请求消息并响应，需要使用web库。基本上服务器起的作用就是在指定端口监听tcp连接然后把tcp接收的buf信息（就是http信息）拿出来处理。然后服务器根据http请求的路径信息发到指定的服务器脚本处理比如php脚本的。<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">import web</span><br><span class="line"></span><br><span class="line">urls = (</span><br><span class="line">    '/get','get_class',</span><br><span class="line">    '/post','post_class',</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"># deal get request</span><br><span class="line">class get_class:</span><br><span class="line">    def GET(self):</span><br><span class="line">        request_data = web.input()</span><br><span class="line">        print request_data</span><br><span class="line">        return "hello,world!"</span><br><span class="line">    </span><br><span class="line">#deal post request</span><br><span class="line">class post_class:   </span><br><span class="line">    def POST(self):</span><br><span class="line">        request_data = web.input()</span><br><span class="line">        print request_data</span><br><span class="line">        data = web.data()</span><br><span class="line">        print data</span><br><span class="line">        return "hello,world!"</span><br><span class="line">        </span><br><span class="line">if __name__ == '__main__':</span><br><span class="line">    app = web.application(urls, globals())</span><br><span class="line">    app.run()</span><br></pre></td></tr></table></figure></p>
+<p>实验结果<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">POST /post HTTP/<span class="number">1.1</span></span><br><span class="line">Accept: *<span class="comment">/*</span><br><span class="line">Content-Type: application/x-www-form-urlencoded</span><br><span class="line">Host: 192.168.17.112</span><br><span class="line">Content-Length: 38</span><br><span class="line">Connection: Keep-Alive</span><br><span class="line">Cookie: ASPSESSIONIDSCDCQCTD=DCOJKBECOHEDIJJGNAPJGOKO</span><br><span class="line"></span><br><span class="line">&#123;"name1": "value1", "name2": "value2"&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">revData:</span><br><span class="line">HTTP/1.1 200 OK</span><br><span class="line">Transfer-Encoding: chunked</span><br><span class="line">Date: Sat, 31 Oct 2015 01:36:00 GMT</span><br><span class="line">Server: localhost</span></span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    <footer>
+      
+
+        
+          <div class="alignleft post-nav">
+            <em>上一篇: </em><a href="/2015/11/14/Read-Notes/Read-Notes-Windows-Via-C-C-6/">Windows核心编程读书笔记6（第13、14、15、16章）</a>
+          </div>
+        
+        
+          <div class="alignright post-nav">
+            <em>下一篇: </em><a href="/2015/10/27/Read-Notes/Read-Notes-Windows-Via-C-C-5/">Windows核心编程读书笔记5（第10、11、12章）</a>
+          </div>
+          <div class="clearfix"></div>
+        
+
+        
+          <div class="copyright">
+            
+              <span class="claim">转载请注明youngroe.com</span>
+            
+            
+              <span class="from-link">
+                <em>本文链接地址:</em>
+                <a href="/2015/10/30/Learning/Http-Protocl-learn/">
+                  http://www.youngroe.com/2015/10/30/Learning/Http-Protocl-learn/
+                </a>
+              </span>
+            
+          </div>
+        
+		<span id="busuanzi_container_site_pv">
+    本站总访问量<span id="busuanzi_value_site_pv"></span>次
+        
+  
+  <div class="categories">
+    <a href="/categories/Learning/">Learning</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/Http/">Http</a>
+  </div>
+
+        <div class="bdsharebuttonbox"><a href="#" class="bds_more" data-cmd="more"></a><a href="#" class="bds_qzone" data-cmd="qzone"></a><a href="#" class="bds_tsina" data-cmd="tsina"></a><a href="#" class="bds_tqq" data-cmd="tqq"></a><a href="#" class="bds_renren" data-cmd="renren"></a><a href="#" class="bds_weixin" data-cmd="weixin"></a></div>
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdPic":"","bdStyle":"0","bdSize":"16"},"share":{},"image":{"viewList":["qzone","tsina","tqq","renren","weixin"],"viewText":"������","viewSize":"16"},"selectShare":{"bdContainerClass":null,"bdSelectMiniList":["qzone","tsina","tqq","renren","weixin"]}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</span>
+</article>
+
+
+<section id="comment">
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+<div class="widget tag">
+  <h3 class="title">分类</h3>
+  <ul class="entry">
+  
+    <li><a href="/categories/Cybersecurity/">Cybersecurity</a><small>1</small></li>
+  
+    <li><a href="/categories/Debug/">Debug</a><small>7</small></li>
+  
+    <li><a href="/categories/Kernel/">Kernel</a><small>4</small></li>
+  
+    <li><a href="/categories/Learning/">Learning</a><small>8</small></li>
+  
+    <li><a href="/categories/Life/">Life</a><small>7</small></li>
+  
+    <li><a href="/categories/Others/">Others</a><small>1</small></li>
+  
+    <li><a href="/categories/Read-Notes/">Read Notes</a><small>7</small></li>
+  
+    <li><a href="/categories/Tools/">Tools</a><small>6</small></li>
+  
+    <li><a href="/categories/Vulnerabilities/">Vulnerabilities</a><small>0</small></li>
+  
+    <li><a href="/categories/Windows/">Windows</a><small>14</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2019/07/01/Windows/delphi_reverse_summary/">Delphi程序逆向反汇编技巧小记</a>
+      </li>
+    
+      <li>
+        <a href="/2019/06/25/Kernel/kernel_enum_wfp_callout_function/">Windows内核重拾：如何枚举系统中Windows Filtering Platform (WFP)驱动中的callout函数</a>
+      </li>
+    
+      <li>
+        <a href="/2019/05/06/Kernel/windows-driver-testing-basics/">Windows内核重拾：Windows驱动测试基础：工具、功能和示例（翻译/转载）</a>
+      </li>
+    
+      <li>
+        <a href="/2019/04/06/Windows/how-to-reverse-engineer-software-windows-in-a-right-way/">如何正确的对Windows软件进行逆向工程（翻译/转载）</a>
+      </li>
+    
+      <li>
+        <a href="/2019/01/12/Windows/a_crash_lead_deadlock/">Windows平台下一个崩溃而导致的死锁分析</a>
+      </li>
+    
+      <li>
+        <a href="/2018/12/01/Windows/windows_client_dns_over_https/">Windows客户端如何透明使用DNS-over-HTTPS</a>
+      </li>
+    
+      <li>
+        <a href="/2018/10/06/Cybersecurity/ddos-protection-techniques/">现代DDoS对抗技术概述（翻译/转载）</a>
+      </li>
+    
+      <li>
+        <a href="/2018/09/18/Life/xian/">西安周末游</a>
+      </li>
+    
+      <li>
+        <a href="/2018/01/06/Kernel/WindowsKernel_DebugObject/">Windows内核重拾：DebugObject</a>
+      </li>
+    
+      <li>
+        <a href="/2017/10/23/Tools/IDA-Pro-ClassInformer-Tutorial/">IDA Pro ClassInformer使用指南（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2017/05/23/Windows/Kernel Data and Filtering Support/">Kernel Data and Filtering Support for Windows Server 2008（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2017/05/17/Windows/Windows-x64-Shellcode/">Windows x64 Shellcode编写指南(翻译)</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget tagcloud">
+  <h3 class="title">标签云</h3>
+  <div class="entry">
+    <a href="/tags/ASM/" style="font-size: 12.5px;">ASM</a> <a href="/tags/Boost/" style="font-size: 10px;">Boost</a> <a href="/tags/DDoS/" style="font-size: 10px;">DDoS</a> <a href="/tags/DNS-over-HTTPS/" style="font-size: 10px;">DNS-over-HTTPS</a> <a href="/tags/Delphi/" style="font-size: 10px;">Delphi</a> <a href="/tags/Dll劫持/" style="font-size: 10px;">Dll劫持</a> <a href="/tags/GCC-GDB/" style="font-size: 10px;">GCC&GDB</a> <a href="/tags/GetVersionEx/" style="font-size: 10px;">GetVersionEx</a> <a href="/tags/Http/" style="font-size: 10px;">Http</a> <a href="/tags/IDA-Pro/" style="font-size: 12.5px;">IDA Pro</a> <a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/MSDN/" style="font-size: 12.5px;">MSDN</a> <a href="/tags/Malware/" style="font-size: 12.5px;">Malware</a> <a href="/tags/MiniDumpWriteDump/" style="font-size: 10px;">MiniDumpWriteDump</a> <a href="/tags/PEB/" style="font-size: 10px;">PEB</a> <a href="/tags/Procmon/" style="font-size: 10px;">Procmon</a> <a href="/tags/Runtime-Error/" style="font-size: 10px;">Runtime Error</a> <a href="/tags/SEH/" style="font-size: 10px;">SEH</a> <a href="/tags/Shellcode/" style="font-size: 10px;">Shellcode</a> <a href="/tags/SysinternalsSuite/" style="font-size: 10px;">SysinternalsSuite</a> <a href="/tags/Tips/" style="font-size: 10px;">Tips</a> <a href="/tags/UAC/" style="font-size: 10px;">UAC</a> <a href="/tags/UAF漏洞/" style="font-size: 10px;">UAF漏洞</a> <a href="/tags/VC/" style="font-size: 10px;">VC</a> <a href="/tags/Visual-Studio/" style="font-size: 12.5px;">Visual Studio</a> <a href="/tags/Windbg/" style="font-size: 10px;">Windbg</a> <a href="/tags/Windows/" style="font-size: 20px;">Windows</a> <a href="/tags/Windows核心编程/" style="font-size: 17.5px;">Windows核心编程</a> <a href="/tags/android/" style="font-size: 10px;">android</a> <a href="/tags/getaddrinfo/" style="font-size: 10px;">getaddrinfo</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/libeay32/" style="font-size: 10px;">libeay32</a> <a href="/tags/markdown/" style="font-size: 10px;">markdown</a> <a href="/tags/ndk/" style="font-size: 10px;">ndk</a> <a href="/tags/sublime-text3/" style="font-size: 10px;">sublime text3</a> <a href="/tags/x64/" style="font-size: 12.5px;">x64</a> <a href="/tags/体验/" style="font-size: 10px;">体验</a> <a href="/tags/内核/" style="font-size: 12.5px;">内核</a> <a href="/tags/内核结构/" style="font-size: 15px;">内核结构</a> <a href="/tags/学习/" style="font-size: 10px;">学习</a> <a href="/tags/安全机制/" style="font-size: 10px;">安全机制</a> <a href="/tags/异常处理/" style="font-size: 10px;">异常处理</a> <a href="/tags/提权/" style="font-size: 10px;">提权</a> <a href="/tags/服务/" style="font-size: 10px;">服务</a> <a href="/tags/权限/" style="font-size: 12.5px;">权限</a> <a href="/tags/栈溢出漏洞/" style="font-size: 10px;">栈溢出漏洞</a> <a href="/tags/测试/" style="font-size: 10px;">测试</a> <a href="/tags/浮躁/" style="font-size: 10px;">浮躁</a> <a href="/tags/漏洞调试/" style="font-size: 12.5px;">漏洞调试</a> <a href="/tags/生活/" style="font-size: 15px;">生活</a> <a href="/tags/脱壳/" style="font-size: 10px;">脱壳</a> <a href="/tags/西安/" style="font-size: 10px;">西安</a> <a href="/tags/计划/" style="font-size: 10px;">计划</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a> <a href="/tags/调试/" style="font-size: 15px;">调试</a> <a href="/tags/转换/" style="font-size: 10px;">转换</a> <a href="/tags/进程/" style="font-size: 10px;">进程</a> <a href="/tags/逆向/" style="font-size: 10px;">逆向</a> <a href="/tags/重庆/" style="font-size: 10px;">重庆</a> <a href="/tags/驱动/" style="font-size: 15px;">驱动</a>
+  </div>
+</div>
+
+
+  <div class="widget tag">
+<h3 class="title">Links</h3>
+<ul class="entry">
+<li><a href="http://blog.ourren.com/" title="Ourren">Ourren</a></li>
+<li><a href="http://www.hyjal.net/" title="Hyjal">Hyjal</a></li>
+<li><a href="http://www.jianshu.com/users/fa15f4e416ae/latest_articles" title="Daemonceltics">Daemonceltics</a></li>
+<li><a href="http://papap.info/" title="isee">isee</a></li>
+</ul>
+</div>
+
+  <script type="text/javascript" id="clustrmaps" src="//cdn.clustrmaps.com/map_v2.js?u=putG&d=yoFnN6V-ovhL-H4e9_69LvkTiX4uX7rEYJ15yL3G1Wg"></script>
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <div id="go-pg-top"><i class="icon-arrow-up"></i></div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2020 Lyon
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript" charset="utf-8" src="/js/page.js"></script>
+
+</body>
+
+</html>

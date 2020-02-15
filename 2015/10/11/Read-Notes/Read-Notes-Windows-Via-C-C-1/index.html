@@ -1,0 +1,400 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Windows核心编程读书笔记1（1、2、3章） | Lyon&#39;s blog</title>
+  <meta name="author" content="Lyon">
+  
+  <meta name="description" content="Walk steps step by step">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="Windows核心编程读书笔记1（1、2、3章）"/>
+  <meta property="og:site_name" content="Lyon&#39;s blog"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  #<link href="/favicon.ico" rel="icon">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="alternate" href="/atom.xml" title="Lyon&#39;s blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  <script src="/js/jquery.min.js"></script>
+  <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?0fe72895c9bcfd0d09da12b5378b1b91";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+</head>
+
+
+<body>
+  <!--[if lte IE 8]> <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'> <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0027_Simplified Chinese.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." style='margin-left:auto;margin-right:auto;display: block;'/></a></div> <![endif]-->
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">Lyon&#39;s blog</a></h1>
+  <h2><a href="/">I hear and I forget.I see and I remember.I do and I understand.</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">首页</a></li>
+    
+      <li><a href="/archives">归档</a></li>
+    
+      <li><a href="/about">关于</a></li>
+    
+	<li> <a href="/atom.xml">RSS</a> </li>
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <time datetime="2015-10-11T12:01:17.000Z"><a href="/2015/10/11/Read-Notes/Read-Notes-Windows-Via-C-C-1/">2015-10-11</a></time>
+      
+      
+  
+    <h1 class="title">Windows核心编程读书笔记1（1、2、3章）</h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+  <div id="toc" class="toc-article">
+  <strong class="toc-title">文章目录</strong>
+  
+  </div>
+
+
+	
+    <div class="entry">
+      
+        <p>##第1章 错误处理</p>
+<p>###1.Windows Api返回值</p>
+<ul>
+<li>各种不同返回值都有自己执行错误的返回方式</li>
+<li>Void类型表示函数一般不会运行错误</li>
+<li>BOOL型判断执行成功的方式最好判断返回值是否不为FALSE</li>
+<li><p>Windows系统函数执行错误时会通过<code>线程本地存储机制</code>产生各个线程不干扰的错误代码,每个线程独有的其他线程无法改变（21章详细介绍）<br>###2.GetLastError</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="comment">// MessageId: ERROR_FILE_NOT_FOUND</span></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="comment">// MessageText:</span></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="comment">// The system cannot find the file specified.</span></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">define</span> ERROR_FILE_NOT_FOUND             <span class="number">2L</span></span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>DWORD WINAPI  GetLastError(VOID);返回一个DWORD 32位最后的错误代码（之前的错误代码将会被覆盖）</p>
+</li>
+<li>VS调试时在监视窗口利用，<code>err,hr</code>监视当前执行语句是否产生错误</li>
+<li>GetLastError也用来返回执行成功的原因，如Creat*类函数返回183表示由于对象存在</li>
+<li>FormatMessage可以把DWORD错误代码转换成易于理解的语句，也可用Vs的Error Lookup工具查看</li>
+</ul>
+<a id="more"></a>
+<p>###3.SetLastError</p>
+<ul>
+<li>VOID WINAPI SetLastError( __in DWORD dwErrCode);可在自己函数中设置原因</li>
+<li>32位错误代码的不同字段</li>
+<li>每个dll都能有自己的一套错误代码，可以使用MC.exe创建消息资源添加到模块中<br>###4.ErrorShow函数<br>来自MSDN<br><a href="https://msdn.microsoft.com/en-us/library/windows/desktop/ms724426(v=vs.85).aspx" target="_blank" rel="external">https://msdn.microsoft.com/en-us/library/windows/desktop/ms724426(v=vs.85).aspx</a></li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">printError</span><span class="params">( TCHAR* msg )</span></span><br><span class="line"></span>&#123;</span><br><span class="line">  DWORD eNum;</span><br><span class="line">  TCHAR sysMsg[<span class="number">256</span>];</span><br><span class="line">  TCHAR* p;</span><br><span class="line"></span><br><span class="line">  eNum = GetLastError( );</span><br><span class="line">  FormatMessage( FORMAT_MESSAGE_FROM_SYSTEM | </span><br><span class="line">         FORMAT_MESSAGE_IGNORE_INSERTS,</span><br><span class="line">         <span class="literal">NULL</span>, eNum,</span><br><span class="line">         MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),</span><br><span class="line">         sysMsg, <span class="number">256</span>, <span class="literal">NULL</span> );</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Trim the end of the line and terminate it with a null</span></span><br><span class="line">  p = sysMsg;</span><br><span class="line">  <span class="keyword">while</span>( ( *p &gt; <span class="number">31</span> ) || ( *p == <span class="number">9</span> ) )</span><br><span class="line">    ++p;</span><br><span class="line">  <span class="keyword">do</span> &#123; *p-- = <span class="number">0</span>; &#125; <span class="keyword">while</span>( ( p &gt;= sysMsg ) &amp;&amp;</span><br><span class="line">                          ( ( *p == <span class="string">'.'</span> ) || ( *p &lt; <span class="number">33</span> ) ) );</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Display the message</span></span><br><span class="line">  _tprintf( TEXT(<span class="string">"\n\t%s failed with error %d (%s)"</span>), msg, eNum, sysMsg );</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>##第2章 字符和字符串处理</p>
+<p>###1.字符编码</p>
+<ul>
+<li>最早的Windows系统只支持ANSI字符，ANSI字符1个字节8位容纳字符集有限（最开始字节(最高位为0， 没有用)表示0到127，总共128个字符满足英语语系的需要）</li>
+<li>由于Windows国际化，从Windows NT开始Windows使用UNICODE编码，具体是UTF-16编码（使用2个字节）</li>
+<li>程序使用UNICODE编码有利于同COM和.NET Framework相互操作（COM、.NET Framework只支持UNICODE传递参数）</li>
+<li>Windows ANSI API是由UNICODE版API包装而来，在传递参数和返回时多了一次编码转换</li>
+<li><p>Windows C运行库中ANSI和UNICODE API是相互独立的，不存在相互调用不需要编码转换<br>###2.ANSI和Unicode字符数据类型及函数</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">#<span class="keyword">ifdef</span> UNICODE</span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">define</span> MessageBox MessageBoxW</span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">else</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">define</span> MessageBox MessageBoxA</span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">endif</span></span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>char c=’A’和 wchar_t c=L’A’</p>
+</li>
+<li>char wchar_t是C语言版本写法，Windows专用版本是CHAR和WCHAR，只是C语言版本一个宏定义 typedef char CHAR和typede wchar_t WCHAR</li>
+<li>windows系统函数一般都有UNICODE和ANSI版，WinExec这种只有ANSI版本的是为了兼容16位系统</li>
+<li>编译器通过UNICODE和_UNICODE宏决定程序使用的api版本（一定要两个同时定义_UNICODE决定c语言UNICODE决定Windows）<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Unicode符号范围 | UTF-<span class="number">8</span>编码方式</span><br><span class="line">(十六进制) | （二进制）</span><br><span class="line">--------------------+---------------------------------------------</span><br><span class="line"><span class="number">0000</span> <span class="number">0000</span>-<span class="number">0000</span> <span class="number">007F</span> | <span class="number">0</span>xxxxxxx</span><br><span class="line"><span class="number">0000</span> <span class="number">0080</span>-<span class="number">0000</span> <span class="number">07F</span>F | <span class="number">110</span>xxxxx <span class="number">10</span>xxxxxx</span><br><span class="line"><span class="number">0000</span> <span class="number">0800</span>-<span class="number">0000</span> FFFF | <span class="number">1110</span>xxxx <span class="number">10</span>xxxxxx <span class="number">10</span>xxxxxx</span><br><span class="line"><span class="number">0001</span> <span class="number">0000</span>-<span class="number">0010</span> FFFF | <span class="number">11110</span>xxx <span class="number">10</span>xxxxxx <span class="number">10</span>xxxxxx <span class="number">10</span>xxxxxx</span><br><span class="line">跟据上表，解读UTF-<span class="number">8</span>编码非常简单。如果一个字节的第一位是<span class="number">0</span>，则这个字节单独就是一个字符；</span><br><span class="line">如果第一位是<span class="number">1</span>，则连续有多少个<span class="number">1</span>，就表示当前字符占用多少个字节。</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>###3.字符串处理函数</p>
+<ul>
+<li><p>字符串处理函数主要分ANSI、UNICODE；c运行库、Windows；老版本、安全版本，这种就有大概8个版本</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1.</span>字符定义</span><br><span class="line">  <span class="keyword">char</span>       是C语言标准数据类型，字符型。通常由编译器决定一个<span class="keyword">char</span>对象有多少个字节组成，一般是一字节。</span><br><span class="line">  <span class="keyword">wchar_t</span>    是<span class="keyword">char</span>的Unicode版本。相当于 <span class="keyword">unsigned</span> <span class="keyword">short</span>。一般两个字节。</span><br><span class="line">  CHAR       参照定义： <span class="keyword">typedef</span>   <span class="keyword">char</span>        CHAR;</span><br><span class="line">  WCHAR      参照定义：<span class="keyword">typedef</span>    <span class="keyword">wchar_t</span>     WHAR;</span><br><span class="line">  TCAHR      通用版字符类型：在ANSI编译方式下为 <span class="keyword">char</span> ， 在Unicode 编译方式下为 <span class="keyword">wchar_t</span>。</span><br><span class="line">  UCHAR      相当于<span class="keyword">unsigned</span> <span class="keyword">char</span></span><br><span class="line">  BYTE       相当于<span class="keyword">unsigned</span> <span class="keyword">char</span>。在取得字符编码(<span class="number">00</span> - FF)时，非常有用。</span><br><span class="line">  TBYTE      通用版字符类型：在ANSI编译方式下为 <span class="keyword">char</span> ， 在Unicode 编译方式下为 <span class="keyword">wchar_t</span>。</span><br><span class="line"><span class="number">2.</span>字符指针定义</span><br><span class="line">PSTR，PWSTR，  通用版：PTSTR,   PTCH         </span><br><span class="line">LPSTR，LPWSTR，通用版：LPTSTR,  LPTCH</span><br><span class="line">               <span class="keyword">typedef</span> CHAR               *PSTR,      *LPSTR;</span><br><span class="line">               <span class="keyword">typedef</span> WCHAR              *PWSTR,     *LPWSTR;</span><br><span class="line"> </span><br><span class="line">PCSTR，PCWSTR，通用版：PCTSTR    </span><br><span class="line">LPCSTR，LPCWSTR，通用版：LPCTSTR</span><br><span class="line">               <span class="keyword">typedef</span> CONST CHAR    *PCSTR,      *LPCSTR;</span><br><span class="line">               <span class="keyword">typedef</span> CONST WCHAR   *PCWSTR,     *LPCWSTR;</span><br><span class="line">解释                           通用版             非UNICODE           UNICODE  </span><br><span class="line">字符定义                       TCHAR                CHAR               WCHAR  </span><br><span class="line">字符指针                       PTCHAR               CHAR *             WCHAR *  </span><br><span class="line">字符串指针                     LPTCH &amp; PTCH         LPSTR &amp; PSTR       LPWSTR &amp; PWSTR  </span><br><span class="line">字符串指针                     LPTSTR &amp; PTSTR       LPSTR &amp; PSTR       LPWSTR &amp; PWSTR  </span><br><span class="line">静态字符串指针                 LPCTSTR &amp; PCTSTR     LPCSTR &amp; PCSTR     LPCWSTR &amp; PCWSTR</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>C运行库ANSI和UNICODE处理函数<br>标准c中的strcpy,strchr,strcat等只能用于ANSI字符串，不能正确处理Unicode字符串，因此也提供了一组补充函数，功能等价，但用于Unicode码</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">char</span> *<span class="title">strcpy</span><span class="params">(<span class="keyword">char</span> *des, <span class="keyword">const</span> <span class="keyword">char</span> *src)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">	assert(des != <span class="literal">NULL</span> &amp;&amp; src != <span class="literal">NULL</span>);</span><br><span class="line">	<span class="keyword">char</span> *pStr = des;</span><br><span class="line">	<span class="keyword">while</span>( (*des++ = *src++) != <span class="string">'\0'</span>)</span><br><span class="line">		<span class="literal">NULL</span>;</span><br><span class="line">	<span class="keyword">return</span> pStr;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">char</span>        *<span class="title">strcat</span><span class="params">(<span class="keyword">char</span>*,<span class="keyword">const</span> <span class="keyword">char</span>*)</span></span>;</span><br><span class="line"><span class="keyword">wchar_t</span> *wcschr(<span class="keyword">wchat_t</span>*,<span class="keyword">const</span> <span class="keyword">wchar_t</span> *)</span><br><span class="line"><span class="comment">//TChar.h</span></span><br><span class="line">类似的还有<span class="built_in">strchr</span>/wcschr，<span class="built_in">strcmp</span>/wcscmp，<span class="built_in">strlen</span>/wcslen...</span><br><span class="line">ANSI         操作函数以str开头      <span class="built_in">strcpy</span></span><br><span class="line">Unicode      操作函数以wcs开头      wcscpy</span><br><span class="line">MBCS         操作函数以_mbs开头    _mbscpy</span><br><span class="line">ANSI/Unicode 操作函数以_tcs开头    _tcscpy（C运行期库）</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Windows ANSI和UNICODE字符处理</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">lstr*a系列:  在windows操作系统的Kernel32.dll中定义，处理CHAR类型的字符串，其实是对lstr*w的一层包装。</span><br><span class="line">lstr*w系列: 在windows操作系统的Kernel32.dll中定义，处理WCHAR类型的字符串。</span><br><span class="line">lstr*系列:   lstr*系列函数也是在编译时才根据是否预定义了UNICODE宏来确定采用lstr*a系列函数，还是lstr*w系列函数。</span><br><span class="line">个人推荐用lstr*系列，因为这个是windows api，这样写出来的程序不用把C运行库链接进来。</span><br><span class="line">还有一些字符串处理函数在ShlwApi.h中定义</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p><div align="center"><br><img src="http://7xkam4.com1.z0.glb.clouddn.com/strapi.png" alt="常用字符串处理api对应关系" align="center"><br></div></p>
+<p>###4.c运行库安全字符串函数</p>
+<ul>
+<li>主要解决老版本函数由于字符串缓冲区不够大，无法容纳生成的字符串导致内存中的数据被破坏，在头文件StrSafe.h中定义</li>
+<li>安全版本字符串处理函数 *_s,多一个表示字符串个数的参数一般可用_countof宏计算。</li>
+<li>另一种安全字符处理函数StringCch<em>,Cch代表count of characters（_countof）,还有一些原型为StringCb</em>,Cb 代表字节数（sizeof）。当缓冲区过小，这类函数会执行截断</li>
+<li>安全版本函数在调试版本时会检查传入参数，如果失败会弹框提示</li>
+<li>如果是非调试版，不会有提示，除非设置自己的错误处理函数 通过 _set_invalid_parameter_handler注册该处理函数<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">"stdafx.h"</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">&lt;Windows.h&gt;</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">&lt;strsafe.h&gt;</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">&lt;crtdbg.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">InvaildParamhandle</span><span class="params">(PCWSTR expression,PCWSTR function,PCWSTR file,<span class="keyword">unsigned</span> <span class="keyword">int</span> line,uintptr_t )</span></span><br><span class="line"></span>&#123;</span><br><span class="line">   <span class="comment">// function、file、line在Release下无效</span></span><br><span class="line">  <span class="keyword">wchar_t</span> wszerrnobuf[MAX_PATH]=&#123;<span class="number">0</span>&#125;;</span><br><span class="line">  _snwprintf_s(wszerrnobuf,_countof(wszerrnobuf),<span class="string">L"At %ws %d\n%ws:%ws"</span>,file,line,function,expression);</span><br><span class="line">  MessageBoxW(<span class="literal">NULL</span>,wszerrnobuf,<span class="string">L"errno"</span>,MB_OK);</span><br><span class="line">  <span class="keyword">throw</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> _tmain(<span class="keyword">int</span> argc, _TCHAR* argv[])</span><br><span class="line">&#123;</span><br><span class="line">  _CrtSetReportMode(_CRT_ASSERT,<span class="number">0</span>);</span><br><span class="line">  <span class="keyword">wchar_t</span> wszbfbuff[<span class="number">5</span>]=&#123;L<span class="string">'-'</span>,L<span class="string">'-'</span>,L<span class="string">'-'</span>,L<span class="string">'-'</span>,<span class="string">'\0'</span>&#125;;</span><br><span class="line">  <span class="keyword">wchar_t</span> wszbuff[<span class="number">10</span>]=&#123;<span class="string">'\0'</span>&#125;;</span><br><span class="line">  <span class="keyword">wchar_t</span> wszafbuff[<span class="number">5</span>]=&#123;L<span class="string">'A'</span>,L<span class="string">'A'</span>,L<span class="string">'A'</span>,L<span class="string">'A'</span>,<span class="string">'\0'</span>&#125;;</span><br><span class="line">  _set_invalid_parameter_handler(InvaildParamhandle);</span><br><span class="line">  <span class="keyword">try</span></span><br><span class="line">  &#123;</span><br><span class="line">    <span class="keyword">errno_t</span> result=wcscpy_s(wszbuff,_countof(wszbuff),<span class="string">L"0123456789"</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">catch</span> (...)</span><br><span class="line">  &#123;</span><br><span class="line">    MessageBoxW(<span class="literal">NULL</span>,<span class="string">L"wcscpy_s errno"</span>,<span class="string">L"异常"</span>,MB_OK);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>###5.其他一些字符串处理函数<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br></pre></td><td class="code"><pre><span class="line">CompareString(Ex)</span><br><span class="line">GetThreadLocale</span><br><span class="line"><span class="comment">//可将utf-8编码的多字节或是ANSI编码的多字节(即两个字节)等转换为Unicode的宽字符wchar_t</span></span><br><span class="line">MultiByteToWideChar</span><br><span class="line"><span class="comment">//将wchar_t转换utf-8或ANSI 等编码的多字节</span></span><br><span class="line">WideCharToMultiByte</span><br><span class="line"></span><br><span class="line"><span class="comment">//http://blog.csdn.net/mfcing/article/details/7458898</span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="keyword">class</span> CUser</span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  CUser();</span><br><span class="line">  <span class="keyword">virtual</span>~ CUser();</span><br><span class="line">  <span class="function"><span class="keyword">char</span>* <span class="title">WcharToChar</span><span class="params">(wchar_t* wc)</span></span>;<span class="comment">//宽字节转单字节</span></span><br><span class="line">  <span class="keyword">wchar_t</span>* CharToWchar(<span class="keyword">char</span>* c); <span class="comment">//单字节转宽字节</span></span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">Release</span><span class="params">()</span></span>;<span class="comment">//释放资源</span></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">  <span class="keyword">char</span>* m_char;</span><br><span class="line">  <span class="keyword">wchar_t</span>* m_wchar;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">/////////////////////////////////////////////////////////////////////////////////////</span></span><br><span class="line"><span class="comment">/*字符类型        wchar_t     char</span><br><span class="line"><span class="comment">/*获取字符长度    wcslen()    strlen()</span><br><span class="line"><span class="comment">/*连接两个字符串  wcscat()    strcpy()</span><br><span class="line"><span class="comment">/*复制字符串      wcscpy()    strcpy()</span><br><span class="line"><span class="comment">/*比较两个字符串  wcscmp()    strcmp()</span><br><span class="line"><span class="comment">/*具体参数详见百度*/</span></span><br><span class="line">////////////////////////////////////////////////////////////////////////////////////</span><br><span class="line">CUser::CUser()</span><br><span class="line">:m_char(NULL)</span><br><span class="line">,m_wchar(NULL)</span><br><span class="line">&#123;</span><br><span class="line">&#125;</span><br><span class="line">CUser::~CUser()</span><br><span class="line">&#123;</span><br><span class="line">  Release();</span><br><span class="line">&#125;</span><br><span class="line">char* CUser::WcharToChar(wchar_t* wc)</span><br><span class="line">&#123;</span><br><span class="line">  Release();</span><br><span class="line">  int len= WideCharToMultiByte(CP_ACP,0,wc,wcslen(wc),NULL,0,NULL,NULL);</span><br><span class="line">  m_char=new char[len+1];</span><br><span class="line">  WideCharToMultiByte(CP_ACP,0,wc,wcslen(wc),m_char,len,NULL,NULL);</span><br><span class="line">  m_char[len]='\0';</span><br><span class="line">  return m_char;</span><br><span class="line">&#125;</span><br><span class="line">wchar_t* CUser::CharToWchar(char* c)</span><br><span class="line">&#123;</span><br><span class="line">  Release();</span><br><span class="line">  int len = MultiByteToWideChar(CP_ACP,0,c,strlen(c),NULL,0);</span><br><span class="line">  m_wchar=new wchar_t[len+1];</span><br><span class="line">  MultiByteToWideChar(CP_ACP,0,c,strlen(c),m_wchar,len);</span><br><span class="line">  m_wchar[len]='\0';</span><br><span class="line">  return m_wchar;</span><br><span class="line">&#125;</span><br><span class="line">void CUser::Release()</span><br><span class="line">&#123;</span><br><span class="line">  if(m_char)</span><br><span class="line">  &#123;</span><br><span class="line">    delete m_char;</span><br><span class="line">    m_char=NULL;</span><br><span class="line">  &#125;</span><br><span class="line">  if(m_wchar)</span><br><span class="line">  &#123;</span><br><span class="line">    delete m_wchar;</span><br><span class="line">    m_wchar=NULL;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">WCHAR* wc=findData.cFileName;</span><br><span class="line">      CUser u;</span><br><span class="line">      char* c=u.WcharToChar(wc);</span><br><span class="line">      cout&lt;&lt;c&lt;&lt;endl;</span><br><span class="line">CUser u;</span><br><span class="line">      char* pBuffer=u.WcharToChar(szFullPath);</span><br><span class="line">      cout&lt;&lt;totalNum&lt;&lt;"    "&lt;&lt;pBuffer&lt;&lt;endl;</span></span></span></span></span></span><br></pre></td></tr></table></figure></p>
+<p>###6.一些关于Windows字符串处理的建议（转载）<br><em><br>1、既然程序里不能出现char，那表示字符串时，就不能再习惯性的用char</em>了。应该改为TCHAR<em>，或者是PTSTR。后一种是windows的变量，类似的有：PSTR、PTSTR、LPTSTR、LPSTR、PCTSTR等等等等。这也是让人一开始接触会头大的地方。其实并非如此恐怖，我以PCTSTR为例做个解释：P代表指针(和LP是一个东西，LP的本意是Long Pointer，16位windows时代的遗留物。)，C代表const，T代表TCHAR，STR代表字符串。所以PCTSTR其实就是const TCHAR</em> 的意思。而PSTR也就是char<em> 的意思。所以我们在表示字符串时也不能使用PSTR等不带T的变量类型名。<br>2、表示字符串常量时，不能简单的用双引号括起来，因为那代表ascii字符串。同样也不能在前面加L，因为那代表unicode。我们的程序要做到的是通用性，即不是ascii也不是unicode。所以我们在字符串前应该加的是TEXT， 比如MessageBox(NULL, TEXT(“Fypher”), TEXT(“Fypher”), MB_OK)。TEXT还可用于字符。比如TCHAR m=TEXT(‘A’);<br>3、TCHAR tchTest[50]。tchTest能装多少字符？哈！不要习惯性的sizeof(tchTest)了，应该_countof(tchTest)或者sizeof(tchTest)/sizeof(TCHAR)。因为我们不确定TCHAR到底是char 还是 wchar_t。<br>4、该和一堆老朋友说再见了……我们不能再使用以前的字符串处理函数或者字符处理函数了。比如strlen、strcat、strcmp等等等等……因为这些是ascii专用的，通通改成使用T家族的吧。前缀都换成_tcs。比如_tcslen、_tcscat、_tcscmp等等……顺便补充一下wcs前缀是wchar_t使用的。恩，还有大家用得超爽的sprintf，今后就改成_stprintf了吧~呵呵。补充：swprintf是wchar_t它家的。对了，windows认为_tcscpy、_tcscat等不安全，所以使用这些函数编译器会报警。可以改用windows推出的_tcscpy_s、_tcscat_s等“安全”函数，其实就是多了个参数用来指明缓冲区大小（记得用<em>countof哦！^</em>^）。windows还推出了形如StringCchCat的一套字符串处理函数，我没怎么用过。windows也有一个字符串比较函数CompareString。功能比_tcscmp强大多了。比如可以设置忽略大小写等。<br>5、IsTextUnicode函数可以用过一系列统计学的方法判断某个字符串是不是unicode字符串。MultiByteToWideChar和WideCharToMultiByte函数可实现Ascii和Unicode字符串的相互转化。这些的使用场合都不大。因为我们的程序应该做到“没有”ascii和unicode。<br>6、恩，虽然绝大多数情况下应该使用TCHAR，但是记住GetProcAdress这个特殊的函数吧，它的参数只能是char**。因为在导出函数表里函数名是用ascii码写的……<br>7、最后一点，记得要#include &lt;tchar.h&gt;，呵呵。 由于windows内核采用的是UNICODE，UNICODE版的程序必然比ASCII版的程序效率高（比如不用在调用函数时在堆里分配空间把参数转成UNICODE，然后再调用UNICODE版的函数），所以我们最好是在程序的开头加上#define UNICODE和#define _UNICODE，把程序转换成UNICODE版的。如果程序的字符串处理完全按照上面的通用性要求做了是不会出错的。
+</em></p>
+<ul>
+<li>不使用不安全的C运行库函数，当操作缓冲区时使用memcpy_s,wmemcpy_s等函数</li>
+</ul>
+<p>###7.ANSI和Unicode转换</p>
+<ul>
+<li><p>相互转换</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">WideCharToMultiByte</span><span class="params">(</span><br><span class="line">  _In_      UINT    CodePage,</span><br><span class="line">  _In_      DWORD   dwFlags,</span><br><span class="line">  _In_      LPCWSTR lpWideCharStr,</span><br><span class="line">  _In_      <span class="keyword">int</span>     cchWideChar,</span><br><span class="line">  _Out_opt_ LPSTR   lpMultiByteStr,</span><br><span class="line">  _In_      <span class="keyword">int</span>     cbMultiByte,</span><br><span class="line">  _In_opt_  LPCSTR  lpDefaultChar,</span><br><span class="line">  _Out_opt_ LPBOOL  lpUsedDefaultChar</span><br><span class="line">)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">MultiByteToWideChar</span><span class="params">(</span><br><span class="line">  _In_      UINT   CodePage,</span><br><span class="line">  _In_      DWORD  dwFlags,</span><br><span class="line">  _In_      LPCSTR lpMultiByteStr,</span><br><span class="line">  _In_      <span class="keyword">int</span>    cbMultiByte,</span><br><span class="line">  _Out_opt_ LPWSTR lpWideCharStr,</span><br><span class="line">  _In_      <span class="keyword">int</span>    cchWideChar</span><br><span class="line">)</span></span>;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>判断 IsTextUnicode</p>
+</li>
+</ul>
+<p>##第3章 内核对象</p>
+<p>###1.何为内核对象</p>
+<ul>
+<li>常见内核对象访问内核对象、事件对象、文件对象。。。。</li>
+<li>每个内核对象都是一个内存块（一个数据结构），只能由操作系统访问，应用程序不能在内存中定位或则写该这些内存数据结构</li>
+<li>内核对象数据结构中少数成员如安全描述符和使用计数是所有对象都有的，但其他大多数成员都是不同类型的对象特有的</li>
+<li>应用程序通过Windows提供的函数访问这些内核对象，通过句柄handle（32/64）操作且这些句柄与进程相关，如果将该句柄值传递给另一个进程中的一个线程（使用某种形式的进程间的通信）那么这另一个进程使用你的进程的句柄值所作的调用就会失败</li>
+<li>句柄仅仅是独立于每个进程的句柄表的一个索引。在每个进程中都存在一个句柄表，列出了所有本进程内可以使用的句柄。它只是一个有数据结构组成的数组，每个结构都包含一个指向内核对象的指针、访问掩码、继承标识等，而句柄仅仅是句柄表数组的下标</li>
+<li>每个进程有一个内核句柄表，是一个简单结构（包含真实访问地址和访问权限）。如果通过closehandle关闭一个对象后未清空无效变量而又在对象表中相同位置创建一个新的内核对象会造成bug（再次closehandle）</li>
+</ul>
+<p>###2.内核对象使用</p>
+<ul>
+<li>内核对象由内核所拥有，而不是由进程所拥有。 对象被撤消时，但是如果另一个进程正在使用你的进程创建的内核对象，那么该内核知道，在另<br>一个进程停止使用该对象前不要撤消该对象，必须记住的是，<code>内核对象的存在时间可以比创建该对象的进程长</code>。</li>
+<li>内核知道有多少进程正在使用某个内核对象，因为每个对象包含一个使用计数</li>
+<li><p>内核对象能够得到安全描述符的保护。安全描述符用于描述谁创建了该对象，谁能够访问或使用该对象，谁无权访问该对象（安全描述符通常在编写服务器应用程序时使用）。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">HANDLE</span><br><span class="line">WINAPI</span><br><span class="line"><span class="title">CreateFileMappingW</span><span class="params">(</span><br><span class="line">    __in     HANDLE hFile,</span><br><span class="line">    __in_opt LPSECURITY_ATTRIBUTES lpFileMappingAttributes,</span><br><span class="line">    __in     DWORD flProtect,</span><br><span class="line">    __in     DWORD dwMaximumSizeHigh,</span><br><span class="line">    __in     DWORD dwMaximumSizeLow,</span><br><span class="line">    __in_opt LPCWSTR lpName</span><br><span class="line">    )</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> _SECURITY_ATTRIBUTES &#123;</span><br><span class="line">    DWORD nLength;</span><br><span class="line">    LPVOID lpSecurityDescriptor;</span><br><span class="line">    BOOL bInheritHandle;</span><br><span class="line">&#125; SECURITY_ATTRIBUTES, *PSECURITY_ATTRIBUTES, *LPSECURITY_ATTRIBUTES;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>大多数应用程序只是为该参数传递NULL，这样就可以创建带有默认安全性的内核对象。<code>默认安全性意味着对象的管理小组的任何成员和对象的创建者都拥有对该对象的全部访问权</code>，而其他所有人均无权访问该对象。<code>lpSecurityDescriptor</code></p>
+</li>
+<li>内核对象和一般用户对象的区分，<code>创建时是否含有安全信息PSECURITY_ATTRIBUTES</code><br>###3.进程的内核对象句柄表</li>
+<li>当一个进程被初始化时,系统要为它分配一个句柄表。该句柄表只用于内核对象,不用于用户对象或G D I对象。句柄表的样子是个数据结构的数组。每个结构都包<br>含一个指向内核对象的指针、一个访问屏蔽和一些标志。</li>
+<li>创建内核对象的函数均返回与进程相关的句柄，这些句柄可以被在相同进程中运行的任何或所有线程成功地加以使用。该句柄值实际上是放入进程的句柄表中的<code>索引</code>，它用于<code>标识内核对象的信息存放的位置</code>.</li>
+<li>创建内核对象的函数调用失败一般返回0（NULL）,少数返回-1 如当调用CreateFile函数时，才能将该值与INVALIDHANDLEVALUE（-1）</li>
+<li>当调用CloseHandle关闭内核对象时，该函数首先检查调用进程的句柄表，以确保传递给它的索引（句柄）用于标识一个进程实际上无权访问的对象。如果该索引是有效的，那么系统就可以获得内核对象的数据结构的地址，并可确定该结构中的使用计数的数据成员。如果使用计数是0，该内核便从内存中撤消该内核对象。</li>
+<li>在CloseHandle返回之前，它会清除进程的句柄表中的项目，该句柄现在对你的进程已经无效，不应该试图使用它。无论内核对象是否已经撤消，都会发生清除操作。当调用CloseHandle函数之后，将不再拥有对内核对象的访问权。</li>
+<li>忘记调用CloseHandle可能会导致内存泄漏，在进程运行时，进程有可能泄漏资源（如内核对象）。但是，当进程终止运行时，操作系统能够确保该进程使用的任何资源或全部资源均被释放<br>###4.跨进程边界共享内核对象</li>
+<li>使用共享内核对象的情景，两个进程间共享数据块（文件映射）、联网的不同机器发送数据块（邮箱和指定的管道）、进程间通知（互斥对象、信标、事件）</li>
+<li>内核对象句柄设计成与进程相关理由，健壮性、安全性。共享内核对象的三种机制：<code>对象句柄的继承、命名对象、复制对象句柄DuplicateHandle</code></li>
+<li>对象句柄的继承：只有当进程具有父子关系时，才能使用对象句柄的继承性。步骤 父进程创建可继承句柄（默认不具有继承性虽然内核对象句柄具有继承性，但是内核对象本身不具备继承性）—–&gt;父进程生成子进程（CreateProcess bInheritHandle true 系统遍历父进程可继承句柄表将其拷贝到子进程句柄表相同位置）—–&gt;将被基础的句柄值传递给子进程（命令行、环境变量、WaitForInpuIdle或则其他方式进程间通信）</li>
+<li>SetHandleInformation改变内核对象的句柄标志，HANDLE_FLAG_INHERIT、HANDLE_FLAG_PROTECT_FROM_CLOSE,可通过GetHandleInformation判定指定句柄当前标志的设置值</li>
+<li>命名对象实现共享内核对象（全局命名对象Gloabl\需要管理员权限），微软没有为内核对象命名提供规范很有可能重命名导致程序异常，建议创建一个GUID，并将GUID的字符串表达式用作对象名。</li>
+<li>终端服务器的名字空间，在vista后服务和用户程序在不同session运行 所以要与用户程序交互必须要全局命名空间 ProcessIdToSessionId</li>
+<li>专有命名空间</li>
+<li>使用DuplicateHandle实现内核对象共享,调用DuplicateHandle函数。比如一个进程拥有对另一个进程想要访问的对象的访问权，或者一个进程想要将内核对象的访问权赋予另一个进程。例如，ProcessS拥有对一个内核对象的访问权，并且想要让Process T能够访问该对象。<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">BOOL WINAPI <span class="title">DuplicateHandle</span><span class="params">(</span><br><span class="line">  _In_  HANDLE   hSourceProcessHandle,</span><br><span class="line">  _In_  HANDLE   hSourceHandle,</span><br><span class="line">  _In_  HANDLE   hTargetProcessHandle,</span><br><span class="line">  _Out_ LPHANDLE lpTargetHandle,</span><br><span class="line">  _In_  DWORD    dwDesiredAccess,</span><br><span class="line">  _In_  BOOL     bInheritHandle,</span><br><span class="line">  _In_  DWORD    dwOptions</span><br><span class="line">)</span></span>;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+
+      
+    </div>
+    <footer>
+      
+
+        
+          <div class="alignleft post-nav">
+            <em>上一篇: </em><a href="/2015/10/16/Read-Notes/Read-Notes-Windows-Via-C-C-2/">Windows核心编程读书笔记2（第4章 进程）</a>
+          </div>
+        
+        
+          <div class="alignright post-nav">
+            <em>下一篇: </em><a href="/2015/10/11/Life/Scheduled-Tasks-About-Reading/">读书计划</a>
+          </div>
+          <div class="clearfix"></div>
+        
+
+        
+          <div class="copyright">
+            
+              <span class="claim">转载请注明youngroe.com</span>
+            
+            
+              <span class="from-link">
+                <em>本文链接地址:</em>
+                <a href="/2015/10/11/Read-Notes/Read-Notes-Windows-Via-C-C-1/">
+                  http://www.youngroe.com/2015/10/11/Read-Notes/Read-Notes-Windows-Via-C-C-1/
+                </a>
+              </span>
+            
+          </div>
+        
+		<span id="busuanzi_container_site_pv">
+    本站总访问量<span id="busuanzi_value_site_pv"></span>次
+        
+  
+  <div class="categories">
+    <a href="/categories/Read-Notes/">Read Notes</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/Windows核心编程/">Windows核心编程</a>
+  </div>
+
+        <div class="bdsharebuttonbox"><a href="#" class="bds_more" data-cmd="more"></a><a href="#" class="bds_qzone" data-cmd="qzone"></a><a href="#" class="bds_tsina" data-cmd="tsina"></a><a href="#" class="bds_tqq" data-cmd="tqq"></a><a href="#" class="bds_renren" data-cmd="renren"></a><a href="#" class="bds_weixin" data-cmd="weixin"></a></div>
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdPic":"","bdStyle":"0","bdSize":"16"},"share":{},"image":{"viewList":["qzone","tsina","tqq","renren","weixin"],"viewText":"������","viewSize":"16"},"selectShare":{"bdContainerClass":null,"bdSelectMiniList":["qzone","tsina","tqq","renren","weixin"]}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</span>
+</article>
+
+
+<section id="comment">
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+<div class="widget tag">
+  <h3 class="title">分类</h3>
+  <ul class="entry">
+  
+    <li><a href="/categories/Cybersecurity/">Cybersecurity</a><small>1</small></li>
+  
+    <li><a href="/categories/Debug/">Debug</a><small>7</small></li>
+  
+    <li><a href="/categories/Kernel/">Kernel</a><small>4</small></li>
+  
+    <li><a href="/categories/Learning/">Learning</a><small>8</small></li>
+  
+    <li><a href="/categories/Life/">Life</a><small>7</small></li>
+  
+    <li><a href="/categories/Others/">Others</a><small>1</small></li>
+  
+    <li><a href="/categories/Read-Notes/">Read Notes</a><small>7</small></li>
+  
+    <li><a href="/categories/Tools/">Tools</a><small>6</small></li>
+  
+    <li><a href="/categories/Vulnerabilities/">Vulnerabilities</a><small>0</small></li>
+  
+    <li><a href="/categories/Windows/">Windows</a><small>14</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2019/07/01/Windows/delphi_reverse_summary/">Delphi程序逆向反汇编技巧小记</a>
+      </li>
+    
+      <li>
+        <a href="/2019/06/25/Kernel/kernel_enum_wfp_callout_function/">Windows内核重拾：如何枚举系统中Windows Filtering Platform (WFP)驱动中的callout函数</a>
+      </li>
+    
+      <li>
+        <a href="/2019/05/06/Kernel/windows-driver-testing-basics/">Windows内核重拾：Windows驱动测试基础：工具、功能和示例（翻译/转载）</a>
+      </li>
+    
+      <li>
+        <a href="/2019/04/06/Windows/how-to-reverse-engineer-software-windows-in-a-right-way/">如何正确的对Windows软件进行逆向工程（翻译/转载）</a>
+      </li>
+    
+      <li>
+        <a href="/2019/01/12/Windows/a_crash_lead_deadlock/">Windows平台下一个崩溃而导致的死锁分析</a>
+      </li>
+    
+      <li>
+        <a href="/2018/12/01/Windows/windows_client_dns_over_https/">Windows客户端如何透明使用DNS-over-HTTPS</a>
+      </li>
+    
+      <li>
+        <a href="/2018/10/06/Cybersecurity/ddos-protection-techniques/">现代DDoS对抗技术概述（翻译/转载）</a>
+      </li>
+    
+      <li>
+        <a href="/2018/09/18/Life/xian/">西安周末游</a>
+      </li>
+    
+      <li>
+        <a href="/2018/01/06/Kernel/WindowsKernel_DebugObject/">Windows内核重拾：DebugObject</a>
+      </li>
+    
+      <li>
+        <a href="/2017/10/23/Tools/IDA-Pro-ClassInformer-Tutorial/">IDA Pro ClassInformer使用指南（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2017/05/23/Windows/Kernel Data and Filtering Support/">Kernel Data and Filtering Support for Windows Server 2008（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2017/05/17/Windows/Windows-x64-Shellcode/">Windows x64 Shellcode编写指南(翻译)</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget tagcloud">
+  <h3 class="title">标签云</h3>
+  <div class="entry">
+    <a href="/tags/ASM/" style="font-size: 12.5px;">ASM</a> <a href="/tags/Boost/" style="font-size: 10px;">Boost</a> <a href="/tags/DDoS/" style="font-size: 10px;">DDoS</a> <a href="/tags/DNS-over-HTTPS/" style="font-size: 10px;">DNS-over-HTTPS</a> <a href="/tags/Delphi/" style="font-size: 10px;">Delphi</a> <a href="/tags/Dll劫持/" style="font-size: 10px;">Dll劫持</a> <a href="/tags/GCC-GDB/" style="font-size: 10px;">GCC&GDB</a> <a href="/tags/GetVersionEx/" style="font-size: 10px;">GetVersionEx</a> <a href="/tags/Http/" style="font-size: 10px;">Http</a> <a href="/tags/IDA-Pro/" style="font-size: 12.5px;">IDA Pro</a> <a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/MSDN/" style="font-size: 12.5px;">MSDN</a> <a href="/tags/Malware/" style="font-size: 12.5px;">Malware</a> <a href="/tags/MiniDumpWriteDump/" style="font-size: 10px;">MiniDumpWriteDump</a> <a href="/tags/PEB/" style="font-size: 10px;">PEB</a> <a href="/tags/Procmon/" style="font-size: 10px;">Procmon</a> <a href="/tags/Runtime-Error/" style="font-size: 10px;">Runtime Error</a> <a href="/tags/SEH/" style="font-size: 10px;">SEH</a> <a href="/tags/Shellcode/" style="font-size: 10px;">Shellcode</a> <a href="/tags/SysinternalsSuite/" style="font-size: 10px;">SysinternalsSuite</a> <a href="/tags/Tips/" style="font-size: 10px;">Tips</a> <a href="/tags/UAC/" style="font-size: 10px;">UAC</a> <a href="/tags/UAF漏洞/" style="font-size: 10px;">UAF漏洞</a> <a href="/tags/VC/" style="font-size: 10px;">VC</a> <a href="/tags/Visual-Studio/" style="font-size: 12.5px;">Visual Studio</a> <a href="/tags/Windbg/" style="font-size: 10px;">Windbg</a> <a href="/tags/Windows/" style="font-size: 20px;">Windows</a> <a href="/tags/Windows核心编程/" style="font-size: 17.5px;">Windows核心编程</a> <a href="/tags/android/" style="font-size: 10px;">android</a> <a href="/tags/getaddrinfo/" style="font-size: 10px;">getaddrinfo</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/libeay32/" style="font-size: 10px;">libeay32</a> <a href="/tags/markdown/" style="font-size: 10px;">markdown</a> <a href="/tags/ndk/" style="font-size: 10px;">ndk</a> <a href="/tags/sublime-text3/" style="font-size: 10px;">sublime text3</a> <a href="/tags/x64/" style="font-size: 12.5px;">x64</a> <a href="/tags/体验/" style="font-size: 10px;">体验</a> <a href="/tags/内核/" style="font-size: 12.5px;">内核</a> <a href="/tags/内核结构/" style="font-size: 15px;">内核结构</a> <a href="/tags/学习/" style="font-size: 10px;">学习</a> <a href="/tags/安全机制/" style="font-size: 10px;">安全机制</a> <a href="/tags/异常处理/" style="font-size: 10px;">异常处理</a> <a href="/tags/提权/" style="font-size: 10px;">提权</a> <a href="/tags/服务/" style="font-size: 10px;">服务</a> <a href="/tags/权限/" style="font-size: 12.5px;">权限</a> <a href="/tags/栈溢出漏洞/" style="font-size: 10px;">栈溢出漏洞</a> <a href="/tags/测试/" style="font-size: 10px;">测试</a> <a href="/tags/浮躁/" style="font-size: 10px;">浮躁</a> <a href="/tags/漏洞调试/" style="font-size: 12.5px;">漏洞调试</a> <a href="/tags/生活/" style="font-size: 15px;">生活</a> <a href="/tags/脱壳/" style="font-size: 10px;">脱壳</a> <a href="/tags/西安/" style="font-size: 10px;">西安</a> <a href="/tags/计划/" style="font-size: 10px;">计划</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a> <a href="/tags/调试/" style="font-size: 15px;">调试</a> <a href="/tags/转换/" style="font-size: 10px;">转换</a> <a href="/tags/进程/" style="font-size: 10px;">进程</a> <a href="/tags/逆向/" style="font-size: 10px;">逆向</a> <a href="/tags/重庆/" style="font-size: 10px;">重庆</a> <a href="/tags/驱动/" style="font-size: 15px;">驱动</a>
+  </div>
+</div>
+
+
+  <div class="widget tag">
+<h3 class="title">Links</h3>
+<ul class="entry">
+<li><a href="http://blog.ourren.com/" title="Ourren">Ourren</a></li>
+<li><a href="http://www.hyjal.net/" title="Hyjal">Hyjal</a></li>
+<li><a href="http://www.jianshu.com/users/fa15f4e416ae/latest_articles" title="Daemonceltics">Daemonceltics</a></li>
+<li><a href="http://papap.info/" title="isee">isee</a></li>
+</ul>
+</div>
+
+  <script type="text/javascript" id="clustrmaps" src="//cdn.clustrmaps.com/map_v2.js?u=putG&d=yoFnN6V-ovhL-H4e9_69LvkTiX4uX7rEYJ15yL3G1Wg"></script>
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <div id="go-pg-top"><i class="icon-arrow-up"></i></div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2020 Lyon
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript" charset="utf-8" src="/js/page.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,317 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Delphi程序逆向反汇编技巧小记 | Lyon&#39;s blog</title>
+  <meta name="author" content="Lyon">
+  
+  <meta name="description" content="Walk steps step by step">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="Delphi程序逆向反汇编技巧小记"/>
+  <meta property="og:site_name" content="Lyon&#39;s blog"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  #<link href="/favicon.ico" rel="icon">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="alternate" href="/atom.xml" title="Lyon&#39;s blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  <script src="/js/jquery.min.js"></script>
+  <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?0fe72895c9bcfd0d09da12b5378b1b91";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+</head>
+
+
+<body>
+  <!--[if lte IE 8]> <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'> <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0027_Simplified Chinese.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." style='margin-left:auto;margin-right:auto;display: block;'/></a></div> <![endif]-->
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">Lyon&#39;s blog</a></h1>
+  <h2><a href="/">I hear and I forget.I see and I remember.I do and I understand.</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">首页</a></li>
+    
+      <li><a href="/archives">归档</a></li>
+    
+      <li><a href="/about">关于</a></li>
+    
+	<li> <a href="/atom.xml">RSS</a> </li>
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <time datetime="2019-07-01T12:13:53.000Z"><a href="/2019/07/01/Windows/delphi_reverse_summary/">2019-07-01</a></time>
+      
+      
+  
+    <h1 class="title">Delphi程序逆向反汇编技巧小记</h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+  <div id="toc" class="toc-article">
+  <strong class="toc-title">文章目录</strong>
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x00_Delphi语言基础"><span class="toc-number">1.</span> <span class="toc-text">0x00 Delphi语言基础</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-Delphi语言概述"><span class="toc-number">1.1.</span> <span class="toc-text">1.Delphi语言概述</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x01_反汇编Delphi如何设置IDA_pro"><span class="toc-number">2.</span> <span class="toc-text">0x01 反汇编Delphi如何设置IDA pro</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x02_Delphi反汇编大杀器IDR"><span class="toc-number">3.</span> <span class="toc-text">0x02 Delphi反汇编大杀器IDR</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x03_简单总结"><span class="toc-number">4.</span> <span class="toc-text">0x03 简单总结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x04_参考链接"><span class="toc-number">5.</span> <span class="toc-text">0x04 参考链接</span></a></li></ol>
+  </div>
+
+
+	
+    <div class="entry">
+      
+        <h2 id="0x00_Delphi语言基础">0x00 Delphi语言基础</h2><h3 id="1-Delphi语言概述">1.Delphi语言概述</h3><p>Delphi本身并非一种独立的语言，而是一种软件开发工具，是Object Pascal语言的一种开发工具。本身是大名鼎鼎的Borland公司开发的一种开发环境，包含IDE、图形界面库Visual Component Library(VCL)及数据库相关功能。其图像界面库VCL类似MFC，使用PME（Property/Method/Event）的开发模式。<br><a id="more"></a><br>VCL采用特有的RCDATA资源格式，RCDATA中包含有Delphi窗口（Forms）信息，当程序运行时通过初始化代码建立窗口，从RCDATA中获取所需要的信息。RCDATA信息可以通过PE Explorer等PE编辑器查看。</p>
+<div align="center"><br><img src="/img/Delphi RCDATA.jpg" alt="Delphi窗口Form信息" align="center"><br></div><br>Delphi版本较多，不同版本有一些差异，目前已经发布的版本包括1-7, 2005, 2006, 2007, 2009, 2010, XE-XE8、10、10.1、10.2、10.3。Delphi的API查询可以通过参考链接2进行查询。<br><br>### 2.Delphi二进制特点<br>可以通过exeinfo/Detect It Easy等工具判断PE文件是否为Delphi开发及确定具体的Delphi版本信息，确定具体的版本信息有助于后续反汇编工具的设置，使工具反汇编出可读性更高的汇编代码。<br>Delphi常用的字符串的内存布局不同于C/C++的char*或则string对象，Delphi使用的字符串都是Pascal的字符串，在原始字符串前面存放的是字符串的长度<br><figure class="highlight axapta"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">uint32_t len;</span><br><span class="line"><span class="keyword">char</span>    <span class="keyword">str</span>[];</span><br></pre></td></tr></table></figure><br><br><div align="center"><br><img src="/img/Delphi Str.jpg" alt="Delphi字符串内存布局" align="center"><br></div>
+
+<p>Delphi遵循_fastcall调用约定，但是与Windows的_fastcall略有不同，参数顺序为eax为第一个参数、edx为第二个参数、ecx为第三个参数，大于3个的参数通过堆栈传递，大于三个的堆栈顺序从左到右依次压栈，堆栈由被调用者恢复。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Add(<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>);</span><br><span class="line"><span class="number">00451F</span>91   <span class="number">6</span>A04                   push    $<span class="number">04</span></span><br><span class="line"><span class="number">00451F</span>93   <span class="number">6</span>A05                   push    $<span class="number">05</span></span><br><span class="line"><span class="number">00451F</span>95   B903000000             mov     ecx, $<span class="number">00000003</span></span><br><span class="line"><span class="number">00451F</span>9A   BA02000000             mov     edx, $<span class="number">00000002</span></span><br><span class="line"><span class="number">00451F</span>9F   B801000000             mov     eax, $<span class="number">00000001</span></span><br><span class="line"><span class="number">00451F</span>A4   E8C7FFFFFF             call    <span class="number">00451F</span>70</span><br></pre></td></tr></table></figure></p>
+<p>Delphi的按钮事件地址是通过按钮名字和地址绑定的，具体为一个按钮名称对应一个按钮事件响应函数地址。而按钮名称可以在Delphi的RCDATA资源中找到，具体为通过PE Explorer打开资源RC数据，找到相应界面的Form，找到按钮名称的字符串值。</p>
+<div align="center"><br><img src="/img/Delphi Button.jpg" alt="Delphi Form中的按钮信息" align="center"><br></div><br>这里为”Button1Click”，然后再IDA或则16进制编辑器中搜索该字符串，应该可以找到两个Button1Click字符串。其中一个是资源本身，另一个是事件地址和事件响应函数地址表，其中上面是地址下面是名称，Button1Click的地址表如下：<br><div align="center"><br><img src="/img/Delphi Button Func.jpg" alt="Delphi Form中的按钮信息" align="center"><br></div>
+
+<h2 id="0x01_反汇编Delphi如何设置IDA_pro">0x01 反汇编Delphi如何设置IDA pro</h2><p>在使用ida进行反汇编时，大多数情况我们都会使用ida默认设置进行的反编译，在具体到某个函数时会对反汇编的字符串、语言、函数调用约定等进行一些小的调整。对一般程序这种设置反汇编效果都还不错，但是对Delphi程序这样反汇编出来的代码可读性很差，具体表现是函数的调用约定可能识别错误，字符串信息也不能自动识别。这时我们可以通过手动设置ida的反汇编选项对反汇编效果进行调节，具体如下：</p>
+<ul>
+<li>Load a new file,取消勾选的Analysis下的两个自动分析选项</li>
+<li>Options–&gt;Compiler:Compiler（Delphi）、Calling convention(FastCall)</li>
+<li>Options–&gt;General–&gt;String:Default string literal type(Pascal/Pascal16)</li>
+<li>View–&gt;View–&gt;Open Subviews–&gt;Type libraries, remove the defaults</li>
+<li>View–&gt;Open Subviews–&gt;Signatures–&gt;Apply new Signatures:选择delphi相关Signatures</li>
+<li>Edit–&gt;Select all,在IDA View区域右键Analyze selected area</li>
+</ul>
+<p>经过这样一番设置后，IDA反汇编出来的效果比默认设置会好很多，但是IDA毕竟是一个通用反汇编工具，对Delphi程序的效果只能说差强人意，对delphi的一些库函数识别有限，并且对RCDATA的资源也未做特定解析，但是好在有另外一个神器，能大大优化IDA的不足，它就是IDR。</p>
+<h2 id="0x02_Delphi反汇编大杀器IDR">0x02 Delphi反汇编大杀器IDR</h2><p><div align="center"><br><img src="/img/Delphi IDR.jpg" alt="IDR窗口" align="center"><br></div><br>IDR全称为Interactive Delphi Reconstructor，从名字上我们就可以知道这是一款专门针对Delphi的反汇编工具，工具下载地址可以参考参考链接3、4，主要模块包括:</p>
+<ul>
+<li>Idr.exe，IDR主功能模块</li>
+<li>dis.dll 反汇编模块</li>
+<li>*.bin  类似IDA的sig文件，用于识别Delphi的库函数</li>
+</ul>
+<p>IDR相对于IDA的优势如下：</p>
+<ul>
+<li>得益于多个版本的符号bin文件，IDR能够识别大部分Delphi库函数，比IDA的识别率高很多</li>
+<li>默认设置直接解析delphi程序的字符串信息，在IDR Strings可以查看和搜索这些字符串</li>
+<li>可视化查看delphi的RCDATA信息Form界面信息，并且能够直接获得按钮等元素的响应函数地址</li>
+<li>ClassViewer窗口可直接查看部分类及函数名称，猜测这部分函数为RCDATA中声明的函数或则类似C++的RTTI信息</li>
+</ul>
+<p>虽然IDR针对Delphi程序的反汇编有这么多优势，但是相对于IDA还是缺少一些反汇编的高级功能，如图形化展示反汇编函数图、F5功能等。但好在IDR提供了导出功能，可以导出map、idc文件供IDA使用，这样就可以结合两个工具的优势分析Delphi程序，这样简直得心应手啊。</p>
+<h2 id="0x03_简单总结">0x03 简单总结</h2><p>当分析一种新的语言或则类库开发的程序的时候，还是可以通过搜索或则询问学习一些该语言的基础知识，如字符串内存布局、默认调用约定等，这样在逆向分析时候可以大大增加我们的效率，减少体力活。<br>同时在学习到一些基础知识后，我们也能更好的使用所用的工具，不要迷信自动分析，必要时通过手动设置一些选项也能大大增加我们逆向分析的效率。</p>
+<h2 id="0x04_参考链接">0x04 参考链接</h2><p><a href="https://zh.wikipedia.org/wiki/Delphi" target="_blank" rel="external">1.Delphi维基百科</a><br><a href="http://docwiki.embarcadero.com/Libraries/Tokyo/en/Main_Page" target="_blank" rel="external">2.Delphi语言的MSDN</a><br><a href="https://github.com/crypto2011/IDR" target="_blank" rel="external">3.IDR github</a><br><a href="https://www.52pojie.cn/thread-367796-1-1.html" target="_blank" rel="external">4.IDR下载地址</a><br><a href="https://forum.exetools.com/showthread.php?p=117450&amp;nojs=1" target="_blank" rel="external">5.Reverse engineering Delphi executables?</a><br><a href="https://reverseengineering.stackexchange.com/questions/2873/which-ida-pro-signature-should-be-used-for-borland-delphi-6-0-7-0-binaries-as-re" target="_blank" rel="external">6.which-ida-pro-signature-should-be-used-for-borland-delphi-6-0-7-0-binaries-as-re</a></p>
+
+      
+    </div>
+    <footer>
+      
+
+        
+        
+          <div class="alignright post-nav">
+            <em>下一篇: </em><a href="/2019/06/25/Kernel/kernel_enum_wfp_callout_function/">Windows内核重拾：如何枚举系统中Windows Filtering Platform (WFP)驱动中的callout函数</a>
+          </div>
+          <div class="clearfix"></div>
+        
+
+        
+          <div class="copyright">
+            
+              <span class="claim">转载请注明youngroe.com</span>
+            
+            
+              <span class="from-link">
+                <em>本文链接地址:</em>
+                <a href="/2019/07/01/Windows/delphi_reverse_summary/">
+                  http://www.youngroe.com/2019/07/01/Windows/delphi_reverse_summary/
+                </a>
+              </span>
+            
+          </div>
+        
+		<span id="busuanzi_container_site_pv">
+    本站总访问量<span id="busuanzi_value_site_pv"></span>次
+        
+  
+  <div class="categories">
+    <a href="/categories/Windows/">Windows</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/Delphi/">Delphi</a>
+  </div>
+
+        <div class="bdsharebuttonbox"><a href="#" class="bds_more" data-cmd="more"></a><a href="#" class="bds_qzone" data-cmd="qzone"></a><a href="#" class="bds_tsina" data-cmd="tsina"></a><a href="#" class="bds_tqq" data-cmd="tqq"></a><a href="#" class="bds_renren" data-cmd="renren"></a><a href="#" class="bds_weixin" data-cmd="weixin"></a></div>
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdPic":"","bdStyle":"0","bdSize":"16"},"share":{},"image":{"viewList":["qzone","tsina","tqq","renren","weixin"],"viewText":"������","viewSize":"16"},"selectShare":{"bdContainerClass":null,"bdSelectMiniList":["qzone","tsina","tqq","renren","weixin"]}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</span>
+</article>
+
+
+<section id="comment">
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+<div class="widget tag">
+  <h3 class="title">分类</h3>
+  <ul class="entry">
+  
+    <li><a href="/categories/Cybersecurity/">Cybersecurity</a><small>1</small></li>
+  
+    <li><a href="/categories/Debug/">Debug</a><small>7</small></li>
+  
+    <li><a href="/categories/Kernel/">Kernel</a><small>4</small></li>
+  
+    <li><a href="/categories/Learning/">Learning</a><small>8</small></li>
+  
+    <li><a href="/categories/Life/">Life</a><small>7</small></li>
+  
+    <li><a href="/categories/Others/">Others</a><small>1</small></li>
+  
+    <li><a href="/categories/Read-Notes/">Read Notes</a><small>7</small></li>
+  
+    <li><a href="/categories/Tools/">Tools</a><small>6</small></li>
+  
+    <li><a href="/categories/Vulnerabilities/">Vulnerabilities</a><small>0</small></li>
+  
+    <li><a href="/categories/Windows/">Windows</a><small>14</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2019/07/01/Windows/delphi_reverse_summary/">Delphi程序逆向反汇编技巧小记</a>
+      </li>
+    
+      <li>
+        <a href="/2019/06/25/Kernel/kernel_enum_wfp_callout_function/">Windows内核重拾：如何枚举系统中Windows Filtering Platform (WFP)驱动中的callout函数</a>
+      </li>
+    
+      <li>
+        <a href="/2019/05/06/Kernel/windows-driver-testing-basics/">Windows内核重拾：Windows驱动测试基础：工具、功能和示例（翻译/转载）</a>
+      </li>
+    
+      <li>
+        <a href="/2019/04/06/Windows/how-to-reverse-engineer-software-windows-in-a-right-way/">如何正确的对Windows软件进行逆向工程（翻译/转载）</a>
+      </li>
+    
+      <li>
+        <a href="/2019/01/12/Windows/a_crash_lead_deadlock/">Windows平台下一个崩溃而导致的死锁分析</a>
+      </li>
+    
+      <li>
+        <a href="/2018/12/01/Windows/windows_client_dns_over_https/">Windows客户端如何透明使用DNS-over-HTTPS</a>
+      </li>
+    
+      <li>
+        <a href="/2018/10/06/Cybersecurity/ddos-protection-techniques/">现代DDoS对抗技术概述（翻译/转载）</a>
+      </li>
+    
+      <li>
+        <a href="/2018/09/18/Life/xian/">西安周末游</a>
+      </li>
+    
+      <li>
+        <a href="/2018/01/06/Kernel/WindowsKernel_DebugObject/">Windows内核重拾：DebugObject</a>
+      </li>
+    
+      <li>
+        <a href="/2017/10/23/Tools/IDA-Pro-ClassInformer-Tutorial/">IDA Pro ClassInformer使用指南（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2017/05/23/Windows/Kernel Data and Filtering Support/">Kernel Data and Filtering Support for Windows Server 2008（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2017/05/17/Windows/Windows-x64-Shellcode/">Windows x64 Shellcode编写指南(翻译)</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget tagcloud">
+  <h3 class="title">标签云</h3>
+  <div class="entry">
+    <a href="/tags/ASM/" style="font-size: 12.5px;">ASM</a> <a href="/tags/Boost/" style="font-size: 10px;">Boost</a> <a href="/tags/DDoS/" style="font-size: 10px;">DDoS</a> <a href="/tags/DNS-over-HTTPS/" style="font-size: 10px;">DNS-over-HTTPS</a> <a href="/tags/Delphi/" style="font-size: 10px;">Delphi</a> <a href="/tags/Dll劫持/" style="font-size: 10px;">Dll劫持</a> <a href="/tags/GCC-GDB/" style="font-size: 10px;">GCC&GDB</a> <a href="/tags/GetVersionEx/" style="font-size: 10px;">GetVersionEx</a> <a href="/tags/Http/" style="font-size: 10px;">Http</a> <a href="/tags/IDA-Pro/" style="font-size: 12.5px;">IDA Pro</a> <a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/MSDN/" style="font-size: 12.5px;">MSDN</a> <a href="/tags/Malware/" style="font-size: 12.5px;">Malware</a> <a href="/tags/MiniDumpWriteDump/" style="font-size: 10px;">MiniDumpWriteDump</a> <a href="/tags/PEB/" style="font-size: 10px;">PEB</a> <a href="/tags/Procmon/" style="font-size: 10px;">Procmon</a> <a href="/tags/Runtime-Error/" style="font-size: 10px;">Runtime Error</a> <a href="/tags/SEH/" style="font-size: 10px;">SEH</a> <a href="/tags/Shellcode/" style="font-size: 10px;">Shellcode</a> <a href="/tags/SysinternalsSuite/" style="font-size: 10px;">SysinternalsSuite</a> <a href="/tags/Tips/" style="font-size: 10px;">Tips</a> <a href="/tags/UAC/" style="font-size: 10px;">UAC</a> <a href="/tags/UAF漏洞/" style="font-size: 10px;">UAF漏洞</a> <a href="/tags/VC/" style="font-size: 10px;">VC</a> <a href="/tags/Visual-Studio/" style="font-size: 12.5px;">Visual Studio</a> <a href="/tags/Windbg/" style="font-size: 10px;">Windbg</a> <a href="/tags/Windows/" style="font-size: 20px;">Windows</a> <a href="/tags/Windows核心编程/" style="font-size: 17.5px;">Windows核心编程</a> <a href="/tags/android/" style="font-size: 10px;">android</a> <a href="/tags/getaddrinfo/" style="font-size: 10px;">getaddrinfo</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/libeay32/" style="font-size: 10px;">libeay32</a> <a href="/tags/markdown/" style="font-size: 10px;">markdown</a> <a href="/tags/ndk/" style="font-size: 10px;">ndk</a> <a href="/tags/sublime-text3/" style="font-size: 10px;">sublime text3</a> <a href="/tags/x64/" style="font-size: 12.5px;">x64</a> <a href="/tags/体验/" style="font-size: 10px;">体验</a> <a href="/tags/内核/" style="font-size: 12.5px;">内核</a> <a href="/tags/内核结构/" style="font-size: 15px;">内核结构</a> <a href="/tags/学习/" style="font-size: 10px;">学习</a> <a href="/tags/安全机制/" style="font-size: 10px;">安全机制</a> <a href="/tags/异常处理/" style="font-size: 10px;">异常处理</a> <a href="/tags/提权/" style="font-size: 10px;">提权</a> <a href="/tags/服务/" style="font-size: 10px;">服务</a> <a href="/tags/权限/" style="font-size: 12.5px;">权限</a> <a href="/tags/栈溢出漏洞/" style="font-size: 10px;">栈溢出漏洞</a> <a href="/tags/测试/" style="font-size: 10px;">测试</a> <a href="/tags/浮躁/" style="font-size: 10px;">浮躁</a> <a href="/tags/漏洞调试/" style="font-size: 12.5px;">漏洞调试</a> <a href="/tags/生活/" style="font-size: 15px;">生活</a> <a href="/tags/脱壳/" style="font-size: 10px;">脱壳</a> <a href="/tags/西安/" style="font-size: 10px;">西安</a> <a href="/tags/计划/" style="font-size: 10px;">计划</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a> <a href="/tags/调试/" style="font-size: 15px;">调试</a> <a href="/tags/转换/" style="font-size: 10px;">转换</a> <a href="/tags/进程/" style="font-size: 10px;">进程</a> <a href="/tags/逆向/" style="font-size: 10px;">逆向</a> <a href="/tags/重庆/" style="font-size: 10px;">重庆</a> <a href="/tags/驱动/" style="font-size: 15px;">驱动</a>
+  </div>
+</div>
+
+
+  <div class="widget tag">
+<h3 class="title">Links</h3>
+<ul class="entry">
+<li><a href="http://blog.ourren.com/" title="Ourren">Ourren</a></li>
+<li><a href="http://www.hyjal.net/" title="Hyjal">Hyjal</a></li>
+<li><a href="http://www.jianshu.com/users/fa15f4e416ae/latest_articles" title="Daemonceltics">Daemonceltics</a></li>
+<li><a href="http://papap.info/" title="isee">isee</a></li>
+</ul>
+</div>
+
+  <script type="text/javascript" id="clustrmaps" src="//cdn.clustrmaps.com/map_v2.js?u=putG&d=yoFnN6V-ovhL-H4e9_69LvkTiX4uX7rEYJ15yL3G1Wg"></script>
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <div id="go-pg-top"><i class="icon-arrow-up"></i></div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2020 Lyon
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript" charset="utf-8" src="/js/page.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,349 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>现代DDoS对抗技术概述（翻译/转载） | Lyon&#39;s blog</title>
+  <meta name="author" content="Lyon">
+  
+  <meta name="description" content="Walk steps step by step">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="现代DDoS对抗技术概述（翻译/转载）"/>
+  <meta property="og:site_name" content="Lyon&#39;s blog"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  #<link href="/favicon.ico" rel="icon">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="alternate" href="/atom.xml" title="Lyon&#39;s blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  <script src="/js/jquery.min.js"></script>
+  <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?0fe72895c9bcfd0d09da12b5378b1b91";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+</head>
+
+
+<body>
+  <!--[if lte IE 8]> <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'> <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0027_Simplified Chinese.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." style='margin-left:auto;margin-right:auto;display: block;'/></a></div> <![endif]-->
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">Lyon&#39;s blog</a></h1>
+  <h2><a href="/">I hear and I forget.I see and I remember.I do and I understand.</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">首页</a></li>
+    
+      <li><a href="/archives">归档</a></li>
+    
+      <li><a href="/about">关于</a></li>
+    
+	<li> <a href="/atom.xml">RSS</a> </li>
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <time datetime="2018-10-06T04:45:15.000Z"><a href="/2018/10/06/Cybersecurity/ddos-protection-techniques/">2018-10-06</a></time>
+      
+      
+  
+    <h1 class="title">现代DDoS对抗技术概述（翻译/转载）</h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+  <div id="toc" class="toc-article">
+  <strong class="toc-title">文章目录</strong>
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x00_前言"><span class="toc-number">1.</span> <span class="toc-text">0x00 前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x01_DDoS攻击的类型和方法"><span class="toc-number">2.</span> <span class="toc-text">0x01 DDoS攻击的类型和方法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Volumetric_attacks(大流量攻击)"><span class="toc-number">2.1.</span> <span class="toc-text">Volumetric attacks(大流量攻击)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Protocol_attacks（协议攻击）"><span class="toc-number">2.2.</span> <span class="toc-text">Protocol attacks（协议攻击）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Application_attacks（应用层攻击）"><span class="toc-number">2.3.</span> <span class="toc-text">Application attacks（应用层攻击）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Zero-day_DDoS_attacks"><span class="toc-number">2.4.</span> <span class="toc-text">Zero-day DDoS attacks</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x02_检测DDoS攻击"><span class="toc-number">3.</span> <span class="toc-text">0x02 检测DDoS攻击</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x03_如何实现一个有效的DDoS对抗方案"><span class="toc-number">4.</span> <span class="toc-text">0x03 如何实现一个有效的DDoS对抗方案</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#阻止DDoS攻击"><span class="toc-number">4.1.</span> <span class="toc-text">阻止DDoS攻击</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x04_保护Web应用免受DDoS攻击的最佳实践"><span class="toc-number">5.</span> <span class="toc-text">0x04 保护Web应用免受DDoS攻击的最佳实践</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x05_结论"><span class="toc-number">6.</span> <span class="toc-text">0x05 结论</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x06_关于DDoS攻击的其他资料"><span class="toc-number">7.</span> <span class="toc-text">0x06 关于DDoS攻击的其他资料</span></a></li></ol>
+  </div>
+
+
+	
+    <div class="entry">
+      
+        <h2 id="0x00_前言">0x00 前言</h2><p>想象一下有人不停的给你打电话，并且你没办法通过加黑名单的方式阻止他，因为他每次都使用了不同的电话号码。你可能会关掉电话，但是这样其他人也不能联系你了，常见的分布式拒绝服务攻击就和这种情况类似。<br>早在乔布斯推出第一部IPhone之前，<a href="https://en.wikipedia.org/wiki/Denial-of-service_attack" target="_blank" rel="external">DDos攻击</a>就已经出现了。因为DDos攻击攻击效果好、易于使用，并且很难追踪，现在依然非常受黑客喜欢。那么我们如何能够防御DDoS攻击呢？在DDOS攻击面前，你能确保为你的web服务器及应用提供高水平的防护么？在本文中我们将讨论如何防止DDoS攻击并介绍一些实践有效的DDoS保护和防御技术。<br><a id="more"></a></p>
+<h2 id="0x01_DDoS攻击的类型和方法">0x01 DDoS攻击的类型和方法</h2><p>分布式拒绝服务攻击，简称DDoS是一种旨在使受害者的资源无法使用的协同攻击技术。它可以由一个团队黑客合作发起攻击，也可以由多个连接到互联网上的受害设备发起。这些受攻击者控制的设备通常也被称为僵尸网络。<br>很多工具都可以发起DDoS攻击，Trinoo, Stacheldraht, Shaft, Knight, Mstream等。有这么多易用的工具也是DDoS攻击如此流行的原因之一。</p>
+<p><div align="center"><br><img src="/img/DDoS-quote-1.jpg" alt align="center"><br></div><br>一次DDoS攻击可能会持续几分钟到几个小时甚至几天。<a href="https://securelist.com/ddos-report-in-q1-2018/85373/" target="_blank" rel="external">卡巴斯基的报告显示</a>,最近几年持续最长的一次DDos攻击发生在2018年1月，总共持续了近300小时。<br>发起DDoS攻击有两种常见的方法：</p>
+<ul>
+<li><strong>利用软件漏洞</strong>:黑客可以对有已知或未知的漏洞的软件发送恶意数据包试图使受害者的系统瘫痪。</li>
+<li><strong>消耗受害者主机资源或则网络带宽资源</strong>：黑客可以发送大量看起来合法的数据包，从而消耗受害者的网络带宽、CPU或内存直至受害系统无法正常处理合法用户的请求。</li>
+</ul>
+<p>尽管没有DDoS的标准分类，但是我们可以将他们分为四大类：</p>
+<ul>
+<li>Volumetric (volume-based)攻击</li>
+<li>Protocol attacks</li>
+<li>Application attacks</li>
+<li>Zero-day attacks<br><div align="center"><br><img src="/img/DDoS-scheme.jpg" alt="DDos攻击常见分类" align="center"><br></div><br>现在我们具体看看每种类型的攻击。</li>
+</ul>
+<h3 id="Volumetric_attacks(大流量攻击)">Volumetric attacks(大流量攻击)</h3><p>Volumetric attacks试图通过大量的数据量大的网络数据包阻止系统正常的网络访问，通常借助僵尸网络及流量放大技术发起攻击，最常见的Volumetric attacks如下：</p>
+<ul>
+<li>UDP flood：黑客伪造UDP数据包中的源地址为受害主机发送到大量主机随机端口，这些主机会生成大量的应答包返回给受害主机。</li>
+<li>ICMP flood：黑客通过大量的ICMP数据包或则ping，试图耗尽受害服务器的带宽。<br>在2018年，<a href="https://www.netscout.com/news/blog/security-17tbps-ddos-attack-makes-history" target="_blank" rel="external">Netscout</a>报告了迄今为止流量最大的一次DDoS攻击，一家美国服务提供商面临1.7 Tbps规模的reflection/amplification攻击。</li>
+</ul>
+<h3 id="Protocol_attacks（协议攻击）">Protocol attacks（协议攻击）</h3><p>根据Versign发布的2018年第一季度<a href="https://blog.verisign.com/security/q1-2018-ddos-trends-report-58-percent-of-attacks-employed-multiple-attack-types/" target="_blank" rel="external">DDoS攻击趋势报告</a>，Protocol attacks是通过利用网络协议工作机制弱点进行攻击的一种方式，是第二常见的DDoS攻击方式。常见的Protocol attacks攻击方式如下：</p>
+<ul>
+<li>SYN flood:黑客利用TCP协议三次握手协议缺陷。客户端发送SYN包给服务端，收到服务端的SYN-ACK包后，不发送ACK包给服务端。这样受害服务器上会留下大量未完成的SYN-ACK请求，从而使得受害服务器资源耗尽（CPU 满负载或内存不足），最终停止服务。</li>
+<li>Ping of death:黑客通过ping命令发送超大的网络数据包导致受害主机系统服务中断或则崩溃。<br>SYN flood攻击是<a href="https://www.scmagazine.com/online-gambling-site-hit-by-five-vector-ddos-attack-peaking-at-100gbps/article/538551/" target="_blank" rel="external">2014年用于摧毁在线赌博网站最常使用的5种攻击向量之一</a>。</li>
+</ul>
+<h3 id="Application_attacks（应用层攻击）">Application attacks（应用层攻击）</h3><p>Application attacks利用了网络协议栈第6、7层中的弱点，针对特定的应用而不是整个服务器进行攻击，他们常见的目标端口和服务是DNS和HTTP服务。最常见的Application attacks攻击如下：</p>
+<ul>
+<li>HTTP flood：攻击者使用僵尸网络发起标准的大流量的GET和POST请求，由于这些请求看起来是合法的流量，因此检测HTTP flood攻击将是一个巨大的考验。</li>
+<li>Slowloris:如名称一样，Slowloris攻击将使受害服务器响应异常缓慢。攻击者通过一定的时间间隔发送HTTP到受害服务器，服务器将一直等待这些请求这些不可能完的请求结束，最终这些不能完成的请求造成受害主机带宽耗尽，合法请求也不能正常到达。<br>2009年大选期间，高级黑客通过Slowloris关闭了伊朗政府网站。</li>
+</ul>
+<h3 id="Zero-day_DDoS_attacks">Zero-day DDoS attacks</h3><p>除了上面这些常见的攻击之外，还存在所谓的Zero-day DDoS attacks，黑客们利用未知的或则未修复的软件漏洞、不常见的攻击向量等完成攻击，因此这种攻击更难检测和防御。例如2016年，攻击者利用Lightweight Directory Access协议(LDAP) 发起了放大系数高达55倍的攻击。<br>下面我们谈谈如何检测DDoS攻击</p>
+<h2 id="0x02_检测DDoS攻击">0x02 检测DDoS攻击</h2><p>虽然无法完全阻止DDoS攻击，但是有一些有效的做法可以帮助您检测并阻止已经在进行的DDoS攻击。</p>
+<ul>
+<li><p>异常检测：基于统计的模型和机器学习算法（如神经网络、决策树、邻近算法）可以用来分析网络流量，将网络流量区分为正常流量和DDoS攻击。同时你也可以通过其他网络性能因素，如CPU使用率/带宽使用等情况发现异常。</p>
+</li>
+<li><p>Knowledge-based方法：使用signature analysis，state transition analysis，expert systems，description scripts及 self-organizing maps方法，可以通过将流量与已知攻击的特定模式进行比较来检测DDoS。</p>
+</li>
+<li><p>访问控制和防火墙规则：除了入口/出口流量过滤之外，访问控制列表（ACL）和防火墙规则可用于增强网络流量的可观察性。特别是，您可以分析ACL日志了解哪些流量通过了你的网络设备。您还可以配置Web应用程序防火墙，以根据特定的规则，签名和模式阻止可疑的流量。</p>
+</li>
+<li><p>入侵检测和报警系统：入侵防御系统（IPS）和入侵检测系统（IDS）也提高的流量的可观察性。尽管误报率很高，但是IPS和IDS警报可以作为异常和潜在恶意流量的早期指示。</p>
+</li>
+</ul>
+<p>尽早检测到正在进行的攻击可以帮助您减轻其后果。这样，你就可以采取适当的预防措施来防御DDoS攻击，使攻击者很难完全使你的服务器宕机。使用有效的反DDoS解决方案是这些措施之一。</p>
+<h2 id="0x03_如何实现一个有效的DDoS对抗方案">0x03 如何实现一个有效的DDoS对抗方案</h2><p>无论您是要创建自己的反DDoS解决方案，还是要为Web应用程序寻求商业化的DDoS攻击防护系统，请牢记下面几点要求：</p>
+<ul>
+<li>混合DDoS检测方法:基于签名和基于异常的检测方法的组合是检测不同类型的DDoS攻击的关键。</li>
+<li>防御网络栈中第3-4层及6-7层的攻击：如果你的防御方案可以检测并缓解所有三种主要的DDoS攻击，则是比较有效的：volumetric, application及protocol。</li>
+<li>有效的流量过滤：DDoS保护的最大难题之一是如何有效区分恶意请求和合法请求。很难创建有效的过滤规则，因为DDoS攻击所涉及的大多数请求看起来都是来自合法用户。如速率限制之类的流行方法通常会产生很多误报，影响合法用户访问你的服务和应用程序。</li>
+<li>SIEM集成:最重要的是您的反DDoS方案必须与SIEM系统很好地集成在一起，以便您可以收集有关攻击的信息，进行分析，然后使用它来改善DDoS防护方案，防止以后的同类攻击。<br>如果满足这些要求对您来说挑战太大，请考虑向专家寻求帮助。您需要一支经验丰富的开发人员团队，对网络安全，云服务和Web应用程序有深刻的了解，才能构建高质量的反DDoS解决方案。像这样的团队可能很难在内部组建团队，但是您始终可以寻求诸如Apriorit之类​​的第三方寻求帮助。<h3 id="阻止DDoS攻击">阻止DDoS攻击</h3><div align="center"><br><img src="/img/DDoS-img-quote-2.jpg" alt align="center"><br></div><br>即使您无法阻止DDoS攻击的发生，但也有能力使攻击者很难使你的应用或则服务宕机。这就是DDoS预防技术开始起作用的地方。您可以使用两种DDoS预防机制：常规防护机制和过滤技术。<br><strong>常规防护机制</strong>是一些常见的措施，可以帮助你的服务或则应用在面对DDoS攻击时更具灵活性，防护机制包括：</li>
+<li>使用防火墙：尽管防火墙无法保护您的应用或服务器免受复杂的DDoS攻击，但它们仍可以有效地处理简单的攻击。</li>
+<li>经常更新安全补丁：大多数攻击都针对特定的软件或硬件漏洞，因此，及时部署所有补丁程序可以帮助您降低遭受攻击的风险。</li>
+<li>关闭不必要的服务：黑客能攻击到的应用和服务越少越好。确保禁用所有不需要和未使用的服务和应用，以提高网络的安全性。<br><strong>过滤技术</strong>使用不同的方法来过滤流量并阻止潜在的危险请求。这些技术包括入口/出口过滤，基于历史的IP过滤和基于路由器的数据包过滤。</li>
+</ul>
+<h2 id="0x04_保护Web应用免受DDoS攻击的最佳实践">0x04 保护Web应用免受DDoS攻击的最佳实践</h2><p>除了特定的DDoS预防机制之外，还有几种实践可以帮助您确保对Web应用程序的附加DDoS保护：</p>
+<ul>
+<li>减少可能被攻击脆弱点个数：除非确实需要，否则不要公开您的应用和资源。这样，您可以减少攻击者可能针对的基础架构中的薄弱环节攻击的风险。您还可以禁止直接访问数据库服务器及基础架构的其他关键资源的操作。</li>
+<li>增加负载：考虑使用负载平衡器和CDN，通过均衡资源负载来减轻攻击的影响，以便即使在攻击过程中也可以保持服务可用状态。</li>
+<li>选择靠谱的云服务提供商：寻找具有DDoS缓解策略的可信赖的云服务提供商。确保他们的策略可确保检测和缓解基于protocol，基于Volume和基于application的攻击。例如，一些云提供商使用anycasting网络在具有相同IP地址的多台计算机之间分配大量请求，缓解负载。</li>
+<li>使用第三方DDoS缓解服务：考虑将Web应用程序的保护委托给第三方供应商。DDoS缓解服务甚至可以在恶意的流量到达受害者的网络之前就将其清除。您可以寻找一种基于DNS的服务，该服务将恶意流量重定向，或者寻找一种基于边界网关协议的解决方案来处理持续的攻击。</li>
+</ul>
+<h2 id="0x05_结论">0x05 结论</h2><p>黑客不断使用和改进DDoS攻击，以干扰某些服务、商业基础设施、大企业设置公共和非盈利组织的工作。攻击的主要目的是耗尽受害者的资源并因此使其提供的服务、应用程序或则网站崩溃。<br>虽然无法完全阻止DDoS攻击的发生，但是有一些有效的DDoS攻击保护技术和方法可以增强您的基础设施抵御DDoS攻击并减轻后果。</p>
+<h2 id="0x06_关于DDoS攻击的其他资料">0x06 关于DDoS攻击的其他资料</h2><p><a href="https://www.apriorit.com/dev-blog/559-ddos-protection-techniques" target="_blank" rel="external">原文Modern DDoS Protection Techniques: An Overview</a><br><a href="https://www.hi-linux.com/posts/50873.html" target="_blank" rel="external">浅谈 DDoS 攻击与防御</a><br><a href="https://zoumiaojiang.com/article/common-web-security/" target="_blank" rel="external">常见 Web 安全攻防总结</a></p>
+
+      
+    </div>
+    <footer>
+      
+
+        
+          <div class="alignleft post-nav">
+            <em>上一篇: </em><a href="/2018/12/01/Windows/windows_client_dns_over_https/">Windows客户端如何透明使用DNS-over-HTTPS</a>
+          </div>
+        
+        
+          <div class="alignright post-nav">
+            <em>下一篇: </em><a href="/2018/09/18/Life/xian/">西安周末游</a>
+          </div>
+          <div class="clearfix"></div>
+        
+
+        
+          <div class="copyright">
+            
+              <span class="claim">转载请注明youngroe.com</span>
+            
+            
+              <span class="from-link">
+                <em>本文链接地址:</em>
+                <a href="/2018/10/06/Cybersecurity/ddos-protection-techniques/">
+                  http://www.youngroe.com/2018/10/06/Cybersecurity/ddos-protection-techniques/
+                </a>
+              </span>
+            
+          </div>
+        
+		<span id="busuanzi_container_site_pv">
+    本站总访问量<span id="busuanzi_value_site_pv"></span>次
+        
+  
+  <div class="categories">
+    <a href="/categories/Cybersecurity/">Cybersecurity</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/DDoS/">DDoS</a>
+  </div>
+
+        <div class="bdsharebuttonbox"><a href="#" class="bds_more" data-cmd="more"></a><a href="#" class="bds_qzone" data-cmd="qzone"></a><a href="#" class="bds_tsina" data-cmd="tsina"></a><a href="#" class="bds_tqq" data-cmd="tqq"></a><a href="#" class="bds_renren" data-cmd="renren"></a><a href="#" class="bds_weixin" data-cmd="weixin"></a></div>
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdPic":"","bdStyle":"0","bdSize":"16"},"share":{},"image":{"viewList":["qzone","tsina","tqq","renren","weixin"],"viewText":"������","viewSize":"16"},"selectShare":{"bdContainerClass":null,"bdSelectMiniList":["qzone","tsina","tqq","renren","weixin"]}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</span>
+</article>
+
+
+<section id="comment">
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+<div class="widget tag">
+  <h3 class="title">分类</h3>
+  <ul class="entry">
+  
+    <li><a href="/categories/Cybersecurity/">Cybersecurity</a><small>1</small></li>
+  
+    <li><a href="/categories/Debug/">Debug</a><small>7</small></li>
+  
+    <li><a href="/categories/Kernel/">Kernel</a><small>4</small></li>
+  
+    <li><a href="/categories/Learning/">Learning</a><small>8</small></li>
+  
+    <li><a href="/categories/Life/">Life</a><small>7</small></li>
+  
+    <li><a href="/categories/Others/">Others</a><small>1</small></li>
+  
+    <li><a href="/categories/Read-Notes/">Read Notes</a><small>7</small></li>
+  
+    <li><a href="/categories/Tools/">Tools</a><small>6</small></li>
+  
+    <li><a href="/categories/Vulnerabilities/">Vulnerabilities</a><small>0</small></li>
+  
+    <li><a href="/categories/Windows/">Windows</a><small>14</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2019/07/01/Windows/delphi_reverse_summary/">Delphi程序逆向反汇编技巧小记</a>
+      </li>
+    
+      <li>
+        <a href="/2019/06/25/Kernel/kernel_enum_wfp_callout_function/">Windows内核重拾：如何枚举系统中Windows Filtering Platform (WFP)驱动中的callout函数</a>
+      </li>
+    
+      <li>
+        <a href="/2019/05/06/Kernel/windows-driver-testing-basics/">Windows内核重拾：Windows驱动测试基础：工具、功能和示例（翻译/转载）</a>
+      </li>
+    
+      <li>
+        <a href="/2019/04/06/Windows/how-to-reverse-engineer-software-windows-in-a-right-way/">如何正确的对Windows软件进行逆向工程（翻译/转载）</a>
+      </li>
+    
+      <li>
+        <a href="/2019/01/12/Windows/a_crash_lead_deadlock/">Windows平台下一个崩溃而导致的死锁分析</a>
+      </li>
+    
+      <li>
+        <a href="/2018/12/01/Windows/windows_client_dns_over_https/">Windows客户端如何透明使用DNS-over-HTTPS</a>
+      </li>
+    
+      <li>
+        <a href="/2018/10/06/Cybersecurity/ddos-protection-techniques/">现代DDoS对抗技术概述（翻译/转载）</a>
+      </li>
+    
+      <li>
+        <a href="/2018/09/18/Life/xian/">西安周末游</a>
+      </li>
+    
+      <li>
+        <a href="/2018/01/06/Kernel/WindowsKernel_DebugObject/">Windows内核重拾：DebugObject</a>
+      </li>
+    
+      <li>
+        <a href="/2017/10/23/Tools/IDA-Pro-ClassInformer-Tutorial/">IDA Pro ClassInformer使用指南（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2017/05/23/Windows/Kernel Data and Filtering Support/">Kernel Data and Filtering Support for Windows Server 2008（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2017/05/17/Windows/Windows-x64-Shellcode/">Windows x64 Shellcode编写指南(翻译)</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget tagcloud">
+  <h3 class="title">标签云</h3>
+  <div class="entry">
+    <a href="/tags/ASM/" style="font-size: 12.5px;">ASM</a> <a href="/tags/Boost/" style="font-size: 10px;">Boost</a> <a href="/tags/DDoS/" style="font-size: 10px;">DDoS</a> <a href="/tags/DNS-over-HTTPS/" style="font-size: 10px;">DNS-over-HTTPS</a> <a href="/tags/Delphi/" style="font-size: 10px;">Delphi</a> <a href="/tags/Dll劫持/" style="font-size: 10px;">Dll劫持</a> <a href="/tags/GCC-GDB/" style="font-size: 10px;">GCC&GDB</a> <a href="/tags/GetVersionEx/" style="font-size: 10px;">GetVersionEx</a> <a href="/tags/Http/" style="font-size: 10px;">Http</a> <a href="/tags/IDA-Pro/" style="font-size: 12.5px;">IDA Pro</a> <a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/MSDN/" style="font-size: 12.5px;">MSDN</a> <a href="/tags/Malware/" style="font-size: 12.5px;">Malware</a> <a href="/tags/MiniDumpWriteDump/" style="font-size: 10px;">MiniDumpWriteDump</a> <a href="/tags/PEB/" style="font-size: 10px;">PEB</a> <a href="/tags/Procmon/" style="font-size: 10px;">Procmon</a> <a href="/tags/Runtime-Error/" style="font-size: 10px;">Runtime Error</a> <a href="/tags/SEH/" style="font-size: 10px;">SEH</a> <a href="/tags/Shellcode/" style="font-size: 10px;">Shellcode</a> <a href="/tags/SysinternalsSuite/" style="font-size: 10px;">SysinternalsSuite</a> <a href="/tags/Tips/" style="font-size: 10px;">Tips</a> <a href="/tags/UAC/" style="font-size: 10px;">UAC</a> <a href="/tags/UAF漏洞/" style="font-size: 10px;">UAF漏洞</a> <a href="/tags/VC/" style="font-size: 10px;">VC</a> <a href="/tags/Visual-Studio/" style="font-size: 12.5px;">Visual Studio</a> <a href="/tags/Windbg/" style="font-size: 10px;">Windbg</a> <a href="/tags/Windows/" style="font-size: 20px;">Windows</a> <a href="/tags/Windows核心编程/" style="font-size: 17.5px;">Windows核心编程</a> <a href="/tags/android/" style="font-size: 10px;">android</a> <a href="/tags/getaddrinfo/" style="font-size: 10px;">getaddrinfo</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/libeay32/" style="font-size: 10px;">libeay32</a> <a href="/tags/markdown/" style="font-size: 10px;">markdown</a> <a href="/tags/ndk/" style="font-size: 10px;">ndk</a> <a href="/tags/sublime-text3/" style="font-size: 10px;">sublime text3</a> <a href="/tags/x64/" style="font-size: 12.5px;">x64</a> <a href="/tags/体验/" style="font-size: 10px;">体验</a> <a href="/tags/内核/" style="font-size: 12.5px;">内核</a> <a href="/tags/内核结构/" style="font-size: 15px;">内核结构</a> <a href="/tags/学习/" style="font-size: 10px;">学习</a> <a href="/tags/安全机制/" style="font-size: 10px;">安全机制</a> <a href="/tags/异常处理/" style="font-size: 10px;">异常处理</a> <a href="/tags/提权/" style="font-size: 10px;">提权</a> <a href="/tags/服务/" style="font-size: 10px;">服务</a> <a href="/tags/权限/" style="font-size: 12.5px;">权限</a> <a href="/tags/栈溢出漏洞/" style="font-size: 10px;">栈溢出漏洞</a> <a href="/tags/测试/" style="font-size: 10px;">测试</a> <a href="/tags/浮躁/" style="font-size: 10px;">浮躁</a> <a href="/tags/漏洞调试/" style="font-size: 12.5px;">漏洞调试</a> <a href="/tags/生活/" style="font-size: 15px;">生活</a> <a href="/tags/脱壳/" style="font-size: 10px;">脱壳</a> <a href="/tags/西安/" style="font-size: 10px;">西安</a> <a href="/tags/计划/" style="font-size: 10px;">计划</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a> <a href="/tags/调试/" style="font-size: 15px;">调试</a> <a href="/tags/转换/" style="font-size: 10px;">转换</a> <a href="/tags/进程/" style="font-size: 10px;">进程</a> <a href="/tags/逆向/" style="font-size: 10px;">逆向</a> <a href="/tags/重庆/" style="font-size: 10px;">重庆</a> <a href="/tags/驱动/" style="font-size: 15px;">驱动</a>
+  </div>
+</div>
+
+
+  <div class="widget tag">
+<h3 class="title">Links</h3>
+<ul class="entry">
+<li><a href="http://blog.ourren.com/" title="Ourren">Ourren</a></li>
+<li><a href="http://www.hyjal.net/" title="Hyjal">Hyjal</a></li>
+<li><a href="http://www.jianshu.com/users/fa15f4e416ae/latest_articles" title="Daemonceltics">Daemonceltics</a></li>
+<li><a href="http://papap.info/" title="isee">isee</a></li>
+</ul>
+</div>
+
+  <script type="text/javascript" id="clustrmaps" src="//cdn.clustrmaps.com/map_v2.js?u=putG&d=yoFnN6V-ovhL-H4e9_69LvkTiX4uX7rEYJ15yL3G1Wg"></script>
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <div id="go-pg-top"><i class="icon-arrow-up"></i></div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2020 Lyon
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript" charset="utf-8" src="/js/page.js"></script>
+
+</body>
+
+</html>

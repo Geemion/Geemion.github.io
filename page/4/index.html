@@ -1,0 +1,907 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>第 4 页 | Lyon&#39;s blog</title>
+  <meta name="author" content="Lyon">
+  
+  <meta name="description" content="Walk steps step by step">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+  <meta property="og:site_name" content="Lyon&#39;s blog"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  #<link href="/favicon.ico" rel="icon">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="alternate" href="/atom.xml" title="Lyon&#39;s blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  <script src="/js/jquery.min.js"></script>
+  <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?0fe72895c9bcfd0d09da12b5378b1b91";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+</head>
+
+
+<body>
+  <!--[if lte IE 8]> <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'> <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0027_Simplified Chinese.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." style='margin-left:auto;margin-right:auto;display: block;'/></a></div> <![endif]-->
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">Lyon&#39;s blog</a></h1>
+  <h2><a href="/">I hear and I forget.I see and I remember.I do and I understand.</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">首页</a></li>
+    
+      <li><a href="/archives">归档</a></li>
+    
+      <li><a href="/about">关于</a></li>
+    
+	<li> <a href="/atom.xml">RSS</a> </li>
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper">
+  <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <time datetime="2015-10-11T11:35:44.000Z"><a href="/2015/10/11/Life/Scheduled-Tasks-About-Reading/">2015-10-11</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2015/10/11/Life/Scheduled-Tasks-About-Reading/">读书计划</a></h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+
+	
+    <div class="entry">
+      
+        <p>这几天总是有种莫名的恐慌，各种担心加上bug解决不了项目也进展缓慢。想想可能是每天太过得太杂碎了。。。东一下西一下，毫无方向可言，这种感觉就和大一、二相似。<br>“读书能让心灵平静下来，远离浮躁“貌似是这个意思，同时也为了让自己之前一空虚就买下的书体现价值，把平时凌乱的知识点整理出来，遂想着订个读书计划，也监督自己学习。<br>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/2015/10/11/Life/Scheduled-Tasks-About-Reading/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</span>
+</article>
+
+
+
+
+  <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <time datetime="2015-10-10T02:46:32.000Z"><a href="/2015/10/10/Debug/A-Tips-about-DbgBreakPoint/">2015-10-10</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2015/10/10/Debug/A-Tips-about-DbgBreakPoint/">一种让Ring 3程序断下来的方法</a></h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+
+	
+    <div class="entry">
+      
+        <p>解决一个<a href="https://social.msdn.microsoft.com/Forums/en-US/7728257d-3889-48cc-877c-5dc8c2d492b0/winsock-differences-in-store-apps?forum=winappswithnativecode">bug</a>**的过程中使用windbg但是断不下来，因为每次符号信息没来得及加载系统就蹦了。so想到之前驱动调试的 int 3但程序是64位的不好嵌入汇编想到DbgBreakPoint()，遂有下面的方法<br>在应用层中直接调用ntdll的DbgBreakPoint。<br>大概就像下面这个样子：<br>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/2015/10/10/Debug/A-Tips-about-DbgBreakPoint/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</span>
+</article>
+
+
+
+
+  <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <time datetime="2015-09-26T03:03:03.000Z"><a href="/2015/09/26/Windows/Process32First-error-of-command-length/">2015-09-26</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2015/09/26/Windows/Process32First-error-of-command-length/">关于&quot;Process32First&quot;返回false的问题</a></h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+
+	
+    <div class="entry">
+      
+        <h2 id="问题描述">问题描述</h2><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">http://blog.csdn.net/hbu_dcf/article/details/3491276</span><br><span class="line">现象：Process32First"返回值为0，GetLastError()取到的错误是：〖24〗-程序发出命令，但命令长度</span><br><span class="line">不正确。</span><br><span class="line">分析：在调用这个函数前，需要：pe32.dwSize = sizeof(PROCESSENTRY32);，</span><br><span class="line">不设的话，就会一直返回0，而虽然我设定了大小，但是出错原因是命令长度不正确，所以肯定还是这句</span><br><span class="line">代码出了问题。</span><br><span class="line">参考：</span><br><span class="line">有因为使用了"unicode模式"而且没有初始化PROCESSENTRY32对象里面的dwsize对象,可以使用sizeof</span><br><span class="line">(PROCESSENTRY32)来初始化.有时候在release模式下不能通过但debug可以通过也可能是这个原因</span><br><span class="line">解决方案：最后实在没了办法，把工程属性-配置属性-常规-字符集-未设定，原来是unicode字符集。</span><br><span class="line">问题解决，不过还是很晕。</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/2015/09/26/Windows/Process32First-error-of-command-length/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</span>
+</article>
+
+
+
+
+  <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      
+        <img src="/img/crashvs2015.png">
+      
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <time datetime="2015-09-25T03:45:44.000Z"><a href="/2015/09/25/Debug/vs2008-debug-vs2015/">2015-09-25</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2015/09/25/Debug/vs2008-debug-vs2015/">装x的一次调试（用vs2008调试vs2015）</a></h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+
+	
+    <div class="entry">
+      
+        <p><em>题目很装逼，其实就是用08找到了导致15崩溃的原因</em></p>
+<p>事情是这个样子的，装上vs2015后只是运行了个HelloWord就没管了。今天突然想起来了，想试试15的功能有没有什么变化，但是吧 一打开再一点击就崩了，难道又是姿势没对，那就再来一次吧还是崩了，看来是哪个地方出现问题了。<br><strong>那我们就来看看问题详细信息吧</strong><br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">  问题事件名称:	BEX</span><br><span class="line">  应用程序名:	devenv.exe</span><br><span class="line">  应用程序版本:	<span class="number">14.0</span><span class="number">.23107</span><span class="number">.0</span></span><br><span class="line">  应用程序时间戳:	<span class="number">559</span>b7ead</span><br><span class="line">  故障模块名称:	StackHash_0a9e</span><br><span class="line">  故障模块版本:	<span class="number">0.0</span><span class="number">.0</span><span class="number">.0</span></span><br><span class="line">  故障模块时间戳:	<span class="number">00000000</span></span><br><span class="line">  异常偏移:	<span class="number">000</span>b0000</span><br><span class="line">  异常代码:	c0000005</span><br><span class="line">  异常数据:	<span class="number">00000008</span></span><br><span class="line">  OS 版本:	<span class="number">6.1</span><span class="number">.7601</span><span class="number">.2</span><span class="number">.1</span><span class="number">.0</span><span class="number">.256</span><span class="number">.1</span></span><br><span class="line">  区域设置 ID:	<span class="number">2052</span></span><br><span class="line">  其他信息 <span class="number">1</span>:	<span class="number">0</span>a9e</span><br><span class="line">  其他信息 <span class="number">2</span>:	<span class="number">0</span>a9e372d3b4ad19135b953a78882e789</span><br><span class="line">  其他信息 <span class="number">3</span>:	<span class="number">0</span>a9e</span><br><span class="line">  其他信息 <span class="number">4</span>:	<span class="number">0</span>a9e372d3b4ad19135b953a78882e789</span><br><span class="line"></span><br><span class="line">联机阅读隐私声明:</span><br><span class="line">  http:<span class="comment">//go.microsoft.com/fwlink/?linkid=104288&amp;clcid=0x0804</span></span><br><span class="line"></span><br><span class="line">如果无法获取联机隐私声明，请脱机阅读我们的隐私声明:</span><br><span class="line">  C:\Windows\system32\zh-CN\erofflps.txt</span><br></pre></td></tr></table></figure></p>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/2015/09/25/Debug/vs2008-debug-vs2015/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</span>
+</article>
+
+
+
+
+  <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <time datetime="2015-09-24T09:44:03.000Z"><a href="/2015/09/24/Kernel/Windbg-Driver-Kernel/">2015-09-24</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2015/09/24/Kernel/Windbg-Driver-Kernel/">Windows驱动开发备注</a></h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+
+	
+    <div class="entry">
+      
+        <p>接触Windows内核驱动开发有一段时间了，之前由于资料少老旧走了很多弯路，所以在这里备注哈梳理自己所学。</p>
+<p>##学习参考资料<br><a href="http://item.jd.com/11713158.html">1.Windows内核安全驱动开发</a><br><a href="http://www.vbasm.com/thread-7971-1-1.html">2.WIN64驱动编程基础教程</a><br><a href="http://www.vbasm.com/thread-8264-1-1.html">3.各个版本DDK/WDK和sysinternals源码合集</a><br><a href="http://bbs.pediy.com/">4.看雪论坛</a><br><a href="http://blog.csdn.net/magictong/article/details/38277081">5. Windows7驱动调试小Tips</a></p>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/2015/09/24/Kernel/Windbg-Driver-Kernel/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</span>
+</article>
+
+
+
+
+  <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      
+        <img src="/img/rightway.jpg">
+      
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <time datetime="2015-09-20T03:03:03.000Z"><a href="/2015/09/20/Windows/right-way-to-get-windows-version-on-win10/">2015-09-20</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2015/09/20/Windows/right-way-to-get-windows-version-on-win10/">获得Windows系统版本信息的正确姿势On Windows10</a></h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+
+	
+    <div class="entry">
+      
+        <p>参考资料：<br><a href="https://msdn.microsoft.com/en-us/library/windows/desktop/dn481241(v=vs.85">Targeting your application for Windows</a>.aspx)</p>
+<p>这两天想对一个程序进行升级，原始程序只支持win7。要对系统版本进行确定，正确显示出系统版本信息，本来应该是一个非常简单的事情但是但是为什么在win10上系统版本还是6.2呢buildnumber为什么还是9200呢。奇怪。。。。。<br>既然有问题咱们就来想想有哪些可能性吧：</p>
+<ul>
+<li>1.Win10系统是测试版，系统内核版本信息等都还是win8的</li>
+<li>2.由于使用的是vs2008编译的，可能是程序默认使用兼容性方式运行所以获得的是win8系统信息</li>
+<li>3.打开程序姿势不对，哈哈<br>先试试win10系统吧，由于不记得win10是什么时候装的只有systeminfo看看系统信息。嗯，系统版本buildnumber是10240对的是win10正式版，排除1。<br>再看哈2，程序信息没有选择以兼容性模式运行啊。对了，突然想到好像某些时候只要程序不显式声明支持新系统默认直接兼容运行，那怎么显式声明呢？这里就需要我们前面一篇<a href="http://youngroe/2015/07/13/tech/aboutVisual_Studio/">Visual Studio使用备注</a>中提到过的manifest文件，vc6中添加看那篇文章第8点。vs2008附加添加直接vs工程属性里找到“清单工具-&gt;输入和输出-&gt;附加清单文件”里填入manifest文件的相对路径，然后重新链接。<br>针对win10的manifest文件如下：
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/2015/09/20/Windows/right-way-to-get-windows-version-on-win10/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</span>
+</article>
+
+
+
+
+  <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <time datetime="2015-09-19T15:04:31.000Z"><a href="/2015/09/19/Life/about-native-client/">2015-09-19</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2015/09/19/Life/about-native-client/">【转】客户端技术的一点思考</a></h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+
+	
+    <div class="entry">
+      
+        <p><em>最近一直处于浮躁状态，看着一个个工作要求全是移动端、web端。。。。原本一直想学点其他方向的，但无奈拖延症严重（懒好听的说法）。看了这篇文章感觉视乎找到了一点方向。学好基础，浮躁的的心该冷静下来</em></p>
+<div align="center"><br><img src="/img/zz.jpg" align="center"/><br></div>
+
+<p>今天看到CSDN上这么一篇<a href="http://bbs.csdn.net/topics/391817496">《 彻底放弃没落的MFC，对新人的忠告！》</a>， 作为一个一直在Windows上搞客户端开发的C++程序员，几年前也有过类似的隐忧（参见 <a href="http://www.cppblog.com/weiym/archive/2012/06/21/179645.html">落伍的感觉</a>）， 现在却有一些不同的想法。</p>
+<p>首先，个人职业发展是否成功， 技术只是其中一小块，尤其是在大公司， 更多的是依靠所谓的软实力。作为一个对技术有追求的工匠，我们下面重点说技术相关的。</p>
+<p>现在回头看计算机行业的发展，我们看到不同的发展阶段:</p>
+<ol>
+<li>PC时代，这个时代离我们并不遥远， 也有是2000年前后， 该时代最鲜明的特征是Windows操作系统，Office软件，Exchange邮件服务器等，还有Windows平台上的各种通讯娱乐工具以及行业软件等。这个时代大部分都是和Windows操作系统相关， 这个时代的开发工具也是百花齐放：VC, VB, Delphi, PB, 以及后来的C#， 本质上都是Windows API。</li>
+</ol>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/2015/09/19/Life/about-native-client/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</span>
+</article>
+
+
+
+
+  <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <time datetime="2015-09-05T13:41:03.000Z"><a href="/2015/09/05/Windows/windows-exception-handling-mechanism/">2015-09-05</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2015/09/05/Windows/windows-exception-handling-mechanism/">Windows 异常处理机制学习</a></h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+
+	
+    <div class="entry">
+      
+        <p>参考资料：<br>1.Windows核心编程<br>2.<a href="http://bbs.pediy.com/showthread.php?threadid=32222">Windows系统程序设计之结构化异常处理</a><br>3.<a href="http://www.cnblogs.com/coffeegg/archive/2011/10/01/2197135.html">C++处理异常技巧-try,catch,throw,finally</a><br>4.<a href="http://www.codeceo.com/article/cpp-exception-learn.html">深入理解C++中的异常处理机制</a><br>5.<a href="http://www.jtianling.com/%E8%AF%BBwindows%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B-%E7%BB%93%E6%9E%84%E5%8C%96%E5%BC%82%E5%B8%B8%E9%83%A8%E5%88%86-%E7%90%86%E8%A7%A3%E6%91%98%E8%A6%81.html">读windows核心编程,结构化异常部分,理解摘要</a><br>6.<a href="http://bbs.pediy.com/showthread.php?t=173853">【原创】白话windows之四 异常处理机制(VEH、SEH、TopLevelEH…)</a></p>
+<p>##关于异常</p>
+<p>###常见异常：</p>
+<ul>
+<li>程序访问一个不可用的内存地址（例如，NULL指针）；</li>
+<li>无限递归导致的栈溢出；</li>
+<li>向一个较小的缓冲区写入较大块的数据；</li>
+<li>类的纯虚函数被调用；</li>
+<li>申请内存失败（内存空间不足）；</li>
+<li>一个非法的参数被传递给C++函数；</li>
+<li>C运行时库检测到一个错误并且需要程序终止执行。</li>
+<li>访问的对象（文件等）或则地址不存在</li>
+<li>等等。。。。。<br>根据异常作用或则产生后后果可以将异常分为错误（重新执行产生异常的指令如页面错误）、陷阱（执行下一条指令如调试断点）和终止（进程终止或则系统崩溃）。
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/2015/09/05/Windows/windows-exception-handling-mechanism/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</span>
+</article>
+
+
+
+
+  <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <time datetime="2015-08-25T11:39:28.000Z"><a href="/2015/08/25/Windows/VC-BMPtoJPG/">2015-08-25</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2015/08/25/Windows/VC-BMPtoJPG/">VC++直接利用api实现bmp图像转jpg图像</a></h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+
+	
+    <div class="entry">
+      
+        <p>网上找了很久寻找直接bmp格式转jpg，大部分都是利用libjpeg/libjpeg-turbo实现的。libjpeg实现有很多有点支持多平台Windows/linux/嵌入式,但是使用较为麻烦，需要自己编译lib可能还需要自己懂一点make语法之类的。so 能不能直接在Windows找个api实现呢？遂打开msdn输入”bmp converting to jpg”，还不错找到两个相关问题<a href="https://social.msdn.microsoft.com/Forums/vstudio/en-US/e30af0cb-de22-4c95-9b0f-eacb00181387/convert-bmp-image-to-jpg?forum=vcgeneral">链接1</a>、<a href="https://social.msdn.microsoft.com/Forums/en-US/0a4126bb-2e5b-4972-ac2f-a6055fe692c2/converting-jpg-file-into-bmp-file?forum=vcmfcatl">链接2</a> 。使用<a href="https://msdn.microsoft.com/en-us/library/ms534077(VS.85">GDI+</a>.aspx)、<a href="https://msdn.microsoft.com/en-us/library/d06f3fhw(VS.80">CImage</a>.aspx)，而且使用这些几乎可以实现任何图片格式之间的转换GDI+库封装了很多图像处理相关的函数还有很多待学习。例子只是一个很简单的bmp转jpg</p>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/2015/08/25/Windows/VC-BMPtoJPG/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</span>
+</article>
+
+
+
+
+  <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      
+        <img src="/img/session.png">
+      
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <time datetime="2015-08-20T09:00:40.000Z"><a href="/2015/08/20/Windows/windows-Security-Mechanism/">2015-08-20</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2015/08/20/Windows/windows-Security-Mechanism/">Windows安全机制学习笔记</a></h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+
+	
+    <div class="entry">
+      
+        <p>参考资料:<br><a href="http://blog.csdn.net/chengyun_chu/article/details/1583601">Windows Vista操作系统最新安全特性分析：改进和局限</a><br><a href="https://technet.microsoft.com/zh-cn/library/bb629420">Windows Vista 安全指南</a><br><a href="http://blogs.itecn.net/blogs/winvista/archive/2006/07/21/2920.aspx">您必须知道的Windows Vista安全功能</a><br><a href="http://wenku.baidu.com/link?url=_monxlxC5ENx9JHByP4s-CgwF44TqyaZfZ0VwaR8pYPWN_etqFnc9anToWzxFyQG1tzL8FNPEeefOVQU-9x46e5pjl-kxI7QOtjOJeAlKxS">Win8的安全特性</a><br><a href="https://technet.microsoft.com/zh-cn/windows/jj983723.aspx">Windows 8 安全性改进</a><br><a href="http://windowsitpro.com/systems-management/understanding-windows-service-hardening">Understanding Windows Service Hardening</a><br><a href="http://hitcon.org/2012/download/0720A5_360.MJ0011_Reversing%20Windows8-Interesting%20Features%20of%20Kernel%20Security_Englisht.pdf">逆向Windows 8:内核安全特性拾趣</a></p>
+<p>##系统安全</p>
+<p>###代码完整性：<br>代码完整性(CI：Code Integrity)可以有效地防范木马、rootkit等对系统文件的恶意修改，防范不安全的第三方驱动对系统的危害。CI会检查代码的hash值(内嵌于代码中的x.509证书，或者位于%windir%\system32\catroot里的编录文件)，一旦发现hash值不符，就会停止加载代码。<br>CI主要检查以下的代码：</p>
+<ul>
+<li>(1) 系统启动时，检查内核、HAL和驱动的完整性</li>
+<li>(2) 检查所有加载到内核内存空间的代码完整性</li>
+<li>(3) 对加载到受保护进程空间里的代码进行完整性检查</li>
+</ul>
+<p>###服务加固</p>
+<p><div align="center"><br><img src="http://windowsitpro.com/site-files/windowsitpro.com/files/archive/windowsitpro.com/content/content/99346/figure1.jpg"  alt="Windows Xp和Vista Session的不同" align="center"/><br></div></p>
+<ul>
+<li>session 0隔离</li>
+<li>最小特权账户（把更多服务的启动帐户，从LocalSystem迁移到LocalService或者NetworkService）</li>
+<li>独立SID(每个服务都有一个独立的SID，这样服务就可以利用该SID来控制其专属资源的ACL)、</li>
+<li>服务的SID标记为Write-Restricted(写限制)、</li>
+<li>减少不必要的特权</li>
+<li>限制网络访问</li>
+</ul>
+<p>###完整性级别校验<br>Windows中各种对象都有完整性级别，例如进程主要级别从低到高为Untrust、Low、Medium、Hight和System。Windows 2000/XP安全体系里，安全子系统把进程的访问令牌和资源的访问控制列表进行匹配比较，以确认该进程是否具有访问该资源的权限。而在WindowsVista下，除了遵守传统的安全控制机制外，还必须检查进程和资源对象的完整性级别，完整性级别低的进程，不能写入完整性级别高的资源对象【通过这种完整性级别可以防止一些恶意行为如dll注入、代码注入或则修改pe文件】。<br>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/2015/08/20/Windows/windows-Security-Mechanism/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</span>
+</article>
+
+
+
+
+  <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      
+        <img src="/img/Privilege.jpg">
+      
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <time datetime="2015-08-14T08:05:45.000Z"><a href="/2015/08/14/Windows/Windows-Permissions-Privilege/">2015-08-14</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2015/08/14/Windows/Windows-Permissions-Privilege/">Windows权限机制学习</a></h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+
+	
+    <div class="entry">
+      
+        <p>参考资料：<br><a href="http://bbs.pediy.com/showthread.php?t=173381">【原创】白话windows之 访问控制模型(Access Control Model)</a><br><a href="http://www.cppblog.com/weiym/archive/2013/08/25/202751.html?opt=admin">浅析Windows安全相关的一些概念</a><br><a href="http://blog.csdn.net/gwzz1228/article/details/9031835">CreateEvent 和OpenEvent时事件全局名称问题 Global</a></p>
+<p>##对windows权限机制最直观的认识</p>
+<p>###Windows用户权限<br>在之前的学习中对于windows权限机制有过零散的学习，但是对于整个windows权限管理机制没有一个全面的认识所以在这总结学习哈，虽然现在也没有搞清楚完。</p>
+<p>Windows权限管理我觉得最常用的就是UAC权限（管理员权限）。每个进程都有自己的用户最常用的有标准用户、管理员（UAC）【注：这两个就是平常用户启用的进程的用户】，SYSTEM、LOCAL SERVICE、NETWORK SERVICE【注：这三个一般是系统进程及服务启动的且Windows启动后system用户已经登录到系统 】。而每个用户又有不同的特权Privilege，我们可以通过whoami -all查看当前用户所拥有的Privilege。<br><strong>Standard用户拥有的特权</strong><br>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/2015/08/14/Windows/Windows-Permissions-Privilege/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</span>
+</article>
+
+
+
+
+  <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      
+        <img src="/img/chongqing.jpg">
+      
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <time datetime="2015-08-14T04:11:15.000Z"><a href="/2015/08/14/Life/chongqing/">2015-08-14</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2015/08/14/Life/chongqing/">重庆印象</a></h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+
+	
+    <div class="entry">
+      
+        <p>迎来了难得的暑假，8月11日从成都出发到重庆，买好的动车票，早上8点10分的票。结果又起晚了只有喊个uber了，运气比较好还在学校里面就有辆2分钟就坐上了车，安心了，师傅比较健谈看出了我是出去玩的，当我说我是去重庆的时候师傅给分享了点经验不要期望太高。嗯，我满口答应，不过我觉得出去玩最重要的是和谁去，地点不是很重要，哈哈。<br>10点多一点正常到达重庆北站，打电话问问刘哈儿这货居然没赶上车，哈哈也好我到菜园坝还要段时间，直接轻轨3号线过去开始了我的重庆印象。<br>三天行程：</p>
+<ul>
+<li>第一天半天时间，下午朝天门试了下长江游船晚上解放碑逛逛看看电影</li>
+<li>第二天报了个团，武隆县，嗯天坑地缝游</li>
+<li>第三天要走了，观光解放碑的八一小吃街（好吃街）</li>
+</ul>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/2015/08/14/Life/chongqing/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</span>
+</article>
+
+
+
+
+
+<ul class="page-direction" id="page-direction">
+    <li><a class="page-prev icon-chevron-sign-left" href="javascript:;" title="上一页"></a></li>
+    <li><a class="page-next icon-chevron-sign-right" href="javascript:;" title="下一页"></a></li>
+</ul>
+
+    <nav id="page-list" class="page-list"><a class="extend prev" rel="prev" href="/page/3/">Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" href="/page/5/">Next</a></nav>
+
+<nav id="pagination">
+  
+    <a href="/page/3/" class="alignleft prev">上一页</a>
+  
+  
+    <a href="/page/5/" class="alignright next">下一页</a>
+  
+  <div class="clearfix"></div>
+</nav></div></div>
+    <aside id="sidebar" class="alignright">
+  
+<div class="widget tag">
+  <h3 class="title">分类</h3>
+  <ul class="entry">
+  
+    <li><a href="/categories/Cybersecurity/">Cybersecurity</a><small>1</small></li>
+  
+    <li><a href="/categories/Debug/">Debug</a><small>7</small></li>
+  
+    <li><a href="/categories/Kernel/">Kernel</a><small>4</small></li>
+  
+    <li><a href="/categories/Learning/">Learning</a><small>8</small></li>
+  
+    <li><a href="/categories/Life/">Life</a><small>7</small></li>
+  
+    <li><a href="/categories/Others/">Others</a><small>1</small></li>
+  
+    <li><a href="/categories/Read-Notes/">Read Notes</a><small>7</small></li>
+  
+    <li><a href="/categories/Tools/">Tools</a><small>6</small></li>
+  
+    <li><a href="/categories/Vulnerabilities/">Vulnerabilities</a><small>0</small></li>
+  
+    <li><a href="/categories/Windows/">Windows</a><small>14</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2019/07/01/Windows/delphi_reverse_summary/">Delphi程序逆向反汇编技巧小记</a>
+      </li>
+    
+      <li>
+        <a href="/2019/06/25/Kernel/kernel_enum_wfp_callout_function/">Windows内核重拾：如何枚举系统中Windows Filtering Platform (WFP)驱动中的callout函数</a>
+      </li>
+    
+      <li>
+        <a href="/2019/05/06/Kernel/windows-driver-testing-basics/">Windows内核重拾：Windows驱动测试基础：工具、功能和示例（翻译/转载）</a>
+      </li>
+    
+      <li>
+        <a href="/2019/04/06/Windows/how-to-reverse-engineer-software-windows-in-a-right-way/">如何正确的对Windows软件进行逆向工程（翻译/转载）</a>
+      </li>
+    
+      <li>
+        <a href="/2019/01/12/Windows/a_crash_lead_deadlock/">Windows平台下一个崩溃而导致的死锁分析</a>
+      </li>
+    
+      <li>
+        <a href="/2018/12/01/Windows/windows_client_dns_over_https/">Windows客户端如何透明使用DNS-over-HTTPS</a>
+      </li>
+    
+      <li>
+        <a href="/2018/10/06/Cybersecurity/ddos-protection-techniques/">现代DDoS对抗技术概述（翻译/转载）</a>
+      </li>
+    
+      <li>
+        <a href="/2018/09/18/Life/xian/">西安周末游</a>
+      </li>
+    
+      <li>
+        <a href="/2018/01/06/Kernel/WindowsKernel_DebugObject/">Windows内核重拾：DebugObject</a>
+      </li>
+    
+      <li>
+        <a href="/2017/10/23/Tools/IDA-Pro-ClassInformer-Tutorial/">IDA Pro ClassInformer使用指南（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2017/05/23/Windows/Kernel Data and Filtering Support/">Kernel Data and Filtering Support for Windows Server 2008（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2017/05/17/Windows/Windows-x64-Shellcode/">Windows x64 Shellcode编写指南(翻译)</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget tagcloud">
+  <h3 class="title">标签云</h3>
+  <div class="entry">
+    <a href="/tags/ASM/" style="font-size: 12.5px;">ASM</a> <a href="/tags/Boost/" style="font-size: 10px;">Boost</a> <a href="/tags/DDoS/" style="font-size: 10px;">DDoS</a> <a href="/tags/DNS-over-HTTPS/" style="font-size: 10px;">DNS-over-HTTPS</a> <a href="/tags/Delphi/" style="font-size: 10px;">Delphi</a> <a href="/tags/Dll劫持/" style="font-size: 10px;">Dll劫持</a> <a href="/tags/GCC-GDB/" style="font-size: 10px;">GCC&GDB</a> <a href="/tags/GetVersionEx/" style="font-size: 10px;">GetVersionEx</a> <a href="/tags/Http/" style="font-size: 10px;">Http</a> <a href="/tags/IDA-Pro/" style="font-size: 12.5px;">IDA Pro</a> <a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/MSDN/" style="font-size: 12.5px;">MSDN</a> <a href="/tags/Malware/" style="font-size: 12.5px;">Malware</a> <a href="/tags/MiniDumpWriteDump/" style="font-size: 10px;">MiniDumpWriteDump</a> <a href="/tags/PEB/" style="font-size: 10px;">PEB</a> <a href="/tags/Procmon/" style="font-size: 10px;">Procmon</a> <a href="/tags/Runtime-Error/" style="font-size: 10px;">Runtime Error</a> <a href="/tags/SEH/" style="font-size: 10px;">SEH</a> <a href="/tags/Shellcode/" style="font-size: 10px;">Shellcode</a> <a href="/tags/SysinternalsSuite/" style="font-size: 10px;">SysinternalsSuite</a> <a href="/tags/Tips/" style="font-size: 10px;">Tips</a> <a href="/tags/UAC/" style="font-size: 10px;">UAC</a> <a href="/tags/UAF漏洞/" style="font-size: 10px;">UAF漏洞</a> <a href="/tags/VC/" style="font-size: 10px;">VC</a> <a href="/tags/Visual-Studio/" style="font-size: 12.5px;">Visual Studio</a> <a href="/tags/Windbg/" style="font-size: 10px;">Windbg</a> <a href="/tags/Windows/" style="font-size: 20px;">Windows</a> <a href="/tags/Windows核心编程/" style="font-size: 17.5px;">Windows核心编程</a> <a href="/tags/android/" style="font-size: 10px;">android</a> <a href="/tags/getaddrinfo/" style="font-size: 10px;">getaddrinfo</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/libeay32/" style="font-size: 10px;">libeay32</a> <a href="/tags/markdown/" style="font-size: 10px;">markdown</a> <a href="/tags/ndk/" style="font-size: 10px;">ndk</a> <a href="/tags/sublime-text3/" style="font-size: 10px;">sublime text3</a> <a href="/tags/x64/" style="font-size: 12.5px;">x64</a> <a href="/tags/体验/" style="font-size: 10px;">体验</a> <a href="/tags/内核/" style="font-size: 12.5px;">内核</a> <a href="/tags/内核结构/" style="font-size: 15px;">内核结构</a> <a href="/tags/学习/" style="font-size: 10px;">学习</a> <a href="/tags/安全机制/" style="font-size: 10px;">安全机制</a> <a href="/tags/异常处理/" style="font-size: 10px;">异常处理</a> <a href="/tags/提权/" style="font-size: 10px;">提权</a> <a href="/tags/服务/" style="font-size: 10px;">服务</a> <a href="/tags/权限/" style="font-size: 12.5px;">权限</a> <a href="/tags/栈溢出漏洞/" style="font-size: 10px;">栈溢出漏洞</a> <a href="/tags/测试/" style="font-size: 10px;">测试</a> <a href="/tags/浮躁/" style="font-size: 10px;">浮躁</a> <a href="/tags/漏洞调试/" style="font-size: 12.5px;">漏洞调试</a> <a href="/tags/生活/" style="font-size: 15px;">生活</a> <a href="/tags/脱壳/" style="font-size: 10px;">脱壳</a> <a href="/tags/西安/" style="font-size: 10px;">西安</a> <a href="/tags/计划/" style="font-size: 10px;">计划</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a> <a href="/tags/调试/" style="font-size: 15px;">调试</a> <a href="/tags/转换/" style="font-size: 10px;">转换</a> <a href="/tags/进程/" style="font-size: 10px;">进程</a> <a href="/tags/逆向/" style="font-size: 10px;">逆向</a> <a href="/tags/重庆/" style="font-size: 10px;">重庆</a> <a href="/tags/驱动/" style="font-size: 15px;">驱动</a>
+  </div>
+</div>
+
+
+  <div class="widget tag">
+<h3 class="title">Links</h3>
+<ul class="entry">
+<li><a href="http://blog.ourren.com/" title="Ourren">Ourren</a></li>
+<li><a href="http://www.hyjal.net/" title="Hyjal">Hyjal</a></li>
+<li><a href="http://www.jianshu.com/users/fa15f4e416ae/latest_articles" title="Daemonceltics">Daemonceltics</a></li>
+<li><a href="http://papap.info/" title="isee">isee</a></li>
+</ul>
+</div>
+
+  <script type="text/javascript" id="clustrmaps" src="//cdn.clustrmaps.com/map_v2.js?u=putG&d=yoFnN6V-ovhL-H4e9_69LvkTiX4uX7rEYJ15yL3G1Wg"></script>
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <div id="go-pg-top"><i class="icon-arrow-up"></i></div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2020 Lyon
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript" charset="utf-8" src="/js/page.js"></script>
+
+</body>
+
+</html>

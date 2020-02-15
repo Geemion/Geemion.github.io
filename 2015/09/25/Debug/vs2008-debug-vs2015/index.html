@@ -1,0 +1,304 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>装x的一次调试（用vs2008调试vs2015） | Lyon&#39;s blog</title>
+  <meta name="author" content="Lyon">
+  
+  <meta name="description" content="Walk steps step by step">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="装x的一次调试（用vs2008调试vs2015）"/>
+  <meta property="og:site_name" content="Lyon&#39;s blog"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  #<link href="/favicon.ico" rel="icon">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="alternate" href="/atom.xml" title="Lyon&#39;s blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  <script src="/js/jquery.min.js"></script>
+  <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?0fe72895c9bcfd0d09da12b5378b1b91";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+</head>
+
+
+<body>
+  <!--[if lte IE 8]> <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'> <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0027_Simplified Chinese.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." style='margin-left:auto;margin-right:auto;display: block;'/></a></div> <![endif]-->
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">Lyon&#39;s blog</a></h1>
+  <h2><a href="/">I hear and I forget.I see and I remember.I do and I understand.</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">首页</a></li>
+    
+      <li><a href="/archives">归档</a></li>
+    
+      <li><a href="/about">关于</a></li>
+    
+	<li> <a href="/atom.xml">RSS</a> </li>
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      
+        <img src="/img/crashvs2015.png">
+      
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <time datetime="2015-09-25T03:45:44.000Z"><a href="/2015/09/25/Debug/vs2008-debug-vs2015/">2015-09-25</a></time>
+      
+      
+  
+    <h1 class="title">装x的一次调试（用vs2008调试vs2015）</h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+  <div id="toc" class="toc-article">
+  <strong class="toc-title">文章目录</strong>
+  
+  </div>
+
+
+	
+    <div class="entry">
+      
+        <p><em>题目很装逼，其实就是用08找到了导致15崩溃的原因</em></p>
+<p>事情是这个样子的，装上vs2015后只是运行了个HelloWord就没管了。今天突然想起来了，想试试15的功能有没有什么变化，但是吧 一打开再一点击就崩了，难道又是姿势没对，那就再来一次吧还是崩了，看来是哪个地方出现问题了。<br><strong>那我们就来看看问题详细信息吧</strong><br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">  问题事件名称:	BEX</span><br><span class="line">  应用程序名:	devenv.exe</span><br><span class="line">  应用程序版本:	<span class="number">14.0</span><span class="number">.23107</span><span class="number">.0</span></span><br><span class="line">  应用程序时间戳:	<span class="number">559</span>b7ead</span><br><span class="line">  故障模块名称:	StackHash_0a9e</span><br><span class="line">  故障模块版本:	<span class="number">0.0</span><span class="number">.0</span><span class="number">.0</span></span><br><span class="line">  故障模块时间戳:	<span class="number">00000000</span></span><br><span class="line">  异常偏移:	<span class="number">000</span>b0000</span><br><span class="line">  异常代码:	c0000005</span><br><span class="line">  异常数据:	<span class="number">00000008</span></span><br><span class="line">  OS 版本:	<span class="number">6.1</span><span class="number">.7601</span><span class="number">.2</span><span class="number">.1</span><span class="number">.0</span><span class="number">.256</span><span class="number">.1</span></span><br><span class="line">  区域设置 ID:	<span class="number">2052</span></span><br><span class="line">  其他信息 <span class="number">1</span>:	<span class="number">0</span>a9e</span><br><span class="line">  其他信息 <span class="number">2</span>:	<span class="number">0</span>a9e372d3b4ad19135b953a78882e789</span><br><span class="line">  其他信息 <span class="number">3</span>:	<span class="number">0</span>a9e</span><br><span class="line">  其他信息 <span class="number">4</span>:	<span class="number">0</span>a9e372d3b4ad19135b953a78882e789</span><br><span class="line"></span><br><span class="line">联机阅读隐私声明:</span><br><span class="line">  http:<span class="comment">//go.microsoft.com/fwlink/?linkid=104288&amp;clcid=0x0804</span></span><br><span class="line"></span><br><span class="line">如果无法获取联机隐私声明，请脱机阅读我们的隐私声明:</span><br><span class="line">  C:\Windows\system32\zh-CN\erofflps.txt</span><br></pre></td></tr></table></figure></p>
+<a id="more"></a>
+<p>##扯淡部分</p>
+<p><strong>百度一下</strong><br>1.凡是win7下提示StackHash_0a9e的，都是感染了病毒，即感染了PE文件型病毒（在PE中加入新的section，<br>并修改入口点到这里，从而使得PE加载时首先运行这段代码），由于使用的技术陈旧，不兼容win7，导致出现错误提示。<br>2.内存溢出问题触发数据执行保护功能，导致BEX错误。</p>
+<p><strong>解决方案：</strong></p>
+<p><code>关闭DEP保护:</code>bcdedit.exe/set {current} nx AlwaysOff<br><code>开启DEP:</code>bcdedit /set {default} nx Optin</p>
+<p>百度出现的问题主要是由于旧版本程序在新系统中运行出现的问题，但是在我这不存在这个问题系统是win7x64的软件是vs2015，所以应该完全兼容DEP。那么问题来了，出现这个问题的原因是什么呢？但是基本找到了方向，是由于<code>溢出问题导致DEP保护被触发程序被终止</code>。</p>
+<p><strong>再Google一下</strong><br>数据执行保护(DEP) 是一套软硬件技术，能够在内存上执行额外检查以帮助防止在系统上运行恶意代码。在 Microsoft Windows XP Service Pack 2、 Microsoft Windows Server 2003 Service Pack 1 、Microsoft Windows XP Tablet PC Edition 2005 、 Microsoft Windows Vista 和 Microsoft windows7中，由硬件和软件一起强制实施 DEP。可帮助<code>防止数据页当作代码执行，从而有效分离数据与代码</code>。通常情况下，不执行默认堆和堆栈中的代码。硬件实施<br>DEP 检测从这些位置运行的代码，并在发现执行情况时<code>引发异常</code>。软件实施 DEP 可帮助阻止恶意代码利用 Windows 中的异常处理机制进行破坏。<br>与防病毒程序不同，硬件和软件实施DEP技术的目的并不是防止在计算机上安装有害程序。而是监视您的已安装程序，帮助确定它们<code>是否正在安全地使用系统内存空间</code>。 为监视您的程序，硬件实施 DEP 将跟踪已指定为“不可执行”的内存区域。 如果已将内存指定为“不可执行”，但是某个程序试图通过内存执行代码，Windows 将关闭该程序以防止恶意代码。<br>DEP 问题的错误签名具有下列属性：<br><img src="/img/deperrno.png" alt></p>
+<p>DEP参考:<br> <a href="https://technet.microsoft.com/zh-cn/library/cc738483(v=ws.10).aspx" target="_blank" rel="external">https://technet.microsoft.com/zh-cn/library/cc738483(v=ws.10).aspx</a></p>
+<p>##干正事部分<br>难道中病毒了？联想起最近的<code>XcodeGhost</code>事件，后背一凉。<br>额，怎么还有个<code>调试此程序</code>选项，选中试试看吧。选择调试器—-嗯选熟悉的vs2008，进入了熟悉的程序调试界面。进入反汇编界面<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">005</span>C001D F9               stc              </span><br><span class="line"><span class="number">005</span>C001E ??               db          ffh  </span><br><span class="line"><span class="number">005</span>C001F FF <span class="number">00</span>            inc         dword ptr [eax] </span><br><span class="line"><span class="number">005</span>C0021 <span class="number">00</span> <span class="number">00</span>            add         byte ptr [eax],al </span><br><span class="line"><span class="number">005</span>C0023 <span class="number">00</span> <span class="number">00</span>            add         byte ptr [eax],al </span><br><span class="line"><span class="number">005</span>C0025 <span class="number">00</span> <span class="number">00</span>            add         byte ptr [eax],al </span><br><span class="line"><span class="number">005</span>C0027 <span class="number">00</span> <span class="number">0</span>C <span class="number">00</span>         add         byte ptr [eax+eax],cl </span><br><span class="line"><span class="number">005</span>C002A <span class="number">01</span> <span class="number">00</span>            add         dword ptr [eax],eax </span><br><span class="line"><span class="number">005</span>C002C <span class="number">00</span> <span class="number">00</span>            add         byte ptr [eax],al </span><br><span class="line"><span class="number">005</span>C002E <span class="number">00</span> <span class="number">00</span>            add         byte ptr [eax],al </span><br><span class="line">**<span class="number">005</span>C0030 <span class="number">60</span>               pushad**           </span><br><span class="line"><span class="number">005</span>C0031 A7               cmps        dword ptr [esi],dword ptr es:[edi] </span><br><span class="line"><span class="number">005</span>C0032 <span class="number">1</span>E               push        ds   </span><br><span class="line"><span class="number">005</span>C0033 C0 <span class="number">00</span> F9         rol         byte ptr [eax],<span class="number">0F</span>9h </span><br><span class="line"><span class="number">005</span>C0036 ??               db          ffh  </span><br><span class="line"><span class="number">005</span>C0037 FF <span class="number">10</span>            call        dword ptr [eax] </span><br><span class="line"><span class="number">005</span>C0039 <span class="number">99</span>               cdq</span><br></pre></td></tr></table></figure></p>
+<p>大概就是上面这个样子，这里执行不下去了 异常<br>再Alt+7键看哈Call Stack<br><img src="/img/debug2015.png" alt="堆栈调用情况"></p>
+<p>VA_X.dll好熟悉的身影，想起来了 是小番茄啊，应该就是这里的问题了。果断改名再来。嗯，问题果然是这个。<br>由于穷使用的是破解版的，<a href="http://www.cr173.com/soft/32656.html" target="_blank" rel="external">下载链接</a> 可能是打补丁的时候出现的问题，对vs2015的兼容性还不好吧。嗯只有换个高版本的果然能用了。。。。。。<br>唉，本来还想自己破解下的。不给机会 哈哈 <a href="http://download.csdn.net/detail/u012256060/9038335" target="_blank" rel="external">VA_X_Setup2073加破解补丁支持VS2015正式版  </a><br>遇到这种崩溃的果断就打开调试，看哈堆栈调用信息了，不要管它是什么。还有就是要相信微软的实力，一般不会出现啥问题的，出现问题多半是第三方插件、系统装的精简版、中病毒等。</p>
+<p><strong>其他可用信息</strong><br> <a href="http://www.nirsoft.net/utils/app_crash_view.html" target="_blank" rel="external">http://www.nirsoft.net/utils/app_crash_view.html</a><br> <a href="http://bbs.pediy.com/showthread.php?t=196284" target="_blank" rel="external">http://bbs.pediy.com/showthread.php?t=196284</a>             </p>
+
+      
+    </div>
+    <footer>
+      
+
+        
+          <div class="alignleft post-nav">
+            <em>上一篇: </em><a href="/2015/09/26/Windows/Process32First-error-of-command-length/">关于"Process32First"返回false的问题</a>
+          </div>
+        
+        
+          <div class="alignright post-nav">
+            <em>下一篇: </em><a href="/2015/09/24/Kernel/Windbg-Driver-Kernel/">Windows驱动开发备注</a>
+          </div>
+          <div class="clearfix"></div>
+        
+
+        
+          <div class="copyright">
+            
+              <span class="claim">转载请注明youngroe.com</span>
+            
+            
+              <span class="from-link">
+                <em>本文链接地址:</em>
+                <a href="/2015/09/25/Debug/vs2008-debug-vs2015/">
+                  http://www.youngroe.com/2015/09/25/Debug/vs2008-debug-vs2015/
+                </a>
+              </span>
+            
+          </div>
+        
+		<span id="busuanzi_container_site_pv">
+    本站总访问量<span id="busuanzi_value_site_pv"></span>次
+        
+  
+  <div class="categories">
+    <a href="/categories/Debug/">Debug</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/Visual-Studio/">Visual Studio</a>, <a href="/tags/调试/">调试</a>
+  </div>
+
+        <div class="bdsharebuttonbox"><a href="#" class="bds_more" data-cmd="more"></a><a href="#" class="bds_qzone" data-cmd="qzone"></a><a href="#" class="bds_tsina" data-cmd="tsina"></a><a href="#" class="bds_tqq" data-cmd="tqq"></a><a href="#" class="bds_renren" data-cmd="renren"></a><a href="#" class="bds_weixin" data-cmd="weixin"></a></div>
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdPic":"","bdStyle":"0","bdSize":"16"},"share":{},"image":{"viewList":["qzone","tsina","tqq","renren","weixin"],"viewText":"������","viewSize":"16"},"selectShare":{"bdContainerClass":null,"bdSelectMiniList":["qzone","tsina","tqq","renren","weixin"]}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</span>
+</article>
+
+
+<section id="comment">
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+<div class="widget tag">
+  <h3 class="title">分类</h3>
+  <ul class="entry">
+  
+    <li><a href="/categories/Cybersecurity/">Cybersecurity</a><small>1</small></li>
+  
+    <li><a href="/categories/Debug/">Debug</a><small>7</small></li>
+  
+    <li><a href="/categories/Kernel/">Kernel</a><small>4</small></li>
+  
+    <li><a href="/categories/Learning/">Learning</a><small>8</small></li>
+  
+    <li><a href="/categories/Life/">Life</a><small>7</small></li>
+  
+    <li><a href="/categories/Others/">Others</a><small>1</small></li>
+  
+    <li><a href="/categories/Read-Notes/">Read Notes</a><small>7</small></li>
+  
+    <li><a href="/categories/Tools/">Tools</a><small>6</small></li>
+  
+    <li><a href="/categories/Vulnerabilities/">Vulnerabilities</a><small>0</small></li>
+  
+    <li><a href="/categories/Windows/">Windows</a><small>14</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2019/07/01/Windows/delphi_reverse_summary/">Delphi程序逆向反汇编技巧小记</a>
+      </li>
+    
+      <li>
+        <a href="/2019/06/25/Kernel/kernel_enum_wfp_callout_function/">Windows内核重拾：如何枚举系统中Windows Filtering Platform (WFP)驱动中的callout函数</a>
+      </li>
+    
+      <li>
+        <a href="/2019/05/06/Kernel/windows-driver-testing-basics/">Windows内核重拾：Windows驱动测试基础：工具、功能和示例（翻译/转载）</a>
+      </li>
+    
+      <li>
+        <a href="/2019/04/06/Windows/how-to-reverse-engineer-software-windows-in-a-right-way/">如何正确的对Windows软件进行逆向工程（翻译/转载）</a>
+      </li>
+    
+      <li>
+        <a href="/2019/01/12/Windows/a_crash_lead_deadlock/">Windows平台下一个崩溃而导致的死锁分析</a>
+      </li>
+    
+      <li>
+        <a href="/2018/12/01/Windows/windows_client_dns_over_https/">Windows客户端如何透明使用DNS-over-HTTPS</a>
+      </li>
+    
+      <li>
+        <a href="/2018/10/06/Cybersecurity/ddos-protection-techniques/">现代DDoS对抗技术概述（翻译/转载）</a>
+      </li>
+    
+      <li>
+        <a href="/2018/09/18/Life/xian/">西安周末游</a>
+      </li>
+    
+      <li>
+        <a href="/2018/01/06/Kernel/WindowsKernel_DebugObject/">Windows内核重拾：DebugObject</a>
+      </li>
+    
+      <li>
+        <a href="/2017/10/23/Tools/IDA-Pro-ClassInformer-Tutorial/">IDA Pro ClassInformer使用指南（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2017/05/23/Windows/Kernel Data and Filtering Support/">Kernel Data and Filtering Support for Windows Server 2008（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2017/05/17/Windows/Windows-x64-Shellcode/">Windows x64 Shellcode编写指南(翻译)</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget tagcloud">
+  <h3 class="title">标签云</h3>
+  <div class="entry">
+    <a href="/tags/ASM/" style="font-size: 12.5px;">ASM</a> <a href="/tags/Boost/" style="font-size: 10px;">Boost</a> <a href="/tags/DDoS/" style="font-size: 10px;">DDoS</a> <a href="/tags/DNS-over-HTTPS/" style="font-size: 10px;">DNS-over-HTTPS</a> <a href="/tags/Delphi/" style="font-size: 10px;">Delphi</a> <a href="/tags/Dll劫持/" style="font-size: 10px;">Dll劫持</a> <a href="/tags/GCC-GDB/" style="font-size: 10px;">GCC&GDB</a> <a href="/tags/GetVersionEx/" style="font-size: 10px;">GetVersionEx</a> <a href="/tags/Http/" style="font-size: 10px;">Http</a> <a href="/tags/IDA-Pro/" style="font-size: 12.5px;">IDA Pro</a> <a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/MSDN/" style="font-size: 12.5px;">MSDN</a> <a href="/tags/Malware/" style="font-size: 12.5px;">Malware</a> <a href="/tags/MiniDumpWriteDump/" style="font-size: 10px;">MiniDumpWriteDump</a> <a href="/tags/PEB/" style="font-size: 10px;">PEB</a> <a href="/tags/Procmon/" style="font-size: 10px;">Procmon</a> <a href="/tags/Runtime-Error/" style="font-size: 10px;">Runtime Error</a> <a href="/tags/SEH/" style="font-size: 10px;">SEH</a> <a href="/tags/Shellcode/" style="font-size: 10px;">Shellcode</a> <a href="/tags/SysinternalsSuite/" style="font-size: 10px;">SysinternalsSuite</a> <a href="/tags/Tips/" style="font-size: 10px;">Tips</a> <a href="/tags/UAC/" style="font-size: 10px;">UAC</a> <a href="/tags/UAF漏洞/" style="font-size: 10px;">UAF漏洞</a> <a href="/tags/VC/" style="font-size: 10px;">VC</a> <a href="/tags/Visual-Studio/" style="font-size: 12.5px;">Visual Studio</a> <a href="/tags/Windbg/" style="font-size: 10px;">Windbg</a> <a href="/tags/Windows/" style="font-size: 20px;">Windows</a> <a href="/tags/Windows核心编程/" style="font-size: 17.5px;">Windows核心编程</a> <a href="/tags/android/" style="font-size: 10px;">android</a> <a href="/tags/getaddrinfo/" style="font-size: 10px;">getaddrinfo</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/libeay32/" style="font-size: 10px;">libeay32</a> <a href="/tags/markdown/" style="font-size: 10px;">markdown</a> <a href="/tags/ndk/" style="font-size: 10px;">ndk</a> <a href="/tags/sublime-text3/" style="font-size: 10px;">sublime text3</a> <a href="/tags/x64/" style="font-size: 12.5px;">x64</a> <a href="/tags/体验/" style="font-size: 10px;">体验</a> <a href="/tags/内核/" style="font-size: 12.5px;">内核</a> <a href="/tags/内核结构/" style="font-size: 15px;">内核结构</a> <a href="/tags/学习/" style="font-size: 10px;">学习</a> <a href="/tags/安全机制/" style="font-size: 10px;">安全机制</a> <a href="/tags/异常处理/" style="font-size: 10px;">异常处理</a> <a href="/tags/提权/" style="font-size: 10px;">提权</a> <a href="/tags/服务/" style="font-size: 10px;">服务</a> <a href="/tags/权限/" style="font-size: 12.5px;">权限</a> <a href="/tags/栈溢出漏洞/" style="font-size: 10px;">栈溢出漏洞</a> <a href="/tags/测试/" style="font-size: 10px;">测试</a> <a href="/tags/浮躁/" style="font-size: 10px;">浮躁</a> <a href="/tags/漏洞调试/" style="font-size: 12.5px;">漏洞调试</a> <a href="/tags/生活/" style="font-size: 15px;">生活</a> <a href="/tags/脱壳/" style="font-size: 10px;">脱壳</a> <a href="/tags/西安/" style="font-size: 10px;">西安</a> <a href="/tags/计划/" style="font-size: 10px;">计划</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a> <a href="/tags/调试/" style="font-size: 15px;">调试</a> <a href="/tags/转换/" style="font-size: 10px;">转换</a> <a href="/tags/进程/" style="font-size: 10px;">进程</a> <a href="/tags/逆向/" style="font-size: 10px;">逆向</a> <a href="/tags/重庆/" style="font-size: 10px;">重庆</a> <a href="/tags/驱动/" style="font-size: 15px;">驱动</a>
+  </div>
+</div>
+
+
+  <div class="widget tag">
+<h3 class="title">Links</h3>
+<ul class="entry">
+<li><a href="http://blog.ourren.com/" title="Ourren">Ourren</a></li>
+<li><a href="http://www.hyjal.net/" title="Hyjal">Hyjal</a></li>
+<li><a href="http://www.jianshu.com/users/fa15f4e416ae/latest_articles" title="Daemonceltics">Daemonceltics</a></li>
+<li><a href="http://papap.info/" title="isee">isee</a></li>
+</ul>
+</div>
+
+  <script type="text/javascript" id="clustrmaps" src="//cdn.clustrmaps.com/map_v2.js?u=putG&d=yoFnN6V-ovhL-H4e9_69LvkTiX4uX7rEYJ15yL3G1Wg"></script>
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <div id="go-pg-top"><i class="icon-arrow-up"></i></div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2020 Lyon
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript" charset="utf-8" src="/js/page.js"></script>
+
+</body>
+
+</html>

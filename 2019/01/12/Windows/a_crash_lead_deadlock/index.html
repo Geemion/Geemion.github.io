@@ -1,0 +1,299 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Windows平台下一个崩溃而导致的死锁分析 | Lyon&#39;s blog</title>
+  <meta name="author" content="Lyon">
+  
+  <meta name="description" content="Walk steps step by step">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="Windows平台下一个崩溃而导致的死锁分析"/>
+  <meta property="og:site_name" content="Lyon&#39;s blog"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  #<link href="/favicon.ico" rel="icon">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="alternate" href="/atom.xml" title="Lyon&#39;s blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  <script src="/js/jquery.min.js"></script>
+  <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?0fe72895c9bcfd0d09da12b5378b1b91";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+</head>
+
+
+<body>
+  <!--[if lte IE 8]> <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'> <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0027_Simplified Chinese.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." style='margin-left:auto;margin-right:auto;display: block;'/></a></div> <![endif]-->
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">Lyon&#39;s blog</a></h1>
+  <h2><a href="/">I hear and I forget.I see and I remember.I do and I understand.</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">首页</a></li>
+    
+      <li><a href="/archives">归档</a></li>
+    
+      <li><a href="/about">关于</a></li>
+    
+	<li> <a href="/atom.xml">RSS</a> </li>
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <time datetime="2019-01-12T12:13:53.000Z"><a href="/2019/01/12/Windows/a_crash_lead_deadlock/">2019-01-12</a></time>
+      
+      
+  
+    <h1 class="title">Windows平台下一个崩溃而导致的死锁分析</h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+  <div id="toc" class="toc-article">
+  <strong class="toc-title">文章目录</strong>
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x00_问题介绍"><span class="toc-number">1.</span> <span class="toc-text">0x00 问题介绍</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x01_初探死锁原因"><span class="toc-number">2.</span> <span class="toc-text">0x01 初探死锁原因</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x02_再探死锁原因"><span class="toc-number">3.</span> <span class="toc-text">0x02 再探死锁原因</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x03_解决方案"><span class="toc-number">4.</span> <span class="toc-text">0x03 解决方案</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x04_参考链接"><span class="toc-number">5.</span> <span class="toc-text">0x04 参考链接</span></a></li></ol>
+  </div>
+
+
+	
+    <div class="entry">
+      
+        <h2 id="0x00_问题介绍">0x00 问题介绍</h2><p>测试反馈测试过程中发现程序进程存在但是界面没加载出来，看现场很快发现是因为版本不匹配而导致程序崩溃，在写dmp的过程中死锁而导致进程卡死，由于程序是卡死而非退出守护进程也未重启程序，最终导致界面一直没加载出来。<br>现象就如上面所说，但是为什么写dmp为什么会导致程序死锁呢？<br><a id="more"></a></p>
+<h2 id="0x01_初探死锁原因">0x01 初探死锁原因</h2><p>首先我们来看下程序死锁时线程状态，分析下死锁原因：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">0</span>:<span class="number">065</span>&gt; ~<span class="number">0</span>kv</span><br><span class="line">ChildEBP RetAddr  Args to Child              </span><br><span class="line"><span class="number">0061</span>c8cc <span class="number">751</span>a15bf <span class="number">00000138</span> <span class="number">00000000</span> <span class="number">00000000</span> ntdll!NtWaitForSingleObject+<span class="number">0x15</span> (FPO: [<span class="number">3</span>,<span class="number">0</span>,<span class="number">0</span>])</span><br><span class="line"><span class="number">0061</span>c938 <span class="number">770e1194</span> <span class="number">00000138</span> ffffffff <span class="number">00000000</span> KERNELBASE!WaitForSingleObjectEx+<span class="number">0x98</span> (FPO: [Non-Fpo])</span><br><span class="line"><span class="number">0061</span>c950 <span class="number">770e1148</span> <span class="number">00000138</span> ffffffff <span class="number">00000000</span> kernel32!WaitForSingleObjectExImplementation+<span class="number">0x75</span> (FPO: [Non-Fpo])</span><br><span class="line"><span class="number">0061</span>c964 <span class="number">6</span>c710cbb <span class="number">00000138</span> ffffffff <span class="number">6</span>c71092f kernel32!WaitForSingleObject+<span class="number">0x12</span> (FPO: [Non-Fpo])</span><br><span class="line"><span class="number">0061</span>c978 <span class="number">6</span>c710983 <span class="number">0061</span>ca54 <span class="number">00000000</span> <span class="number">6</span>c71092f xxx!google_breakpad::ExceptionHandler::WriteMinidumpOnHandlerThread+<span class="number">0x64</span> (FPO: [<span class="number">2</span>,<span class="number">0</span>,<span class="number">0</span>]) (CONV: thiscall) </span><br><span class="line"><span class="number">0061</span>c994 <span class="number">7712030</span>d <span class="number">0061</span>ca24 <span class="number">7712031f</span> <span class="number">0061</span>ca54 xxx!google_breakpad::ExceptionHandler::HandleException+<span class="number">0x54</span> (FPO: [Non-Fpo]) (CONV: thiscall) </span><br><span class="line"><span class="number">0061</span>ca24 <span class="number">77686637</span> <span class="number">0061</span>ca54 <span class="number">77686514</span> <span class="number">00000000</span> kernel32!UnhandledExceptionFilter+<span class="number">0x119</span> (FPO: [Non-Fpo])</span><br><span class="line"><span class="number">0061</span>ca2c <span class="number">77686514</span> <span class="number">00000000</span> <span class="number">0061f</span>a04 <span class="number">7763</span>c6b0 ntdll!__RtlUserThreadStart+<span class="number">0x62</span> (FPO: [SEH])</span><br><span class="line"><span class="number">0061</span>ca40 <span class="number">776863</span>b1 <span class="number">00000000</span> <span class="number">00000000</span> <span class="number">00000000</span> ntdll!_EH4_CallFilterFunc+<span class="number">0x12</span> (FPO: [Uses EBP] [<span class="number">0</span>,<span class="number">0</span>,<span class="number">4</span>])</span><br><span class="line"><span class="number">0061</span>ca68 <span class="number">7766</span>b81d fffffffe <span class="number">0061f</span>9f4 <span class="number">0061</span>cba4 ntdll!_except_handler4+<span class="number">0x8e</span> (FPO: [Non-Fpo])</span><br><span class="line"><span class="number">0061</span>ca8c <span class="number">7766</span>b7ef <span class="number">0061</span>cb54 <span class="number">0061f</span>9f4 <span class="number">0061</span>cba4 ntdll!ExecuteHandler2+<span class="number">0x26</span> (FPO: [Uses EBP] [<span class="number">5</span>,<span class="number">3</span>,<span class="number">1</span>])</span><br><span class="line"><span class="number">0061</span>cab0 <span class="number">7766</span>b790 <span class="number">0061</span>cb54 <span class="number">0061f</span>9f4 <span class="number">0061</span>cba4 ntdll!ExecuteHandler+<span class="number">0x24</span> (FPO: [<span class="number">5</span>,<span class="number">0</span>,<span class="number">3</span>])</span><br><span class="line"><span class="number">0061</span>cb3c <span class="number">77620163</span> <span class="number">0061</span>cb54 <span class="number">0061</span>cba4 <span class="number">0061</span>cb54 ntdll!RtlDispatchException+<span class="number">0x127</span> (FPO: [Non-Fpo])</span><br><span class="line"><span class="number">0061</span>cb3c <span class="number">00000000</span> <span class="number">0061</span>cb54 <span class="number">0061</span>cba4 <span class="number">0061</span>cb54 ntdll!KiUserExceptionDispatcher+<span class="number">0xf</span> (FPO: [<span class="number">2</span>,<span class="number">0</span>,<span class="number">0</span>]) (CONTEXT @ <span class="number">00000008</span>)</span><br><span class="line"><span class="number">0</span>:<span class="number">065</span>&gt; .exr <span class="number">0061</span>cb54 </span><br><span class="line">ExceptionAddress: <span class="number">7519</span>c52f (KERNELBASE!RaiseException+<span class="number">0x00000058</span>)</span><br><span class="line">   ExceptionCode: e06d7363 (C++ EH exception)</span><br><span class="line">  ExceptionFlags: <span class="number">00000001</span></span><br><span class="line">NumberParameters: <span class="number">3</span></span><br><span class="line">   Parameter[<span class="number">0</span>]: <span class="number">19930520</span></span><br><span class="line">   Parameter[<span class="number">1</span>]: <span class="number">0061</span>d0a0</span><br><span class="line">   Parameter[<span class="number">2</span>]: <span class="number">6</span>d376990</span><br><span class="line">  pExceptionObject: <span class="number">0061</span>d0a0</span><br><span class="line">  _s_ThrowInfo    : <span class="number">6</span>d376990</span><br><span class="line">  Type            : <span class="keyword">class</span> <span class="built_in">std</span>::bad_alloc</span><br><span class="line">  Type            : <span class="keyword">class</span> <span class="built_in">std</span>::exception</span><br><span class="line"><span class="number">0</span>:<span class="number">065</span>&gt; .cxr <span class="number">0061</span>cba4 </span><br><span class="line">eax=<span class="number">0061</span>d008 ebx=<span class="number">0061</span>d0e4 ecx=<span class="number">00000003</span> edx=<span class="number">00000000</span> esi=<span class="number">3f</span>ffffef edi=<span class="number">00000000</span></span><br><span class="line">eip=<span class="number">7519</span>c52f esp=<span class="number">0061</span>d008 ebp=<span class="number">0061</span>d058 iopl=<span class="number">0</span>         nv up ei pl nz ac po nc</span><br><span class="line">cs=<span class="number">0023</span>  ss=<span class="number">002</span>b  ds=<span class="number">002</span>b  es=<span class="number">002</span>b  fs=<span class="number">0053</span>  gs=<span class="number">002</span>b             efl=<span class="number">00000212</span></span><br><span class="line">KERNELBASE!RaiseException+<span class="number">0x58</span>:</span><br><span class="line"><span class="number">7519</span>c52f c9              leave</span><br><span class="line">*** ERROR: Symbol file could not be found.  Defaulted to <span class="keyword">export</span> symbols <span class="keyword">for</span> Qt5Core.dll - </span><br><span class="line">*** ERROR: Symbol file could not be found.  Defaulted to <span class="keyword">export</span> symbols <span class="keyword">for</span> Desktop.exe - </span><br><span class="line">*** ERROR: Symbol file could not be found.  Defaulted to <span class="keyword">export</span> symbols <span class="keyword">for</span> Qt5Widgets.dll - </span><br><span class="line"><span class="number">0</span>:<span class="number">065</span>&gt; kv</span><br><span class="line">  *** Stack trace <span class="keyword">for</span> last <span class="built_in">set</span> context - .thread/.cxr resets it</span><br><span class="line">ChildEBP RetAddr  Args to Child              </span><br><span class="line"><span class="number">0061</span>d058 <span class="number">6f</span>e4872d e06d7363 <span class="number">00000001</span> <span class="number">00000003</span> KERNELBASE!RaiseException+<span class="number">0x58</span> (FPO: [Non-Fpo])</span><br><span class="line"><span class="number">0061</span>d090 <span class="number">6</span>d0a6956 <span class="number">0061</span>d0a0 <span class="number">6</span>d376990 <span class="number">6</span>d2516d4 msvcr100!_CxxThrowException+<span class="number">0x48</span> (FPO: [Non-Fpo])</span><br><span class="line">WARNING: Stack unwind information not available. Following frames may be wrong.</span><br><span class="line"><span class="number">0061</span>d0ac <span class="number">6</span>d0b888b <span class="number">07</span>cb37f8 <span class="number">07</span>cb37f8 <span class="number">00000000</span> Qt5Core!qBadAlloc+<span class="number">0x1c</span></span><br><span class="line"><span class="number">0061</span>d0f4 <span class="number">00285f</span>be <span class="number">0061</span>d11c <span class="number">3f</span>ffffef <span class="number">00000000</span> Qt5Core!QByteArray::resize+<span class="number">0x96</span></span><br><span class="line"><span class="number">0</span>:<span class="number">065</span>&gt; !handle <span class="number">0x138</span> <span class="number">0xf</span></span><br><span class="line">Handle <span class="number">00000138</span></span><br><span class="line">  Type         	Semaphore</span><br><span class="line">  Attributes   	<span class="number">0</span></span><br><span class="line">  GrantedAccess	<span class="number">0x1f0003</span>:</span><br><span class="line">         Delete,ReadControl,WriteDac,WriteOwner,Synch</span><br><span class="line">         QueryState,ModifyState</span><br><span class="line">  HandleCount  	<span class="number">2</span></span><br><span class="line">  PointerCount 	<span class="number">4</span></span><br><span class="line">  Name         	&lt;none&gt;</span><br><span class="line">  No object specific information available</span><br></pre></td></tr></table></figure></p>
+<p>首先看下主线程，主线程因为bad_alloc主动触发异常被breakpad捕获到在创建dmp文件，并通过WaitForsingleObject等待句柄值为0x138的信号量释放。这里可以回到breakpad的源码，可以发现breakpad中是通过信号量控制ExceptionHandlerThreadMain线程生成dmp，此刻是通过WaitForSingleObject等待ExceptionHandlerThreadMain线程完成dmp生成。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// This causes the handler thread to call WriteMinidumpWithException.</span></span><br><span class="line">ReleaseSemaphore(handler_start_semaphore_, <span class="number">1</span>, <span class="literal">NULL</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Wait until WriteMinidumpWithException is done and collect its return value.</span></span><br><span class="line">WaitForSingleObject(handler_finish_semaphore_, INFINITE);</span><br><span class="line"><span class="keyword">bool</span> status = handler_return_value_;</span><br></pre></td></tr></table></figure></p>
+<p>那我们再看下线程ExceptionHandlerThreadMain在干嘛，怎么一直没有完成dmp文件生成，释放信号量？<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">0</span>:<span class="number">065</span>&gt; ~<span class="number">4</span>kv</span><br><span class="line">ChildEBP RetAddr  Args to Child              </span><br><span class="line"><span class="number">02f</span>3f1fc <span class="number">7764</span>db13 <span class="number">00000730</span> <span class="number">00000000</span> <span class="number">00000000</span> ntdll!NtWaitForSingleObject+<span class="number">0x15</span> (FPO: [<span class="number">3</span>,<span class="number">0</span>,<span class="number">0</span>])</span><br><span class="line"><span class="number">02f</span>3f260 <span class="number">7764</span>d9f7 <span class="number">00000000</span> <span class="number">00000000</span> <span class="number">03</span>d20000 ntdll!RtlpWaitOnCriticalSection+<span class="number">0x13e</span> (FPO: [Non-Fpo])</span><br><span class="line"><span class="number">02f</span>3f288 <span class="number">7764</span>dc78 <span class="number">03</span>d20138 <span class="number">759</span>b9beb <span class="number">00078000</span> ntdll!RtlEnterCriticalSection+<span class="number">0x150</span> (FPO: [Non-Fpo])</span><br><span class="line"><span class="number">02f</span>3f364 <span class="number">77643541</span> <span class="number">00001f</span>f8 <span class="number">00002000</span> <span class="number">00000000</span> ntdll!RtlpAllocateHeap+<span class="number">0x159</span> (FPO: [Non-Fpo])</span><br><span class="line"><span class="number">02f</span>3f3e8 <span class="number">77647</span>d7b <span class="number">03</span>d20000 <span class="number">00800000</span> <span class="number">00001f</span>f8 ntdll!RtlAllocateHeap+<span class="number">0x23a</span> (FPO: [Non-Fpo])</span><br><span class="line"><span class="number">02f</span>3f434 <span class="number">77647271</span> <span class="number">00000388</span> <span class="number">759</span>b9c4b <span class="number">0767</span>d8e0 ntdll!RtlpAllocateUserBlock+<span class="number">0xae</span> (FPO: [Non-Fpo])</span><br><span class="line"><span class="number">02f</span>3f4c4 <span class="number">7763e262</span> <span class="number">0767</span>d8e0 <span class="number">02f</span>3faac <span class="number">02f</span>3faac ntdll!RtlpLowFragHeapAllocFromContext+<span class="number">0x802</span> (FPO: [Non-Fpo])</span><br><span class="line"><span class="number">02f</span>3f538 <span class="number">73e1</span>bad5 <span class="number">03</span>d20000 <span class="number">00000008</span> <span class="number">00000374</span> ntdll!RtlAllocateHeap+<span class="number">0x206</span> (FPO: [Non-Fpo])</span><br><span class="line"><span class="number">02f</span>3f54c <span class="number">73e16</span>d52 <span class="number">00000374</span> <span class="number">0767</span>d8e0 <span class="number">02f</span>3faac dbghelp!Win32LiveAllocationProvider::Alloc+<span class="number">0x13</span> (FPO: [Non-Fpo])</span><br><span class="line"><span class="number">02f</span>3f560 <span class="number">73e16</span>e96 <span class="number">02f</span>3faac <span class="number">00000374</span> <span class="number">0767</span>d8e0 dbghelp!AllocMemory+<span class="number">0x15</span> (FPO: [Non-Fpo])</span><br><span class="line"><span class="number">02f</span>3f598 <span class="number">73e1</span>a261 <span class="number">02f</span>3faac <span class="number">0767</span>d8e0 <span class="number">000018</span>b4 dbghelp!GenAllocateThreadObject+<span class="number">0x2d</span> (FPO: [Non-Fpo])</span><br><span class="line"><span class="number">02f</span>3f9c0 <span class="number">73e15</span>b81 <span class="number">02f</span>3faac <span class="number">02f</span>3fb60 <span class="number">02f</span>3fb78 dbghelp!GenGetProcessInfo+<span class="number">0xf2</span> (FPO: [Non-Fpo])</span><br><span class="line"><span class="number">02f</span>3fb40 <span class="number">73e15</span>e2a ffffffff <span class="number">00001</span>bd0 <span class="number">03</span>d207e8 dbghelp!MiniDumpProvideDump+<span class="number">0x16b</span> (FPO: [Non-Fpo])</span><br><span class="line"><span class="number">02f</span>3fba8 <span class="number">6</span>c71101a ffffffff <span class="number">00001</span>bd0 <span class="number">00000728</span> dbghelp!MiniDumpWriteDump+<span class="number">0xf2</span> (FPO: [Non-Fpo])</span><br><span class="line"><span class="number">02f</span>3fc70 <span class="number">6</span>c710db2 <span class="number">00000720</span> <span class="number">00000000</span> ffffffff xxx!google_breakpad::ExceptionHandler::WriteMinidumpWithExceptionForProcess+<span class="number">0x1e3</span> (FPO: [Non-Fpo]) </span><br><span class="line"><span class="number">02f</span>3fc8c <span class="number">6</span>c710875 <span class="number">00000720</span> <span class="number">0061</span>ca54 <span class="number">00000000</span> xxx!google_breakpad::ExceptionHandler::WriteMinidumpWithException+<span class="number">0x43</span> (FPO: [Non-Fpo]) </span><br><span class="line"><span class="number">02f</span>3fca0 <span class="number">770e338</span>a <span class="number">02811098</span> <span class="number">02f</span>3fcec <span class="number">77649</span>a02 xxx!google_breakpad::ExceptionHandler::ExceptionHandlerThreadMain+<span class="number">0x39</span> (FPO: [<span class="number">1</span>,<span class="number">0</span>,<span class="number">0</span>]) </span><br><span class="line"><span class="number">02f</span>3fcac <span class="number">77649</span>a02 <span class="number">02811098</span> <span class="number">759</span>b9463 <span class="number">00000000</span> kernel32!BaseThreadInitThunk+<span class="number">0xe</span> (FPO: [Non-Fpo])</span><br><span class="line"><span class="number">02f</span>3fcec <span class="number">776499</span>d5 <span class="number">6</span>c71083c <span class="number">02811098</span> <span class="number">00000000</span> ntdll!__RtlUserThreadStart+<span class="number">0x70</span> (FPO: [Non-Fpo])</span><br><span class="line"><span class="number">02f</span>3fd04 <span class="number">00000000</span> <span class="number">6</span>c71083c <span class="number">02811098</span> <span class="number">00000000</span> ntdll!_RtlUserThreadStart+<span class="number">0x1b</span> (FPO: [Non-Fpo])</span><br></pre></td></tr></table></figure></p>
+<p>我们可以看到ExceptionHandlerThreadMain线程果然正在写dmp，但是为什么一直没有完成了？原来是在等待获取一个临界区0x3d20138啊，看下这个临界区被谁占用了呢<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">0</span>:<span class="number">065</span>&gt; !cs <span class="number">03</span>d20138 </span><br><span class="line">-----------------------------------------</span><br><span class="line">Critical section   = <span class="number">0x03d20138</span> (+<span class="number">0x3D20138</span>)</span><br><span class="line">DebugInfo          = <span class="number">0x00810238</span></span><br><span class="line">LOCKED</span><br><span class="line">LockCount          = <span class="number">0x1</span></span><br><span class="line">WaiterWoken        = No</span><br><span class="line">OwningThread       = <span class="number">0x00001770</span></span><br><span class="line">RecursionCount     = <span class="number">0x1</span></span><br><span class="line">LockSemaphore      = <span class="number">0x730</span></span><br><span class="line">SpinCount          = <span class="number">0x00000fa0</span></span><br><span class="line"><span class="number">0</span>:<span class="number">065</span>&gt; ~~[<span class="number">0x1770</span>]</span><br><span class="line">  <span class="number">12</span>  Id: <span class="number">1</span>bd0<span class="number">.1770</span> Suspend: <span class="number">2</span> Teb: <span class="number">7</span>ef93000 Unfrozen</span><br><span class="line">      Priority: <span class="number">0</span>  Priority <span class="keyword">class</span>: <span class="number">32</span></span><br><span class="line"><span class="number">0</span>:<span class="number">065</span>&gt; ~<span class="number">12</span>kv</span><br><span class="line">ChildEBP RetAddr  Args to Child              </span><br><span class="line"><span class="number">03f</span>cf388 <span class="number">776</span>cfbc7 <span class="number">00720000</span> <span class="number">00000005</span> <span class="number">776</span>b4acb ntdll!RtlpQueryExtendedInformationHeap+<span class="number">0x4ec</span> (FPO: [Non-Fpo])</span><br><span class="line"><span class="number">03f</span>cf408 <span class="number">776</span>d079f <span class="number">00000005</span> <span class="number">776</span>b4acb <span class="number">03f</span>cf590 ntdll!RtlpQueryExtendedInformationAllHeaps+<span class="number">0xe5</span> (FPO: [Non-Fpo])</span><br><span class="line"><span class="number">03f</span>cf4f8 <span class="number">7769e2</span>b6 <span class="number">03f</span>cf564 <span class="number">776</span>b4acb <span class="number">00000000</span> ntdll!RtlpQueryExtendedHeapInformation+<span class="number">0xe7</span> (FPO: [Non-Fpo])</span><br><span class="line"><span class="number">03f</span>cf538 <span class="number">776</span>b5163 <span class="number">00000000</span> <span class="number">00000002</span> <span class="number">03f</span>cf564 ntdll!RtlQueryHeapInformation+<span class="number">0x4a</span> (FPO: [Non-Fpo])</span><br><span class="line"><span class="number">03f</span>cf5dc <span class="number">7769374</span>a <span class="number">0</span>a0a0000 <span class="number">770</span>d0000 <span class="number">03f</span>cf6a4 ntdll!RtlQueryProcessHeapInformation+<span class="number">0x288</span> (FPO: [Non-Fpo])</span><br><span class="line"><span class="number">03f</span>cf658 <span class="number">77166093</span> <span class="number">00001</span>bd0 <span class="number">00000014</span> <span class="number">0</span>a0a0000 ntdll!RtlQueryProcessDebugInformation+<span class="number">0x28a</span> (FPO: [Non-Fpo])</span><br><span class="line">*** WARNING: Unable to verify checksum <span class="keyword">for</span> libeay32.dll</span><br><span class="line">*** ERROR: Symbol file could not be found.  Defaulted to <span class="keyword">export</span> symbols <span class="keyword">for</span> libeay32.dll - </span><br><span class="line"><span class="number">03f</span>cf688 <span class="number">6</span>c38a953 <span class="number">0</span>a0a0000 <span class="number">5205</span>b472 <span class="number">00000001</span> kernel32!Heap32Next+<span class="number">0x4d</span> (FPO: [Non-Fpo])</span><br><span class="line">WARNING: Stack unwind information not available. Following frames may be wrong.</span><br><span class="line"><span class="number">03f</span>cf730 <span class="number">7764</span>b83d <span class="number">03f</span>cf7cc <span class="number">00000001</span> <span class="number">751</span>d11e4 libeay32!RAND_poll+<span class="number">0x583</span></span><br><span class="line"><span class="number">03f</span>cf7dc <span class="number">6</span>c331cef <span class="number">0000000</span>a <span class="number">00000001</span> <span class="number">6</span>c408268 ntdll!SbpTraceSbImpl+<span class="number">0x4e</span> (FPO: [Non-Fpo])</span><br><span class="line"><span class="number">03f</span>cf7f4 <span class="number">6</span>c331d3b <span class="number">0000000</span>a <span class="number">00000001</span> <span class="number">6</span>c408268 libeay32!CRYPTO_lock+<span class="number">0x6f</span></span><br><span class="line"><span class="number">00000000</span> <span class="number">00000000</span> <span class="number">00000000</span> <span class="number">00000000</span> <span class="number">00000000</span> libeay32!CRYPTO_add_lock+<span class="number">0x3b</span></span><br></pre></td></tr></table></figure></p>
+<p>原来临界区03d20138还在被12号线程线程占用着啊，那为什么一直不释放呢？12号线程也没有获取什么资源啊，通过栈看只是在查询堆信息啊，百思不得其解。看看线程状态呢，Suspend 2表示线程该线程被挂起了2次（不清楚可以看下SuspendThread的MSDN），其中一次是挂调试器引起的，那另外一次呢？ 猜测可能是breakpad或则系统函数在写dmp的过程中执行的，因为通过挂起线程便于保存当前进程线程的上下文到dmp文件中。<br>最终发现是在执行系统函数MiniDumpWriteDump时执行的挂起线程操作。在GenAllocateThreadObject函数中执行SuspendThread挂起线程，在GenFreeProcessObject中执行ResumeThread恢复线程执行。</p>
+<p><div align="center"><br><img src="/img/dbghelp_suspend.png" align="center"><br></div><br>到这里死锁的原因已经很清晰了，整个过程如下：<br>1.主线程即0号线程触发异常被breakpad捕获，0号线程通过信号量控制4号线程生成dmp并等待4号线程执行完MiniDumpWriteDump释放信号量。<br>2.4号线程执行MiniDumpWriteDump，在执行过程中会挂起其他线程，挂起其他线程后会执行堆分配操作，这时会获取临界区0x03d20138。<br>3.此刻临界区0x03d20138正被12号线程占有，但是12号线程被4号线程不能释放临界区0x03d20138。</p>
+<h2 id="0x02_再探死锁原因">0x02 再探死锁原因</h2><p>这就是一个经典的死锁问题，4号线程和12号线程相互等待，陷入死循环。本以为这时候分析完毕了，但是突然想到12号线程是libeay32的线程为什么会执行堆查询操作呢？直接Google搜一下，第一篇就是libeay32引发的死锁问题(请看第一个参考链接)。<br>帖子中说将openssl版本从原先的0.9.8g升到了目前最新的1.0.0e，问题就可以得到解决，看下我们的版本呢<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">0:065&gt; lmvm libeay32</span><br><span class="line">start    end        module name</span><br><span class="line">6c330000 6c45e000   libeay32 C (export symbols)       libeay32.dll</span><br><span class="line">    Loaded symbol image file: libeay32.dll</span><br><span class="line">    Image name: libeay32.dll</span><br><span class="line">    Timestamp:        Fri Jul 24 12:42:20 2015 (55B1C22C)</span><br><span class="line">    CheckSum:         00000000</span><br><span class="line">    ImageSize:        0012E000</span><br><span class="line">    File version:     1.0.2.4</span><br><span class="line">    Product version:  1.0.2.4</span><br><span class="line">    File flags:       0 (Mask 3F)</span><br><span class="line">    File OS:          4 Unknown Win32</span><br><span class="line">    File type:        2.0 Dll</span><br><span class="line">    File date:        00000000.00000000</span><br><span class="line">    Translations:     0409.04b0</span><br><span class="line">    CompanyName:      The OpenSSL Project, http://www.openssl.org/</span><br><span class="line">    ProductName:      The OpenSSL Toolkit</span><br><span class="line">    InternalName:     libeay32</span><br><span class="line">    OriginalFilename: libeay32.dll</span><br><span class="line">    ProductVersion:   1.0.2d</span><br><span class="line">    FileVersion:      1.0.2d</span><br><span class="line">    FileDescription:  OpenSSL Shared Library</span><br><span class="line">    LegalCopyright:   Copyright  ?1998-2005 The OpenSSL Project. Copyright ?1995-1998 Eric A. Young, Tim J. Hudson. All rights reserved.</span><br></pre></td></tr></table></figure></p>
+<p>版本已经是1.0.2d了，比帖子中说的版本还新，不行下份源码来看看，在openssl-1.0.2d\crypto\rand\rand_win.c int RAND_poll(void)函数中可以找到相关代码，从相关注释可以看出遍历堆的作用是生成随机数因子，同时RAND_poll中也包含其他几种方式生成随机数因子，如CryptoAPI相关接口，生成成功后通过RAND_add加入到随机数池中。<br>那是不是利用堆遍历生成随机数的方式可以直接删除掉呢？ 本身堆遍历性能就不好，还会增加死锁风险。<br>openssl被应用非常广泛，我们看下行业大厂是怎么用的呢，看线Tim中使用的libeay32.dll，果然利用堆遍历生成随机数的方式被删除掉了，不过删除的不彻底，白Loadlibrary/FreeLibrary kernal32.dll一次。</p>
+<h2 id="0x03_解决方案">0x03 解决方案</h2><p>1.彻底解决方案：微软本身就不建议在进程内生成dmp，并说明了进程内生成dmp最大的潜在风险就是死锁。因此使用进程外生成dump方式是最彻底的解决方案，breadpad本身就支持c/s方式生成dmp。<br>2.缓解方案：删除libeay32!RAND_poll堆遍历生成随机数的方案，这样可以减小死锁的风险，该方案本身性能就不好。<br>3.终极解决方案：提高代码质量，我不异常不崩溃就不会写dmp，也就不死锁了，当然这是理想状态，是不可能的。</p>
+<h2 id="0x04_参考链接">0x04 参考链接</h2><p>[1] <a href="https://blog.csdn.net/xxin_w/article/details/8805050" target="_blank" rel="external">openssl中libeay32!RAND_poll引发的死锁</a><br>[2] <a href="https://ftp.openssl.org/source/old/1.0.2/" target="_blank" rel="external">openssl 1.02 sourcecode</a><br>[3] <a href="https://docs.microsoft.com/en-us/windows/desktop/api/minidumpapiset/nf-minidumpapiset-minidumpwritedump" target="_blank" rel="external">MiniDumpWriteDump MSDN</a></p>
+
+      
+    </div>
+    <footer>
+      
+
+        
+          <div class="alignleft post-nav">
+            <em>上一篇: </em><a href="/2019/04/06/Windows/how-to-reverse-engineer-software-windows-in-a-right-way/">如何正确的对Windows软件进行逆向工程（翻译/转载）</a>
+          </div>
+        
+        
+          <div class="alignright post-nav">
+            <em>下一篇: </em><a href="/2018/12/01/Windows/windows_client_dns_over_https/">Windows客户端如何透明使用DNS-over-HTTPS</a>
+          </div>
+          <div class="clearfix"></div>
+        
+
+        
+          <div class="copyright">
+            
+              <span class="claim">转载请注明youngroe.com</span>
+            
+            
+              <span class="from-link">
+                <em>本文链接地址:</em>
+                <a href="/2019/01/12/Windows/a_crash_lead_deadlock/">
+                  http://www.youngroe.com/2019/01/12/Windows/a_crash_lead_deadlock/
+                </a>
+              </span>
+            
+          </div>
+        
+		<span id="busuanzi_container_site_pv">
+    本站总访问量<span id="busuanzi_value_site_pv"></span>次
+        
+  
+  <div class="categories">
+    <a href="/categories/Windows/">Windows</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/MiniDumpWriteDump/">MiniDumpWriteDump</a>, <a href="/tags/libeay32/">libeay32</a>
+  </div>
+
+        <div class="bdsharebuttonbox"><a href="#" class="bds_more" data-cmd="more"></a><a href="#" class="bds_qzone" data-cmd="qzone"></a><a href="#" class="bds_tsina" data-cmd="tsina"></a><a href="#" class="bds_tqq" data-cmd="tqq"></a><a href="#" class="bds_renren" data-cmd="renren"></a><a href="#" class="bds_weixin" data-cmd="weixin"></a></div>
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdPic":"","bdStyle":"0","bdSize":"16"},"share":{},"image":{"viewList":["qzone","tsina","tqq","renren","weixin"],"viewText":"������","viewSize":"16"},"selectShare":{"bdContainerClass":null,"bdSelectMiniList":["qzone","tsina","tqq","renren","weixin"]}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</span>
+</article>
+
+
+<section id="comment">
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+<div class="widget tag">
+  <h3 class="title">分类</h3>
+  <ul class="entry">
+  
+    <li><a href="/categories/Cybersecurity/">Cybersecurity</a><small>1</small></li>
+  
+    <li><a href="/categories/Debug/">Debug</a><small>7</small></li>
+  
+    <li><a href="/categories/Kernel/">Kernel</a><small>4</small></li>
+  
+    <li><a href="/categories/Learning/">Learning</a><small>8</small></li>
+  
+    <li><a href="/categories/Life/">Life</a><small>7</small></li>
+  
+    <li><a href="/categories/Others/">Others</a><small>1</small></li>
+  
+    <li><a href="/categories/Read-Notes/">Read Notes</a><small>7</small></li>
+  
+    <li><a href="/categories/Tools/">Tools</a><small>6</small></li>
+  
+    <li><a href="/categories/Vulnerabilities/">Vulnerabilities</a><small>0</small></li>
+  
+    <li><a href="/categories/Windows/">Windows</a><small>14</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2019/07/01/Windows/delphi_reverse_summary/">Delphi程序逆向反汇编技巧小记</a>
+      </li>
+    
+      <li>
+        <a href="/2019/06/25/Kernel/kernel_enum_wfp_callout_function/">Windows内核重拾：如何枚举系统中Windows Filtering Platform (WFP)驱动中的callout函数</a>
+      </li>
+    
+      <li>
+        <a href="/2019/05/06/Kernel/windows-driver-testing-basics/">Windows内核重拾：Windows驱动测试基础：工具、功能和示例（翻译/转载）</a>
+      </li>
+    
+      <li>
+        <a href="/2019/04/06/Windows/how-to-reverse-engineer-software-windows-in-a-right-way/">如何正确的对Windows软件进行逆向工程（翻译/转载）</a>
+      </li>
+    
+      <li>
+        <a href="/2019/01/12/Windows/a_crash_lead_deadlock/">Windows平台下一个崩溃而导致的死锁分析</a>
+      </li>
+    
+      <li>
+        <a href="/2018/12/01/Windows/windows_client_dns_over_https/">Windows客户端如何透明使用DNS-over-HTTPS</a>
+      </li>
+    
+      <li>
+        <a href="/2018/10/06/Cybersecurity/ddos-protection-techniques/">现代DDoS对抗技术概述（翻译/转载）</a>
+      </li>
+    
+      <li>
+        <a href="/2018/09/18/Life/xian/">西安周末游</a>
+      </li>
+    
+      <li>
+        <a href="/2018/01/06/Kernel/WindowsKernel_DebugObject/">Windows内核重拾：DebugObject</a>
+      </li>
+    
+      <li>
+        <a href="/2017/10/23/Tools/IDA-Pro-ClassInformer-Tutorial/">IDA Pro ClassInformer使用指南（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2017/05/23/Windows/Kernel Data and Filtering Support/">Kernel Data and Filtering Support for Windows Server 2008（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2017/05/17/Windows/Windows-x64-Shellcode/">Windows x64 Shellcode编写指南(翻译)</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget tagcloud">
+  <h3 class="title">标签云</h3>
+  <div class="entry">
+    <a href="/tags/ASM/" style="font-size: 12.5px;">ASM</a> <a href="/tags/Boost/" style="font-size: 10px;">Boost</a> <a href="/tags/DDoS/" style="font-size: 10px;">DDoS</a> <a href="/tags/DNS-over-HTTPS/" style="font-size: 10px;">DNS-over-HTTPS</a> <a href="/tags/Delphi/" style="font-size: 10px;">Delphi</a> <a href="/tags/Dll劫持/" style="font-size: 10px;">Dll劫持</a> <a href="/tags/GCC-GDB/" style="font-size: 10px;">GCC&GDB</a> <a href="/tags/GetVersionEx/" style="font-size: 10px;">GetVersionEx</a> <a href="/tags/Http/" style="font-size: 10px;">Http</a> <a href="/tags/IDA-Pro/" style="font-size: 12.5px;">IDA Pro</a> <a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/MSDN/" style="font-size: 12.5px;">MSDN</a> <a href="/tags/Malware/" style="font-size: 12.5px;">Malware</a> <a href="/tags/MiniDumpWriteDump/" style="font-size: 10px;">MiniDumpWriteDump</a> <a href="/tags/PEB/" style="font-size: 10px;">PEB</a> <a href="/tags/Procmon/" style="font-size: 10px;">Procmon</a> <a href="/tags/Runtime-Error/" style="font-size: 10px;">Runtime Error</a> <a href="/tags/SEH/" style="font-size: 10px;">SEH</a> <a href="/tags/Shellcode/" style="font-size: 10px;">Shellcode</a> <a href="/tags/SysinternalsSuite/" style="font-size: 10px;">SysinternalsSuite</a> <a href="/tags/Tips/" style="font-size: 10px;">Tips</a> <a href="/tags/UAC/" style="font-size: 10px;">UAC</a> <a href="/tags/UAF漏洞/" style="font-size: 10px;">UAF漏洞</a> <a href="/tags/VC/" style="font-size: 10px;">VC</a> <a href="/tags/Visual-Studio/" style="font-size: 12.5px;">Visual Studio</a> <a href="/tags/Windbg/" style="font-size: 10px;">Windbg</a> <a href="/tags/Windows/" style="font-size: 20px;">Windows</a> <a href="/tags/Windows核心编程/" style="font-size: 17.5px;">Windows核心编程</a> <a href="/tags/android/" style="font-size: 10px;">android</a> <a href="/tags/getaddrinfo/" style="font-size: 10px;">getaddrinfo</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/libeay32/" style="font-size: 10px;">libeay32</a> <a href="/tags/markdown/" style="font-size: 10px;">markdown</a> <a href="/tags/ndk/" style="font-size: 10px;">ndk</a> <a href="/tags/sublime-text3/" style="font-size: 10px;">sublime text3</a> <a href="/tags/x64/" style="font-size: 12.5px;">x64</a> <a href="/tags/体验/" style="font-size: 10px;">体验</a> <a href="/tags/内核/" style="font-size: 12.5px;">内核</a> <a href="/tags/内核结构/" style="font-size: 15px;">内核结构</a> <a href="/tags/学习/" style="font-size: 10px;">学习</a> <a href="/tags/安全机制/" style="font-size: 10px;">安全机制</a> <a href="/tags/异常处理/" style="font-size: 10px;">异常处理</a> <a href="/tags/提权/" style="font-size: 10px;">提权</a> <a href="/tags/服务/" style="font-size: 10px;">服务</a> <a href="/tags/权限/" style="font-size: 12.5px;">权限</a> <a href="/tags/栈溢出漏洞/" style="font-size: 10px;">栈溢出漏洞</a> <a href="/tags/测试/" style="font-size: 10px;">测试</a> <a href="/tags/浮躁/" style="font-size: 10px;">浮躁</a> <a href="/tags/漏洞调试/" style="font-size: 12.5px;">漏洞调试</a> <a href="/tags/生活/" style="font-size: 15px;">生活</a> <a href="/tags/脱壳/" style="font-size: 10px;">脱壳</a> <a href="/tags/西安/" style="font-size: 10px;">西安</a> <a href="/tags/计划/" style="font-size: 10px;">计划</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a> <a href="/tags/调试/" style="font-size: 15px;">调试</a> <a href="/tags/转换/" style="font-size: 10px;">转换</a> <a href="/tags/进程/" style="font-size: 10px;">进程</a> <a href="/tags/逆向/" style="font-size: 10px;">逆向</a> <a href="/tags/重庆/" style="font-size: 10px;">重庆</a> <a href="/tags/驱动/" style="font-size: 15px;">驱动</a>
+  </div>
+</div>
+
+
+  <div class="widget tag">
+<h3 class="title">Links</h3>
+<ul class="entry">
+<li><a href="http://blog.ourren.com/" title="Ourren">Ourren</a></li>
+<li><a href="http://www.hyjal.net/" title="Hyjal">Hyjal</a></li>
+<li><a href="http://www.jianshu.com/users/fa15f4e416ae/latest_articles" title="Daemonceltics">Daemonceltics</a></li>
+<li><a href="http://papap.info/" title="isee">isee</a></li>
+</ul>
+</div>
+
+  <script type="text/javascript" id="clustrmaps" src="//cdn.clustrmaps.com/map_v2.js?u=putG&d=yoFnN6V-ovhL-H4e9_69LvkTiX4uX7rEYJ15yL3G1Wg"></script>
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <div id="go-pg-top"><i class="icon-arrow-up"></i></div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2020 Lyon
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript" charset="utf-8" src="/js/page.js"></script>
+
+</body>
+
+</html>

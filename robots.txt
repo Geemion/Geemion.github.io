@@ -1,0 +1,6 @@
+User-agent: Baiduspider
+Disallow: /life/
+User-agent: Googlebot
+Disallow: /life/
+User-agent: *
+Disallow: /life/

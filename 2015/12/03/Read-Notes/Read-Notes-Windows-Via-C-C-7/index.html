@@ -1,0 +1,305 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Windows核心编程读书笔记6（第17、18章） | Lyon&#39;s blog</title>
+  <meta name="author" content="Lyon">
+  
+  <meta name="description" content="Walk steps step by step">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="Windows核心编程读书笔记6（第17、18章）"/>
+  <meta property="og:site_name" content="Lyon&#39;s blog"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  #<link href="/favicon.ico" rel="icon">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="alternate" href="/atom.xml" title="Lyon&#39;s blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  <script src="/js/jquery.min.js"></script>
+  <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?0fe72895c9bcfd0d09da12b5378b1b91";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+</head>
+
+
+<body>
+  <!--[if lte IE 8]> <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'> <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0027_Simplified Chinese.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." style='margin-left:auto;margin-right:auto;display: block;'/></a></div> <![endif]-->
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">Lyon&#39;s blog</a></h1>
+  <h2><a href="/">I hear and I forget.I see and I remember.I do and I understand.</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">首页</a></li>
+    
+      <li><a href="/archives">归档</a></li>
+    
+      <li><a href="/about">关于</a></li>
+    
+	<li> <a href="/atom.xml">RSS</a> </li>
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <time datetime="2015-12-03T12:24:29.000Z"><a href="/2015/12/03/Read-Notes/Read-Notes-Windows-Via-C-C-7/">2015-12-03</a></time>
+      
+      
+  
+    <h1 class="title">Windows核心编程读书笔记6（第17、18章）</h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+  <div id="toc" class="toc-article">
+  <strong class="toc-title">文章目录</strong>
+  
+  </div>
+
+
+	
+    <div class="entry">
+      
+        <p>参考资料：<br><a href="http://sist.sysu.edu.cn/CS-course/4-3.asp" target="_blank" rel="external">在Win32中管理虚拟内存</a></p>
+<p>#第17章 内存映射文件<br>内存映射文件的物理存储器来自磁盘已有的文件，一旦将文件映射到内存就可以访问好像整个文件都被映射到内存一样。主要应用映射的映像文件（exe、dll）、映射的数据文件、共享内存。</p>
+<p>##映射到内存的可执行文件和DLL<br>1.当DLL被LoadLibray时如果发现预定基地址已经被占用时，可能会加载失败（构建DLL时指定了/FIXED链接选项），至少也会重定位，后者会占用额外存储空间和增加DLL载入时间。<br>2.当exe、dll被映射到内存中时，段的大小都按页大小对齐。<br>3.使用dumpbin.exe /headers可以查看PE文件的各种段。常见段：.bss-未经初始化的全局变量等数据。.CRT-只读的C运行时数据。.data-已初始化的全局变量。.debug-调试信息。.didata-延迟导入名字表（delay imported names table）。.idata-导入名字表。.edata-导出名字表。.rdata-只读的运行时数据。.reloc-重定位表信息。.rsrc-资源。.text-代码段。.textbss-启用增量链接（Incremental Linking）时C++编译器生成。.tls-线程本地存储。.xdata-异常处理表。<br>4.默认情况下.data段的页面具有写拷贝属性，因此PE文件的一个实例修改全局变量并不会影响其他进程实例。可执行文件或DLL的多个实例不能共享静态数据<br>5.使用#pragma data_seg(“MyDataSeg1”); #pragma data_seg();可以声明一个新的数据段，其中初始化的变量会自动加入该段。没有初始化的变量可以通过__declspec(allocate(“MyDataSeg1”)) int g_i;来加入数据段。用#pragma comment(linker, “/section:MyDataSeg1, RWS”)来为段指定属性，”S”表示Shared，它通过去掉段页面的写拷贝保护属性，来达到多进程共享的效果。<br><a id="more"></a><br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Tell the compiler to put this initialized variable in its own Shared</span></span><br><span class="line"><span class="comment">// section so it is shared by all instances of this application.</span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">pragma</span> data_seg(<span class="string">"Shared"</span>)</span></span><br><span class="line"><span class="keyword">volatile</span> LONG g_lApplicationInstances = <span class="number">0</span>;</span><br><span class="line"><span class="preprocessor">#<span class="keyword">pragma</span> data_seg()</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// Tell the linker to make the Shared section</span></span><br><span class="line"><span class="comment">// readable, writable, and shared.</span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">pragma</span> comment(linker, <span class="string">"/Section:Shared,RWS"</span>)</span></span><br></pre></td></tr></table></figure></p>
+<p>##映射到内存的数据文件<br>1.Windows操作系统使得内存能够将一个数据文件映射到进程的地址空间中。因此，对大量的数据进行操作是非常方便的。</p>
+<p>##使用内存映射文件<br>1.步骤：创建或则打开文件内核对象、创建文件映射内核对象、将文件数据映射到进程的地址空间、从进程的地址空间撤销对文件数据的映射、关闭文件射射对象和文件对象。CreateFileW–&gt;CreateFileMappingW—&gt;MapViewOfFile—&gt;UnmapViewOfFile—&gt;CloseHandle—&gt;CloseHandle<br>2.CreateFileMapping：参数fdwProtect的PAGE_READONLY、PAGE_WRITECOPY等很容易理解，另外还有几种属性：SEC_COMMIT-默认值。SEC_IMAGE-表示该文件是映像文件，该文件被映射到内存时，系统会对其中不同的段添加对应的保护属性。SEC_NOCACHE-无cache，驱动开发人员用。SEC_LARGE_PAGES-大页面支持，类似VirtualAlloc那边。SEC_RESERVE-通过这个标记映射的内存没有是没有被提交的，直到再调用VirtualAlloc来commit才能访问这些页面。参数dwMaximumSizeHigh、dwMaximumSizeLow表示要求的最大文件大小，尤其在共享内存对应的虚拟存储器在页交换文件中时特别有意义（hFile参数为INVALID_HANDLE_VALUE的情况），如果映射的可写磁盘文件本身的大小没有达到这个值，文件也会被自动扩大。如果最大大小为0，表示使用磁盘文件本身大小。<br>3.MapViewOfFile：创建映射对象的一个视图，多个视图之间的数据是严格同步的，因为同一个映射对象的多个视图尽管虚拟地址段不同，但都映射到同一个虚拟存储器上。该函数返回后，内存已经被commit（除非CreateFileMapping时指定SEC_RESERVE参数）。参数dwFileOffsetHigh、dwFileOffsetLow、dwNumberOfBytesToMap共同决定要把文件的哪部分映射到内存，Offset必须与分配粒度对齐，Size为0的时候表示范围从Offset直到文件尾。对返回的地址VirtualQuery会得到Map的区域。<br>4.UnmapViewOfFile：释放映射的内存区域。<br>一个使用内存映射匹配文件格式例子<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="keyword">enum</span> _FILE_EXT</span><br><span class="line">&#123;</span><br><span class="line">	Errno=-<span class="number">1</span>,</span><br><span class="line">	UnKnown,</span><br><span class="line">	Pe,</span><br><span class="line">	Elf,</span><br><span class="line">	ApkFile,</span><br><span class="line">	Script,</span><br><span class="line">	Jpg_Jpeg,</span><br><span class="line">	MyImage,</span><br><span class="line">	Audio,</span><br><span class="line">	NormalZip,</span><br><span class="line">	DecrptZip,</span><br><span class="line">	NormalRar,</span><br><span class="line">	DecrptRar,</span><br><span class="line">	Normal7zip,</span><br><span class="line">	Decrpt7zip,</span><br><span class="line">	OfficeFile,</span><br><span class="line">	OfficexFile,</span><br><span class="line">	Pdf,</span><br><span class="line">&#125;FILEEXT;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">ReturnFileExt</span><span class="params">(LPCWSTR strfilepath,PBOOL IsMatch,PFILETIME pfCreateTime,PDWORD64 pdwfilesize)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">	HANDLE hFile=INVALID_HANDLE_VALUE,</span><br><span class="line">		hMMFile=INVALID_HANDLE_VALUE;</span><br><span class="line"></span><br><span class="line">	LPWSTR lpwszExt=<span class="literal">NULL</span>;</span><br><span class="line">	*IsMatch=TRUE;</span><br><span class="line"></span><br><span class="line">	LPVOID pvMem=<span class="literal">NULL</span>;</span><br><span class="line">	<span class="keyword">int</span> nReturn=Errno;</span><br><span class="line"></span><br><span class="line">	__try</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">if</span> (!PathFileExistsW(strfilepath))</span><br><span class="line">			__leave;</span><br><span class="line"></span><br><span class="line">		lpwszExt=PathFindExtensionW(strfilepath);</span><br><span class="line"></span><br><span class="line">		hFile = CreateFileW( strfilepath,   </span><br><span class="line">			GENERIC_READ,   </span><br><span class="line">			FILE_SHARE_READ,   </span><br><span class="line">			<span class="literal">NULL</span>,   </span><br><span class="line">			OPEN_EXISTING,   </span><br><span class="line">			FILE_ATTRIBUTE_NORMAL,   </span><br><span class="line">			<span class="literal">NULL</span> );  </span><br><span class="line">		<span class="keyword">if</span> ( hFile == INVALID_HANDLE_VALUE ) &#123;  </span><br><span class="line">			OutputString( <span class="string">"Failed To Open File %ws !/n"</span>, strfilepath );  </span><br><span class="line">			__leave;</span><br><span class="line">		&#125;  </span><br><span class="line"></span><br><span class="line">		GetFileTime(hFile,pfCreateTime,<span class="literal">NULL</span>,<span class="literal">NULL</span>);</span><br><span class="line">		DWORD dwfilesizehigh=<span class="number">0</span>;</span><br><span class="line">		*pdwfilesize=GetFileSize(hFile,&amp;dwfilesizehigh);</span><br><span class="line">		*pdwfilesize+=(((DWORD64)dwfilesizehigh)&lt;&lt;<span class="number">32</span>);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">		hMMFile = CreateFileMappingW( hFile, <span class="literal">NULL</span>, PAGE_READONLY, <span class="number">0</span>, <span class="number">0</span>, <span class="literal">NULL</span> );  </span><br><span class="line">		<span class="keyword">if</span> ( hMMFile == INVALID_HANDLE_VALUE ) &#123;  </span><br><span class="line">			__leave;  </span><br><span class="line">		&#125;  </span><br><span class="line"></span><br><span class="line">		LPVOID pvMem = MapViewOfFile( hMMFile, FILE_MAP_READ, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span> );  </span><br><span class="line">		<span class="keyword">if</span> ( ! pvMem ) &#123;  </span><br><span class="line">			__leave;</span><br><span class="line">		&#125; </span><br><span class="line"></span><br><span class="line">		<span class="comment">//1.校验是否为pe           4d 5a</span></span><br><span class="line">		<span class="keyword">if</span> ( *( USHORT* ) pvMem == <span class="number">0x5a4d</span>&amp;&amp;                                       <span class="comment">//50 45 00 00  0x00004550  // PE00</span></span><br><span class="line">			*( ( DWORD* ) ( ( PBYTE ) pvMem + ( ( PIMAGE_DOS_HEADER ) pvMem )-&gt;e_lfanew ) ) == <span class="number">0x4550</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			OutputString(<span class="string">":PE file!\n"</span>);</span><br><span class="line">			nReturn=Pe;</span><br><span class="line">			<span class="keyword">if</span> (<span class="number">0</span>!=lstrcmpiW(lpwszExt,<span class="string">L".exe"</span>)&amp;&amp;<span class="number">0</span>!=lstrcmpiW(lpwszExt,<span class="string">L".dll"</span>)</span><br><span class="line">				&amp;&amp;<span class="number">0</span>!=lstrcmpiW(lpwszExt,<span class="string">L".sys"</span>)&amp;&amp;<span class="number">0</span>!=lstrcmpiW(lpwszExt,<span class="string">L".ocx"</span>)</span><br><span class="line">				&amp;&amp;<span class="number">0</span>!=lstrcmpiW(lpwszExt,<span class="string">L".com"</span>))</span><br><span class="line">				*IsMatch=FALSE;</span><br><span class="line"></span><br><span class="line">			__leave;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span> (<span class="number">0</span>==lstrcmpiW(lpwszExt,<span class="string">L".exe"</span>)||<span class="number">0</span>==lstrcmpiW(lpwszExt,<span class="string">L".dll"</span>)</span><br><span class="line">			||<span class="number">0</span>==lstrcmpiW(lpwszExt,<span class="string">L".sys"</span>)||<span class="number">0</span>==lstrcmpiW(lpwszExt,<span class="string">L".ocx"</span>)</span><br><span class="line">			||<span class="number">0</span>==lstrcmpiW(lpwszExt,<span class="string">L".com"</span>))</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">if</span> ( *( USHORT* ) pvMem != <span class="number">0x5a4d</span>||                                      <span class="comment">//50 45 00 00</span></span><br><span class="line">				*( ( DWORD* ) ( ( PBYTE ) pvMem + ( ( PIMAGE_DOS_HEADER ) pvMem )-&gt;e_lfanew ) ) != <span class="number">0x4550</span>)</span><br><span class="line">			&#123;</span><br><span class="line">				*IsMatch=FALSE;</span><br><span class="line">				nReturn=UnKnown;</span><br><span class="line">			&#125;</span><br><span class="line"></span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="comment">//2.校验是否为elf</span></span><br><span class="line">		<span class="keyword">if</span>(*( USHORT* ) pvMem == <span class="number">0x457F</span>&amp;&amp;*( USHORT* )(( PBYTE ) pvMem+<span class="keyword">sizeof</span>(USHORT))==<span class="number">0x464c</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			OutputString(<span class="string">":ELF file!\n"</span>);</span><br><span class="line">			nReturn=Elf;</span><br><span class="line">			__leave;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="comment">//3.校验是否为script</span></span><br><span class="line">		<span class="keyword">if</span> (<span class="number">0</span>==lstrcmpiW(lpwszExt,<span class="string">L".bat"</span>)||<span class="number">0</span>==lstrcmpiW(lpwszExt,<span class="string">L".cmd"</span>)</span><br><span class="line">			||<span class="number">0</span>==lstrcmpiW(lpwszExt,<span class="string">L".psl"</span>)||<span class="number">0</span>==lstrcmpiW(lpwszExt,<span class="string">L".vbs"</span>)</span><br><span class="line">			||<span class="number">0</span>==lstrcmpiW(lpwszExt,<span class="string">L".com"</span>)||<span class="number">0</span>==lstrcmpiW(lpwszExt,<span class="string">L".mof"</span>))</span><br><span class="line">		&#123;</span><br><span class="line">			OutputString(<span class="string">":Script file!\n"</span>);</span><br><span class="line">			nReturn=Script;</span><br><span class="line">			__leave;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="comment">//是否为jpg图片</span></span><br><span class="line">		<span class="keyword">if</span> (<span class="number">0</span>==lstrcmpiW(lpwszExt,<span class="string">L".jpg"</span>)||<span class="number">0</span>==lstrcmpiW(lpwszExt,<span class="string">L".jpeg"</span>))</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">"%0x"</span>,*(USHORT*)((PBYTE)pvMem+(*pdwfilesize)-<span class="keyword">sizeof</span>(USHORT)));</span><br><span class="line">			<span class="keyword">if</span> ((*(DWORD*)pvMem&amp;<span class="number">0x00ffffff</span>)==<span class="number">0xffd8ff</span>&amp;&amp;*(USHORT*)((PBYTE)pvMem+(*pdwfilesize)-<span class="keyword">sizeof</span>(USHORT))==<span class="number">0xd9ff</span>)</span><br><span class="line">			&#123;</span><br><span class="line">				nReturn=Jpg_Jpeg;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">else</span></span><br><span class="line">			&#123;</span><br><span class="line">				nReturn=UnKnown;</span><br><span class="line">				*IsMatch=FALSE;</span><br><span class="line">			&#125;</span><br><span class="line"></span><br><span class="line">			__leave;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="comment">//4.校验是否为媒体文件</span></span><br><span class="line">		<span class="keyword">if</span> (<span class="number">0</span>==lstrcmpiW(lpwszExt,<span class="string">L".bmp"</span>)||<span class="number">0</span>==lstrcmpiW(lpwszExt,<span class="string">L".gif"</span>)</span><br><span class="line">			||<span class="number">0</span>==lstrcmpiW(lpwszExt,<span class="string">L".png"</span>)||<span class="number">0</span>==lstrcmpiW(lpwszExt,<span class="string">L".ico"</span>))</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="comment">//png                               gif                   ico</span></span><br><span class="line">			<span class="keyword">if</span> (<span class="number">0x474e5089</span>==*(DWORD*)pvMem||<span class="number">0x38464947</span>==*(DWORD*)pvMem||<span class="number">0x00010000</span>==*(DWORD*)pvMem||<span class="number">0x4d42</span>==*(USHORT*)pvMem)</span><br><span class="line">			&#123;</span><br><span class="line">				nReturn=MyImage;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">else</span></span><br><span class="line">			&#123;</span><br><span class="line">				nReturn=UnKnown;</span><br><span class="line">				*IsMatch=FALSE;</span><br><span class="line">			&#125;</span><br><span class="line">			OutputString(<span class="string">":image file!\n"</span>);</span><br><span class="line">			nReturn=Audio;</span><br><span class="line">			__leave;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="comment">//5.校验是否为zip压缩文件 docx pptx 都是zip文件</span></span><br><span class="line">		<span class="keyword">if</span>(*(USHORT*)pvMem==<span class="number">0x4b50</span>&amp;&amp;*(USHORT*)((PBYTE)pvMem + <span class="keyword">sizeof</span>(USHORT))==<span class="number">0x0403</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">if</span>(<span class="number">0</span>==lstrcmpiW(lpwszExt,<span class="string">L".zip"</span>))</span><br><span class="line">			&#123;</span><br><span class="line">				<span class="keyword">if</span> (*(USHORT*)((PBYTE)pvMem + <span class="number">3</span>*<span class="keyword">sizeof</span>(USHORT))==<span class="number">0x0001</span>)</span><br><span class="line">				&#123;</span><br><span class="line">					nReturn=DecrptZip;</span><br><span class="line">				&#125;</span><br><span class="line">				<span class="keyword">else</span> </span><br><span class="line">					nReturn=NormalZip;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">else</span> <span class="keyword">if</span> (<span class="number">0</span>==lstrcmpiW(lpwszExt,<span class="string">L".docx"</span>)||<span class="number">0</span>==lstrcmpiW(lpwszExt,<span class="string">L".xlsx"</span>)||<span class="number">0</span>==lstrcmpiW(lpwszExt,<span class="string">L".pptx"</span>))</span><br><span class="line">			&#123;</span><br><span class="line">				nReturn=OfficexFile;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">else</span> <span class="keyword">if</span> (<span class="number">0</span>==lstrcmpiW(lpwszExt,<span class="string">L".apk"</span>))</span><br><span class="line">			&#123;</span><br><span class="line">				nReturn=ApkFile;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">else</span></span><br><span class="line">				nReturn=UnKnown;</span><br><span class="line"></span><br><span class="line">			__leave;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="comment">//6.校验是否为rar</span></span><br><span class="line">		<span class="keyword">if</span>(*(DWORD*)pvMem==<span class="number">0x21726152</span>&amp;&amp;*(USHORT*)((PBYTE)pvMem + <span class="keyword">sizeof</span>(DWORD))==<span class="number">0x071a</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">if</span> ((*(USHORT*)((PBYTE)pvMem + <span class="number">0x17</span>)&amp;<span class="number">0x0f0f</span>)==<span class="number">0x0404</span>)</span><br><span class="line">			&#123;</span><br><span class="line">				nReturn=DecrptRar;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">else</span></span><br><span class="line">				nReturn=NormalRar;</span><br><span class="line"></span><br><span class="line">			<span class="keyword">if</span> (<span class="number">0</span>==lstrcmpiW(lpwszExt,<span class="string">L".rar"</span>))</span><br><span class="line">				*IsMatch=FALSE;</span><br><span class="line">			__leave;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="comment">//7.校验是否为7zip  xxxxxxx</span></span><br><span class="line">		<span class="keyword">if</span>(*(DWORD*)pvMem==<span class="number">0xafbc7a37</span>&amp;&amp;*(USHORT*)((PBYTE)pvMem + <span class="keyword">sizeof</span>(DWORD))==<span class="number">0x1c27</span>)</span><br><span class="line">		&#123;</span><br><span class="line"></span><br><span class="line">			nReturn=Decrpt7zip;</span><br><span class="line">			<span class="keyword">if</span> (<span class="number">0</span>==lstrcmpiW(lpwszExt,<span class="string">L".7z"</span>))</span><br><span class="line">				*IsMatch=FALSE;</span><br><span class="line">			__leave;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="comment">//.校验是否office文件</span></span><br><span class="line">		<span class="keyword">if</span> (<span class="number">0</span>==lstrcmpiW(lpwszExt,<span class="string">L".doc"</span>)||<span class="number">0</span>==lstrcmpiW(lpwszExt,<span class="string">L".ppt"</span>)||<span class="number">0</span>==lstrcmpiW(lpwszExt,<span class="string">L".xls"</span>))</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">if</span> (*(DWORD*)pvMem==<span class="number">0xe011cfd0</span>&amp;&amp;*(USHORT*)((PBYTE)pvMem + <span class="keyword">sizeof</span>(DWORD))==<span class="number">0xb1a1</span>)</span><br><span class="line">			&#123;</span><br><span class="line">				nReturn=OfficeFile;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">else</span></span><br><span class="line">			&#123;</span><br><span class="line">				nReturn=UnKnown;</span><br><span class="line">				*IsMatch=FALSE;</span><br><span class="line">			&#125;</span><br><span class="line"></span><br><span class="line">			OutputString(<span class="string">":OfficeFile file!\n"</span>);</span><br><span class="line">			nReturn=OfficeFile;</span><br><span class="line">			__leave;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="comment">//.校验是否为pdf文件</span></span><br><span class="line">		<span class="keyword">if</span> (*(DWORD*)pvMem==<span class="number">0x46445025</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			OutputString(<span class="string">":Pdf file!\n"</span>);</span><br><span class="line">			nReturn=Pdf;</span><br><span class="line">			__leave;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line">	__finally</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">if</span> (pvMem!=<span class="literal">NULL</span>)</span><br><span class="line">			UnmapViewOfFile(pvMem);</span><br><span class="line">		<span class="keyword">if</span> (hMMFile!=INVALID_HANDLE_VALUE)</span><br><span class="line">			CloseHandle(hMMFile);</span><br><span class="line">		<span class="keyword">if</span> (hFile!=INVALID_HANDLE_VALUE)</span><br><span class="line">			CloseHandle(hFile);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> nReturn;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>##使用内存映射文件注意事项<br>1.FlushViewOfFile：将缓存中已修改的数据Flush到文件中，如果没修改被直接丢弃。注意如果映射页面具有写保护属性，缓冲中的数据最多被Flush到Page File中。如果是映射到远程文件，该函数只保证数据被Flush到网上，而远程的文件不一定会被修改，除非CreateFile时指定了FILE_FLAG_WRITE_THROUGH。<br>2.注意，虽然CreateFileMapping会增加文件对象计数，MapViewOfFile会增加映射对象的计数（也就是说，在UnmapViweOfFile之前这两个内核对象就可以被CloseHandle了），但是如果太早关闭映射对象，其他地方要打开映射对象时会失败（即OpenFileMapping失败或者CreateFileMapping的LastError不是ERROR_ALREADY_EXISTS），也就是说，内核通过视图对映射对象的引用，不能被用户模式代码检测到，因此最好还是按传统顺序先UnmapViewOfFile再CloseHandle。<br>3.NUMA支持：CreateFileMappingNuma、MapViewOfFileExNuma。<br>4.打开同一个磁盘文件的多个文件内核对象，由于各自拥有独立缓冲区，因此文件内容在不同对象间不保证实时同步。<br>5.映射到同一文件的多个映射对象的视图不保证数据的实时同步。<br>6.MapViewOfFileEx：参数pvBaseAddress非空的时候可以指定映射内存的起始地址。系统映射EXE和DLL的时候就这么干的。<br>7.各种跨进程通讯手段的通讯双方都位于本机时，这些通讯方式最终都实现为内存映射文件。<br>8.要映射到磁盘文件时，一定要判断CreateFile的返回值，因为如果打开文件失败，INVALID_HANDLE_VALUE句柄会让CreateFileMapping创建映射到PageFile的对象，没有报错却是歧义。<br>9.对应VirtualAlloc那“reserve一大段内存再小块commit”的用法，内存映射文件中实现如下：以SEC_RESERVE为参数CreateFileMapping，之后MapViewOfFile得到reserve的区域，最后确保访问前要先用VirtualAlloc来commit。注意这样commit的共享内存不能VirtualFree。</p>
+<p>#第18章 堆<br>堆适合分配大量的小型数据，适合用来管理链表和树。不用理会分配粒度和页边界，但是分配速度较慢。堆适合分配小内存块，不需要按分配粒度或者页大小对齐。堆在最初只是预定了一块区域，在客户分配时将预定的区域提交，在客户释放后可能反提交。</p>
+<p>##进程的默认堆<br>1.关于默认堆：GetProcessHeap返回，用户模式代码无法销毁它，在进程结束后由系统销毁。进程可以通过链接选项“/HEAP:reserve[,commit]”来设置默认堆大小。因为默认堆属于进程，所以在DLL中不应设置该链接选项。Windows的ANSI版API向Unicode版转化的时候从默认堆分配字符串缓存，LocalAlloc、GlobalAlloc也从默认堆分配内存。默认堆对外界访问进行了同步，即没有使用HEAP_NO_SERIALIZE标记。</p>
+<p>##为什么要创建额外的堆<br>1.使用独立堆的一些好处：</p>
+<pre><code>-<span class="ruby"> （<span class="number">1</span>）写堆内存出错后，不会影响其他堆的数据。
+</span>-<span class="ruby"> （<span class="number">2</span>）对特定类型数据使用独立堆的话，由于分配块大小相同，具有速度快、无碎片的优点。
+</span>-<span class="ruby"> （<span class="number">3</span>）相关数据使用独立的堆，在访问这些数据时访问的页面更集中，减少<span class="constant">PageFault</span>。
+</span>-<span class="ruby"> （<span class="number">4</span>）对特定线程上的逻辑结构使用独立堆，不必加锁，提高性能。</span>
+</code></pre><p>##如何创建额外的堆<br>1.创建额外的堆—-&gt;从堆中分配内存块—-&gt;调整内存块大小—-&gt;释放内存块—–&gt;销毁堆<br>2.HeapCreate：参数fdwOption，如果在创建堆的时候指定了部分标志（如HEAP_NO_SERIALIZE标志等），以后每次访问堆这些标志都生效；如果创建的时候没有指定，那后续的每次访问可以单独指定标志。 HEAP_NO_SERIALIZE-访问堆的时候不加锁。HEAP_GENERATE_EXCEPTIONS-分配内存失败的时候抛出异常，默认行为是返回NULL。HEAP_CREATE_ENABLE_EXECUTE-可以在堆内存上放置代码来执行。参数dwInitalSize-初始堆大小。参数dwMaximumSize-如果非0，表示如果堆内存使用量达到这个值后再分配会失败；为0，表示堆会自动增大，直到内存用尽。<br>3.HeapAlloc、HeapSize、HeapFree、HeapDestroy，容易理解。<br>4.HeapReAlloc：HEAP_ZERO_MEMORY-增大内存时，增加的字节初始化为0。HEAP_REALLOC_IN_PLACE_ONLY-要求不移动起始地址的情况下改变大小，需要增大时如果当前位置剩余空间不足会返回NULL。<br>5.HeapSetInformation：标记HeapEnableTerminationOnCorruption-Visita以上使用。默认情况下，堆内存被破坏后只在调试器中触发一个断言然后继续执行，这个标记允许发现堆破坏就抛出异常。该标记影响进程中所有堆，无法清空标记。标记HeapCompatibilityInformation-值为2的时候，表示启用低碎片堆（lowfragmentation heap）算法，启用该算法的堆针对内存碎片问题优化有更好的性能。<br>6.Heap32ListFirst、Heap32ListNext-遍历快照（CreateToolhelp32Snapshot）中的堆。Heap32First、Heap32Next-遍历指定堆中的块。GetProcessHeaps-获得包括默认堆在内的所有堆句柄。HeapValidate-检查指定堆中所有块或者单个块的有效性。HeapCompact-将堆中闲置块合并，并反提交。HeapLock、HeapUnlock-锁定堆。HeapWalk-遍历指定堆中的块，建议先锁堆。</p>
+<p>##在Win32中可用的内存管理函数</p>
+<p><div align="center"><br><img src="http://7xkam4.com1.z0.glb.clouddn.com/memory%20manage.png" alt="在Win32中可用的内存管理函数" align="center"><br></div><br>1.随着Win32 API内容的不断增加，选择机会也随之增加。Win32提供了三个附加的函数组来管理应用程序的内存：内存-映射（memory-mapped）文件函数、堆内存（heap memory）函数，以及虚拟内存函数。这些新的函数并不替代在Windows 3.1中现存的内存管理函数；相反它们提供了新的特性，使得开发者在为他们的Win32应用程序编写内存管理部分时，日子会轻松得多。总之，如图1所看到的，在Win32中有六组内存管理函数，所有这些函数都被设计成单独使用。所以，您应该使用哪种函数呢？要回答这一问题主要依靠以下两件事：您希望的内存管理类型是什么，以及与之相关联的函数在操作系统中是如何实现的。换句话说，您是否是正在建立一个大的数据库应用程序，因而希望操作一个大的内存结构的子集合，或者您正计划一些简单的动态内存结构，例如链接列表或二进制树（binary trees）。在这两种情况下，您都需要搞清楚哪些函数提供的功能最适合您的意向，并确切地了解在使用每个函数时要占用多少资源。</p>
+<p><div align="center"><br><img src="http://7xkam4.com1.z0.glb.clouddn.com/20140919163517030.jpg" alt="三种内存管理的关系" align="center"><br></div><br>堆和虚拟内存，从上面的图片就可以看出，其实所谓的堆，也就是在虚拟内存上抽象出来的。如果直接用Virtualxxx系列函数，是有一些限制的，比如每次只能分配页大小倍数的内存，内存地址也必须对齐什么的。新手很难用。正因为如此，才出现了堆。实际上堆Heap内部就是使用Virtual系列函数的。基本思想就是：先用VirtualAlloc分配一个比较大的内存，然后用户每次申请堆内存的时候，从分配出来的虚拟内存块上指定一块给用户。比如第一次分配堆内存从A地址开始的100个字节，第二次分配的时候就是A+100开始。<br>Memory Mapped File就不太一样了，从上面的图可以看出MMF并没有调用Virtual系列函数。它直接调用内核层了。<br>对于malloc和new，这2个并不是操作系统API，它们是语言提供的函数。在不同的系统上面有不同的实现方法，在Windows上面，new调用malloc，malloc调用堆函数（heapxxx），堆函数调用Virtual系列函数。在Linux上面就调用相应的linux API.（<a href="http://m.zgxue.com/162/1625154.html）" target="_blank" rel="external">http://m.zgxue.com/162/1625154.html）</a></p>
+
+      
+    </div>
+    <footer>
+      
+
+        
+          <div class="alignleft post-nav">
+            <em>上一篇: </em><a href="/2015/12/17/Tools/FLARE-IDA-Pro-msdn/">火眼（FireEye）实验室FLARE IDA Pro脚本系列：MSDN注释插件----实践</a>
+          </div>
+        
+        
+          <div class="alignright post-nav">
+            <em>下一篇: </em><a href="/2015/11/20/Learning/windowservices/">Window服务学习笔记</a>
+          </div>
+          <div class="clearfix"></div>
+        
+
+        
+          <div class="copyright">
+            
+              <span class="claim">转载请注明youngroe.com</span>
+            
+            
+              <span class="from-link">
+                <em>本文链接地址:</em>
+                <a href="/2015/12/03/Read-Notes/Read-Notes-Windows-Via-C-C-7/">
+                  http://www.youngroe.com/2015/12/03/Read-Notes/Read-Notes-Windows-Via-C-C-7/
+                </a>
+              </span>
+            
+          </div>
+        
+		<span id="busuanzi_container_site_pv">
+    本站总访问量<span id="busuanzi_value_site_pv"></span>次
+        
+  
+  <div class="categories">
+    <a href="/categories/Read-Notes/">Read Notes</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/Windows核心编程/">Windows核心编程</a>
+  </div>
+
+        <div class="bdsharebuttonbox"><a href="#" class="bds_more" data-cmd="more"></a><a href="#" class="bds_qzone" data-cmd="qzone"></a><a href="#" class="bds_tsina" data-cmd="tsina"></a><a href="#" class="bds_tqq" data-cmd="tqq"></a><a href="#" class="bds_renren" data-cmd="renren"></a><a href="#" class="bds_weixin" data-cmd="weixin"></a></div>
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdPic":"","bdStyle":"0","bdSize":"16"},"share":{},"image":{"viewList":["qzone","tsina","tqq","renren","weixin"],"viewText":"������","viewSize":"16"},"selectShare":{"bdContainerClass":null,"bdSelectMiniList":["qzone","tsina","tqq","renren","weixin"]}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</span>
+</article>
+
+
+<section id="comment">
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+<div class="widget tag">
+  <h3 class="title">分类</h3>
+  <ul class="entry">
+  
+    <li><a href="/categories/Cybersecurity/">Cybersecurity</a><small>1</small></li>
+  
+    <li><a href="/categories/Debug/">Debug</a><small>7</small></li>
+  
+    <li><a href="/categories/Kernel/">Kernel</a><small>4</small></li>
+  
+    <li><a href="/categories/Learning/">Learning</a><small>8</small></li>
+  
+    <li><a href="/categories/Life/">Life</a><small>7</small></li>
+  
+    <li><a href="/categories/Others/">Others</a><small>1</small></li>
+  
+    <li><a href="/categories/Read-Notes/">Read Notes</a><small>7</small></li>
+  
+    <li><a href="/categories/Tools/">Tools</a><small>6</small></li>
+  
+    <li><a href="/categories/Vulnerabilities/">Vulnerabilities</a><small>0</small></li>
+  
+    <li><a href="/categories/Windows/">Windows</a><small>14</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2019/07/01/Windows/delphi_reverse_summary/">Delphi程序逆向反汇编技巧小记</a>
+      </li>
+    
+      <li>
+        <a href="/2019/06/25/Kernel/kernel_enum_wfp_callout_function/">Windows内核重拾：如何枚举系统中Windows Filtering Platform (WFP)驱动中的callout函数</a>
+      </li>
+    
+      <li>
+        <a href="/2019/05/06/Kernel/windows-driver-testing-basics/">Windows内核重拾：Windows驱动测试基础：工具、功能和示例（翻译/转载）</a>
+      </li>
+    
+      <li>
+        <a href="/2019/04/06/Windows/how-to-reverse-engineer-software-windows-in-a-right-way/">如何正确的对Windows软件进行逆向工程（翻译/转载）</a>
+      </li>
+    
+      <li>
+        <a href="/2019/01/12/Windows/a_crash_lead_deadlock/">Windows平台下一个崩溃而导致的死锁分析</a>
+      </li>
+    
+      <li>
+        <a href="/2018/12/01/Windows/windows_client_dns_over_https/">Windows客户端如何透明使用DNS-over-HTTPS</a>
+      </li>
+    
+      <li>
+        <a href="/2018/10/06/Cybersecurity/ddos-protection-techniques/">现代DDoS对抗技术概述（翻译/转载）</a>
+      </li>
+    
+      <li>
+        <a href="/2018/09/18/Life/xian/">西安周末游</a>
+      </li>
+    
+      <li>
+        <a href="/2018/01/06/Kernel/WindowsKernel_DebugObject/">Windows内核重拾：DebugObject</a>
+      </li>
+    
+      <li>
+        <a href="/2017/10/23/Tools/IDA-Pro-ClassInformer-Tutorial/">IDA Pro ClassInformer使用指南（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2017/05/23/Windows/Kernel Data and Filtering Support/">Kernel Data and Filtering Support for Windows Server 2008（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2017/05/17/Windows/Windows-x64-Shellcode/">Windows x64 Shellcode编写指南(翻译)</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget tagcloud">
+  <h3 class="title">标签云</h3>
+  <div class="entry">
+    <a href="/tags/ASM/" style="font-size: 12.5px;">ASM</a> <a href="/tags/Boost/" style="font-size: 10px;">Boost</a> <a href="/tags/DDoS/" style="font-size: 10px;">DDoS</a> <a href="/tags/DNS-over-HTTPS/" style="font-size: 10px;">DNS-over-HTTPS</a> <a href="/tags/Delphi/" style="font-size: 10px;">Delphi</a> <a href="/tags/Dll劫持/" style="font-size: 10px;">Dll劫持</a> <a href="/tags/GCC-GDB/" style="font-size: 10px;">GCC&GDB</a> <a href="/tags/GetVersionEx/" style="font-size: 10px;">GetVersionEx</a> <a href="/tags/Http/" style="font-size: 10px;">Http</a> <a href="/tags/IDA-Pro/" style="font-size: 12.5px;">IDA Pro</a> <a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/MSDN/" style="font-size: 12.5px;">MSDN</a> <a href="/tags/Malware/" style="font-size: 12.5px;">Malware</a> <a href="/tags/MiniDumpWriteDump/" style="font-size: 10px;">MiniDumpWriteDump</a> <a href="/tags/PEB/" style="font-size: 10px;">PEB</a> <a href="/tags/Procmon/" style="font-size: 10px;">Procmon</a> <a href="/tags/Runtime-Error/" style="font-size: 10px;">Runtime Error</a> <a href="/tags/SEH/" style="font-size: 10px;">SEH</a> <a href="/tags/Shellcode/" style="font-size: 10px;">Shellcode</a> <a href="/tags/SysinternalsSuite/" style="font-size: 10px;">SysinternalsSuite</a> <a href="/tags/Tips/" style="font-size: 10px;">Tips</a> <a href="/tags/UAC/" style="font-size: 10px;">UAC</a> <a href="/tags/UAF漏洞/" style="font-size: 10px;">UAF漏洞</a> <a href="/tags/VC/" style="font-size: 10px;">VC</a> <a href="/tags/Visual-Studio/" style="font-size: 12.5px;">Visual Studio</a> <a href="/tags/Windbg/" style="font-size: 10px;">Windbg</a> <a href="/tags/Windows/" style="font-size: 20px;">Windows</a> <a href="/tags/Windows核心编程/" style="font-size: 17.5px;">Windows核心编程</a> <a href="/tags/android/" style="font-size: 10px;">android</a> <a href="/tags/getaddrinfo/" style="font-size: 10px;">getaddrinfo</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/libeay32/" style="font-size: 10px;">libeay32</a> <a href="/tags/markdown/" style="font-size: 10px;">markdown</a> <a href="/tags/ndk/" style="font-size: 10px;">ndk</a> <a href="/tags/sublime-text3/" style="font-size: 10px;">sublime text3</a> <a href="/tags/x64/" style="font-size: 12.5px;">x64</a> <a href="/tags/体验/" style="font-size: 10px;">体验</a> <a href="/tags/内核/" style="font-size: 12.5px;">内核</a> <a href="/tags/内核结构/" style="font-size: 15px;">内核结构</a> <a href="/tags/学习/" style="font-size: 10px;">学习</a> <a href="/tags/安全机制/" style="font-size: 10px;">安全机制</a> <a href="/tags/异常处理/" style="font-size: 10px;">异常处理</a> <a href="/tags/提权/" style="font-size: 10px;">提权</a> <a href="/tags/服务/" style="font-size: 10px;">服务</a> <a href="/tags/权限/" style="font-size: 12.5px;">权限</a> <a href="/tags/栈溢出漏洞/" style="font-size: 10px;">栈溢出漏洞</a> <a href="/tags/测试/" style="font-size: 10px;">测试</a> <a href="/tags/浮躁/" style="font-size: 10px;">浮躁</a> <a href="/tags/漏洞调试/" style="font-size: 12.5px;">漏洞调试</a> <a href="/tags/生活/" style="font-size: 15px;">生活</a> <a href="/tags/脱壳/" style="font-size: 10px;">脱壳</a> <a href="/tags/西安/" style="font-size: 10px;">西安</a> <a href="/tags/计划/" style="font-size: 10px;">计划</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a> <a href="/tags/调试/" style="font-size: 15px;">调试</a> <a href="/tags/转换/" style="font-size: 10px;">转换</a> <a href="/tags/进程/" style="font-size: 10px;">进程</a> <a href="/tags/逆向/" style="font-size: 10px;">逆向</a> <a href="/tags/重庆/" style="font-size: 10px;">重庆</a> <a href="/tags/驱动/" style="font-size: 15px;">驱动</a>
+  </div>
+</div>
+
+
+  <div class="widget tag">
+<h3 class="title">Links</h3>
+<ul class="entry">
+<li><a href="http://blog.ourren.com/" title="Ourren">Ourren</a></li>
+<li><a href="http://www.hyjal.net/" title="Hyjal">Hyjal</a></li>
+<li><a href="http://www.jianshu.com/users/fa15f4e416ae/latest_articles" title="Daemonceltics">Daemonceltics</a></li>
+<li><a href="http://papap.info/" title="isee">isee</a></li>
+</ul>
+</div>
+
+  <script type="text/javascript" id="clustrmaps" src="//cdn.clustrmaps.com/map_v2.js?u=putG&d=yoFnN6V-ovhL-H4e9_69LvkTiX4uX7rEYJ15yL3G1Wg"></script>
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <div id="go-pg-top"><i class="icon-arrow-up"></i></div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2020 Lyon
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript" charset="utf-8" src="/js/page.js"></script>
+
+</body>
+
+</html>

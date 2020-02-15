@@ -1,0 +1,447 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Windows内核重拾：Windows驱动测试基础：工具、功能和示例（翻译/转载） | Lyon&#39;s blog</title>
+  <meta name="author" content="Lyon">
+  
+  <meta name="description" content="Walk steps step by step">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="Windows内核重拾：Windows驱动测试基础：工具、功能和示例（翻译/转载）"/>
+  <meta property="og:site_name" content="Lyon&#39;s blog"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  #<link href="/favicon.ico" rel="icon">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="alternate" href="/atom.xml" title="Lyon&#39;s blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  <script src="/js/jquery.min.js"></script>
+  <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?0fe72895c9bcfd0d09da12b5378b1b91";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+</head>
+
+
+<body>
+  <!--[if lte IE 8]> <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'> <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0027_Simplified Chinese.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." style='margin-left:auto;margin-right:auto;display: block;'/></a></div> <![endif]-->
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">Lyon&#39;s blog</a></h1>
+  <h2><a href="/">I hear and I forget.I see and I remember.I do and I understand.</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">首页</a></li>
+    
+      <li><a href="/archives">归档</a></li>
+    
+      <li><a href="/about">关于</a></li>
+    
+	<li> <a href="/atom.xml">RSS</a> </li>
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <time datetime="2019-05-06T04:45:15.000Z"><a href="/2019/05/06/Kernel/windows-driver-testing-basics/">2019-05-06</a></time>
+      
+      
+  
+    <h1 class="title">Windows内核重拾：Windows驱动测试基础：工具、功能和示例（翻译/转载）</h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+  <div id="toc" class="toc-article">
+  <strong class="toc-title">文章目录</strong>
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x00_前言"><span class="toc-number">1.</span> <span class="toc-text">0x00 前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x01_Windows驱动程序的定义及类型"><span class="toc-number">2.</span> <span class="toc-text">0x01 Windows驱动程序的定义及类型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Windows系统的驱动文件"><span class="toc-number">2.1.</span> <span class="toc-text">Windows系统的驱动文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#驱动类型"><span class="toc-number">2.2.</span> <span class="toc-text">驱动类型</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#用户模式驱动(User-Mode_Drivers)"><span class="toc-number">2.2.1.</span> <span class="toc-text">用户模式驱动(User-Mode Drivers)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#内核模式驱动(Kernel-Mode_Drivers)"><span class="toc-number">2.2.2.</span> <span class="toc-text">内核模式驱动(Kernel-Mode Drivers)</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#驱动程序与设备之间的关系"><span class="toc-number">2.3.</span> <span class="toc-text">驱动程序与设备之间的关系</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x02_Windows驱动程序测试主要内容"><span class="toc-number">3.</span> <span class="toc-text">0x02 Windows驱动程序测试主要内容</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#不同操作系统"><span class="toc-number">3.1.</span> <span class="toc-text">不同操作系统</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#更新"><span class="toc-number">3.2.</span> <span class="toc-text">更新</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#硬件依赖性"><span class="toc-number">3.3.</span> <span class="toc-text">硬件依赖性</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x03_如何测试Windows驱动程序"><span class="toc-number">4.</span> <span class="toc-text">0x03 如何测试Windows驱动程序</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#文件系统过滤器驱动程序"><span class="toc-number">4.1.</span> <span class="toc-text">文件系统过滤器驱动程序</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#虚拟存储驱动程序"><span class="toc-number">4.2.</span> <span class="toc-text">虚拟存储驱动程序</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#USB设备驱动"><span class="toc-number">4.3.</span> <span class="toc-text">USB设备驱动</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x04_驱动程序测试和分析实用工具"><span class="toc-number">5.</span> <span class="toc-text">0x04 驱动程序测试和分析实用工具</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#系统内置工具"><span class="toc-number">5.1.</span> <span class="toc-text">系统内置工具</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Windows系统信息工具（msinfo32）"><span class="toc-number">5.1.1.</span> <span class="toc-text">Windows系统信息工具（msinfo32）</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Windows_Driver_Kit实用工具"><span class="toc-number">5.2.</span> <span class="toc-text">Windows Driver Kit实用工具</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Windows设备控制台（devcon-exe）"><span class="toc-number">5.3.</span> <span class="toc-text">Windows设备控制台（devcon.exe）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#PoolMon_(poolmon-exe)"><span class="toc-number">5.4.</span> <span class="toc-text">PoolMon (poolmon.exe)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#驱动sys文件签名"><span class="toc-number">5.5.</span> <span class="toc-text">驱动sys文件签名</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x05_问题定位"><span class="toc-number">6.</span> <span class="toc-text">0x05 问题定位</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x06_驱动测试报告模板"><span class="toc-number">7.</span> <span class="toc-text">0x06 驱动测试报告模板</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x07_结论"><span class="toc-number">8.</span> <span class="toc-text">0x07 结论</span></a></li></ol>
+  </div>
+
+
+	
+    <div class="entry">
+      
+        <h2 id="0x00_前言">0x00 前言</h2><p>本文旨在帮助你测试Windows驱动程序。因为有很多种不同的驱动程序，因此我们将介绍关于每种类型驱动程序的细节及各种驱动程序测试过程的不同点。我们也将涉及到一些驱动测试辅助工具和另一个重要的主题驱动数字签名。<br><a id="more"></a></p>
+<h2 id="0x01_Windows驱动程序的定义及类型">0x01 Windows驱动程序的定义及类型</h2><p>驱动程序是为物理或则虚拟设备提供接口的一种软件组件。驱动程序将来自用户程序和操作系统的high-level的请求翻译成物理/虚拟设备能够识别的low-level的指令。</p>
+<h3 id="Windows系统的驱动文件">Windows系统的驱动文件</h3><p>Windows系统中，驱动文件以.sys扩展名文件存储，可能还会有以.inf或则.cat为后缀的辅助文件存在。<br><strong>.inf文件</strong><br>.inf文件是驱动程序安装文件，其中包含了设计驱动程序的设备的类型，驱动程序文件的位置以及所有依赖项。在驱动程序安装过程中，这些配置将从.inf文件写入到到注册表中，注册表作为驱动的配置文件。<br><strong>.cat文件</strong><br>.cat文件包含所有驱动程序文件的哈希值总和的列表。在Windows中，已安装的驱动程序通常保存在在%SystemRoot%\System32\drivers目录下，但也可以存储在任何其他位置。安装后，驱动程序已加载到系统中并可以使用。某些驱动程序类型在安装后需要重新启动。<br><!-- more --></p>
+<h3 id="驱动类型">驱动类型</h3><p>根据执行模式的不同，驱动程序可以分为用户模式驱动和内核模式驱动。</p>
+<h4 id="用户模式驱动(User-Mode_Drivers)">用户模式驱动(User-Mode Drivers)</h4><p>用户模式驱动程序在用户应用程序和其他操作系统组件（例如内核模式驱动程序）之间提供接口。打印机驱动程序就是是一种用户模式驱动程序。</p>
+<h4 id="内核模式驱动(Kernel-Mode_Drivers)">内核模式驱动(Kernel-Mode Drivers)</h4><p>内核模式驱动程序在内核特权模式下执行。不同内核模式驱动在执行期间通常会存在链式关系。每个驱动程序在链中的位置根据其作用不同。<br>一个用户模式程序查询设备的请求通常会经过多个驱动程序。经过的每一个驱动程序都将处理和过滤这个查询，根据Windows驱动程序术语这个包被称为IRP包（I/O请求包）。如果将驱动程序加载到链中的错误位置，则查询将被错误地处理，还有可能导致系统崩溃。<br>下面的图1表示磁盘的输入输出（I/O）查询的简化模型。用户应用程序创建查询以读取磁盘上的文件。该查询通过一系列驱动程序，每个驱动程序都会处理传入和传出的数据包。</p>
+<div align="center"><br><img src="/img/driver_test_driver_chain.png" alt="图1 应用程序通过驱动查询的简化模型" align="center"><br></div>
+
+<p>在本文中，我们将重点介绍内核模式驱动程序。<br>内核模式驱动程序可以分为以下几种类型：</p>
+<ul>
+<li>即插即用设备驱动程序：这些驱动程序可以访问物理即插即用（PnP）设备并管理设备电源。</li>
+<li>非即插即用驱动程序：这些驱动程序增强了用户应用程序功能，并提供了对通过标准API调用不可用的内核模式功能的访问。这些驱动程序不适用于物理设备。</li>
+<li><p>文件系统驱动程序：这些驱动程序提供对文件系统的访问。它们将用于读取/记录文件的高级查询转换为用于磁盘驱动器的低级命令（在物理磁盘上读取/记录扇区）。<br>Windows包含两种驱动开发模型：Windows驱动程序模型（WDM）、Windows驱动程序框架（WDF）。WDF由内核模式驱动程序框架（KMDF）和用户模式驱动程序框架（UMDF）组成的。WDM和WDF都简化了使驱动程序代码在Windows版本之间兼容的难度。<br>WDM中包含以下驱动程序类型：</p>
+</li>
+<li><p>总线类型驱动:这些驱动程序支持特定的PCI，SCSI，USB或其他端口，以控制新设备与总线的连接。</p>
+</li>
+<li>功能驱动：这些驱动程序可确保特定设备的功能。它们通常支持读取/记录操作和设备电源管理。</li>
+<li>过滤驱动：这些驱动程序修改对设备的查询。它们可以位于驱动程序链中功能驱动程序的上方或下方。</li>
+</ul>
+<h3 id="驱动程序与设备之间的关系">驱动程序与设备之间的关系</h3><p>每个内核模式驱动程序都与特定的设备一起使用，在Windows中以设备对象表示。这意味着通过驱动程序进行的I/O查询的最终目的地始终是物理或虚拟设备。这既适用于物理PnP设备的驱动程序，也适用于非PnP软件驱动程序。在测试驱动程序时，必须了解用户应用程序和设备之间存在多个驱动程序。在驱动程序执行链中每个驱动程序都可以影响对设备的最终查询结果。</p>
+<h2 id="0x02_Windows驱动程序测试主要内容">0x02 Windows驱动程序测试主要内容</h2><p>不管是Linux还是Windows，有一些特定的测试是驱动程序测试所必需的，并且与驱动程序类型无关。因此，在介绍测试不同类型驱动程序的细微差别之前，我们将首先考虑它们的共性。</p>
+<h3 id="不同操作系统">不同操作系统</h3><p>首先，您必须始终牢记，特定的驱动程序在不同的操作系统上的行为可能有所不同。此外，您需要考虑不同的内核版本，因为即使在同一操作系统中它们也可能有所不同。例如，Windows7和Windows7 sp1具有不同的内核。因此，您必须测试尽可能多的系统。值得一提的是，Microsoft目前还在继续支持的操作系统是从Win7/2008开始的。您还必须考虑到现在最流行的Windows版本是Windows 7和10。</p>
+<h3 id="更新">更新</h3><p>有必要测试驱动程序在特殊情况下的运行情况，例如关机，重新启动和重置。您还应该牢记系统的安全特性：防火墙，数据执行保护（DEP），用户帐户控制（UAC）和杀毒软件。操作系统更新也会影响驱动程序功能。因此将操作系统更新到最新版本测试至关重要。此外，您还需要测试驱动程序更新。</p>
+<h3 id="硬件依赖性">硬件依赖性</h3><p>除了软件依赖性外，还有硬件依赖性。因此，您必须测试驱动程序在启用和禁用的页面文件、多处理器及多内核的运行情况。在测试驱动程序时，必须启用driver verifier，这将为驱动程序增加另外的测试压力。在测试过程中，请检查驱动程序安装和卸载，系统重置和休眠的正确性。</p>
+<h2 id="0x03_如何测试Windows驱动程序">0x03 如何测试Windows驱动程序</h2><p>测试驱动程序过程中始终会发生各种问题的，错误的操作甚至会导致严重的后果。因此，您应该在虚拟机中测试驱动程序直到稳定为止。</p>
+<h3 id="文件系统过滤器驱动程序">文件系统过滤器驱动程序</h3><p>顾名思义，文件系统过滤驱动程序用于文件系统。因此，在测试此类驱动程序时，应使用NTFS，FAT32，exFAT和ReFS等文件系统进行测试。<br>为了正确测试Windows驱动程序，除了系统文件管理器Explorer之外，还应使用各种文件管理器，例如FAR或Windows Total Commander进行测试。此外，除了简单的操作（如复制，删除和重命名）外，不要忘记复杂的文件操作和文件系统变更。<br>复杂的文件系统变更包括：</p>
+<ul>
+<li>挂载/卸载新磁盘：<ul>
+<li>ISO image</li>
+<li>网络磁盘</li>
+<li>虚拟硬盘</li>
+<li>U盘</li>
+</ul>
+</li>
+<li>进行磁盘扇区配置变更（更改驱动器号或名称）</li>
+<li>在磁盘上执行的操作<ul>
+<li>格式化分区</li>
+<li>压缩分区</li>
+<li>分区碎片整理</li>
+<li>磁盘坏道检查</li>
+<li>删除分区</li>
+<li>磁盘动态化</li>
+<li>在GPT / MBR中转换磁盘</li>
+<li>创建新分区<br>您还必须检查：</li>
+</ul>
+</li>
+<li>各种硬件配置（具有不同容量的SSD和HDD）</li>
+<li>停止和启动服务或安装/卸载应用程序时的驱动程序行为</li>
+<li>驱动程序如何与Windows工具与加密磁盘一起使用</li>
+<li>驱动程序与防病毒软件的兼容性，因为防病毒软件也是文件过滤类型驱动</li>
+</ul>
+<h3 id="虚拟存储驱动程序">虚拟存储驱动程序</h3><p>在测试为虚拟存储创建的Windows驱动程序之前，您应该确保文件系统将是稳定的。对于虚拟存储驱动程序，应检查以下内容：</p>
+<ul>
+<li>驱动程序如何在以下情况下处理文件和文件夹<ul>
+<li>打开操作</li>
+<li>创建操作</li>
+<li>编辑操作</li>
+<li>保存操作</li>
+<li>拷贝操作</li>
+<li>剪切操作</li>
+<li>重命名操作</li>
+<li>删除操作</li>
+</ul>
+</li>
+<li>驱动程在文件和文件夹执行搜索操作如何工作的。</li>
+<li>驱动程序如何处理名称包含以下内容的文件<ul>
+<li>字符过多</li>
+<li>数字</li>
+<li>空格</li>
+<li>特殊字符</li>
+<li>象形文字</li>
+<li>非Unicode</li>
+<li>西里尔字母</li>
+</ul>
+</li>
+<li>驱动程序如何处理不同格式的文件：<ul>
+<li>文本</li>
+<li>图像</li>
+<li>归档压缩文件</li>
+<li>Office文件</li>
+</ul>
+</li>
+<li>驱动程序如何处理具有各种属性的文件：<ul>
+<li>只读属性</li>
+<li>隐藏属性</li>
+<li>系统属性</li>
+<li>归档属性</li>
+</ul>
+</li>
+<li>驱动程序如何处理更改文件权限以及如何使用各种NTFS功能：<ul>
+<li>压缩</li>
+<li>加密</li>
+</ul>
+</li>
+<li>快捷方式（符号链接和硬链接）和隐藏副本是否正确。</li>
+<li>驱动程序如何处理不同大小的文件：<ul>
+<li>非常小</li>
+<li>非常多非常小文件</li>
+</ul>
+</li>
+<li>驱动程序如何处理包含大量子文件夹（超过五个）的文件夹。</li>
+<li>驱动程序如何处理冲突，例如使用目标中已存在的文件名复制文件或取消复制或删除。</li>
+<li>驱动程序如何处理保存从Internet或共享网络磁盘下载的文件。</li>
+<li>在正常情况和极端情况下都可以进行磁盘安装/卸载。例如，尝试在复制到存储时卸载，然后在重新引导系统后检查磁盘是否已成功安装。</li>
+<li>磁盘的读写速度。</li>
+</ul>
+<h3 id="USB设备驱动">USB设备驱动</h3><p>对于USB驱动程序测试，您应该尝试覆盖尽可能多的USB设备。您可以从最受欢迎的设备开始，例如闪存驱动器，打印机，扫描仪，鼠标，键盘，便携式硬盘驱动器，智能手机和读卡器。但是，您还应该测试不太受欢迎的设备，例如蓝牙设备，以太网设备，USB集线器，麦克风和耳机，网络摄像头和CD-ROM驱动器。<br>您应该考虑各种USB接口：USB 1.0、2.0、3.0和3.1。此外，不要忘记拔出/插入设备，禁用安全和不安全的设备以及在设备管理器中删除设备。此外，检查设备驱动程序的安装和卸载。</p>
+<h2 id="0x04_驱动程序测试和分析实用工具">0x04 驱动程序测试和分析实用工具</h2><p>有许多用于测试Windows驱动程序的工具，这些工具使您可以监视系统中驱动程序的状态，验证其功能并执行测试。<br>内置的Windows工具足以获取有关驱动程序状态的基本信息（例如，是否已将其加载到系统中）。<br>内置Windows的工具：</p>
+<ul>
+<li>Msinfo32</li>
+<li>Driverquery</li>
+<li>Sc Driver Verifier<br>Sc Driver Verifier是一个系统内置工具，可让验证驱动程序功能。要深入分析测试驱动程序，您需要Windows驱动程序工具包（WDK）中提供的其他工具。</li>
+</ul>
+<h3 id="系统内置工具">系统内置工具</h3><h4 id="Windows系统信息工具（msinfo32）">Windows系统信息工具（msinfo32）</h4><p>Msinfo32允许您获取系统中所有已安装驱动程序的列表，每个驱动程序的类型，其当前状态（已加载/未加载）以及启动模式（系统/手动）。<br>若要实用msinfo32，请使用Win + R调出“运行”对话框，然后启动msinfo32。在系统信息控制台的左侧栏中，选择以下选项卡：软件环境&gt;系统驱动程序。</p>
+<div align="center"><br><img src="/img/drivertest_msinfo32.png" alt align="center"><br></div><br>Msinfo32还可以查看和存储有关已注册驱动程序的信息。如果可以访问远程计算机的Windows Management Instrumentation（WMI），还可以查看远程计算机驱动程序列表，通过选项View &gt; Remote Computer。<br>### Driverquery命令行实用程序<br>Driverquery提供的信息类似于msinfo32中的信息。可以使用driverquery命令通过cmd启动它：<br><div align="center"><br><img src="/img/drivertest_driverquery.png" alt align="center"><br></div><br>还可以通过其他参数查询其他信息：<br>/V是用于详细输出的命令。它使您可以获得类似于msinfo32所示的驱动程序状态信息。<br>/SI提供有关已签名驱动程序的信息。<br>/S系统允许您获取有关远程系统上驱动程序的信息。<br><br>### 与服务控制管理器进行通信的sc命令<br>使用sc，命令可以查看驱动程序的状态以及启动或停止该驱动程序。要查看驱动程序列表，请运行以下命令：<br><em>sc query type= driver</em><br><div align="center"><br><img src="/img/drivertest_sc.png" alt align="center"><br></div>
+
+<h3 id="Windows_Driver_Kit实用工具">Windows Driver Kit实用工具</h3><p>Windows驱动程序工具包（WDK）提供了一系列用于驱动程序测试的工具。WDK与MS Visual Studio集成在一起，但也可以用作一组独立的实用程序。WDK包含一组称为“设备基础测试”的测试模块，以及其他特定的实用程序，使您可以管理设备和驱动程序，监视资源使用情况，并具有用于验证的实用程序等。<br>设备基础测试集包括以下测试：</p>
+<ul>
+<li>并行硬件和操作系统（CHAOS）测试</li>
+<li>覆盖率测试</li>
+<li>CPU压力测试</li>
+<li>驱动安装测试</li>
+<li>I/O测试</li>
+<li>渗透测试</li>
+<li>即插即用测试</li>
+<li>重启测试</li>
+<li>休眠测试<br>为了执行测试，WDTF Simple I/O插件必须支持您的被测试设备。单击此<a href="https://docs.microsoft.com/en-gb/windows-hardware/drivers/wdtf/provided-wdtf-simpleio-plug-ins" target="_blank" rel="external">链接</a>以了解有关WDTF简单I/O插件的更多信息。<br>设备基本测试以dll库的形式组织，并且位于%ProgramFiles%\Windows Kits\10\Testing\Tests\Additional Test目录下(Windows 10)。<br>这些测试可以由TE.exe实用程序启动，该实用程序是Text Authoring和Execution Framework (TAEF)的一部分，必须与WDK一起安装。您可以在%ProgramFiles%\Windows Kits\10\Testing\Runtimes\TAEF目录中找到TE.exe。假设这是我们启动测试的示例：<br><em>TE.exe Devfund_Device_IO.dll /P:”DQ=DriverBinaryNames=testdriver.sys”</em><br>在此阶段，我们使用名为testdriver.sys的测试驱动程序作为参数启动设备I/O测试。设备基础测试和TAEF都非常适合驱动程序自动化测试。</li>
+</ul>
+<h3 id="Windows设备控制台（devcon-exe）">Windows设备控制台（devcon.exe）</h3><p>Windows设备控制台是一个命令行实用程序，它提供有关即插即用设备及其系统驱动程序的信息，并管理设备和特定设备类的筛选器驱动程序。使用devcon您可以安装、卸载、连接、断开和配置设备。Devcon允许您在搜索特定设备时设置模板。星号（*）可以替换查询中的一个或多个符号。<br>命令示例：</p>
+<ul>
+<li>devcon.exe hwids * 显示所有设备的名称和ID的列表</li>
+<li>devcon.exe classes 显示所有设备类别的列表</li>
+<li>devcon.exe driverfiles * 显示所有系统设备的驱动程序文件列表</li>
+<li>devcon.exe classfilter USBDevice upper 显示DiskDrive设备类的筛选器驱动程序</li>
+<li>devcon.exe /r classfilter DiskDrive upper !OldFilter +NewFilter 替换DiskDrive设备类的筛选器驱动程序</li>
+</ul>
+<h3 id="PoolMon_(poolmon-exe)">PoolMon (poolmon.exe)</h3><p>内存池监视器显示有关downloadable和nondownloadable核心内存分配的信息。该实用程序用于在测试时检测内存泄漏。</p>
+<div align="center"><br><img src="/img/drivertest_poolmon.png" alt align="center"><br></div><br>驱动程序的内存分配统计信息按标记而不是按驱动程序名称排序。应该使用ExAllocatePoolWithTag和ExAllocatePoolWithQuotaTag函数在驱动程序代码中设置此标记。如果未在代码中设置标签，则系统将设置”None”标签,这样的话定位驱动内存泄漏将会很困难。<br><br>### Windows Hardware Lab Kit<br>Windows Hardware Lab Kit（HLK）是用于测试基于Windows 10的设备的测试框架。要在Windows 7，Windows 8和Windows 8.1上进行Windows设备测试，您应该使用Windows HLK的前身Windows Hardware Certification Kit（HCK）。<br>在使用Windows HLK进行测试时，应使用由两个组件组成的环境：HLK测试服务器（controller）和测试系统（client）。HLK控制器管理一组测试，将它们与测试系统连接，并定义执行计划。该控制器允许您管理一组客户端计算机上的测试。在客户端系统中，设备和驱动程序被配置用于进一步的测试，并执行测试方案。可以通过以下步骤完成准备和测试过程：<br>- 1.将HLK c;ient安装在专用计算机上。<br>- 2.将agent程序安装在一台或多台测试计算机上。<br>- 3.创建一组以逻辑方式连接一个或多个计算机的测试计算机。<br>- 4.创建一个基于控制器的项目，该项目定义要测试的元素。<br>- 5.选择一个测试目标，例如测试机器的外部设备或软件组件，例如过滤器驱动程序。<br>- 6.选择并启动测试。您可以使用播放列表执行一组特定的场景。<br>- 7.查看并分析测试结果。<br>Windows HLK允许您测试多种类型的设备。您可以通过点击链接<a href="https://docs.microsoft.com/en-us/windows-hardware/test/hlk/testref/hardware-lab-kit-test-reference" target="_blank" rel="external">链接</a>了解有关Windows HLK的更多信息。<br><br>### Driver Verifier<br><br>Driver Verifier是一个内置Windows实用程序，用于验证内核模式驱动程序。Driver Verifier使您能够检测可能损坏操作系统的驱动程序错误。使用WDK工具进行手动或自动测试时，Driver Verifier最有效。<br>Driver Verifier作为二进制Verifier.exe文件存储在%WinDir%\system32目录中。该实用程序可以以两种模式启动：通过命令行和Driver Verifier管理器。要启动命令行版本，请以管理员身份运行命令提示符，然后输入带有至少一个参数的verifier命令，例如help -verifier /？）。要打开驱动程序验证程序管理器，请运行不带参数的verifier。<br>让我们以Driver Verifier Manager为例查看驱动程序验证过程：<br>- 1.运行Driver Verifier Manager：Win + R&gt;verifier<br>- 2.选择一组标准测试或创建自定义测试。管理器还可以显示和删除当前设置以及显示有关经过验证的驱动程序的信息：<br><div align="center"><br><img src="/img/drivertest_verify.png" alt align="center"><br></div><br>- 3.选择一个或几个驱动程序进行测试。<br>- 4.重新启动计算机。将根据所选设置对驱动程序进行测试，直到将其从经过验证的驱动程序列表中删除。<br><br>#### Driver Verifier标准设置<br><br>下面，我们将介绍Windows 10 Driver Verifier程序的标准设置。在不同的Windows版本中，标准设置和补充设置的列表可能有所不同。<br>以下是Windows 10中Driver Verifier程序的标准选项：<br>- Special Pool<br>- Force IRQ Checking<br>- Pool Tracking<br>- I/O Verification<br>- Deadlock Detection<br>- DMA Verification<br>- Security Checks<br>- Miscellaneous Checks<br>- DDI Compliance Checking<br>下面我们看下每项设置的详细信息：<br><strong>Special Pool</strong><br>Driver Verifier的Special Pool选项可以分配出一块可以测试出驱动程序是否访问了被释放内存内存空间，这样就可以测试出驱动是否有内存访问问题。<br><strong>Force IRQ Checking</strong><br>在Windows中，如果启用了自旋锁选项，驱动程序将无法访问具有高IRQL的分页内存。Force IRQ Checking选项可以检测到此类问题。<br><strong>Pool Tracking</strong><br>Pool Tracking监视驱动程序的内存分配。 Driver Verifier检查为驱动程序分配的内存最终是否被释放。这有助于检测内存泄漏。<br><strong>I/O Verification</strong><br>I/O Verification选项可检测驱动程序对输入/输出的实用是否正确。在Windows 7及更高版本中，此选项还包含增强的I/O检查功能，该功能对以下请求执行压力测试：PnP IRP、电源IRP及WMI IRP。通过死锁检测，Driver Verifier可以监视驱动程序使用的同步对象，例如互斥锁和自旋锁，这就是可以检测到潜在的死锁。<br><strong>DMA Verification</strong><br>使用DMA Verification，Driver verification可以监视对Direct Memory的使用。DMA允许设备不经过CPU直接使用内存。<br><strong>Security Checks</strong><br>Driver Verifier的Security Checks选项可以检测出一些安全问题，如内核函数访问用户态内存地址或则不正确的参数使用。<br><strong>Miscellaneous Checks</strong><br>启用Miscellaneous Checks后，将对驱动程序进行测试，以检查可能导致驱动程序或系统崩溃的潜在错误，例如驱动释放了其他驱动正在使用的内存空间。<br><strong>DDI Compliance Checking</strong><br>在与操作系统的内核接口进行的通信（设备驱动程序接口）中检查驱动程序是否存在潜在错误。<br><br>为了有效地检测Driver Verifier中的错误，您应该遵循以下建议：<br>- 1.除非刻意这样，否则不要同时验证多个驱动程序。<br>- 2.下启用内存转储生成应对可能的系统崩溃情况（BSOD）。<br>- 3.如果需要启用调试模式并使用调试器通过网络或COM/USB端口连接到被测试系统。<br><br>### 驱动数字签名<br>在Windows XP，Windows Vista和Windows 7中，对安装驱动程序软件包的软件包签名没有严格要求。因此，您可以轻松安装没有签名的驱动程序。但是如果安装包未进行签名，会看到以下警告：<br><div align="center"><br><img src="/img/drivertest_warnning.png" alt align="center"><br></div>
+
+<p>为了使驱动程序被识别为来自受信任的发布者，必须在Windows XP中使用Windows硬件质量实验室（WHQL）签名对驱动程序包进行签名。在Windows Vista和Windows 7中，必须使用受信任的根CA证书对驱动程序包进行签名。在Windows 8，Windows 8.1和Windows 10中，需要对驱动程序签名，因为没有它就无法安装驱动程序。过去需要使用SHA-1算法对证书进行加密。现在，SHA-1已过时，通常应该使用SHA-2算法应用于证书。<br>您可以通过以下<a href="https://technet.microsoft.com/en-us/library/security/2880823" target="_blank" rel="external">链接</a>了解有关SHA-2算法的更多信息。</p>
+<h3 id="驱动sys文件签名">驱动sys文件签名</h3><p>在内核模式下运行驱动程序之前，Windows将检查驱动程序二进制.sys文件的数字签名。值得注意的是，Windows XP和Windows Vista 32位不需要数字驱动程序签名。Windows Vista 64位，Windows 7，Windows 8和Windows 8.1要求签名带有在其根目录中包含Microsoft Code Verification Root的证书，或者由内核信任的另一个证书。Windows 10版本1607及更高版本要求使用Windows Hardware Developer Center网站对驱动程序进行签名。<br>为了Windows驱动程序测试，您可以暂时禁用数字驱动程序签名检查。在Windows 10中，可以通过以下方式执行此操作：</p>
+<ul>
+<li>1.按住Shift键，然后在Windows主菜单中选择“重新启动”选项。</li>
+<li>2.选择Troubleshoot -&gt; Advanced Options -&gt; Startup Settings -&gt; Restart</li>
+<li>3.在启动设置中，按F7键选择禁用驱动程序签名强制实施选项。<br><div align="center"><br><img src="/img/drivertest_disable.png" alt align="center"><br></div><br>要在启用了安全启动选项的Windows中测试驱动程序，必须确保驱动程序具有有效的签名。</li>
+</ul>
+<h2 id="0x05_问题定位">0x05 问题定位</h2><p>驱动程序中运行错误可能导致系统崩溃。因此，除了定义特定步骤外，本地化错误还意味着了解驱动程序是否造成了BSOD。为了确定这一点，您必须查看系统内存转储。这是在BSOD之后自动收集的，您可以在C:\Windows\Memory.dmp目录中找到它。要查看完整的内核转储，您应该告诉系统收集它。内核转储还包含有关磁盘上可用内存的必要信息。要获取此信息，您应该打开Advanced system settings &gt; Startup，然后单击Settings。</p>
+<div align="center"><br><img src="/img/drivertest_enabledmp.png" alt align="center"><br></div><br>检查是否启用了“完整内存转储”或“内核内存转储”选项。<br><div align="center"><br><img src="/img/drivertest_fulldmp.png" alt align="center"><br></div>
+
+<p>在这些设置中，您可以更改内存转储的存储位置。<br>一旦有了完整的dmp，就应该对其进行分析。这是WinDbg有用的地方。使用此工具之前，您必须下载特定的Microsoft符号。您可以阅读<a href="https://msdn.microsoft.com/en-us/library/windows/desktop/ee416588(v=vs.85" target="_blank" rel="external">本指南</a>.aspx)以了解操作方法。<br>打开dmp文件并输入!analyze -v命令。注意堆栈，您将看到产生BSOD的原因。在某些情况下，您将无法从系统中获取转储文件，因为系统一直在崩溃。在这种情况下，您应该使用Windows高级启动选项。然后，您可以在几种特殊模式下运行系统。最简单，最可靠的一种是安全模式模式。在安全模式下，系统的一些操作将受到限制，您需要的只是获取C:\Windows文件夹中的dmp文件，这种操作安全模式使支持的。<br>您也可以尝试在系统故障时禁用自动重启功能，这可能有助于防止持续重启。如果系统崩溃，则应检查driver verifier是否启用。当开发人员尝试重现该错误时，此信息可能对他们非常有帮助。除了系统崩溃之外，您还可能面临其他问题，例如与功能或性能相关的问题。<br>要定位功能问题，您应该采取以下措施：<br>尝试在另一个环境中（在没有防病毒软件的其他操作系统中，在另一个文件系统上，使用实体计算机等）中重现问题。您也可以尝试其他条件，例如不同类型的文件和不同的文件大小。如果问题与您的USB设备有关，请检查其他类型的设备。如果网络是导致网络设备驱动程序错误的潜在原因，请检查各种网络设置（启动时间，带宽，启用或禁用防火墙）。当问题仅针对具有特定权限的用户出现时，请使用其他权限（管理员或标准）去定位问题。<br>如果问题与性能有关，则您的操作将取决于您要改善其性能的元素：</p>
+<ul>
+<li>如果问题出在网络设备驱动程序中，请模拟网络延迟或尝试在高速网络中重现这个问题。</li>
+<li>如果问题与文件操作有关，请使用不同数量的不同大小的文件进行验证。</li>
+<li>如果问题与USB摄像头有关，请使用其他应用层软件再进行测试验证。</li>
+</ul>
+<h2 id="0x06_驱动测试报告模板">0x06 驱动测试报告模板</h2><div align="center"><br><img src="/img/drivertest_testsample.png" alt align="center"><br></div>
+
+<h2 id="0x07_结论">0x07 结论</h2><p>在本文中，我们描述了驱动程序的主要类型以及测试它们的方法和实用工具。Windows内核驱动程序测试与测试桌面应用程序有很大不同。如果驱动程序包含错误，通常会影响整个系统的稳定性，并最终导致BSOD。检测、定位和消除驱动程序错误，可以大大降低了最终用户系统行为不稳定的风险。</p>
+<p><em>原文链接：<a href="https://www.apriorit.com/qa-blog/464-windows-driver-testing-basics" target="_blank" rel="external">https://www.apriorit.com/qa-blog/464-windows-driver-testing-basics</a></em></p>
+
+      
+    </div>
+    <footer>
+      
+
+        
+          <div class="alignleft post-nav">
+            <em>上一篇: </em><a href="/2019/06/25/Kernel/kernel_enum_wfp_callout_function/">Windows内核重拾：如何枚举系统中Windows Filtering Platform (WFP)驱动中的callout函数</a>
+          </div>
+        
+        
+          <div class="alignright post-nav">
+            <em>下一篇: </em><a href="/2019/04/06/Windows/how-to-reverse-engineer-software-windows-in-a-right-way/">如何正确的对Windows软件进行逆向工程（翻译/转载）</a>
+          </div>
+          <div class="clearfix"></div>
+        
+
+        
+          <div class="copyright">
+            
+              <span class="claim">转载请注明youngroe.com</span>
+            
+            
+              <span class="from-link">
+                <em>本文链接地址:</em>
+                <a href="/2019/05/06/Kernel/windows-driver-testing-basics/">
+                  http://www.youngroe.com/2019/05/06/Kernel/windows-driver-testing-basics/
+                </a>
+              </span>
+            
+          </div>
+        
+		<span id="busuanzi_container_site_pv">
+    本站总访问量<span id="busuanzi_value_site_pv"></span>次
+        
+  
+  <div class="categories">
+    <a href="/categories/Kernel/">Kernel</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/测试/">测试</a>, <a href="/tags/驱动/">驱动</a>
+  </div>
+
+        <div class="bdsharebuttonbox"><a href="#" class="bds_more" data-cmd="more"></a><a href="#" class="bds_qzone" data-cmd="qzone"></a><a href="#" class="bds_tsina" data-cmd="tsina"></a><a href="#" class="bds_tqq" data-cmd="tqq"></a><a href="#" class="bds_renren" data-cmd="renren"></a><a href="#" class="bds_weixin" data-cmd="weixin"></a></div>
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdPic":"","bdStyle":"0","bdSize":"16"},"share":{},"image":{"viewList":["qzone","tsina","tqq","renren","weixin"],"viewText":"������","viewSize":"16"},"selectShare":{"bdContainerClass":null,"bdSelectMiniList":["qzone","tsina","tqq","renren","weixin"]}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</span>
+</article>
+
+
+<section id="comment">
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+<div class="widget tag">
+  <h3 class="title">分类</h3>
+  <ul class="entry">
+  
+    <li><a href="/categories/Cybersecurity/">Cybersecurity</a><small>1</small></li>
+  
+    <li><a href="/categories/Debug/">Debug</a><small>7</small></li>
+  
+    <li><a href="/categories/Kernel/">Kernel</a><small>4</small></li>
+  
+    <li><a href="/categories/Learning/">Learning</a><small>8</small></li>
+  
+    <li><a href="/categories/Life/">Life</a><small>7</small></li>
+  
+    <li><a href="/categories/Others/">Others</a><small>1</small></li>
+  
+    <li><a href="/categories/Read-Notes/">Read Notes</a><small>7</small></li>
+  
+    <li><a href="/categories/Tools/">Tools</a><small>6</small></li>
+  
+    <li><a href="/categories/Vulnerabilities/">Vulnerabilities</a><small>0</small></li>
+  
+    <li><a href="/categories/Windows/">Windows</a><small>14</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2019/07/01/Windows/delphi_reverse_summary/">Delphi程序逆向反汇编技巧小记</a>
+      </li>
+    
+      <li>
+        <a href="/2019/06/25/Kernel/kernel_enum_wfp_callout_function/">Windows内核重拾：如何枚举系统中Windows Filtering Platform (WFP)驱动中的callout函数</a>
+      </li>
+    
+      <li>
+        <a href="/2019/05/06/Kernel/windows-driver-testing-basics/">Windows内核重拾：Windows驱动测试基础：工具、功能和示例（翻译/转载）</a>
+      </li>
+    
+      <li>
+        <a href="/2019/04/06/Windows/how-to-reverse-engineer-software-windows-in-a-right-way/">如何正确的对Windows软件进行逆向工程（翻译/转载）</a>
+      </li>
+    
+      <li>
+        <a href="/2019/01/12/Windows/a_crash_lead_deadlock/">Windows平台下一个崩溃而导致的死锁分析</a>
+      </li>
+    
+      <li>
+        <a href="/2018/12/01/Windows/windows_client_dns_over_https/">Windows客户端如何透明使用DNS-over-HTTPS</a>
+      </li>
+    
+      <li>
+        <a href="/2018/10/06/Cybersecurity/ddos-protection-techniques/">现代DDoS对抗技术概述（翻译/转载）</a>
+      </li>
+    
+      <li>
+        <a href="/2018/09/18/Life/xian/">西安周末游</a>
+      </li>
+    
+      <li>
+        <a href="/2018/01/06/Kernel/WindowsKernel_DebugObject/">Windows内核重拾：DebugObject</a>
+      </li>
+    
+      <li>
+        <a href="/2017/10/23/Tools/IDA-Pro-ClassInformer-Tutorial/">IDA Pro ClassInformer使用指南（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2017/05/23/Windows/Kernel Data and Filtering Support/">Kernel Data and Filtering Support for Windows Server 2008（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2017/05/17/Windows/Windows-x64-Shellcode/">Windows x64 Shellcode编写指南(翻译)</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget tagcloud">
+  <h3 class="title">标签云</h3>
+  <div class="entry">
+    <a href="/tags/ASM/" style="font-size: 12.5px;">ASM</a> <a href="/tags/Boost/" style="font-size: 10px;">Boost</a> <a href="/tags/DDoS/" style="font-size: 10px;">DDoS</a> <a href="/tags/DNS-over-HTTPS/" style="font-size: 10px;">DNS-over-HTTPS</a> <a href="/tags/Delphi/" style="font-size: 10px;">Delphi</a> <a href="/tags/Dll劫持/" style="font-size: 10px;">Dll劫持</a> <a href="/tags/GCC-GDB/" style="font-size: 10px;">GCC&GDB</a> <a href="/tags/GetVersionEx/" style="font-size: 10px;">GetVersionEx</a> <a href="/tags/Http/" style="font-size: 10px;">Http</a> <a href="/tags/IDA-Pro/" style="font-size: 12.5px;">IDA Pro</a> <a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/MSDN/" style="font-size: 12.5px;">MSDN</a> <a href="/tags/Malware/" style="font-size: 12.5px;">Malware</a> <a href="/tags/MiniDumpWriteDump/" style="font-size: 10px;">MiniDumpWriteDump</a> <a href="/tags/PEB/" style="font-size: 10px;">PEB</a> <a href="/tags/Procmon/" style="font-size: 10px;">Procmon</a> <a href="/tags/Runtime-Error/" style="font-size: 10px;">Runtime Error</a> <a href="/tags/SEH/" style="font-size: 10px;">SEH</a> <a href="/tags/Shellcode/" style="font-size: 10px;">Shellcode</a> <a href="/tags/SysinternalsSuite/" style="font-size: 10px;">SysinternalsSuite</a> <a href="/tags/Tips/" style="font-size: 10px;">Tips</a> <a href="/tags/UAC/" style="font-size: 10px;">UAC</a> <a href="/tags/UAF漏洞/" style="font-size: 10px;">UAF漏洞</a> <a href="/tags/VC/" style="font-size: 10px;">VC</a> <a href="/tags/Visual-Studio/" style="font-size: 12.5px;">Visual Studio</a> <a href="/tags/Windbg/" style="font-size: 10px;">Windbg</a> <a href="/tags/Windows/" style="font-size: 20px;">Windows</a> <a href="/tags/Windows核心编程/" style="font-size: 17.5px;">Windows核心编程</a> <a href="/tags/android/" style="font-size: 10px;">android</a> <a href="/tags/getaddrinfo/" style="font-size: 10px;">getaddrinfo</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/libeay32/" style="font-size: 10px;">libeay32</a> <a href="/tags/markdown/" style="font-size: 10px;">markdown</a> <a href="/tags/ndk/" style="font-size: 10px;">ndk</a> <a href="/tags/sublime-text3/" style="font-size: 10px;">sublime text3</a> <a href="/tags/x64/" style="font-size: 12.5px;">x64</a> <a href="/tags/体验/" style="font-size: 10px;">体验</a> <a href="/tags/内核/" style="font-size: 12.5px;">内核</a> <a href="/tags/内核结构/" style="font-size: 15px;">内核结构</a> <a href="/tags/学习/" style="font-size: 10px;">学习</a> <a href="/tags/安全机制/" style="font-size: 10px;">安全机制</a> <a href="/tags/异常处理/" style="font-size: 10px;">异常处理</a> <a href="/tags/提权/" style="font-size: 10px;">提权</a> <a href="/tags/服务/" style="font-size: 10px;">服务</a> <a href="/tags/权限/" style="font-size: 12.5px;">权限</a> <a href="/tags/栈溢出漏洞/" style="font-size: 10px;">栈溢出漏洞</a> <a href="/tags/测试/" style="font-size: 10px;">测试</a> <a href="/tags/浮躁/" style="font-size: 10px;">浮躁</a> <a href="/tags/漏洞调试/" style="font-size: 12.5px;">漏洞调试</a> <a href="/tags/生活/" style="font-size: 15px;">生活</a> <a href="/tags/脱壳/" style="font-size: 10px;">脱壳</a> <a href="/tags/西安/" style="font-size: 10px;">西安</a> <a href="/tags/计划/" style="font-size: 10px;">计划</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a> <a href="/tags/调试/" style="font-size: 15px;">调试</a> <a href="/tags/转换/" style="font-size: 10px;">转换</a> <a href="/tags/进程/" style="font-size: 10px;">进程</a> <a href="/tags/逆向/" style="font-size: 10px;">逆向</a> <a href="/tags/重庆/" style="font-size: 10px;">重庆</a> <a href="/tags/驱动/" style="font-size: 15px;">驱动</a>
+  </div>
+</div>
+
+
+  <div class="widget tag">
+<h3 class="title">Links</h3>
+<ul class="entry">
+<li><a href="http://blog.ourren.com/" title="Ourren">Ourren</a></li>
+<li><a href="http://www.hyjal.net/" title="Hyjal">Hyjal</a></li>
+<li><a href="http://www.jianshu.com/users/fa15f4e416ae/latest_articles" title="Daemonceltics">Daemonceltics</a></li>
+<li><a href="http://papap.info/" title="isee">isee</a></li>
+</ul>
+</div>
+
+  <script type="text/javascript" id="clustrmaps" src="//cdn.clustrmaps.com/map_v2.js?u=putG&d=yoFnN6V-ovhL-H4e9_69LvkTiX4uX7rEYJ15yL3G1Wg"></script>
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <div id="go-pg-top"><i class="icon-arrow-up"></i></div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2020 Lyon
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript" charset="utf-8" src="/js/page.js"></script>
+
+</body>
+
+</html>

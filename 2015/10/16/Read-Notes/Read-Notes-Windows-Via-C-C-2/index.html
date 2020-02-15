@@ -1,0 +1,362 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Windows核心编程读书笔记2（第4章 进程） | Lyon&#39;s blog</title>
+  <meta name="author" content="Lyon">
+  
+  <meta name="description" content="Walk steps step by step">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="Windows核心编程读书笔记2（第4章 进程）"/>
+  <meta property="og:site_name" content="Lyon&#39;s blog"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  #<link href="/favicon.ico" rel="icon">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="alternate" href="/atom.xml" title="Lyon&#39;s blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  <script src="/js/jquery.min.js"></script>
+  <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?0fe72895c9bcfd0d09da12b5378b1b91";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+</head>
+
+
+<body>
+  <!--[if lte IE 8]> <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'> <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0027_Simplified Chinese.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." style='margin-left:auto;margin-right:auto;display: block;'/></a></div> <![endif]-->
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">Lyon&#39;s blog</a></h1>
+  <h2><a href="/">I hear and I forget.I see and I remember.I do and I understand.</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">首页</a></li>
+    
+      <li><a href="/archives">归档</a></li>
+    
+      <li><a href="/about">关于</a></li>
+    
+	<li> <a href="/atom.xml">RSS</a> </li>
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <time datetime="2015-10-16T12:01:17.000Z"><a href="/2015/10/16/Read-Notes/Read-Notes-Windows-Via-C-C-2/">2015-10-16</a></time>
+      
+      
+  
+    <h1 class="title">Windows核心编程读书笔记2（第4章 进程）</h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+  <div id="toc" class="toc-article">
+  <strong class="toc-title">文章目录</strong>
+  
+  </div>
+
+
+	
+    <div class="entry">
+      
+        <p>##主要内容：<br>什么是进程、系统如何创建进程内核对象、如何管理进程、如何使用内核对象对进程进行操作、进程不同属性、如何结束运行的进程</p>
+<p>##什么是进程</p>
+<ul>
+<li>进程是一个正在运行的程序实例，进程由两个部分组成：进程内核对象、进程地址空间(执行文件代码和栈堆等动态空间)</li>
+<li>进程内核对象存放关于进程的统计信息，进程地址空间存放执行模块/Dll模块代码和数据（还包含动态分配的空间线程堆栈和堆分配的空间）</li>
+<li>进程是不活泼，由线程完成操作运行（线程负责执行包含在进程的地址空间中的代码）。每个线程都有它自己的一组CPU寄存器和它自己的堆栈。每个进程至少<br>拥有一个线程，来执行进程的地址空间中的代码。如果没有线程来执行进程的地址空间中的代码，那么进程就没有存在的理由了，系统就将自动撤消该进程和它的地址空间。</li>
+</ul>
+<p>##Windows应用程序</p>
+<ul>
+<li>/SUBSYSTEM:CONSOLE  GUI　/SUBSYSTEM:WINDOWS　　CLI</li>
+<li>应用程序入口点</li>
+</ul>
+<a id="more"></a>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//启动程序</span></span><br><span class="line"><span class="comment">//CRt0.c</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">mainCRTStartup</span><span class="params">(<span class="keyword">void</span>)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">　<span class="keyword">int</span> mainret;</span><br><span class="line">　<span class="comment">/*获得WIN32完整的版本信息*/</span></span><br><span class="line">　_osver = GetVersion();</span><br><span class="line">　_winminor = (_osver &gt;&gt; <span class="number">8</span>) &amp; <span class="number">0x00FF</span> ;</span><br><span class="line">　_winmajor = _osver &amp; <span class="number">0x00FF</span> ;</span><br><span class="line">　_winver = (_winmajor &lt;&lt; <span class="number">8</span>) + _winminor;</span><br><span class="line">　_osver = (_osver &gt;&gt; <span class="number">16</span>) &amp; <span class="number">0x00FFFF</span> ;</span><br><span class="line">　_ioinit(); <span class="comment">/* initialize lowio */</span></span><br><span class="line">　<span class="comment">/*1. 获得命令行信息 */</span></span><br><span class="line">　_acmdln = (<span class="keyword">char</span> *) GetCommandLineA();</span><br><span class="line">　<span class="comment">/*2.获得环境信息 */</span></span><br><span class="line">　_aenvptr = (<span class="keyword">char</span> *) __crtGetEnvironmentStringsA();</span><br><span class="line">　_setargv(); <span class="comment">/* 设置命令行参数 */</span></span><br><span class="line">　_setenvp(); <span class="comment">/* 设置环境参数 */</span></span><br><span class="line">　_cinit(); </span><br><span class="line"> <span class="comment">/*3.C数据初始化：全局变量初始化，就在这里！*/</span></span><br><span class="line"> <span class="comment">/*4.初始化全局对象调用C++构造函数*/</span></span><br><span class="line">　__initenv = _environ;</span><br><span class="line">　mainret = main( __argc, __argv, _environ ); <span class="comment">/*调用main函数*/</span></span><br><span class="line">　<span class="built_in">exit</span>( mainret );</span><br><span class="line"><span class="comment">/*</span><br><span class="line">  退出部分</span><br><span class="line">  1.执行通过_onexit注册的函数</span><br><span class="line">  2.执行全局对象的C++析构函数</span><br><span class="line">  3.判断设置的内存泄漏检测内存泄漏</span><br><span class="line">  4.调用ExitProcess</span><br><span class="line"> */</span></span><br><span class="line"></span><br><span class="line"> */</span><br><span class="line">*/</span><br><span class="line"> */</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">int</span> Winapi winmain&lt;-------&gt;WinMainCRTStartup</span><br><span class="line">(</span><br><span class="line">hinstance hinstexe,</span><br><span class="line">hinstance,</span><br><span class="line">pstr pszcmdline,</span><br><span class="line"><span class="keyword">int</span> ncmdshow</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> wWinapi winmain&lt;-------&gt;wWinMainCRTStartup</span><br><span class="line">(</span><br><span class="line">hinstance hinstexe,</span><br><span class="line">hinstance,</span><br><span class="line">pwstr pszcmdline,</span><br><span class="line"><span class="keyword">int</span> ncmdshow</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> __cdecl main&lt;--------&gt;mainCRTStartup</span><br><span class="line">(</span><br><span class="line"><span class="keyword">int</span> argc,</span><br><span class="line"><span class="keyword">char</span> *argv[],</span><br><span class="line"><span class="keyword">char</span> *envp[]</span><br><span class="line">)</span><br><span class="line"><span class="keyword">int</span> __cdecl wmain&lt;------&gt;mainCRTStartup</span><br><span class="line">(</span><br><span class="line"><span class="keyword">int</span> argc,</span><br><span class="line"><span class="keyword">wchar_t</span> *argv[],</span><br><span class="line"><span class="keyword">wchar_t</span> *envp[]</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>加载到进程地址空间的每个可执行文件或D L L文件均被赋予一个独一无二的实例句柄。HINSTANCE和HMODULE是完全相同的对象（只是在16位系统中不同）,表示映像加载到内存中的基址 可通过Getmodulehandle获得</li>
+<li>运行默认基址0x00400000, /BASE:address</li>
+<li>应用程序命令行、环境变量、错误模式、目录<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">GetCommandLine()</span><br><span class="line">CommandLineToArgvW()</span><br><span class="line">系统环境变量</span><br><span class="line">HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Environment</span><br><span class="line">修改相关环境变量后通知相关窗口</span><br><span class="line">SendMessage(HWND_BROADCAST,WM_SETTINGCHANGE,<span class="number">0</span>,(LPARAM)TEXT(<span class="string">"Emvironment"</span>))</span><br><span class="line">GetEnvironmentVariable()</span><br><span class="line">ExpandEnvironmentStrings</span><br><span class="line">SetEnvironmentVariable</span><br><span class="line">设置进程如何响应各种错误</span><br><span class="line">SetErrorMode()</span><br><span class="line">GetCurrentDirectory</span><br><span class="line">SetCurrentDirectory、_chdir</span><br><span class="line">相对路径转换成绝对路径</span><br><span class="line">GetFUllPathName</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>##CreateProcess函数<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">BOOL <span class="title">CreateProcess</span><span class="params">(</span><br><span class="line">  LPCTSTR lpApplicationName,                 <span class="comment">// name of executable module</span></span><br><span class="line">  LPTSTR lpCommandLine,                      <span class="comment">// command line string</span></span><br><span class="line">  LPSECURITY_ATTRIBUTES lpProcessAttributes, <span class="comment">// SD</span></span><br><span class="line">  LPSECURITY_ATTRIBUTES lpThreadAttributes,  <span class="comment">// SD</span></span><br><span class="line">  BOOL bInheritHandles,                      <span class="comment">// handle inheritance option</span></span><br><span class="line">  DWORD dwCreationFlags,                     <span class="comment">// creation flags</span></span><br><span class="line">  LPVOID lpEnvironment,                      <span class="comment">// new environment block</span></span><br><span class="line">  LPCTSTR lpCurrentDirectory,                <span class="comment">// current directory name</span></span><br><span class="line">  LPSTARTUPINFO lpStartupInfo,               <span class="comment">// startup information</span></span><br><span class="line">  LPPROCESS_INFORMATION lpProcessInformation <span class="comment">// process information);</span></span></span></span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>当一个线程调用CreateProcess时，系统就会创建一个进程内核对象，其初始使用计数是1,进程内核对象不是进程本身，而是操作系统管理进程时使用的一个较小的数据结构。进程内核对象可以看作是由进程统计信息组成的一个较小的数据结构。然后创建一个虚拟地址空间、创建一个线程内核对象。</li>
+<li>LPTSTR lpCommandLine CreateProcess期望你将传递一个非常量字符串的地址(2000以上版本可以随意)。 /GF  传递参数时一般为”WORDPAD README&gt;TXT”</li>
+<li><p>当路径非全路径时，搜索可执行文件路径顺序</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1</span>) 包含调用进程的. exe文件的目录。</span><br><span class="line"><span class="number">2</span>) 调用进程的当前目录。</span><br><span class="line"><span class="number">3</span>) Windows的系统目录。</span><br><span class="line"><span class="number">4</span>) Windows目录。</span><br><span class="line"><span class="number">5</span>) PATH环境变量中列出的目录。</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>lpProcessAttributes 进程内核对象安全属性 lpThreadAttributes 线程内核对象安全属性，一般可以直接传NULL</p>
+</li>
+<li>dwCreationFlags  参数用于标识标志，以便用于规定如何来创建新进程。如果将标志逐位用O R操作符组合起来的话，就可以设定多个标志。</li>
+<li>父进程创建子进程时使用的lpStartupInfo，在子进程中可以使用GetStartupInfo来查询</li>
+<li><p>lpEnvironment 参数用于指向包含新进程将要使用的环境字符串的内存块。在大多数情况下，为该参数传递NULL，使子进程能够继承它的父进程正在使用的一组环境字符串</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> _PROCESS_INFORMATION &#123; </span><br><span class="line">    HANDLE hProcess; </span><br><span class="line">    HANDLE hThread; </span><br><span class="line">    DWORD dwProcessId; </span><br><span class="line">    DWORD dwThreadId; </span><br><span class="line">&#125; PROCESS_INFORMATION;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>lpProcessInformation 参数用于指向你必须指定的PROCESS_INFORMATION结构。CreateProcess在返回之前要对该结构的成员进行初始化，创建新进程可使系统建立一个进程内核对象和一个线程内核对象。在创建进程的时候，系统为每个对象赋予一个初始使用计数值1。必须关闭子进程和它的主线程的句柄，以避免在应用程序运行时泄漏资源。当然，当进程终止运行时，系统会自动消除这些泄漏现象，但是，当进程不再需要访问子进程和它的线程时，编写得较好的软件能够显式关闭这些句柄（通过调用Closehandle函数来关闭）。<br><em>由于某些原因，许多开发人员认为，关闭进程或线程的句柄，会促使系统撤消该进程或线程。实际情况并非如此。关闭句柄只是告诉系统，你对进程或线程的统计数据不感兴趣。进程或线程将继续运行，直到它自己终止运行。</em></p>
+</li>
+</ul>
+<p>##终止进程运行</p>
+<ul>
+<li><p>主线程的进入点函数返回（最好使用这个方法）。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">该线程创建的任何C + +对象将能使用它们的析构函数正确地撤消。</span><br><span class="line">操作系统将能正确地释放该线程的堆栈使用的内存。</span><br><span class="line">系统将进程的退出代码（在进程的内核对象中维护）设置为进入点函数的返回值。</span><br><span class="line">系统将进程内核对象的返回值递减<span class="number">1</span>。</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>进程中的一个线程调用ExitProcess函数（应该避免使用这种方法）。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">VOID <span class="title">ExitProcess</span><span class="params">(  UINT uExitCode   <span class="comment">// exit code for all threads);</span></span><br><span class="line">调用ExitProcess或ExitThread可使进程或线程在函数中就终止运行。就操作系统而</span><br><span class="line">言，这很好，进程或线程的所有操作系统资源都将被全部清除。但是C/C++应用程序应该避</span><br><span class="line">免调用这些函数，因为C/C++运行期也许无法正确地清除</span><br><span class="line">显式调用ExitProcess或ExitThread是导致应用程序不能正确地将自己清除的常见</span><br><span class="line">原因。在调用ExitThread时，进程将继续运行，但是可能会泄漏内存或其他资源。</span></span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>另一个进程中的线程调用TerminateProcess函数（应该避免使用这种方法）。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">BOOL <span class="title">TerminateProcess</span><span class="params">(  HANDLE hProcess, <span class="comment">// handle to the process</span></span><br><span class="line">  UINT uExitCode   <span class="comment">// exit code for the process);</span></span><br><span class="line">  终止运行的进程绝对得不到关于它将终止运行的任何通知，因为应用程序无法正确地清除，</span><br><span class="line">  并且不能避免自己被撤消（除非通过正常的安全机制）。</span><br><span class="line">  TerminateProcess函数是个异步运行的函数，也就是说，它会告诉系统，你想要</span><br><span class="line">进程终止运行，但是当函数返回时，你无法保证该进程已经终止运行。因此，如果想</span><br><span class="line">要确切地了解进程是否已经终止运行，必须调用WaitForSingleObject函数</span><br><span class="line">WoW64：Windows <span class="number">32</span> On Windows <span class="number">64</span>。所有<span class="number">64</span>位windows运行着这个虚拟机，用来执行<span class="number">32</span>位程序。</span><br><span class="line">判断一个<span class="number">32</span>位程序是否是运行在<span class="number">64</span>位系统的<span class="number">32</span>位虚拟机中：IsWow64Process</span></span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>进程中的所有线程自行终止运行（这种情况几乎从未发生）。</p>
+</li>
+<li>GetExitCodeProcess</li>
+<li>子进程 pi.hTread pi.hProcess WaitFoxSingleObject(pi.hProcess,INFINITE),如果想建立独立子进程关闭两个句柄。进程和线程结束后，句柄对象被标记为激活， WaitForSingleObject会返回<br>##管理员以标准用户权限运行时</li>
+<li>从vista以后，管理员登录系统后会建立两个令牌（Token），高权限的和标准用户。进程默认启动权限为标准用户</li>
+<li>管理员用户Run as提权时系统会在一个<code>安全桌面</code>显示确认对话框 等待用户确认 系统进程蓝色 签名的灰色 未签名橙色</li>
+<li>普通用户权限提升时要求输入管理员账户和口令</li>
+<li>带盾牌图样的应用程序点击后直接需要权限提升，必须生成一个新的进程实例才能权限提升。但是一个未提升权限进程可以创建一个权限提升的进程在通过进程间通信IPC调用</li>
+<li>自动提升权限及不用run as(通过嵌入清单文件、兼容性设置) 手动提升run as/ShellExecuteEx</li>
+<li>提升权限后的进程通过createprocess创建的进程仍然是权限提升的</li>
+<li><code>GetProcessElevation P112</code> IsUserAnAdmin  获得Token—–&gt;pElevationType—-&gt;CheckTokenMemberShip</li>
+<li>GetProcessTime查看进程时间，GetProcessIoCounters查看IO次数</li>
+<li>GetProcessImageFileName返回内核格式的文件名<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">GetTokenInformation</span><br><span class="line">TokenElevationTypeDefault</span><br><span class="line">TokenElevationTypeFull</span><br><span class="line">TokenElevationTypeLimited</span><br><span class="line">BOOL <span class="title">GetProcessElevation</span><span class="params">(TOKEN_ELEVATION_TYPE* pElevationType, BOOL* pIsAdmin)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">   HANDLE hToken = <span class="literal">NULL</span>;</span><br><span class="line">   DWORD dwSize; </span><br><span class="line"></span><br><span class="line">   <span class="comment">// Get current process token</span></span><br><span class="line">   <span class="keyword">if</span> (!OpenProcessToken(GetCurrentProcess(), TOKEN_QUERY, &amp;hToken))</span><br><span class="line">      <span class="keyword">return</span>(FALSE);</span><br><span class="line"></span><br><span class="line">   BOOL bResult = FALSE;</span><br><span class="line"></span><br><span class="line">   <span class="comment">// Retrieve elevation type information </span></span><br><span class="line">   <span class="keyword">if</span> (GetTokenInformation(hToken, TokenElevationType, </span><br><span class="line">      pElevationType, <span class="keyword">sizeof</span>(TOKEN_ELEVATION_TYPE), &amp;dwSize)) &#123;</span><br><span class="line">      <span class="comment">// Create the SID corresponding to the Administrators group</span></span><br><span class="line">      byte adminSID[SECURITY_MAX_SID_SIZE];</span><br><span class="line">      dwSize = <span class="keyword">sizeof</span>(adminSID);</span><br><span class="line">      CreateWellKnownSid(WinBuiltinAdministratorsSid, <span class="literal">NULL</span>, &amp;adminSID, </span><br><span class="line">         &amp;dwSize);</span><br><span class="line"></span><br><span class="line">      <span class="keyword">if</span> (*pElevationType == TokenElevationTypeLimited) &#123;</span><br><span class="line">         <span class="comment">// Get handle to linked token (will have one if we are lua)</span></span><br><span class="line">         HANDLE hUnfilteredToken = <span class="literal">NULL</span>;</span><br><span class="line">         GetTokenInformation(hToken, TokenLinkedToken, (VOID*) </span><br><span class="line">            &amp;hUnfilteredToken, <span class="keyword">sizeof</span>(HANDLE), &amp;dwSize);</span><br><span class="line"></span><br><span class="line">         <span class="comment">// Check if this original token contains admin SID</span></span><br><span class="line">         <span class="keyword">if</span> (CheckTokenMembership(hUnfilteredToken, &amp;adminSID, pIsAdmin)) &#123;</span><br><span class="line">            bResult = TRUE;</span><br><span class="line">         &#125;</span><br><span class="line"></span><br><span class="line">         <span class="comment">// Don't forget to close the unfiltered token</span></span><br><span class="line">         CloseHandle(hUnfilteredToken);</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">         *pIsAdmin = IsUserAnAdmin();</span><br><span class="line">         bResult = TRUE;</span><br><span class="line">      &#125;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="comment">// Don't forget to close the process token</span></span><br><span class="line">   CloseHandle(hToken);</span><br><span class="line"></span><br><span class="line">   <span class="keyword">return</span>(bResult);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>##枚举系统中的进程</p>
+<ul>
+<li>ToolHelp API Process32First Process32Next</li>
+<li>PSAPI.dll EnumProcess</li>
+<li><code>04-ProcessInfo.exe</code> </li>
+<li>Windbg dt nt!PEB 从PEB中获得进程命令行 NtQueryInformationProcess</li>
+<li>受保护进程不能显示dll详情，audiodg.exe p118</li>
+<li>安全描述符SID 访问控制列表ACL 系统访问控制列表SACL（强制标签的访问控制项ace 完整性级别 在进程之间提供内核对象的访问保护），相关工具 Process Explorer<br>、AccessChk icacls.exe /setintegritylevel</li>
+<li>Debug权限后低完整性级别也能读取高完整性级别地址空间</li>
+<li>窗口完整性级别，用户界面特权隔离（UIPI） 提供窗口对象的保护 阻止低级别向高级别PostMessage（实验 WindowDump SendMessage LB_GETCOUNT LB_GETTEXT）</li>
+</ul>
+
+      
+    </div>
+    <footer>
+      
+
+        
+          <div class="alignleft post-nav">
+            <em>上一篇: </em><a href="/2015/10/21/Read-Notes/Read-Notes-Windows-Via-C-C-3/">Windows核心编程读书笔记3（第5章 作业 第6章 线程基础）</a>
+          </div>
+        
+        
+          <div class="alignright post-nav">
+            <em>下一篇: </em><a href="/2015/10/11/Read-Notes/Read-Notes-Windows-Via-C-C-1/">Windows核心编程读书笔记1（1、2、3章）</a>
+          </div>
+          <div class="clearfix"></div>
+        
+
+        
+          <div class="copyright">
+            
+              <span class="claim">转载请注明youngroe.com</span>
+            
+            
+              <span class="from-link">
+                <em>本文链接地址:</em>
+                <a href="/2015/10/16/Read-Notes/Read-Notes-Windows-Via-C-C-2/">
+                  http://www.youngroe.com/2015/10/16/Read-Notes/Read-Notes-Windows-Via-C-C-2/
+                </a>
+              </span>
+            
+          </div>
+        
+		<span id="busuanzi_container_site_pv">
+    本站总访问量<span id="busuanzi_value_site_pv"></span>次
+        
+  
+  <div class="categories">
+    <a href="/categories/Read-Notes/">Read Notes</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/Windows核心编程/">Windows核心编程</a>
+  </div>
+
+        <div class="bdsharebuttonbox"><a href="#" class="bds_more" data-cmd="more"></a><a href="#" class="bds_qzone" data-cmd="qzone"></a><a href="#" class="bds_tsina" data-cmd="tsina"></a><a href="#" class="bds_tqq" data-cmd="tqq"></a><a href="#" class="bds_renren" data-cmd="renren"></a><a href="#" class="bds_weixin" data-cmd="weixin"></a></div>
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdPic":"","bdStyle":"0","bdSize":"16"},"share":{},"image":{"viewList":["qzone","tsina","tqq","renren","weixin"],"viewText":"������","viewSize":"16"},"selectShare":{"bdContainerClass":null,"bdSelectMiniList":["qzone","tsina","tqq","renren","weixin"]}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</span>
+</article>
+
+
+<section id="comment">
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+<div class="widget tag">
+  <h3 class="title">分类</h3>
+  <ul class="entry">
+  
+    <li><a href="/categories/Cybersecurity/">Cybersecurity</a><small>1</small></li>
+  
+    <li><a href="/categories/Debug/">Debug</a><small>7</small></li>
+  
+    <li><a href="/categories/Kernel/">Kernel</a><small>4</small></li>
+  
+    <li><a href="/categories/Learning/">Learning</a><small>8</small></li>
+  
+    <li><a href="/categories/Life/">Life</a><small>7</small></li>
+  
+    <li><a href="/categories/Others/">Others</a><small>1</small></li>
+  
+    <li><a href="/categories/Read-Notes/">Read Notes</a><small>7</small></li>
+  
+    <li><a href="/categories/Tools/">Tools</a><small>6</small></li>
+  
+    <li><a href="/categories/Vulnerabilities/">Vulnerabilities</a><small>0</small></li>
+  
+    <li><a href="/categories/Windows/">Windows</a><small>14</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2019/07/01/Windows/delphi_reverse_summary/">Delphi程序逆向反汇编技巧小记</a>
+      </li>
+    
+      <li>
+        <a href="/2019/06/25/Kernel/kernel_enum_wfp_callout_function/">Windows内核重拾：如何枚举系统中Windows Filtering Platform (WFP)驱动中的callout函数</a>
+      </li>
+    
+      <li>
+        <a href="/2019/05/06/Kernel/windows-driver-testing-basics/">Windows内核重拾：Windows驱动测试基础：工具、功能和示例（翻译/转载）</a>
+      </li>
+    
+      <li>
+        <a href="/2019/04/06/Windows/how-to-reverse-engineer-software-windows-in-a-right-way/">如何正确的对Windows软件进行逆向工程（翻译/转载）</a>
+      </li>
+    
+      <li>
+        <a href="/2019/01/12/Windows/a_crash_lead_deadlock/">Windows平台下一个崩溃而导致的死锁分析</a>
+      </li>
+    
+      <li>
+        <a href="/2018/12/01/Windows/windows_client_dns_over_https/">Windows客户端如何透明使用DNS-over-HTTPS</a>
+      </li>
+    
+      <li>
+        <a href="/2018/10/06/Cybersecurity/ddos-protection-techniques/">现代DDoS对抗技术概述（翻译/转载）</a>
+      </li>
+    
+      <li>
+        <a href="/2018/09/18/Life/xian/">西安周末游</a>
+      </li>
+    
+      <li>
+        <a href="/2018/01/06/Kernel/WindowsKernel_DebugObject/">Windows内核重拾：DebugObject</a>
+      </li>
+    
+      <li>
+        <a href="/2017/10/23/Tools/IDA-Pro-ClassInformer-Tutorial/">IDA Pro ClassInformer使用指南（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2017/05/23/Windows/Kernel Data and Filtering Support/">Kernel Data and Filtering Support for Windows Server 2008（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2017/05/17/Windows/Windows-x64-Shellcode/">Windows x64 Shellcode编写指南(翻译)</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget tagcloud">
+  <h3 class="title">标签云</h3>
+  <div class="entry">
+    <a href="/tags/ASM/" style="font-size: 12.5px;">ASM</a> <a href="/tags/Boost/" style="font-size: 10px;">Boost</a> <a href="/tags/DDoS/" style="font-size: 10px;">DDoS</a> <a href="/tags/DNS-over-HTTPS/" style="font-size: 10px;">DNS-over-HTTPS</a> <a href="/tags/Delphi/" style="font-size: 10px;">Delphi</a> <a href="/tags/Dll劫持/" style="font-size: 10px;">Dll劫持</a> <a href="/tags/GCC-GDB/" style="font-size: 10px;">GCC&GDB</a> <a href="/tags/GetVersionEx/" style="font-size: 10px;">GetVersionEx</a> <a href="/tags/Http/" style="font-size: 10px;">Http</a> <a href="/tags/IDA-Pro/" style="font-size: 12.5px;">IDA Pro</a> <a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/MSDN/" style="font-size: 12.5px;">MSDN</a> <a href="/tags/Malware/" style="font-size: 12.5px;">Malware</a> <a href="/tags/MiniDumpWriteDump/" style="font-size: 10px;">MiniDumpWriteDump</a> <a href="/tags/PEB/" style="font-size: 10px;">PEB</a> <a href="/tags/Procmon/" style="font-size: 10px;">Procmon</a> <a href="/tags/Runtime-Error/" style="font-size: 10px;">Runtime Error</a> <a href="/tags/SEH/" style="font-size: 10px;">SEH</a> <a href="/tags/Shellcode/" style="font-size: 10px;">Shellcode</a> <a href="/tags/SysinternalsSuite/" style="font-size: 10px;">SysinternalsSuite</a> <a href="/tags/Tips/" style="font-size: 10px;">Tips</a> <a href="/tags/UAC/" style="font-size: 10px;">UAC</a> <a href="/tags/UAF漏洞/" style="font-size: 10px;">UAF漏洞</a> <a href="/tags/VC/" style="font-size: 10px;">VC</a> <a href="/tags/Visual-Studio/" style="font-size: 12.5px;">Visual Studio</a> <a href="/tags/Windbg/" style="font-size: 10px;">Windbg</a> <a href="/tags/Windows/" style="font-size: 20px;">Windows</a> <a href="/tags/Windows核心编程/" style="font-size: 17.5px;">Windows核心编程</a> <a href="/tags/android/" style="font-size: 10px;">android</a> <a href="/tags/getaddrinfo/" style="font-size: 10px;">getaddrinfo</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/libeay32/" style="font-size: 10px;">libeay32</a> <a href="/tags/markdown/" style="font-size: 10px;">markdown</a> <a href="/tags/ndk/" style="font-size: 10px;">ndk</a> <a href="/tags/sublime-text3/" style="font-size: 10px;">sublime text3</a> <a href="/tags/x64/" style="font-size: 12.5px;">x64</a> <a href="/tags/体验/" style="font-size: 10px;">体验</a> <a href="/tags/内核/" style="font-size: 12.5px;">内核</a> <a href="/tags/内核结构/" style="font-size: 15px;">内核结构</a> <a href="/tags/学习/" style="font-size: 10px;">学习</a> <a href="/tags/安全机制/" style="font-size: 10px;">安全机制</a> <a href="/tags/异常处理/" style="font-size: 10px;">异常处理</a> <a href="/tags/提权/" style="font-size: 10px;">提权</a> <a href="/tags/服务/" style="font-size: 10px;">服务</a> <a href="/tags/权限/" style="font-size: 12.5px;">权限</a> <a href="/tags/栈溢出漏洞/" style="font-size: 10px;">栈溢出漏洞</a> <a href="/tags/测试/" style="font-size: 10px;">测试</a> <a href="/tags/浮躁/" style="font-size: 10px;">浮躁</a> <a href="/tags/漏洞调试/" style="font-size: 12.5px;">漏洞调试</a> <a href="/tags/生活/" style="font-size: 15px;">生活</a> <a href="/tags/脱壳/" style="font-size: 10px;">脱壳</a> <a href="/tags/西安/" style="font-size: 10px;">西安</a> <a href="/tags/计划/" style="font-size: 10px;">计划</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a> <a href="/tags/调试/" style="font-size: 15px;">调试</a> <a href="/tags/转换/" style="font-size: 10px;">转换</a> <a href="/tags/进程/" style="font-size: 10px;">进程</a> <a href="/tags/逆向/" style="font-size: 10px;">逆向</a> <a href="/tags/重庆/" style="font-size: 10px;">重庆</a> <a href="/tags/驱动/" style="font-size: 15px;">驱动</a>
+  </div>
+</div>
+
+
+  <div class="widget tag">
+<h3 class="title">Links</h3>
+<ul class="entry">
+<li><a href="http://blog.ourren.com/" title="Ourren">Ourren</a></li>
+<li><a href="http://www.hyjal.net/" title="Hyjal">Hyjal</a></li>
+<li><a href="http://www.jianshu.com/users/fa15f4e416ae/latest_articles" title="Daemonceltics">Daemonceltics</a></li>
+<li><a href="http://papap.info/" title="isee">isee</a></li>
+</ul>
+</div>
+
+  <script type="text/javascript" id="clustrmaps" src="//cdn.clustrmaps.com/map_v2.js?u=putG&d=yoFnN6V-ovhL-H4e9_69LvkTiX4uX7rEYJ15yL3G1Wg"></script>
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <div id="go-pg-top"><i class="icon-arrow-up"></i></div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2020 Lyon
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript" charset="utf-8" src="/js/page.js"></script>
+
+</body>
+
+</html>

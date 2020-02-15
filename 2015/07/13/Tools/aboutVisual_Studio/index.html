@@ -1,0 +1,362 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Visual Studio使用备注 | Lyon&#39;s blog</title>
+  <meta name="author" content="Lyon">
+  
+  <meta name="description" content="Walk steps step by step">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="Visual Studio使用备注"/>
+  <meta property="og:site_name" content="Lyon&#39;s blog"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  #<link href="/favicon.ico" rel="icon">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="alternate" href="/atom.xml" title="Lyon&#39;s blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  <script src="/js/jquery.min.js"></script>
+  <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?0fe72895c9bcfd0d09da12b5378b1b91";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+</head>
+
+
+<body>
+  <!--[if lte IE 8]> <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'> <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0027_Simplified Chinese.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." style='margin-left:auto;margin-right:auto;display: block;'/></a></div> <![endif]-->
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">Lyon&#39;s blog</a></h1>
+  <h2><a href="/">I hear and I forget.I see and I remember.I do and I understand.</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">首页</a></li>
+    
+      <li><a href="/archives">归档</a></li>
+    
+      <li><a href="/about">关于</a></li>
+    
+	<li> <a href="/atom.xml">RSS</a> </li>
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      
+        <img src="http://7xkam4.com1.z0.glb.clouddn.com/visualstudio.jpg">
+      
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <time datetime="2015-07-13T12:13:53.000Z"><a href="/2015/07/13/Tools/aboutVisual_Studio/">2015-07-13</a></time>
+      
+      
+  
+    <h1 class="title">Visual Studio使用备注</h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+  <div id="toc" class="toc-article">
+  <strong class="toc-title">文章目录</strong>
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#MSDN查询"><span class="toc-number">1.</span> <span class="toc-text">MSDN查询</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Win8-1/Win10使用vc6崩溃解决方案"><span class="toc-number">2.</span> <span class="toc-text">Win8.1/Win10使用vc6崩溃解决方案</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#VC6调试运行程序，中断调试无法退出"><span class="toc-number">3.</span> <span class="toc-text">VC6调试运行程序，中断调试无法退出</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#也许可以让你不再使用vc6-0的方法"><span class="toc-number">4.</span> <span class="toc-text">也许可以让你不再使用vc6.0的方法</span></a></li></ol>
+  </div>
+
+
+	
+    <div class="entry">
+      
+        <p><em>这里添加一点别人写的为什么还使用vc6的原因,描述比较清楚</em><br><a href="http://blog.csdn.net/weolar/article/details/52456886" target="_blank" rel="external">http://blog.csdn.net/weolar/article/details/52456886</a><br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1</span>、可以无视VS2015的MD版本需要的那一堆api-xxxx-xxx的dll了。那堆玩意有几十个，恶心的要死。</span><br><span class="line"><span class="number">2</span>、可以不用管manifest的问题。这东西巨恶心，有一个没设置好，就是各种加载不了。关键是本机没问题，</span><br><span class="line">说不定客户机器上哪里就不对了。</span><br><span class="line"><span class="number">3</span>、小巧。vc6的是msvcp60.dll和mscrt.dll。这东西全系列windows都自带了，非常爽，这意味着你可以省</span><br><span class="line">下MT的那堆额外的size了。其实windows的</span><br><span class="line">所有dll基本都是用这个两个来运行的，等于说windows自己用的很爽，但就是没告诉你怎么用····</span><br></pre></td></tr></table></figure></p>
+<a id="more"></a>
+<p>平时用的最多编译器就是Visual Studio，总的来说好用、强大、比较耗内存。但是由于各个编译器都要用所以了解一些编译器技巧能够大大提高效率（有个好电脑也比较重要，做好是ssd的 哈哈）</p>
+<p>##编译器常用插件<br>vc6.0虽然很想抛弃，几十年前的东西了但是由于要考虑到编写的程序能够比较完美的在各个平台运行所以还是得用。安装最好安装英语版的，中文翻译有点问题。平时使用推荐vs2008比较小巧好用，后面的插件Visual Assist X各个版本通杀</p>
+<ul>
+<li>a.FileTool.dll 解决win7不能打开工程问题，<a href="http://jingyan.baidu.com/article/215817f7ca44841edb142346.html" target="_blank" rel="external">详情</a></li>
+<li>b.VC6LineNumberAddin.dll 这个是让vc6能够显示行号，其他版本的基本都能通过设置显示</li>
+<li>c.visual ddk 这个是vs2010编译调试驱动的神器，再也不用在一个个手动配置了和wdk7600配合使用可以编译windowsxp平台驱动。vs2012以后的直接可以和wdk8.0编译驱动但是wdk8.0只支持win7以上的</li>
+<li>d.Windows Server 2003 R2 Platform SDK 这是针对vc6缺少头文件、缺库的配置，具体使用百度</li>
+<li>e.Visual Assist X vs助手，vs神器各个版本都可以用，vs2014现在也可以支持了也有破解版，不过替换要费一番功夫<a href="http://www.chinapyg.com/forum.php?mod=viewthread&amp;tid=74596&amp;extra=page%3D1&amp;page=1" target="_blank" rel="external">更新——使用飘云阁破解版比较方便，原理是利用dll劫持的方式在内存中patch va_x.dll的验证</a></li>
+<li>f.VSColorOutput 将编译输出的结果根据警告错误有颜色的输出，只支持vs2010及以上<a href="https://visualstudiogallery.msdn.microsoft.com/f4d9c2b5-d6d7-4543-a7a5-2d7ebabc2496" target="_blank" rel="external">传送门</a></li>
+<li>g.Git Diff Margin <a href="https://visualstudiogallery.msdn.microsoft.com/cf49cf30-2ca6-4ea0-b7cc-6a8e0dadc1a8" target="_blank" rel="external">https://visualstudiogallery.msdn.microsoft.com/cf49cf30-2ca6-4ea0-b7cc-6a8e0dadc1a8</a></li>
+<li>h.更多有用好玩插件请看<a href="http://www.zhihu.com/question/20617534" target="_blank" rel="external">这里</a>和<a href="https://visualstudiogallery.msdn.microsoft.com/site/search?f%5B0%5D.Type=RootCategory&amp;f%5B0%5D.Value=tools&amp;f%5B0%5D.Text=%E5%B7%A5%E5%85%B7" target="_blank" rel="external">这里</a></li>
+</ul>
+<p>##常用快捷键<br><em>注：各个版本有些不同，但是都可以自己设置。路径一般为 工具–选项–环境–键盘</em><br>调试并运行           F5<br>不调试直接运行       ctrl+F5<br>停止调试             shift+F5<br>单步不进入           F10<br>单步进入             F11<br>加标签               ctr+F2/ctrl+k ctrl+k<br>切换标签             F2/<br>转到定义/声明        F12/ctrl+F12<br>帮助转到msdn         F1<br>块注释/取消块注释    ctrl+c/ctrl+u<br>格式化代码           alt+f8/ctrl+k,ctrl+f<br>矩形框选择           鼠标选择的时候+alt<br>行复制/剪切          直接ctrl+c/ctrl+v<br>向后/前定位          ctrl+- /ctrl+shift+-</p>
+<p><em>Visual Assist X 快捷键</em><br>Shift+Alt+F Find References 查找引用<br>Shift+Alt+S FindSynbolDialog 打开查找符号对话框<br>Alt+G GotoImplementation 调到实现<br>Alt+M ListMethodsInCurrentFile<br>Alt+Left Arrow NavigateBack   后台<br>Alt+O OpenCurrespondingFile    .h/.cpp切换<br>Shift+Alt+O OpenFileInSolutionDialog 打开解决方案文件对话框<br>Ctrl+Shift+V Parse 弹出最近10个copy的内容菜单<br>Shift+Alt+Q RefactorContextMenu 弹出重构菜单<br>Shift+Alt+C RefactorCreateFromUsage<br>Shift+Alt+R RefactorRename 改名<br>Alt+Down Arraw ScopeNext<br>Alt+Up Arraw ScopePrevious</p>
+<p>##Vc6使用方式</p>
+<ul>
+<li>vc6编译unicode：打开[工程]-&gt;[设置…]对话框，在C/C++标签对话框的“预处理程序定义”中去除_MBCS，加上_UNICODE,UNICODE。（我一般就改这个就直接可以了）</li>
+<li>vc6报错，缺头文件、lib。先把Windows Server 2003 R2 Platform SDK安上，然后用tools下的相应平台工具cmd打开vc6，这样就设置好了相应的环境变量使用的是sdk的头及库文件比较完整，如果还是缺就直接添加相应的lib，比如说mfc42u.lib</li>
+<li>vc6编译出64位程序，和上面一条相似可以使用sdk工具打开vc6,也可以使用如vs2010 toos下的Visual Studio 64位兼容工具，具体设置可以看<a href="http://www.cnblogs.com/moon-mountain/archive/2011/09/18/2180475.html" target="_blank" rel="external">这里</a></li>
+</ul>
+<p>##编译器常见选项及可能出现的问题</p>
+<ul>
+<li>安装了多个版本vs，关于设置那个编译器默认程序打开sln文件，一般正常情况下默认程序都是VSLauncher.exe能够自动分辨sln文件的编译器版本，如果默认被更改了直接重设默认就可以了我的路径是C:\Program Files (x86)\Common Files\microsoft shared\MSEnv\VSLauncher.exe</li>
+</ul>
+<h2 id="MSDN查询">MSDN查询</h2><ul>
+<li>新的vs一般可以直接选中某个要查询的api结构体然后直接F1就打开了相关页面，可以参考<a href="http://blog.csdn.net/qq125096885/article/details/44820053" target="_blank" rel="external">MSDN查询技巧</a></li>
+</ul>
+<p>##函数注释<br><a href="http://blog.chinaunix.net/uid-26790551-id-3195120.html" target="_blank" rel="external"> Visual Studio设置代码注释（包括作者版本信息）</a><br>在win7上有可能出现的问题及解决方案<a href="http://www.microsoft.com/en-us/download/details.aspx?id=42540" target="_blank" rel="external">1</a><a href="http://m.blog.csdn.net/blog/booksyhay/40649011" target="_blank" rel="external">2</a><a href="http://blog.csdn.net/wmnothing/article/details/45583267" target="_blank" rel="external">3</a><br>这里在win7上可能会出现vs宏不能运行的问题，主要参考上面的3个。必须检查两个地方</p>
+<ul>
+<li>vsmsvr.exe.config 文件中的宏运行开启没有，<allowdcomreflection enabled="1">参考3</allowdcomreflection></li>
+<li>由于MS14-009补丁导致的宏不能运行，参考1、2</li>
+</ul>
+<p>##Vc6编译程序获得主动获取UAC<br><a href="http://www.programlife.net/windows-vista-7-program-need-uac.html" target="_blank" rel="external">VC/MFC编程弹出UAC窗口</a></p>
+<p>##在Visual Studio项目中正确添加汇编代码<br><a href="http://www.yiiyee.cn/Blog/asm/#more-441" target="_blank" rel="external">在Visual Studio项目中正确添加汇编代码</a></p>
+<p>##通过修改程序解决win7下应用程序兼容性助手弹出(具体操作可以看Vc6编译程序获得主动获取UAC)<br><a href="http://blog.csdn.net/rainkop/article/details/8065297" target="_blank" rel="external">通过修改程序解决win7下应用程序兼容性助手弹出</a></p>
+<p>##在vs中使用命令行<br><a href="http://www.cnblogs.com/flywuya/articles/1882228.html" target="_blank" rel="external">在vs中使用命令行</a></p>
+<p>##如何使用VS 2013发布一个可以在Windows XP中独立运行的可执行文件<a href="http://www.zhihu.com/question/25415940" target="_blank" rel="external">原文</a></p>
+<ul>
+<li>将平台工具集选择为”Visual Studio 2013 - Windows XP (v120_xp)”。</li>
+<li>将运行库选择为 【多线程 /MT 】或【多线程调试 /MTd】。</li>
+<li>当然如果使用了MFC，同理的要设置【在静态库中使用MFC】</li>
+</ul>
+<p>##更改代码后编译出的程序还是没改变</p>
+<ul>
+<li>编译程序生成路径找错了</li>
+<li>或则你复制了工程然后改的代码是原复制位置的但是生成的工程是新的导致你生成的程序还是未改变的，特别是vc6不注意你不会发现的还以为是编译器的问题。。。不要问我是怎么知道的</li>
+<li>再次更新，编译器确实有可能出现问题  特别是复制工程后。。。。。。。。</li>
+</ul>
+<p>##避免让编译器泄漏个人信息<br><a href="http://www.zhihu.com/question/33003574" target="_blank" rel="external">各种编译器有哪些泄露开发者隐私的”后门”?</a></p>
+<p>##嵌入manifests文件避免找不到dll<br><a href="http://blog.hehehehehe.cn/a/892.htm" target="_blank" rel="external">vc编译选项嵌入.manifest文件</a></p>
+<p>##快速配置编译环境<br><a href="http://www.zhihu.com/question/24400428" target="_blank" rel="external">这里</a></p>
+<h2 id="Win8-1/Win10使用vc6崩溃解决方案">Win8.1/Win10使用vc6崩溃解决方案</h2><p><a href="http://blog.csdn.net/liups/article/details/14646663" target="_blank" rel="external">VC6.0在win 8.1中的安装使用</a></p>
+<h2 id="VC6调试运行程序，中断调试无法退出">VC6调试运行程序，中断调试无法退出</h2><p><a href="http://blog.csdn.net/xhhjin/article/details/8264847" target="_blank" rel="external"> Windows 7 X64位平台下，VC6调试运行程序，中断调试无法退出</a></p>
+<p>##一些其他很爽的功能</p>
+<ul>
+<li>watch里面输入$err,hr 直接看Windows的LastError</li>
+<li>watch里面输入uMsg,wm 直接看Windows的消息的名称（uMsg为消息变量）</li>
+<li>CMake/Qmake/GYP<br><a href="http://www.programlife.net/visual-studio-debug-skill.html" target="_blank" rel="external">Visual Studio调试小技巧</a></li>
+</ul>
+<p>##error : Unknown or unsupported property value (Windows10) for TargetVersion<br>错误    1    error : Unknown or unsupported property value (Windows10) for TargetVersion    C:\Program Files (x86)\Windows Kits\8.1\build\WindowsDriver.common.targets    77    5    regfltr<br>在google搜了一大圈找到几个类似的但都没有有效答案<a href="http://stackoverflow.com/questions/23300357/windowsdriver-common-targets-error，只有自己动手解决了。该工程是直接重github下载的微软驱动例程，所以肯定没错，直接工程属性也没找到问题，看看工程文件regfltr.vcxproj，瞬间发现问题所在" target="_blank" rel="external">http://stackoverflow.com/questions/23300357/windowsdriver-common-targets-error，只有自己动手解决了。该工程是直接重github下载的微软驱动例程，所以肯定没错，直接工程属性也没找到问题，看看工程文件regfltr.vcxproj，瞬间发现问题所在</a><br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" /&gt;</span><br><span class="line">&lt;PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|x64'"&gt;</span><br><span class="line">  &lt;TargetVersion&gt;Windows10&lt;/TargetVersion&gt;</span><br><span class="line">  &lt;UseDebugLibraries&gt;False&lt;/UseDebugLibraries&gt;</span><br><span class="line">  &lt;DriverTargetPlatform&gt;Desktop&lt;/DriverTargetPlatform&gt;</span><br><span class="line">  &lt;DriverType&gt;WDM&lt;/DriverType&gt;</span><br><span class="line">  &lt;PlatformToolset&gt;WindowsKernelModeDriver10.0&lt;/PlatformToolset&gt;</span><br><span class="line">  &lt;ConfigurationType&gt;Driver&lt;/ConfigurationType&gt;</span><br></pre></td></tr></table></figure></p>
+<p>这样就有两种解决方案：</p>
+<ul>
+<li>装个wdk10</li>
+<li>修改工程文件<br>我使用的第二种方式将Windows10—–&gt;WindowsV6.3,WindowsKernelModeDriver10.0——-&gt;WindowsKernelModeDriver8.1<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'"&gt;</span><br><span class="line">    &lt;TargetVersion&gt;WindowsV6.3&lt;/TargetVersion&gt;</span><br><span class="line">    &lt;UseDebugLibraries&gt;True&lt;/UseDebugLibraries&gt;</span><br><span class="line">    &lt;DriverTargetPlatform&gt;Desktop&lt;/DriverTargetPlatform&gt;</span><br><span class="line">    &lt;DriverType&gt;WDM&lt;/DriverType&gt;</span><br><span class="line">    &lt;PlatformToolset&gt;WindowsKernelModeDriver8.1&lt;/PlatformToolset&gt;</span><br><span class="line">    &lt;ConfigurationType&gt;Driver&lt;/ConfigurationType&gt;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>##英文版的VC6某一天突然显示中文乱码了<br><a href="http://download.csdn.net/download/xiejl8727/7192671" target="_blank" rel="external">解决win7 64位 vc6.0中文显示乱码问题 </a><br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br></pre></td><td class="code"><pre><span class="line">Windows Registry Editor Version <span class="number">5.00</span></span><br><span class="line"></span><br><span class="line">[HKEY_CURRENT_USER\Software\Microsoft\DevStudio\<span class="number">6.0</span>\Format]</span><br><span class="line"></span><br><span class="line">[HKEY_CURRENT_USER\Software\Microsoft\DevStudio\<span class="number">6.0</span>\Format\Calls Window]</span><br><span class="line"><span class="string">"FontFace"</span>=<span class="string">"Fixedsys"</span></span><br><span class="line"><span class="string">"FontSize"</span>=dword:<span class="number">0000000</span>c</span><br><span class="line"><span class="string">"Text"</span>=hex:<span class="number">00</span>,<span class="number">00</span>,<span class="number">00</span>,<span class="number">00</span>,ff,ff,ff,<span class="number">00</span>,<span class="number">13</span>,<span class="number">01</span>,b3,<span class="number">00</span></span><br><span class="line"><span class="string">"Text Selection"</span>=hex:ff,ff,ff,<span class="number">00</span>,<span class="number">00</span>,<span class="number">00</span>,<span class="number">00</span>,<span class="number">00</span>,<span class="number">19</span>,<span class="number">00</span>,<span class="number">19</span>,<span class="number">00</span></span><br><span class="line"><span class="string">"Calls Highlight"</span>=hex:<span class="number">00</span>,<span class="number">00</span>,<span class="number">00</span>,<span class="number">00</span>,<span class="number">00</span>,ff,<span class="number">00</span>,<span class="number">00</span>,<span class="number">10</span>,<span class="number">00</span>,<span class="number">10</span>,<span class="number">00</span></span><br><span class="line"><span class="string">"Superceded code"</span>=hex:<span class="number">80</span>,<span class="number">80</span>,<span class="number">80</span>,<span class="number">00</span>,ff,ff,ff,<span class="number">00</span>,<span class="number">10</span>,<span class="number">00</span>,<span class="number">10</span>,<span class="number">00</span></span><br><span class="line"></span><br><span class="line">[HKEY_CURRENT_USER\Software\Microsoft\DevStudio\<span class="number">6.0</span>\Format\Disassembly Window]</span><br><span class="line"><span class="string">"FontFace"</span>=<span class="string">"Fixedsys"</span></span><br><span class="line"><span class="string">"FontSize"</span>=dword:<span class="number">0000000</span>c</span><br><span class="line"><span class="string">"Text"</span>=hex:<span class="number">00</span>,<span class="number">00</span>,<span class="number">00</span>,<span class="number">00</span>,ff,ff,ff,<span class="number">00</span>,<span class="number">13</span>,<span class="number">01</span>,b3,<span class="number">00</span></span><br><span class="line"><span class="string">"Text Selection"</span>=hex:ff,ff,ff,<span class="number">00</span>,<span class="number">00</span>,<span class="number">00</span>,<span class="number">00</span>,<span class="number">00</span>,<span class="number">19</span>,<span class="number">00</span>,<span class="number">19</span>,<span class="number">00</span></span><br><span class="line"><span class="string">"Assembly Code"</span>=hex:<span class="number">80</span>,<span class="number">80</span>,<span class="number">80</span>,<span class="number">00</span>,ff,ff,ff,<span class="number">00</span>,<span class="number">10</span>,<span class="number">00</span>,<span class="number">10</span>,<span class="number">00</span></span><br><span class="line"></span><br><span class="line">[HKEY_CURRENT_USER\Software\Microsoft\DevStudio\<span class="number">6.0</span>\Format\Memory Window]</span><br><span class="line"><span class="string">"FontFace"</span>=<span class="string">"Fixedsys"</span></span><br><span class="line"><span class="string">"FontSize"</span>=dword:<span class="number">0000000</span>c</span><br><span class="line"><span class="string">"Text"</span>=hex:<span class="number">00</span>,<span class="number">00</span>,<span class="number">00</span>,<span class="number">00</span>,ff,ff,ff,<span class="number">00</span>,<span class="number">13</span>,<span class="number">01</span>,b3,<span class="number">00</span></span><br><span class="line"><span class="string">"Text Selection"</span>=hex:ff,ff,ff,<span class="number">00</span>,<span class="number">00</span>,<span class="number">00</span>,<span class="number">00</span>,<span class="number">00</span>,<span class="number">19</span>,<span class="number">00</span>,<span class="number">19</span>,<span class="number">00</span></span><br><span class="line"><span class="string">"Memory Highlight"</span>=hex:ff,<span class="number">00</span>,<span class="number">00</span>,<span class="number">00</span>,ff,ff,ff,<span class="number">00</span>,<span class="number">10</span>,<span class="number">00</span>,<span class="number">10</span>,<span class="number">00</span></span><br><span class="line"></span><br><span class="line">[HKEY_CURRENT_USER\Software\Microsoft\DevStudio\<span class="number">6.0</span>\Format\Output Window]</span><br><span class="line"><span class="string">"FontFace"</span>=<span class="string">"Fixedsys"</span></span><br><span class="line"><span class="string">"FontSize"</span>=dword:<span class="number">0000000</span>c</span><br><span class="line"><span class="string">"Text"</span>=hex:<span class="number">00</span>,<span class="number">00</span>,<span class="number">00</span>,<span class="number">00</span>,ff,ff,ff,<span class="number">00</span>,<span class="number">15</span>,<span class="number">00</span>,<span class="number">15</span>,<span class="number">00</span></span><br><span class="line"><span class="string">"Text Selection"</span>=hex:ff,ff,ff,<span class="number">00</span>,<span class="number">00</span>,<span class="number">00</span>,<span class="number">00</span>,<span class="number">00</span>,<span class="number">19</span>,<span class="number">00</span>,<span class="number">19</span>,<span class="number">00</span></span><br><span class="line"><span class="string">"Current Error/Tag"</span>=hex:ff,ff,ff,<span class="number">00</span>,<span class="number">00</span>,<span class="number">00</span>,<span class="number">80</span>,<span class="number">00</span>,<span class="number">55</span>,<span class="number">00</span>,<span class="number">55</span>,<span class="number">00</span></span><br><span class="line"><span class="string">"Bookmark"</span>=hex:<span class="number">00</span>,<span class="number">00</span>,<span class="number">00</span>,<span class="number">00</span>,<span class="number">00</span>,ff,ff,<span class="number">00</span>,<span class="number">10</span>,<span class="number">00</span>,<span class="number">10</span>,<span class="number">00</span></span><br><span class="line"></span><br><span class="line">[HKEY_CURRENT_USER\Software\Microsoft\DevStudio\<span class="number">6.0</span>\Format\Registers Window]</span><br><span class="line"><span class="string">"FontFace"</span>=<span class="string">"Fixedsys"</span></span><br><span class="line"><span class="string">"FontSize"</span>=dword:<span class="number">0000000</span>c</span><br><span class="line"><span class="string">"Text"</span>=hex:<span class="number">00</span>,<span class="number">00</span>,<span class="number">00</span>,<span class="number">00</span>,ff,ff,ff,<span class="number">00</span>,<span class="number">13</span>,<span class="number">01</span>,b3,<span class="number">00</span></span><br><span class="line"><span class="string">"Text Selection"</span>=hex:ff,ff,ff,<span class="number">00</span>,<span class="number">00</span>,<span class="number">00</span>,<span class="number">00</span>,<span class="number">00</span>,<span class="number">19</span>,<span class="number">00</span>,<span class="number">19</span>,<span class="number">00</span></span><br><span class="line"><span class="string">"Value Highlight"</span>=hex:ff,<span class="number">00</span>,<span class="number">00</span>,<span class="number">00</span>,ff,ff,ff,<span class="number">00</span>,<span class="number">10</span>,<span class="number">00</span>,<span class="number">10</span>,<span class="number">00</span></span><br><span class="line"></span><br><span class="line">[HKEY_CURRENT_USER\Software\Microsoft\DevStudio\<span class="number">6.0</span>\Format\Source Browser]</span><br><span class="line"><span class="string">"FontFace"</span>=<span class="string">"Fixedsys"</span></span><br><span class="line"><span class="string">"FontSize"</span>=dword:<span class="number">0000000</span>c</span><br><span class="line"><span class="string">"Text"</span>=hex:<span class="number">00</span>,<span class="number">00</span>,<span class="number">00</span>,<span class="number">00</span>,ff,ff,ff,<span class="number">00</span>,<span class="number">15</span>,<span class="number">00</span>,<span class="number">15</span>,<span class="number">00</span></span><br><span class="line"><span class="string">"Text Selection"</span>=hex:ff,ff,ff,<span class="number">00</span>,<span class="number">00</span>,<span class="number">00</span>,<span class="number">00</span>,<span class="number">00</span>,<span class="number">19</span>,<span class="number">00</span>,<span class="number">19</span>,<span class="number">00</span></span><br><span class="line"></span><br><span class="line">[HKEY_CURRENT_USER\Software\Microsoft\DevStudio\<span class="number">6.0</span>\Format\Source Window]</span><br><span class="line"><span class="string">"FontFace"</span>=<span class="string">"Fixedsys"</span></span><br><span class="line"><span class="string">"FontSize"</span>=dword:<span class="number">0000000</span>c</span><br><span class="line"><span class="string">"Text"</span>=hex:<span class="number">00</span>,<span class="number">00</span>,<span class="number">00</span>,<span class="number">00</span>,ff,ff,ff,<span class="number">00</span>,<span class="number">13</span>,<span class="number">01</span>,b3,<span class="number">00</span></span><br><span class="line"><span class="string">"Text Selection"</span>=hex:ff,ff,ff,<span class="number">00</span>,<span class="number">00</span>,<span class="number">00</span>,<span class="number">00</span>,<span class="number">00</span>,<span class="number">19</span>,<span class="number">00</span>,<span class="number">19</span>,<span class="number">00</span></span><br><span class="line"><span class="string">"Current Error/Tag"</span>=hex:ff,ff,ff,<span class="number">00</span>,<span class="number">00</span>,<span class="number">00</span>,<span class="number">80</span>,<span class="number">00</span>,d2,<span class="number">01</span>,b2,<span class="number">01</span></span><br><span class="line"><span class="string">"Bookmark"</span>=hex:<span class="number">00</span>,<span class="number">00</span>,<span class="number">00</span>,<span class="number">00</span>,<span class="number">00</span>,ff,ff,<span class="number">00</span>,<span class="number">10</span>,<span class="number">00</span>,<span class="number">10</span>,<span class="number">00</span></span><br><span class="line"><span class="string">"Breakpoint"</span>=hex:ff,ff,ff,<span class="number">00</span>,<span class="number">80</span>,<span class="number">00</span>,<span class="number">00</span>,<span class="number">00</span>,<span class="number">10</span>,<span class="number">00</span>,<span class="number">10</span>,<span class="number">00</span></span><br><span class="line"><span class="string">"Current Statement"</span>=hex:<span class="number">00</span>,<span class="number">00</span>,<span class="number">00</span>,<span class="number">00</span>,ff,ff,<span class="number">00</span>,<span class="number">00</span>,<span class="number">70</span>,<span class="number">00</span>,<span class="number">70</span>,<span class="number">00</span></span><br><span class="line"><span class="string">"Selection Margin"</span>=hex:c8,c8,c8,<span class="number">00</span>,c8,c8,c8,<span class="number">00</span>,<span class="number">13</span>,<span class="number">00</span>,<span class="number">13</span>,<span class="number">00</span></span><br><span class="line"><span class="string">"Keyword"</span>=hex:<span class="number">00</span>,<span class="number">00</span>,ff,<span class="number">00</span>,ff,ff,ff,<span class="number">00</span>,<span class="number">10</span>,<span class="number">00</span>,<span class="number">11</span>,<span class="number">00</span></span><br><span class="line"><span class="string">"Comment"</span>=hex:<span class="number">00</span>,<span class="number">80</span>,<span class="number">00</span>,<span class="number">00</span>,ff,ff,ff,<span class="number">00</span>,<span class="number">10</span>,<span class="number">00</span>,<span class="number">11</span>,<span class="number">00</span></span><br><span class="line"><span class="string">"Number"</span>=hex:ff,<span class="number">00</span>,<span class="number">00</span>,<span class="number">00</span>,ff,ff,ff,<span class="number">00</span>,<span class="number">10</span>,<span class="number">00</span>,<span class="number">11</span>,<span class="number">00</span></span><br><span class="line"><span class="string">"String"</span>=hex:ff,<span class="number">00</span>,ff,<span class="number">00</span>,ff,ff,ff,<span class="number">00</span>,<span class="number">10</span>,<span class="number">00</span>,<span class="number">11</span>,<span class="number">00</span></span><br><span class="line"><span class="string">"Operator"</span>=hex:<span class="number">00</span>,<span class="number">00</span>,<span class="number">00</span>,<span class="number">00</span>,ff,ff,ff,<span class="number">00</span>,<span class="number">11</span>,<span class="number">00</span>,<span class="number">11</span>,<span class="number">00</span></span><br><span class="line"><span class="string">"Wizard IDL/ODL Code"</span>=hex:<span class="number">80</span>,<span class="number">80</span>,<span class="number">80</span>,<span class="number">00</span>,ff,ff,ff,<span class="number">00</span>,<span class="number">14</span>,<span class="number">00</span>,<span class="number">15</span>,<span class="number">00</span></span><br><span class="line"><span class="string">"HTML Element Name"</span>=hex:<span class="number">80</span>,<span class="number">00</span>,<span class="number">80</span>,<span class="number">00</span>,ff,ff,ff,<span class="number">00</span>,<span class="number">14</span>,<span class="number">00</span>,<span class="number">15</span>,<span class="number">00</span></span><br><span class="line"><span class="string">"HTML Attribute Name"</span>=hex:ff,<span class="number">00</span>,<span class="number">00</span>,<span class="number">00</span>,ff,ff,ff,<span class="number">00</span>,<span class="number">14</span>,<span class="number">00</span>,<span class="number">15</span>,<span class="number">00</span></span><br><span class="line"><span class="string">"HTML Attribute Value"</span>=hex:<span class="number">00</span>,<span class="number">00</span>,ff,<span class="number">00</span>,ff,ff,ff,<span class="number">00</span>,<span class="number">14</span>,<span class="number">00</span>,<span class="number">15</span>,<span class="number">00</span></span><br><span class="line"><span class="string">"HTML Comment"</span>=hex:<span class="number">00</span>,<span class="number">80</span>,<span class="number">00</span>,<span class="number">00</span>,ff,ff,ff,<span class="number">00</span>,<span class="number">14</span>,<span class="number">00</span>,<span class="number">15</span>,<span class="number">00</span></span><br><span class="line"><span class="string">"HTML Entity"</span>=hex:ff,<span class="number">00</span>,<span class="number">00</span>,<span class="number">00</span>,ff,ff,ff,<span class="number">00</span>,<span class="number">14</span>,<span class="number">00</span>,<span class="number">15</span>,<span class="number">00</span></span><br><span class="line"><span class="string">"HTML Tag Delimiter"</span>=hex:<span class="number">00</span>,<span class="number">00</span>,ff,<span class="number">00</span>,ff,ff,ff,<span class="number">00</span>,<span class="number">14</span>,<span class="number">00</span>,<span class="number">15</span>,<span class="number">00</span></span><br><span class="line"><span class="string">"HTML String"</span>=hex:<span class="number">00</span>,<span class="number">00</span>,ff,<span class="number">00</span>,ff,ff,ff,<span class="number">00</span>,<span class="number">14</span>,<span class="number">00</span>,<span class="number">15</span>,<span class="number">00</span></span><br><span class="line"><span class="string">"HTML Tag Text"</span>=hex:ff,<span class="number">00</span>,ff,<span class="number">00</span>,ff,ff,ff,<span class="number">00</span>,<span class="number">14</span>,<span class="number">00</span>,<span class="number">15</span>,<span class="number">00</span></span><br><span class="line"><span class="string">"HTML Operator"</span>=hex:<span class="number">00</span>,<span class="number">00</span>,ff,<span class="number">00</span>,ff,ff,ff,<span class="number">00</span>,<span class="number">14</span>,<span class="number">00</span>,<span class="number">15</span>,<span class="number">00</span></span><br><span class="line"><span class="string">"HTML Server-Side Script"</span>=hex:<span class="number">00</span>,<span class="number">00</span>,<span class="number">00</span>,<span class="number">00</span>,ff,ff,<span class="number">00</span>,<span class="number">00</span>,<span class="number">14</span>,<span class="number">00</span>,<span class="number">14</span>,<span class="number">00</span></span><br><span class="line"><span class="string">"User Defined Keywords"</span>=hex:<span class="number">00</span>,<span class="number">00</span>,ff,<span class="number">00</span>,ff,ff,ff,<span class="number">00</span>,<span class="number">14</span>,<span class="number">00</span>,<span class="number">15</span>,<span class="number">00</span></span><br><span class="line"><span class="string">"Wizard Code"</span>=hex:<span class="number">80</span>,<span class="number">80</span>,<span class="number">80</span>,<span class="number">00</span>,ff,ff,ff,<span class="number">00</span>,<span class="number">14</span>,<span class="number">00</span>,<span class="number">15</span>,<span class="number">00</span></span><br><span class="line"></span><br><span class="line">[HKEY_CURRENT_USER\Software\Microsoft\DevStudio\<span class="number">6.0</span>\Format\Variables Window]</span><br><span class="line"><span class="string">"FontFace"</span>=<span class="string">"Fixedsys"</span></span><br><span class="line"><span class="string">"FontSize"</span>=dword:<span class="number">0000000</span>c</span><br><span class="line"><span class="string">"Text"</span>=hex:<span class="number">00</span>,<span class="number">00</span>,<span class="number">00</span>,<span class="number">00</span>,ff,ff,ff,<span class="number">00</span>,<span class="number">13</span>,<span class="number">01</span>,b3,<span class="number">00</span></span><br><span class="line"><span class="string">"Text Selection"</span>=hex:ff,ff,ff,<span class="number">00</span>,<span class="number">00</span>,<span class="number">00</span>,<span class="number">00</span>,<span class="number">00</span>,<span class="number">19</span>,<span class="number">00</span>,<span class="number">19</span>,<span class="number">00</span></span><br><span class="line"><span class="string">"Variables Highlight"</span>=hex:ff,<span class="number">00</span>,<span class="number">00</span>,<span class="number">00</span>,ff,ff,ff,<span class="number">00</span>,<span class="number">10</span>,<span class="number">00</span>,<span class="number">10</span>,<span class="number">00</span></span><br><span class="line"></span><br><span class="line">[HKEY_CURRENT_USER\Software\Microsoft\DevStudio\<span class="number">6.0</span>\Format\Watch Window]</span><br><span class="line"><span class="string">"FontFace"</span>=<span class="string">"Fixedsys"</span></span><br><span class="line"><span class="string">"FontSize"</span>=dword:<span class="number">0000000</span>c</span><br><span class="line"><span class="string">"Text"</span>=hex:<span class="number">00</span>,<span class="number">00</span>,<span class="number">00</span>,<span class="number">00</span>,ff,ff,ff,<span class="number">00</span>,<span class="number">13</span>,<span class="number">01</span>,b3,<span class="number">00</span></span><br><span class="line"><span class="string">"Text Selection"</span>=hex:ff,ff,ff,<span class="number">00</span>,<span class="number">00</span>,<span class="number">00</span>,<span class="number">00</span>,<span class="number">00</span>,<span class="number">19</span>,<span class="number">00</span>,<span class="number">19</span>,<span class="number">00</span></span><br><span class="line"><span class="string">"Watch Highlight"</span>=hex:ff,<span class="number">00</span>,<span class="number">00</span>,<span class="number">00</span>,ff,ff,ff,<span class="number">00</span>,<span class="number">10</span>,<span class="number">00</span>,<span class="number">10</span>,<span class="number">00</span></span><br><span class="line"></span><br><span class="line">[HKEY_CURRENT_USER\Software\Microsoft\DevStudio\<span class="number">6.0</span>\Format\Workspace Window]</span><br><span class="line"><span class="string">"FontFace"</span>=<span class="string">"Fixedsys"</span></span><br><span class="line"><span class="string">"FontSize"</span>=dword:<span class="number">0000000</span>c</span><br></pre></td></tr></table></figure></p>
+<h2 id="也许可以让你不再使用vc6-0的方法">也许可以让你不再使用vc6.0的方法</h2><p><a href="https://github.com/Chuyu-Team/VC-LTL" target="_blank" rel="external">VC-LTL</a><br><a href="http://blog.csdn.net/weolar/article/details/52051563" target="_blank" rel="external">如何在vs中链接vc6的运行时库</a></p>
+<p>##<strong>更多技巧请看这里</strong><br><a href="http://download.csdn.net/detail/huzhouhzy/5012584" target="_blank" rel="external">Visual.Studio程序员箴言.pdf</a><br><a href="http://blog.csdn.net/column/details/visualstudio.html" target="_blank" rel="external">推荐–带你玩转Visual Studio</a></p>
+<p><strong>这篇文章会一直更新的</strong></p>
+
+      
+    </div>
+    <footer>
+      
+
+        
+          <div class="alignleft post-nav">
+            <em>上一篇: </em><a href="/2015/07/15/Windows/windows-auto-elevated-binaries/">关于Windows自动提权autoElevate</a>
+          </div>
+        
+        
+          <div class="alignright post-nav">
+            <em>下一篇: </em><a href="/2015/07/12/Tools/sublime text3_markdown/">Sublime Text使用写markdown</a>
+          </div>
+          <div class="clearfix"></div>
+        
+
+        
+          <div class="copyright">
+            
+              <span class="claim">转载请注明youngroe.com</span>
+            
+            
+              <span class="from-link">
+                <em>本文链接地址:</em>
+                <a href="/2015/07/13/Tools/aboutVisual_Studio/">
+                  http://www.youngroe.com/2015/07/13/Tools/aboutVisual_Studio/
+                </a>
+              </span>
+            
+          </div>
+        
+		<span id="busuanzi_container_site_pv">
+    本站总访问量<span id="busuanzi_value_site_pv"></span>次
+        
+  
+  <div class="categories">
+    <a href="/categories/Tools/">Tools</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/Tips/">Tips</a>, <a href="/tags/Visual-Studio/">Visual Studio</a>
+  </div>
+
+        <div class="bdsharebuttonbox"><a href="#" class="bds_more" data-cmd="more"></a><a href="#" class="bds_qzone" data-cmd="qzone"></a><a href="#" class="bds_tsina" data-cmd="tsina"></a><a href="#" class="bds_tqq" data-cmd="tqq"></a><a href="#" class="bds_renren" data-cmd="renren"></a><a href="#" class="bds_weixin" data-cmd="weixin"></a></div>
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdPic":"","bdStyle":"0","bdSize":"16"},"share":{},"image":{"viewList":["qzone","tsina","tqq","renren","weixin"],"viewText":"������","viewSize":"16"},"selectShare":{"bdContainerClass":null,"bdSelectMiniList":["qzone","tsina","tqq","renren","weixin"]}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</span>
+</article>
+
+
+<section id="comment">
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+<div class="widget tag">
+  <h3 class="title">分类</h3>
+  <ul class="entry">
+  
+    <li><a href="/categories/Cybersecurity/">Cybersecurity</a><small>1</small></li>
+  
+    <li><a href="/categories/Debug/">Debug</a><small>7</small></li>
+  
+    <li><a href="/categories/Kernel/">Kernel</a><small>4</small></li>
+  
+    <li><a href="/categories/Learning/">Learning</a><small>8</small></li>
+  
+    <li><a href="/categories/Life/">Life</a><small>7</small></li>
+  
+    <li><a href="/categories/Others/">Others</a><small>1</small></li>
+  
+    <li><a href="/categories/Read-Notes/">Read Notes</a><small>7</small></li>
+  
+    <li><a href="/categories/Tools/">Tools</a><small>6</small></li>
+  
+    <li><a href="/categories/Vulnerabilities/">Vulnerabilities</a><small>0</small></li>
+  
+    <li><a href="/categories/Windows/">Windows</a><small>14</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2019/07/01/Windows/delphi_reverse_summary/">Delphi程序逆向反汇编技巧小记</a>
+      </li>
+    
+      <li>
+        <a href="/2019/06/25/Kernel/kernel_enum_wfp_callout_function/">Windows内核重拾：如何枚举系统中Windows Filtering Platform (WFP)驱动中的callout函数</a>
+      </li>
+    
+      <li>
+        <a href="/2019/05/06/Kernel/windows-driver-testing-basics/">Windows内核重拾：Windows驱动测试基础：工具、功能和示例（翻译/转载）</a>
+      </li>
+    
+      <li>
+        <a href="/2019/04/06/Windows/how-to-reverse-engineer-software-windows-in-a-right-way/">如何正确的对Windows软件进行逆向工程（翻译/转载）</a>
+      </li>
+    
+      <li>
+        <a href="/2019/01/12/Windows/a_crash_lead_deadlock/">Windows平台下一个崩溃而导致的死锁分析</a>
+      </li>
+    
+      <li>
+        <a href="/2018/12/01/Windows/windows_client_dns_over_https/">Windows客户端如何透明使用DNS-over-HTTPS</a>
+      </li>
+    
+      <li>
+        <a href="/2018/10/06/Cybersecurity/ddos-protection-techniques/">现代DDoS对抗技术概述（翻译/转载）</a>
+      </li>
+    
+      <li>
+        <a href="/2018/09/18/Life/xian/">西安周末游</a>
+      </li>
+    
+      <li>
+        <a href="/2018/01/06/Kernel/WindowsKernel_DebugObject/">Windows内核重拾：DebugObject</a>
+      </li>
+    
+      <li>
+        <a href="/2017/10/23/Tools/IDA-Pro-ClassInformer-Tutorial/">IDA Pro ClassInformer使用指南（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2017/05/23/Windows/Kernel Data and Filtering Support/">Kernel Data and Filtering Support for Windows Server 2008（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2017/05/17/Windows/Windows-x64-Shellcode/">Windows x64 Shellcode编写指南(翻译)</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget tagcloud">
+  <h3 class="title">标签云</h3>
+  <div class="entry">
+    <a href="/tags/ASM/" style="font-size: 12.5px;">ASM</a> <a href="/tags/Boost/" style="font-size: 10px;">Boost</a> <a href="/tags/DDoS/" style="font-size: 10px;">DDoS</a> <a href="/tags/DNS-over-HTTPS/" style="font-size: 10px;">DNS-over-HTTPS</a> <a href="/tags/Delphi/" style="font-size: 10px;">Delphi</a> <a href="/tags/Dll劫持/" style="font-size: 10px;">Dll劫持</a> <a href="/tags/GCC-GDB/" style="font-size: 10px;">GCC&GDB</a> <a href="/tags/GetVersionEx/" style="font-size: 10px;">GetVersionEx</a> <a href="/tags/Http/" style="font-size: 10px;">Http</a> <a href="/tags/IDA-Pro/" style="font-size: 12.5px;">IDA Pro</a> <a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/MSDN/" style="font-size: 12.5px;">MSDN</a> <a href="/tags/Malware/" style="font-size: 12.5px;">Malware</a> <a href="/tags/MiniDumpWriteDump/" style="font-size: 10px;">MiniDumpWriteDump</a> <a href="/tags/PEB/" style="font-size: 10px;">PEB</a> <a href="/tags/Procmon/" style="font-size: 10px;">Procmon</a> <a href="/tags/Runtime-Error/" style="font-size: 10px;">Runtime Error</a> <a href="/tags/SEH/" style="font-size: 10px;">SEH</a> <a href="/tags/Shellcode/" style="font-size: 10px;">Shellcode</a> <a href="/tags/SysinternalsSuite/" style="font-size: 10px;">SysinternalsSuite</a> <a href="/tags/Tips/" style="font-size: 10px;">Tips</a> <a href="/tags/UAC/" style="font-size: 10px;">UAC</a> <a href="/tags/UAF漏洞/" style="font-size: 10px;">UAF漏洞</a> <a href="/tags/VC/" style="font-size: 10px;">VC</a> <a href="/tags/Visual-Studio/" style="font-size: 12.5px;">Visual Studio</a> <a href="/tags/Windbg/" style="font-size: 10px;">Windbg</a> <a href="/tags/Windows/" style="font-size: 20px;">Windows</a> <a href="/tags/Windows核心编程/" style="font-size: 17.5px;">Windows核心编程</a> <a href="/tags/android/" style="font-size: 10px;">android</a> <a href="/tags/getaddrinfo/" style="font-size: 10px;">getaddrinfo</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/libeay32/" style="font-size: 10px;">libeay32</a> <a href="/tags/markdown/" style="font-size: 10px;">markdown</a> <a href="/tags/ndk/" style="font-size: 10px;">ndk</a> <a href="/tags/sublime-text3/" style="font-size: 10px;">sublime text3</a> <a href="/tags/x64/" style="font-size: 12.5px;">x64</a> <a href="/tags/体验/" style="font-size: 10px;">体验</a> <a href="/tags/内核/" style="font-size: 12.5px;">内核</a> <a href="/tags/内核结构/" style="font-size: 15px;">内核结构</a> <a href="/tags/学习/" style="font-size: 10px;">学习</a> <a href="/tags/安全机制/" style="font-size: 10px;">安全机制</a> <a href="/tags/异常处理/" style="font-size: 10px;">异常处理</a> <a href="/tags/提权/" style="font-size: 10px;">提权</a> <a href="/tags/服务/" style="font-size: 10px;">服务</a> <a href="/tags/权限/" style="font-size: 12.5px;">权限</a> <a href="/tags/栈溢出漏洞/" style="font-size: 10px;">栈溢出漏洞</a> <a href="/tags/测试/" style="font-size: 10px;">测试</a> <a href="/tags/浮躁/" style="font-size: 10px;">浮躁</a> <a href="/tags/漏洞调试/" style="font-size: 12.5px;">漏洞调试</a> <a href="/tags/生活/" style="font-size: 15px;">生活</a> <a href="/tags/脱壳/" style="font-size: 10px;">脱壳</a> <a href="/tags/西安/" style="font-size: 10px;">西安</a> <a href="/tags/计划/" style="font-size: 10px;">计划</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a> <a href="/tags/调试/" style="font-size: 15px;">调试</a> <a href="/tags/转换/" style="font-size: 10px;">转换</a> <a href="/tags/进程/" style="font-size: 10px;">进程</a> <a href="/tags/逆向/" style="font-size: 10px;">逆向</a> <a href="/tags/重庆/" style="font-size: 10px;">重庆</a> <a href="/tags/驱动/" style="font-size: 15px;">驱动</a>
+  </div>
+</div>
+
+
+  <div class="widget tag">
+<h3 class="title">Links</h3>
+<ul class="entry">
+<li><a href="http://blog.ourren.com/" title="Ourren">Ourren</a></li>
+<li><a href="http://www.hyjal.net/" title="Hyjal">Hyjal</a></li>
+<li><a href="http://www.jianshu.com/users/fa15f4e416ae/latest_articles" title="Daemonceltics">Daemonceltics</a></li>
+<li><a href="http://papap.info/" title="isee">isee</a></li>
+</ul>
+</div>
+
+  <script type="text/javascript" id="clustrmaps" src="//cdn.clustrmaps.com/map_v2.js?u=putG&d=yoFnN6V-ovhL-H4e9_69LvkTiX4uX7rEYJ15yL3G1Wg"></script>
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <div id="go-pg-top"><i class="icon-arrow-up"></i></div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2020 Lyon
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript" charset="utf-8" src="/js/page.js"></script>
+
+</body>
+
+</html>

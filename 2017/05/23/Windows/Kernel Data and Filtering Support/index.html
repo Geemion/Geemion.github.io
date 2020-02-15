@@ -1,0 +1,419 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Kernel Data and Filtering Support for Windows Server 2008（翻译） | Lyon&#39;s blog</title>
+  <meta name="author" content="Lyon">
+  
+  <meta name="description" content="Walk steps step by step">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="Kernel Data and Filtering Support for Windows Server 2008（翻译）"/>
+  <meta property="og:site_name" content="Lyon&#39;s blog"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  #<link href="/favicon.ico" rel="icon">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="alternate" href="/atom.xml" title="Lyon&#39;s blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  <script src="/js/jquery.min.js"></script>
+  <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?0fe72895c9bcfd0d09da12b5378b1b91";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+</head>
+
+
+<body>
+  <!--[if lte IE 8]> <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'> <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0027_Simplified Chinese.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." style='margin-left:auto;margin-right:auto;display: block;'/></a></div> <![endif]-->
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">Lyon&#39;s blog</a></h1>
+  <h2><a href="/">I hear and I forget.I see and I remember.I do and I understand.</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">首页</a></li>
+    
+      <li><a href="/archives">归档</a></li>
+    
+      <li><a href="/about">关于</a></li>
+    
+	<li> <a href="/atom.xml">RSS</a> </li>
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <time datetime="2017-05-23T09:55:21.000Z"><a href="/2017/05/23/Windows/Kernel Data and Filtering Support/">2017-05-23</a></time>
+      
+      
+  
+    <h1 class="title">Kernel Data and Filtering Support for Windows Server 2008（翻译）</h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+  <div id="toc" class="toc-article">
+  <strong class="toc-title">文章目录</strong>
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-介绍"><span class="toc-number">1.</span> <span class="toc-text">1.介绍</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-范围"><span class="toc-number">2.</span> <span class="toc-text">2.范围</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-定义和假设"><span class="toc-number">3.</span> <span class="toc-text">3.定义和假设</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-要求和约束"><span class="toc-number">4.</span> <span class="toc-text">4.要求和约束</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-控制创建和打开进程/线程操作"><span class="toc-number">5.</span> <span class="toc-text">5.控制创建和打开进程/线程操作</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#5-1-OB过滤概述"><span class="toc-number">5.1.</span> <span class="toc-text">5.1.OB过滤概述</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-2-OB框架概述"><span class="toc-number">5.2.</span> <span class="toc-text">5.2.OB框架概述</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#5-2-1-回调注册"><span class="toc-number">5.2.1.</span> <span class="toc-text">5.2.1.回调注册</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-2-2_回调函数调用"><span class="toc-number">5.2.2.</span> <span class="toc-text">5.2.2 回调函数调用</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#5-2-2-1_回掉函数"><span class="toc-number">5.2.2.1.</span> <span class="toc-text">5.2.2.1 回掉函数</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#5-2-2-2_运行方式"><span class="toc-number">5.2.2.2.</span> <span class="toc-text">5.2.2.2 运行方式</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#5-2-2-3_回调上下文Callback_Context"><span class="toc-number">5.2.2.3.</span> <span class="toc-text">5.2.2.3 回调上下文Callback Context</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-2-3_限制"><span class="toc-number">5.2.3.</span> <span class="toc-text">5.2.3 限制</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-3_PS进程扩展回调"><span class="toc-number">5.3.</span> <span class="toc-text">5.3 PS进程扩展回调</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-内存写访问控制"><span class="toc-number">6.</span> <span class="toc-text">6.内存写访问控制</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-加载可执行文件"><span class="toc-number">7.</span> <span class="toc-text">7.加载可执行文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#8-自保护"><span class="toc-number">8.</span> <span class="toc-text">8.自保护</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#9-附录"><span class="toc-number">9.</span> <span class="toc-text">9.附录</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#9-1_结构体定义"><span class="toc-number">9.1.</span> <span class="toc-text">9.1 结构体定义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#9-2_DesiredAccess属性"><span class="toc-number">9.2.</span> <span class="toc-text">9.2 DesiredAccess属性</span></a></li></ol></li></ol>
+  </div>
+
+
+	
+    <div class="entry">
+      
+        <h2 id="1-介绍">1.介绍</h2><p>这仅仅是一份供接受审阅和反馈的初稿。收到独立软件开发商的反馈后，一些内容和函数可能会改变。此外，这份文档仅限于适用Microsoft Windows Server® 2008。这些API是根据ISV社区讨论确定的，按照<a href="https://www.microsoft.com/downloads/details.aspx?FamilyId=4C7561E6-6F9D-4125-8A8C-AEAF8E3342B9&amp;displaylang=en" target="_blank" rel="external">Kernel Evaluation Criteria</a>。<br>很多系统管理安全类应用程序都需要访问内核信息及过滤系统调用的能力，其中一些操作涉及一些进程、线程对象。之前，当第三方软件开发商（ISV）想实现监控/修改/阻断操作时，但操作系统现有提供的过滤回调不支持时，他们一般采用的方式为挂钩在内核服务表（SSDT）中这些内核对象管理（OB）的API。提供官方支持的文档及过滤和访问内核信息的接口有利于操作系统平台，因为挂钩SSDT从来没有官方支持过并且可能会影响操作系统的稳定性。此外，随着在x64平台采用内核补丁保护技术（KPP）,在x64平台，ISV不能像32位x86平台中那样使用SSDT Hook了。<br><a id="more"></a></p>
+<h2 id="2-范围">2.范围</h2><p>在过去几个月已经和一些ISV举行了多次电话和当面的会议，了解ISV的具体需求，主要是对操作系统的安全管控能力。这份文档反应了当前最紧迫的需求，这些都是基于和几十个安全软件开发商讨论得来的。<br>和ISV讨论确定的主要几个方面的内容如下：</p>
+<ul>
+<li>控制进程/线程的创建和打开</li>
+<li>内存访问控制</li>
+<li>控制可行性文件的加载</li>
+<li>安全类软件进程的自保护<br>每一个方面都将在本文档中介绍。</li>
+</ul>
+<h2 id="3-定义和假设">3.定义和假设</h2><p>本文档假定读者熟悉当前注册表和文件系统的过滤模型。<br>KPP-内核补丁保护（Kernel Patch Protection）<br>OB-内核对象管理（Object Manager）<br>PS-进程管理（Process Management）<br>SSDT-系统服务调度表（System Service Dispatch Table）<br>WHQL-Windows硬件实验室（Windows Hardware Quality Labs）</p>
+<h2 id="4-要求和约束">4.要求和约束</h2><p>为减少恶意代码滥用这些API的可能，要使用这些API必须要满足几个条件并且在API中可能会设置几个过滤级别。<br>在32位和64位系统上，内核驱动软件要使用这些新API必须有电子签名，可以在一定程度上区分程序并保证程序的完整性。同样如果这个内核驱动还有用户模式程序为内核软件提供配置和策略，用户模式软件也必须有电子签名。在x64平台，代码的数字签名需要和强制Authenticode签名一致。这个过程目前不需要WHQL认证-ISV可以直接为他们的代码前面不需要提交给微软。</p>
+<ul>
+<li>ISV所有的内核模式和用户模式的模块链接时必须设置/integritycheck标志位，这样内存管理器就会在模块加载时对其引用的代码强制执行签名检查。在最近版本的Microsoft Visual Studio® linker都可以进行设置。如果ISV想使用自定义工具链接或则修改二进制文件的话，只需要将PE头中的OptionalHeader.DllCharacteristics标志位IMAGE_DLLCHARACTERISTICS_FORCE_INTEGRITY (0x0800)设置为ON即可。</li>
+<li>被数字签名的用户模式和内核模式模块必须有cryptographic per-page hash catalogs，可以通过signtool工具/PH命令行生成。</li>
+<li>下面的链接包含有关代码签名更多的信息，这些对于加载x64模式代码是必须的：<a href="https://www.microsoft.com/whdc/winlogo/drvsign/drvsign.mspx" target="_blank" rel="external">https://www.microsoft.com/whdc/winlogo/drvsign/drvsign.mspx</a><br>如果ISV使用用户模式下的服务去配置和控制使用新API模式的内核驱动模块，那服务必须使用Windows Vista新的服务框架。这样可以使服务使用最小特权原则，除此之外还运行ISV管理谁将能够赋予权限去访问服务/内核驱动的特定资源。例如，如果使用新的增强服务框架将可以设置为只有ISV提供的用户模式服务才能使用驱动的IOCTL接口进行控制。</li>
+<li>在microsoft.com上有关于新的增强服务框架接口的白皮书：<a href="http://download.microsoft.com/download/9/c/5/9c5b2167-8017-4bae-9fde-d599bac8184a/Vista_Services.doc" target="_blank" rel="external">http://download.microsoft.com/download/9/c/5/9c5b2167-8017-4bae-9fde-d599bac8184a/Vista_Services.doc</a><br>任何一个用户态的系统服务也应该拥有电子签名。<br>ISV提供的回调函数入口点必须位于ISV具有电子签名的驱动程序代码段中。不允许提供的回调函数在动态分配的内存中。<br>对OB过滤回调，建议设计时使用等待和触发事件；这很重要因为任何OB调用都是在单独线程之外完成的。也可以事件同步调用，但是请注意当大量的冗长的同步等待会使工作线程延迟从而影响程序和系统的性能。ISV同时应该考虑使用超时机制在回调等待操作时。为了避免造成死锁，应该尽量减少在回调函数中进程操作的数量。对于需要等待状态改变的操作（eg 轮询等待策略变化），应该将这个事件设置为异步并将其转移到用户模式服务中执行。<br>当在错误执行条件下，决定首选的操作这是ISV的责任。例如当遇到内存不足的情况下，ISV可能会选择关闭安全功能或则打开失败（在检测到错误时，可以允许或则延迟操作）。请注意操作系统将不会决定这些，ISV需要面对失败情况下下各种可能的不同，或则基于安全策略。出于描述的目的，在ISV的回调函数处理的过程中需要面临内存不足的情况。下面是两种可能的处理方式：</li>
+<li>ISV选择安全让操作失败。对于OB回调，ISV可能会过滤掉一些特定的操作。对PS回调，ISV可能会选择阻止进程创建操作。</li>
+<li>ISV选择让执行继续执行成功。在这种特殊情况下，ISV不会执行过滤或则阻止操作，而是可以选择记录这个操作并警告用户。这个警告可能需要排队/延迟直到内存不足得以解决。<br>管理员用户必须能够发现使用这些API的程序。同时必须支持卸载，通过枚举内核驱动模块时必须能被发现。<br>不能创建一个对管理员不可见的进程或资源。例如所有的进程都必须在任务管理器中可见。<br>必须可以执行安全扫描和合规性检查操作（例如病毒扫描/完整性扫描等）对使用新API的代码，也包含被新API影响的进程和代码。<br>增强版的API可能会晚于Windows Server 2008，包括用于代码签名需要更高要求的认证（如EV代码签名），以及其他代码签名的实施和关联安全软件。ISV将会得到通知，并在发布之前有机会反馈评价。<br>其他API使用的标准文档也将在“Kernel Evaluation Criteria”文档中由Microsoft发布。</li>
+</ul>
+<h2 id="5-控制创建和打开进程/线程操作">5.控制创建和打开进程/线程操作</h2><p>高优先级ISV提出需要可以阻止或则过滤DesiredAccess属性的能力对打开句柄这个操作。在执行打开操作时过滤DesiredAccess属性可以阻止其他API调用去获得对象的句柄。涉及到的对象管理器中的API中包括OpenProcess、DuplicateHandle以及进程管理器中这些API的增强型API。</p>
+<h3 id="5-1-OB过滤概述">5.1.OB过滤概述</h3><p>为了能够支持现有的安全和管理软件，对象管理器需要提供新的回调对特定的对象执行过滤操作。本节剩下的部分将会将会简单介绍新过滤机制的范围及支持的对象和过滤操作。文档附录中包含详细的关于具体的数据结构和OB过滤API的相关定义。<br>OB过滤模型将会支持：</p>
+<ul>
+<li><strong>分层模型允许多个过滤驱动共存：</strong> OB过滤管理器允许同时注册多个过滤驱动。对一个给定的驱动程序，其他层的驱动对其是透明的，各个过滤层之间可以无缝转换（所有的操作都会经过OB子系统）。</li>
+<li><strong>可以修改OpenProcess和OpenThread的调用参数：</strong> 过滤驱动程序能够拦截OpenThread和OpenProcess的调用并在将调用传递到下一层之前修改DesiredAccess参数。允许过滤驱动调用者减少打开进程或则线程对象的句柄访问权限，具有阻止特定打开操作的功能。注意这不能完全去阻止打开操作；这就避免一些不可知而失败的情况在现有的系统中，如第4节中提到的（请参阅其他章节关于修改DesiredAccess获得更多信息）。</li>
+<li><strong>禁止重复进入回调函数：</strong> 禁止使回调调用（直接/间接）重复进入回调。</li>
+</ul>
+<h3 id="5-2-OB框架概述">5.2.OB框架概述</h3><h4 id="5-2-1-回调注册">5.2.1.回调注册</h4><p>驱动程序能够通过ObRegisterCallbacks注册回调。OB公开的altitude值过滤模型体系结构将会和现有的文件/注册表过滤模型保持一致，将具有以下属性：</p>
+<ul>
+<li><strong>在注册回调函数过程中将会在在回调函数栈中生成唯一标识，altitude值：</strong> altitude值越高距离回调函数被调用越远。</li>
+<li><strong>不能两个注册的回调函数具有相同的altitude值：</strong> 第一个注册的altitude值的驱动将会注册成功，其他注册同样altitude值得将会失败。注意OB过滤管理器将不会对altitude值拥有者做任何验证。</li>
+<li><strong>Pre和Post注册（操作前和操作后）：</strong> 驱动程序可以同时注册Pre和Post操作通知，也可以选择其中一个进行注册。</li>
+<li><strong>同时注册回调函数的数量没有上限：</strong> Altitudes值通常属于预先定义的一个altitude类别中（文件系统团队已经定义了一个可以覆盖大多数场景的集合）。为了将来能够对给定的类别大小进行扩展，altitude值是一个实数（离散的），使用字符串表示。altitude值可能会包含小数点（虽然预期不是这样的）。例如一个回调注册的altitude值为1.11，这个值在回调函数栈中将会比1.1更高。同样地根据未来的需要categories可以被增加和删除</li>
+<li><strong>同时支持多altitudes值：</strong> 相同的回调函数可以同时使用多个altitudes值。</li>
+<li><strong>每个对象类型都可以注册回调函数：</strong> 驱动程序可以注册为任何支持的操作（目前支持的操作包括创建句柄/打开句柄/复制句柄）的类型（目前支持的object类型包括进程和线程）的组合注册回调函数。<br>现有的过滤框架模型需要ISV在过滤回调函数栈上请求特定的altitude值。ISV用于在文件系统/注册表注册和获取altitude值（<a href="http://whdc.microsoft.com/minifilter/default.aspx）已经被扩展并且支持OB过滤了。一旦ISV通过上面的注册网站提交一个特定的altitude请求，微软会根据他们的请求去分配一个唯一的altitude值从现有的categories中（或则创建一个之前未存在的新值）。" target="_blank" rel="external">http://whdc.microsoft.com/minifilter/default.aspx）已经被扩展并且支持OB过滤了。一旦ISV通过上面的注册网站提交一个特定的altitude请求，微软会根据他们的请求去分配一个唯一的altitude值从现有的categories中（或则创建一个之前未存在的新值）。</a><br>可以通过调用ObUnRegisterCallbacks取消回调注册。OB管理器会在回调函数被取消之前保证所有的回调函数已经执行完毕。<br>驱动的责任是调用ObRegisterCallbacks并在驱动卸载之前调用ObUnRegisterCallbacks。<br><strong>ObRegisterCallbacks</strong><br>ObRegisterCallbacks函数可以添加驱动程序提供的回调函数到一个函数列表中，这个函数列表中的函数会在进程/线程被创建/打开时被调用。<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">NTSTATUS</span><br><span class="line"><span class="title">ObRegisterCallbacks</span> <span class="params">(</span><br><span class="line">IN POB_CALLBACK_REGISTRATION CallBackRegistration,</span><br><span class="line">OUT PVOID *RegistrationHandle</span><br><span class="line">)</span></span>;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p><strong>参数：</strong></p>
+<ul>
+<li>CallBackRegistration：指向注册结构的指针，其中包含用于注册回调的信息，包括filter altitude、registration context和一个包含回掉函数的数组。所提供的回调函数地址必须位于拥有有效数字签名的内核驱动程序代码段位置，回调函数地址不允许位于非分页内存或则其他动态分配的内存中。</li>
+<li>RegistrationHandle:一个PVOID类型指针，接受一个标识该注册的实例句柄，当取消该回调时作为ObUnRegisterCallbacks的参数。<br><strong>返回值：</strong><br>ObRegisterCallbacks可能的返回值如下：</li>
+<li>ObRegisterCallbacks 回调函数在系统中注册成功。</li>
+<li>STATUS_FLT_INSTANCE_ALTITUDE_COLLISION 调用的驱动程序或则其他驱动程序已经注册了相同的altitude值，注册失败。</li>
+<li>STATUS_INVALID_PARAMETER 本次注册中一个或者多个参数无效。例如制定了不正确的版本或则注册了不支持的回调函数类型都可能返回这个错误。</li>
+<li>STATUS_INSUFFICIENT_RESOURCES 分配内存过程中失败。回调函数<br><strong>头文件：</strong><br>在TBD中声明<br><strong>备注：</strong><br>ObRegisterCallbacks函数只在Microsoft Windows Server 2008及以后的版本提供支持。在驱动卸载之前，驱动程序必须注销掉所有回调函数的注册，可以通过ObUnRegisterCallbacks取消注册。<br><strong>ObUnRegisterCallbacks</strong><br>ObUnRegisterCallbacks函数用于取消ObRegisterCallbacks注册的回调函数。<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">VOID</span><br><span class="line"><span class="title">ObUnRegisterCallbacks</span> <span class="params">(</span><br><span class="line">IN PVOID RegistrationHandle</span><br><span class="line">)</span></span>;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p><strong>参数：</strong></p>
+<ul>
+<li>RegistrationHandle：一个PVOID类型指针，指向回调函数注册的句柄实例。ObRegisterCallbacks调用后返回的一个值。<br><strong>返回值：</strong><br>无</li>
+</ul>
+<h4 id="5-2-2_回调函数调用">5.2.2 回调函数调用</h4><p>过滤管理器通过在栈上顺序传递通知的方式实现分层操作。由于过滤管理器会通知每一个已经注册了回调函数的驱动程序，从一个具体的回调函数来看，在回调函数栈上的其他函数都是被过滤管理器逻辑抽象的，对其是透明的。</p>
+<h5 id="5-2-2-1_回掉函数">5.2.2.1 回掉函数</h5><p>pre预通知回调会在实际行为完成之前被OB管理器调用，post后通知回调会在实际行为完成之后被返回给调用者之前被OB管理器调用。<br>Post后通知回调函数仅仅起到一个信息传递的作用，行为的返回值或则参数改变都不会有任何效果。</p>
+<h5 id="5-2-2-2_运行方式">5.2.2.2 运行方式</h5><p>过滤器既可以修改行为参数也可以起监控作用。过滤器会在回调函数栈中传递相同的内存信息，只有在调用实际的API之前修改参数信息才会有效果。Pre预通知回调函数必须返回OB_PREOP_SUCCESS状态。</p>
+<h5 id="5-2-2-3_回调上下文Callback_Context">5.2.2.3 回调上下文Callback Context</h5><p>过滤模型还支持通过回调上下文（context）将每个预回调pre通知及后回调post通知关联起来。这通过在回调通知结构体中包含一个CallContext实现。每个驱动程序都可以在这里存储特定的context。因为当遍历调用回调函数栈中的回调函数时，context会改变，因此过滤管理器必须包含pre回调通知和post回调通知是相同的context。<br>下面将会描述回调上下文和回调函数相关的东西：<br>OB OPEN_HANDLE将会被OB Create_Handle处理。<br><strong>OB CREATE_HANDLE</strong>:</p>
+<ul>
+<li>Callback context:通知函数将会在源进程和线程的上下文空间被调用和执行。</li>
+<li>Originating (calling) Process and Thread:PsGetCurrentProcess,PsGetCurrentProcessId, PsGetCurrentThread, PsGetCurrentThreadId可以正常使用。</li>
+<li>Process or Thread to be created:进程或则线程的对象指针将会被创建或打开在OB_PRE_CREATE_HANDLE_INFORMATION。</li>
+<li>注意：OB函数对象是非公开类型，因此虽然有对象指针但是并不是由id的对象，非ProcessIB或ThreadID。<br><strong>OB DUPLICATE_HANDLE：</strong></li>
+<li>Callback context:通知函数将会在源进程和线程的上下文空间被调用和执行。</li>
+<li>Originating (calling) Process and Thread:PsGetCurrentProcess,PsGetCurrentProcessId, PsGetCurrentThread, PsGetCurrentThreadId可以正常使用。</li>
+<li>Process or Thread handle to be duplicated:进程或则线程的对象指针将会被复制由源程序在OB_PRE_DUPLICATE_HANDLE_INFORMATION结构体中提供。</li>
+<li>注意：目标进程将会获得复制的句柄由源程序的OB_PRE_DUPLICATE_HANDLE_INFORMATION结构体。<br><strong>预pre回掉函数：</strong><br>驱动的预回调函数可以用于监控或则修改对象的行为。<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">typedef</span> <span class="title">OB_PREOP_CALLBACK_STATUS</span></span><br><span class="line"><span class="params">( *POB_PRE_OPERATION_CALLBACK)</span> <span class="params">(</span><br><span class="line">__IN PVOID RegistrationContext,</span><br><span class="line">__INOUT POB_PRE_OPERATION_INFORMATION OperationInformation</span><br><span class="line">)</span></span>;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p><strong>参数：</strong></p>
+<ul>
+<li>RegistrationContext：驱动传入作为RegistrationContext参数（在注册结构OB_REGISTRATION中），这将允许context信息传递按altitude传递。</li>
+<li>OperationInformation：一个指向包含操作类型的数据的指针，数字结构中也包含回调函数地址及一些回调函数可以修改的操作参数。<br><strong>返回值：</strong><br>一个枚举值，目前只支持OB_PREOP_SUCCESS。<br><strong>备注：</strong><br>为了获得进程/线程的通知，内核模块（如反病毒软件的驱动程序）需要调用ObRegisterCallbacks去为这个操作注册回调函数。<br>OB回调函数总是在源进程/线程的上下文中调用执行。<br><strong>后post回调函数：</strong><br>驱动可以通过后回调函数监控对象操作。<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">typedef</span> <span class="title">VOID</span></span><br><span class="line"><span class="params">( *POB_POST_OPERATION_CALLBACK)</span> <span class="params">(</span><br><span class="line">__IN PVOID RegistrationContext,</span><br><span class="line">__IN POB_POST_OPERATION_INFORMATION OperationInformation</span><br><span class="line">)</span></span>;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p><strong>参数：</strong></p>
+<ul>
+<li>RegistrationContext：驱动传入作为RegistrationContext参数（在注册结构OB_REGISTRATION中），这将允许context信息传递按altitude传递。</li>
+<li>OperationInformation：一个指向包含操作类型的数据的指针，还包含与当前操作相关的参数。<br><strong>返回值：</strong><br>无<br><strong>备注：</strong><br>为了获得进程/线程的通知，内核模块（如反病毒软件的驱动程序）需要调用ObRegisterCallbacks去为这个操作注册回调函数。<br>OB回调函数总是在源进程/线程的上下文中调用执行。</li>
+</ul>
+<h4 id="5-2-3_限制">5.2.3 限制</h4><p>在当前版本中，唯一可以修改的参数是DesiredAccess ACCESS_MASK（当操作是在修改模式），标识当前操作是创建/打开/复制进程/线程的句柄。此外，只能修改为请求传入参数ACCESS_MASK的子集。还保存了一个DesiredAccess原始请求只读的副本。如果原始调用来自内核模式，则参数可能不能被修改。</p>
+<h3 id="5-3_PS进程扩展回调">5.3 PS进程扩展回调</h3><p>在进程创建过程中，增强型的进程创建回调将会带来更多的灵活性。在回调函数中将会提供更多的信息：完整的模块路径和命令行参数。除此之外，可以在回调函数中阻止进程创建，如使应用层代码无法运行。<br>与现有的系统一样，接受进程创建的回调函数也会收到进程终止回调。但是相反的并不成立，驱动可能会接受到一个线程或者进程的终止回调但是却不会收到创建回调。发生这种情况可能的情况为驱动在进程创建后才注册了进程回调函数或则上层接受到通知较早的驱动否决了进程的创建通知（通过返回值CREATE_PROCESS_NOTIFY_ROUTINE_EX），从而提前终止了通知的处理。<br>回调函数的数量限制也扩充了从目前的8个扩充到32个。<br>线程创建和终止回调仍然没有改变。<br>下面将会描述回调上下文及相关信息：<br><strong>PsSetCreateProcessNotifyRoutineEx</strong></p>
+<ul>
+<li>Callback context:回调函数在源进程或则线程的上下文中被调用或则执行（但是可能在未来的系统中发生变化）</li>
+<li>Originating (calling) Process and Thread:ProcessID和ThreadID在PS_CREATE_NOTIFY_INFO参数中被提供。</li>
+<li>Newly created Process:进程指针和新被创建的进程的ProcessID都会被通过参数传递到回调函数。</li>
+<li>Process ParentID:通过PS_CREATE_NOTIFY_INFO结构作为参数传递。</li>
+<li>Notes:在回调函数执行之前应用层代码将不会被执行。在回调函数已经执行完后才会为新进程创建初始线程。在Windows Server 2008，如果通知被其中一个回调函数否决掉，那么PsSetCreateProcessNotifyRoutines其他的回调函数将不会被执行。执行新创建函数的指针可以不必再回调中查找效率更高。<br><strong>PsSetCreateProcessNotifyRoutineEx (进程终止)</strong></li>
+<li>Callback context:回调函数将会在最后一个线程和进程上下文中被执行。</li>
+<li>Originating (calling) Process and Thread:不支持。</li>
+<li>Newly created Process:进程指针和新被创建的进程的ProcessID都会被通过参数传递到回调函数。</li>
+<li>Process ParentID:通过PS_CREATE_NOTIFY_INFO结构作为参数传递。</li>
+<li>Notes:当最后一个线程/进程被标记为终止时，回调函数会被调用。在这个过程中没有办法阻止这个此时的终止。回调函数是在线程和进程被终止前被调用的（在这种意义上可以被称为PRE预回调），但是这个回调不能阻止这个进程/线程终止事件（在这种意义上类似后Post回调）。</li>
+</ul>
+<p><strong>PsSetCreateThreadNotifyRoutine</strong></p>
+<ul>
+<li>Callback context：回调函数将会在最后一个线程和进程上下文中被执行。</li>
+<li>Originating (calling) Process and Thread:可以在回调函数中使用PsGetCurrentProcess,PsGetCurrentProcessId, PsGetCurrentThread, PsGetCurrentThreadId获得。</li>
+<li>Newly created Thread:进程指针和新被创建的线程的ThreadID都会被通过参数传递到回调函数。</li>
+<li>Notes:这个API在Windows Server 2008没有变化，相比之前。</li>
+</ul>
+<p><strong>PsSetCreateThreadNotifyRoutine（线程终止）</strong></p>
+<ul>
+<li>Callback context：回调函数将会在要终止的线程的上下文中执行。</li>
+<li>Originating (calling) Process and Thread:不支持</li>
+<li>Thread to be deleted: ProcessID和和将要终止线程的ThreadID会作为参数传递给回调函数。</li>
+<li>Notes:这个API在Windows Server 2008没有变化，相比之前。<br><strong>PsSetCreateProcessNotifyRoutineEx</strong><br>PsSetCreateProcessNotifyRoutineEx函数可以将驱动提供的回调函数从进程被创建或则终止的函数列表中添加或则删除。<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">NTSTATUS</span><br><span class="line"><span class="title">PsSetCreateProcessNotifyRoutineEx</span><span class="params">(</span><br><span class="line">IN PCREATE_PROCESS_NOTIFY_ROUTINE_EX NotifyRoutine,</span><br><span class="line">IN BOOLEAN Remove</span><br><span class="line">)</span></span>;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p><strong>参数：</strong></p>
+<ul>
+<li>NotifyRoutine：指定进程创建回调函数的的入口点。</li>
+<li>Remove：标识回调函数是被添加或则删除从系统回调函数列表中。如果为FALSE，指定的回调函数将会被添加，如果为TRUE,指定的回调函数将会从列表中被移除。<br><strong>返回值：</strong><br>PsSetCreateProcessNotifyRoutineEx的返回值是其中一个：</li>
+<li>STATUS_SUCCESS：被给定的回调函数注册成功。</li>
+<li>STATUS_INVALID_PARAMETER：给定的回调函数已经被注册，这是一个多余的注册。或则系统已经达到注册回调函数最大上限。<br><strong>备注：</strong><br>最高级别的驱动程序可以调用PsSetCreateProcessNotifyRoutineEx注册进程回调函数，回调函数声明如下：<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">VOID</span><br><span class="line">(*PCREATE_PROCESS_NOTIFY_ROUTINE_EX) (</span><br><span class="line">__inout PEPROCESS Process,</span><br><span class="line">__in HANDLE ProcessId,</span><br><span class="line">__in_opt PPS_CREATE_NOTIFY_INFO CreateInfo</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>进程句柄Process和进程ID ProcessID这两个参数都是识别新进程的参数，CreateInfo参数中包含有进程是创建函数终止的信息。<br>IFS或则高级别的系统优化驱动可能会注册进程创建回调函数去监控系统内部进程的创建和种植。系统中最多可以注册32个进程创建回调函数。<br>在驱动卸载的时候必须同时卸载注册的回调函数，可以通过调用PsSetCreateProcessNotifyEx且Remove参数设置为TRUE即可卸载回调函数。<br>CreateInfo的定义如下：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> _PS_CREATE_NOTIFY_INFO &#123;</span><br><span class="line">__in SIZE_T Size;</span><br><span class="line"><span class="keyword">union</span> &#123;</span><br><span class="line">__in ULONG Flags;</span><br><span class="line"><span class="keyword">struct</span> &#123;</span><br><span class="line">__in ULONG FileOpenNameAvailable : <span class="number">1</span>;</span><br><span class="line">__in ULONG Reserved : <span class="number">31</span>;</span><br><span class="line">&#125;;</span><br><span class="line">&#125;;</span><br><span class="line">__in HANDLE ParentProcessId;</span><br><span class="line">__in CLIENT_ID CreatingThreadId;</span><br><span class="line">__inout <span class="keyword">struct</span> _FILE_OBJECT *FileObject;</span><br><span class="line">__in PCUNICODE_STRING ImageFileName;</span><br><span class="line">__in_opt PCUNICODE_STRING CommandLine;</span><br><span class="line">__out NTSTATUS CreationStatus;</span><br><span class="line">&#125; PS_CREATE_NOTIFY_INFO, *PPS_CREATE_NOTIFY_INFO;</span><br><span class="line"><span class="keyword">typedef</span> CONST PS_CREATE_NOTIFY_INFO *PCPS_CREATE_NOTIFY_INFO</span><br></pre></td></tr></table></figure></p>
+<p>驱动回调函数被注册之后，在一个新进程初始线程被创建后回调函数会被调用并传入非空的CreateInfo信息并且包含ProcessId句柄。输入的ParentProcessId句柄可以标识新创建进程的父进程。注意父进程可能并不是正在创建该进程的进程，因为Windows Vista允许进程通过模板进程被创建（为了继承某些属性）。请注意驱动可以通过写入失败的NTSTATUS码到CreationStatus结构使内核停止新进程的创建。<br>进程回调函数也可以通过一个空的CreateInfo被调用，表示回调函数是被进程终止被条用。当进程中最后一个线程被终止时被调用，进程地址空间也即将被删除。<br>如果FileOpenNameAvailable被设置，ImageFileName这个UnicodeString参数是进程可执行文件的路径。如果标志位没有被设置，那么ImageFileName只是部分名称。在这两种情况下，同可以通过文件对象FileObject回溯到可执行文件的内存映射文件，驱动可以通过管理api类似FltGetFileNameInformationUnsafe获得更多属性信息。<br>调用PsSetCreateProcessNotifyRoutineEx中断级别必须是IRQL = PASSIVE_LEVEL。</p>
+<h2 id="6-内存写访问控制">6.内存写访问控制</h2><p>在这个部分一些ISV请求能够获得能够屏蔽WriteProcessMemory()及相关API的能力。微软已经就这个问题进行了调查并和一些ISV进行了讨论。结论是并不需要提供更细粒度的API用于过滤WriteProcessMemory()。然而，微软提供了替代方案用于屏蔽WriteProcessMemory()操作的能力，在其他方面这种方案也可以提供支持，如在其他线程中创建远程线程。<br>有一系列的函数我们称之为“上游函数”，其他的称为“下游函数”。上游函数会将句柄返回给下游函数。例如，TerminateProcess()就是一个下游函数，TerminateProcess会依赖OpenProcess() 返回的带有PROCESS_TERMINATE权限的句柄。通过过滤上游函数OpenProcess()的DesiredAccess就可以有效控制下游函数，如CreateRemoteThread()、WriteProcessMemory()和 TerminateProcess()。<br>通过新的OB过滤框架过滤DesiredAccess属性为实现更高层次、更广范围控制提供了可能。一些和内存访问控制及进程/线程终止相关的DesiredAccess属性如下：</p>
+<ul>
+<li>PROCESS_VM_WRITE</li>
+<li>PROCESS_VM_OPERATION</li>
+<li>PROCESS_TERMINATE</li>
+<li>THREAD_TERMINATE<br>为了维护查询和管理功能的可见性及可维护性，防止失控和防止恶意代码隐藏，查询操作不可能被过滤或则阻止，此外操作系统内核及内核模式驱动始终有能力终止系统上的任何进程。</li>
+</ul>
+<h2 id="7-加载可执行文件">7.加载可执行文件</h2><p>一些ISV有请求去屏蔽一些可执行文件的加载。目前发布的Windows系统支持映像加载回调通知（可以满足ISV一部分需求），但是没有提供屏蔽可执行文件加载功能。出于这个原因，微软调查了是否需要一个新的API去满足这项需求，但是最终得出的结论是现有的功能可以满足屏蔽模块加载功能。<br>mini-filter可以被用于阻止应用层（如DLL）和内核层（如驱动）的加载。拦截IRP_MJ_ACQUIRE_FOR_SECTION_SYNCHRONIZATION并返回STATUS_ACCESS_DENIED当区段被加载为PAGE_EXECUTE属性的时候。文件系统mini-filter已经被微软文档化，文档的白皮书<a href="http://download.microsoft.com/download/e/b/a/eba1050f-a31d-436b-9281-92cdfeae4b45/FilterDriverDeveloperGuide.doc。" target="_blank" rel="external">http://download.microsoft.com/download/e/b/a/eba1050f-a31d-436b-9281-92cdfeae4b45/FilterDriverDeveloperGuide.doc。</a><br>另一方面，微软正在调查除了Windows服务管理器之外使用未文档化和未官方支持的API NtLoadDriver()的情况。</p>
+<h2 id="8-自保护">8.自保护</h2><p>进程的自保护是ISV提出的第二优先级需求。这一需求的来源来自于安全软件减少被恶意软件终止和干扰的机会。在几个案例中，ISV修补操作系统内核漏洞的唯一原因是实现安全软件的自我保护。微软对这一需求进行了调查并给出了结论，可以使用新的API和现有的API去实现包含安全软件在内的各种进程的保护。使用实例如下：</p>
+<ul>
+<li>新的进程和线程过滤API可用于防止进程被终止和波坏。</li>
+<li>通过文件微过滤驱动可以控制代码被加载到安全软件中，可以阻止未知代码的加载。</li>
+<li>通过现有的注册表回调可以保护注册表资源，可以保护安全软件的配置数据。</li>
+<li>使用Windows的强化服务框架可以限制访问和权限保护安全软件服务。<br>Windows也调查了”受保护进程”这个概念，在第三方ISV的用途。这需要ISV去认证受保护的进程，以加强约束。操作系统内核会通过执行策略进行约束。这个特殊的需求支持将会在Windows Server 2008之后进行调研，通常这样的模式微软也是原因采纳的。这种模式可能需要在多版本发布时在特殊领域可以使用，最终可能会导致现有的内核函数被废弃。在这一领域的变化ISV会给予好评。</li>
+</ul>
+<h2 id="9-附录">9.附录</h2><h3 id="9-1_结构体定义">9.1 结构体定义</h3><p>略，详细内容参考msdn和<a href="https://vrtulex.net/download/ostatni/prirucky/kernel-data-filtering.pdf" target="_blank" rel="external">原文章</a></p>
+<h3 id="9-2_DesiredAccess属性">9.2 DesiredAccess属性</h3><p>下面是列出了允许设置DesiredAccess属性的位，在Open/Duplicate回调函数中：<br>PROCESS_CREATE_PROCESS<br>PROCESS_CREATE_THREAD<br>PROCESS_DUP_HANDLE<br>PROCESS_SET_QUOTA<br>PROCESS_SET_INFORMATION<br>PROCESS_SUSPEND_RESUME<br>PROCESS_TERMINATE<br>PROCESS_VM_OPERATION<br>PROCESS_VM_WRITE<br>THREAD_DIRECT_IMPERSONATION<br>THREAD_IMPERSONATE<br>THREAD_SET_CONTEXT<br>THREAD_SET_INFORMATION<br>THREAD_SET_LIMITED_INFORMATION<br>THREAD_SET_THREAD_TOKEN<br>THREAD_SUSPEND_RESUME<br>THREAD_TERMINATE</p>
+
+      
+    </div>
+    <footer>
+      
+
+        
+          <div class="alignleft post-nav">
+            <em>上一篇: </em><a href="/2017/10/23/Tools/IDA-Pro-ClassInformer-Tutorial/">IDA Pro ClassInformer使用指南（翻译）</a>
+          </div>
+        
+        
+          <div class="alignright post-nav">
+            <em>下一篇: </em><a href="/2017/05/17/Windows/Windows-x64-Shellcode/">Windows x64 Shellcode编写指南(翻译)</a>
+          </div>
+          <div class="clearfix"></div>
+        
+
+        
+          <div class="copyright">
+            
+              <span class="claim">转载请注明youngroe.com</span>
+            
+            
+              <span class="from-link">
+                <em>本文链接地址:</em>
+                <a href="/2017/05/23/Windows/Kernel Data and Filtering Support/">
+                  http://www.youngroe.com/2017/05/23/Windows/Kernel Data and Filtering Support/
+                </a>
+              </span>
+            
+          </div>
+        
+		<span id="busuanzi_container_site_pv">
+    本站总访问量<span id="busuanzi_value_site_pv"></span>次
+        
+  
+  <div class="categories">
+    <a href="/categories/Windows/">Windows</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/x64/">x64</a>, <a href="/tags/内核/">内核</a>
+  </div>
+
+        <div class="bdsharebuttonbox"><a href="#" class="bds_more" data-cmd="more"></a><a href="#" class="bds_qzone" data-cmd="qzone"></a><a href="#" class="bds_tsina" data-cmd="tsina"></a><a href="#" class="bds_tqq" data-cmd="tqq"></a><a href="#" class="bds_renren" data-cmd="renren"></a><a href="#" class="bds_weixin" data-cmd="weixin"></a></div>
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdPic":"","bdStyle":"0","bdSize":"16"},"share":{},"image":{"viewList":["qzone","tsina","tqq","renren","weixin"],"viewText":"������","viewSize":"16"},"selectShare":{"bdContainerClass":null,"bdSelectMiniList":["qzone","tsina","tqq","renren","weixin"]}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</span>
+</article>
+
+
+<section id="comment">
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+<div class="widget tag">
+  <h3 class="title">分类</h3>
+  <ul class="entry">
+  
+    <li><a href="/categories/Cybersecurity/">Cybersecurity</a><small>1</small></li>
+  
+    <li><a href="/categories/Debug/">Debug</a><small>7</small></li>
+  
+    <li><a href="/categories/Kernel/">Kernel</a><small>4</small></li>
+  
+    <li><a href="/categories/Learning/">Learning</a><small>8</small></li>
+  
+    <li><a href="/categories/Life/">Life</a><small>7</small></li>
+  
+    <li><a href="/categories/Others/">Others</a><small>1</small></li>
+  
+    <li><a href="/categories/Read-Notes/">Read Notes</a><small>7</small></li>
+  
+    <li><a href="/categories/Tools/">Tools</a><small>6</small></li>
+  
+    <li><a href="/categories/Vulnerabilities/">Vulnerabilities</a><small>0</small></li>
+  
+    <li><a href="/categories/Windows/">Windows</a><small>14</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2019/07/01/Windows/delphi_reverse_summary/">Delphi程序逆向反汇编技巧小记</a>
+      </li>
+    
+      <li>
+        <a href="/2019/06/25/Kernel/kernel_enum_wfp_callout_function/">Windows内核重拾：如何枚举系统中Windows Filtering Platform (WFP)驱动中的callout函数</a>
+      </li>
+    
+      <li>
+        <a href="/2019/05/06/Kernel/windows-driver-testing-basics/">Windows内核重拾：Windows驱动测试基础：工具、功能和示例（翻译/转载）</a>
+      </li>
+    
+      <li>
+        <a href="/2019/04/06/Windows/how-to-reverse-engineer-software-windows-in-a-right-way/">如何正确的对Windows软件进行逆向工程（翻译/转载）</a>
+      </li>
+    
+      <li>
+        <a href="/2019/01/12/Windows/a_crash_lead_deadlock/">Windows平台下一个崩溃而导致的死锁分析</a>
+      </li>
+    
+      <li>
+        <a href="/2018/12/01/Windows/windows_client_dns_over_https/">Windows客户端如何透明使用DNS-over-HTTPS</a>
+      </li>
+    
+      <li>
+        <a href="/2018/10/06/Cybersecurity/ddos-protection-techniques/">现代DDoS对抗技术概述（翻译/转载）</a>
+      </li>
+    
+      <li>
+        <a href="/2018/09/18/Life/xian/">西安周末游</a>
+      </li>
+    
+      <li>
+        <a href="/2018/01/06/Kernel/WindowsKernel_DebugObject/">Windows内核重拾：DebugObject</a>
+      </li>
+    
+      <li>
+        <a href="/2017/10/23/Tools/IDA-Pro-ClassInformer-Tutorial/">IDA Pro ClassInformer使用指南（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2017/05/23/Windows/Kernel Data and Filtering Support/">Kernel Data and Filtering Support for Windows Server 2008（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2017/05/17/Windows/Windows-x64-Shellcode/">Windows x64 Shellcode编写指南(翻译)</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget tagcloud">
+  <h3 class="title">标签云</h3>
+  <div class="entry">
+    <a href="/tags/ASM/" style="font-size: 12.5px;">ASM</a> <a href="/tags/Boost/" style="font-size: 10px;">Boost</a> <a href="/tags/DDoS/" style="font-size: 10px;">DDoS</a> <a href="/tags/DNS-over-HTTPS/" style="font-size: 10px;">DNS-over-HTTPS</a> <a href="/tags/Delphi/" style="font-size: 10px;">Delphi</a> <a href="/tags/Dll劫持/" style="font-size: 10px;">Dll劫持</a> <a href="/tags/GCC-GDB/" style="font-size: 10px;">GCC&GDB</a> <a href="/tags/GetVersionEx/" style="font-size: 10px;">GetVersionEx</a> <a href="/tags/Http/" style="font-size: 10px;">Http</a> <a href="/tags/IDA-Pro/" style="font-size: 12.5px;">IDA Pro</a> <a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/MSDN/" style="font-size: 12.5px;">MSDN</a> <a href="/tags/Malware/" style="font-size: 12.5px;">Malware</a> <a href="/tags/MiniDumpWriteDump/" style="font-size: 10px;">MiniDumpWriteDump</a> <a href="/tags/PEB/" style="font-size: 10px;">PEB</a> <a href="/tags/Procmon/" style="font-size: 10px;">Procmon</a> <a href="/tags/Runtime-Error/" style="font-size: 10px;">Runtime Error</a> <a href="/tags/SEH/" style="font-size: 10px;">SEH</a> <a href="/tags/Shellcode/" style="font-size: 10px;">Shellcode</a> <a href="/tags/SysinternalsSuite/" style="font-size: 10px;">SysinternalsSuite</a> <a href="/tags/Tips/" style="font-size: 10px;">Tips</a> <a href="/tags/UAC/" style="font-size: 10px;">UAC</a> <a href="/tags/UAF漏洞/" style="font-size: 10px;">UAF漏洞</a> <a href="/tags/VC/" style="font-size: 10px;">VC</a> <a href="/tags/Visual-Studio/" style="font-size: 12.5px;">Visual Studio</a> <a href="/tags/Windbg/" style="font-size: 10px;">Windbg</a> <a href="/tags/Windows/" style="font-size: 20px;">Windows</a> <a href="/tags/Windows核心编程/" style="font-size: 17.5px;">Windows核心编程</a> <a href="/tags/android/" style="font-size: 10px;">android</a> <a href="/tags/getaddrinfo/" style="font-size: 10px;">getaddrinfo</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/libeay32/" style="font-size: 10px;">libeay32</a> <a href="/tags/markdown/" style="font-size: 10px;">markdown</a> <a href="/tags/ndk/" style="font-size: 10px;">ndk</a> <a href="/tags/sublime-text3/" style="font-size: 10px;">sublime text3</a> <a href="/tags/x64/" style="font-size: 12.5px;">x64</a> <a href="/tags/体验/" style="font-size: 10px;">体验</a> <a href="/tags/内核/" style="font-size: 12.5px;">内核</a> <a href="/tags/内核结构/" style="font-size: 15px;">内核结构</a> <a href="/tags/学习/" style="font-size: 10px;">学习</a> <a href="/tags/安全机制/" style="font-size: 10px;">安全机制</a> <a href="/tags/异常处理/" style="font-size: 10px;">异常处理</a> <a href="/tags/提权/" style="font-size: 10px;">提权</a> <a href="/tags/服务/" style="font-size: 10px;">服务</a> <a href="/tags/权限/" style="font-size: 12.5px;">权限</a> <a href="/tags/栈溢出漏洞/" style="font-size: 10px;">栈溢出漏洞</a> <a href="/tags/测试/" style="font-size: 10px;">测试</a> <a href="/tags/浮躁/" style="font-size: 10px;">浮躁</a> <a href="/tags/漏洞调试/" style="font-size: 12.5px;">漏洞调试</a> <a href="/tags/生活/" style="font-size: 15px;">生活</a> <a href="/tags/脱壳/" style="font-size: 10px;">脱壳</a> <a href="/tags/西安/" style="font-size: 10px;">西安</a> <a href="/tags/计划/" style="font-size: 10px;">计划</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a> <a href="/tags/调试/" style="font-size: 15px;">调试</a> <a href="/tags/转换/" style="font-size: 10px;">转换</a> <a href="/tags/进程/" style="font-size: 10px;">进程</a> <a href="/tags/逆向/" style="font-size: 10px;">逆向</a> <a href="/tags/重庆/" style="font-size: 10px;">重庆</a> <a href="/tags/驱动/" style="font-size: 15px;">驱动</a>
+  </div>
+</div>
+
+
+  <div class="widget tag">
+<h3 class="title">Links</h3>
+<ul class="entry">
+<li><a href="http://blog.ourren.com/" title="Ourren">Ourren</a></li>
+<li><a href="http://www.hyjal.net/" title="Hyjal">Hyjal</a></li>
+<li><a href="http://www.jianshu.com/users/fa15f4e416ae/latest_articles" title="Daemonceltics">Daemonceltics</a></li>
+<li><a href="http://papap.info/" title="isee">isee</a></li>
+</ul>
+</div>
+
+  <script type="text/javascript" id="clustrmaps" src="//cdn.clustrmaps.com/map_v2.js?u=putG&d=yoFnN6V-ovhL-H4e9_69LvkTiX4uX7rEYJ15yL3G1Wg"></script>
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <div id="go-pg-top"><i class="icon-arrow-up"></i></div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2020 Lyon
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript" charset="utf-8" src="/js/page.js"></script>
+
+</body>
+
+</html>

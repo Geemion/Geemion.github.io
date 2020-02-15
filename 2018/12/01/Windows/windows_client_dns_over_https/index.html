@@ -1,0 +1,327 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Windows客户端如何透明使用DNS-over-HTTPS | Lyon&#39;s blog</title>
+  <meta name="author" content="Lyon">
+  
+  <meta name="description" content="Walk steps step by step">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="Windows客户端如何透明使用DNS-over-HTTPS"/>
+  <meta property="og:site_name" content="Lyon&#39;s blog"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  #<link href="/favicon.ico" rel="icon">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="alternate" href="/atom.xml" title="Lyon&#39;s blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  <script src="/js/jquery.min.js"></script>
+  <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?0fe72895c9bcfd0d09da12b5378b1b91";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+</head>
+
+
+<body>
+  <!--[if lte IE 8]> <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'> <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0027_Simplified Chinese.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." style='margin-left:auto;margin-right:auto;display: block;'/></a></div> <![endif]-->
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">Lyon&#39;s blog</a></h1>
+  <h2><a href="/">I hear and I forget.I see and I remember.I do and I understand.</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">首页</a></li>
+    
+      <li><a href="/archives">归档</a></li>
+    
+      <li><a href="/about">关于</a></li>
+    
+	<li> <a href="/atom.xml">RSS</a> </li>
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <time datetime="2018-12-01T12:13:53.000Z"><a href="/2018/12/01/Windows/windows_client_dns_over_https/">2018-12-01</a></time>
+      
+      
+  
+    <h1 class="title">Windows客户端如何透明使用DNS-over-HTTPS</h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+  <div id="toc" class="toc-article">
+  <strong class="toc-title">文章目录</strong>
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x00_现有Windows客户端程序dns查询流程"><span class="toc-number">1.</span> <span class="toc-text">0x00 现有Windows客户端程序dns查询流程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x01_现有dns查询的缺点"><span class="toc-number">2.</span> <span class="toc-text">0x01 现有dns查询的缺点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x02_DNS_over_HTTPS是什么？"><span class="toc-number">3.</span> <span class="toc-text">0x02 DNS over HTTPS是什么？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x03_客户端程序如何透明切换到DoH"><span class="toc-number">4.</span> <span class="toc-text">0x03 客户端程序如何透明切换到DoH</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x4_扩展，如何将操作系统切换到DoH"><span class="toc-number">5.</span> <span class="toc-text">0x4 扩展，如何将操作系统切换到DoH</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x05_参考链接"><span class="toc-number">6.</span> <span class="toc-text">0x05 参考链接</span></a></li></ol>
+  </div>
+
+
+	
+    <div class="entry">
+      
+        <h2 id="0x00_现有Windows客户端程序dns查询流程">0x00 现有Windows客户端程序dns查询流程</h2><ul>
+<li>1.client通过系统api（gethostbyname/getaddrinfo/getaddrinfoex）发起查询dns请求</li>
+<li>2.系统api会通过rpc查询本地服务dnscache是否有该host的缓存，如果缓存存在则直接返回返回host对应的ip地址，dns查询完成，如果没有则进入下一步</li>
+<li>3.如果不存在该host的缓存，则首先会通过解析本地hosts文件看是否有该host对应的ip，如果存在，则直接返回该ip，否则进入下一步</li>
+<li>4.如果本地hosts文件中没有该host的记录，则系统会通过发送dns udp包向本地dns服务器发起请求查询该host对应的ip，后面的dns查询过程如下图所示。<a id="more"></a>
+</li>
+</ul>
+<div align="center"><br><img src="/img/localdns_query.jpg" alt="本地dns解析过程" align="center"><br></div>
+
+<p>简单总结：<br>系统首先会通过本地缓存和hosts文件查询dns，如果缓存和hosts都没有对应的记录，会通过明文udp包向dns服务器查询。具体返回的结果受系统hosts文件及dns服务器影响较大。</p>
+<h2 id="0x01_现有dns查询的缺点">0x01 现有dns查询的缺点</h2><p>通过第0x0部分对现有Windows客户端程序dns查询流程的介绍，可以分析出目前dns查询的一些缺陷和风险点。</p>
+<p><strong>对使用客户端的用户：</strong><br>跟踪：由于现有dns数据包为端口固定的明文udp包，可以很容易在网络流量中区分dns流量，并解析其中查询的域名信息。这样一些别有用心的人就可以很容易通过解析dns流量分析一个人的浏览习惯，收集敏感信息，特别是大数据火热的今天。<br>欺骗攻击：从开始查询到最终获取到解析结果，现有的dns查询机制需要经历较多过程，由于是明文信息，攻击者可以在任意一个环节修改解析的结果，给一个错误的解析结果，可以阻止用户访问正确的网站或则引入到攻击者想让用户访问的仍以网站。</p>
+<p><strong>对于开发客户端的厂商：</strong><br>网络劫持：对于一些页面广告或则其他有收益业务，可能会存在通过业务被dns劫持攻击风险，使业务不可访问或则被替换成其他页面。</p>
+<h2 id="0x02_DNS_over_HTTPS是什么？">0x02 DNS over HTTPS是什么？</h2><p> 正式因为目前基于udp查询dns有各种安全缺陷，一些厂商提出了一种安全的dns查询方案DNS over Https，并且以及获得IETF支持，以RFC 8484名义发布。顾名思义DNS over HTTPS是一种通过https协议的Get请求获取域名解析的方案，简称DoH。由于基于http且与普通https请求共用443端口，如果正确部署服务器和客户端程序，理论上很难通过分析https包分析出客户端的域名请求查询结果，也不存在被篡改的风险。</p>
+<h2 id="0x03_客户端程序如何透明切换到DoH">0x03 客户端程序如何透明切换到DoH</h2><p>既然DoH相较于基于udp包的dns查询有这么多的优势，那如何将现有的客户端程序切换到DoH呢？<br>我们很容易想到的过程是重写系统域名查询api，然后使用我们重写的api替换掉系统的api。但是这里会存在一个问题，目前的Windows客户端都会使用各种第三方网络库（libcurl、qt network等）及webview引擎（ieframe、libcef、qtwebview等），要想替换掉这些第三方库或则webview引擎中的系统api可能得花费很大的功夫，必须重写这部分代码，然后重新编译（某些库编译异常复杂如libcef）。并且还可能会存在一种情况是某些第三方库我们自己是没代码的，那这部分如何切换到DoH呢？<br>这里有一种不用重编译代码且可以对无代码的第三方库透明切换到使用DoH的简单方法，就是使用hook技术hook 系统dns查询相关系统api实现Windows客户端透明切换到DoH。可能需要hook的api如下：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">需要hook的api</th>
+<th style="text-align:left">影响的其他api</th>
+<th style="text-align:left">影响的第三方库</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">GetAddrinfoW</td>
+<td style="text-align:left">GetAddrinfoA</td>
+<td style="text-align:left">libcurl、qt network、libcef</td>
+</tr>
+<tr>
+<td style="text-align:left">GetAddrinfoExW</td>
+<td style="text-align:left">GetAddrinfoExA</td>
+<td style="text-align:left">ieframe</td>
+</tr>
+</tbody>
+</table>
+<p>当然除了这两个api之外，Windows客户端程序可能还有一些使用其他api的情况（如gethostbyname/DnsQuery）,但是思路相同也是hook替换掉就可以了。<br>在hook函数的实现过程中可能还会遇到一些小问题，如GetAddrinfoW返回结果中的addrinfo内存分配问题。正常情况下返回结果中的addrinfo由GetAddrinfoW函数在其私有堆上分配，然后调用者使用完结果后使用freeaddrinfo释放，但是当我们自己实现的时候很难获取到私有堆的句柄，这样就没办法为addrinfo分配内存，如果使用new分配内存会在freeaddrinfo释放时错误产生问题。我实现的时候通过一个简单粗暴的方式是实现通过调用原始的GetAddrinfoW解析localhost然后直接使用结果中的addrinfo，因为是GetAddrinfoW分配，所以最后使用freeaddrinfo释放也没问题。<br>除此之外在实现过程中还需要考虑很多其他因素，如dns结果优选、dns缓存设计等软件结构问题，这些可以参考微博的HTTPDNSLib的实现。</p>
+<h2 id="0x4_扩展，如何将操作系统切换到DoH">0x4 扩展，如何将操作系统切换到DoH</h2><p>在0x3部分实现单个客户端进程切换到DoH，那怎样将整个Windows系统切换到DoH？<br>其实同样也可以借鉴0x3的思路，替换系统dns服务的查询接口，实现应该是在一个系统服务进程中，具体没研究过。。。。。<br>不过以及有一个更简单的思路，实现一个udp转https的本地接口，然后将Windows网络设置中的dns服务器地址修改为这个本地接口地址，并且已经有人实现了，具体看参考链接4。</p>
+<h2 id="0x05_参考链接">0x05 参考链接</h2><p><a href="https://mp.weixin.qq.com/s?__biz=MzA3ODgyNzcwMw==&amp;mid=201837080&amp;idx=1&amp;sn=b2a152b84df1c7dbd294ea66037cf262&amp;scene=2&amp;from=timeline&amp;isappinstalled=0#rd" target="_blank" rel="external">1.全局精确流量调度新思路-HttpDNS服务详解</a><br><a href="https://github.com/curl/curl/wiki/DNS-over-HTTPS" target="_blank" rel="external">2.DNS over HTTPS</a><br><a href="https://github.com/CNSRE/HTTPDNSLib" target="_blank" rel="external">3.HTTPDNSLib</a><br><a href="https://blog.3bro.info/archives/windows-dns-over-https/" target="_blank" rel="external">4.[教學] 如何透過 cloudflared 使用 DNS-over-HTTPS？（Windows 適用）</a></p>
+
+      
+    </div>
+    <footer>
+      
+
+        
+          <div class="alignleft post-nav">
+            <em>上一篇: </em><a href="/2019/01/12/Windows/a_crash_lead_deadlock/">Windows平台下一个崩溃而导致的死锁分析</a>
+          </div>
+        
+        
+          <div class="alignright post-nav">
+            <em>下一篇: </em><a href="/2018/10/06/Cybersecurity/ddos-protection-techniques/">现代DDoS对抗技术概述（翻译/转载）</a>
+          </div>
+          <div class="clearfix"></div>
+        
+
+        
+          <div class="copyright">
+            
+              <span class="claim">转载请注明youngroe.com</span>
+            
+            
+              <span class="from-link">
+                <em>本文链接地址:</em>
+                <a href="/2018/12/01/Windows/windows_client_dns_over_https/">
+                  http://www.youngroe.com/2018/12/01/Windows/windows_client_dns_over_https/
+                </a>
+              </span>
+            
+          </div>
+        
+		<span id="busuanzi_container_site_pv">
+    本站总访问量<span id="busuanzi_value_site_pv"></span>次
+        
+  
+  <div class="categories">
+    <a href="/categories/Windows/">Windows</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/DNS-over-HTTPS/">DNS-over-HTTPS</a>, <a href="/tags/getaddrinfo/">getaddrinfo</a>
+  </div>
+
+        <div class="bdsharebuttonbox"><a href="#" class="bds_more" data-cmd="more"></a><a href="#" class="bds_qzone" data-cmd="qzone"></a><a href="#" class="bds_tsina" data-cmd="tsina"></a><a href="#" class="bds_tqq" data-cmd="tqq"></a><a href="#" class="bds_renren" data-cmd="renren"></a><a href="#" class="bds_weixin" data-cmd="weixin"></a></div>
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdPic":"","bdStyle":"0","bdSize":"16"},"share":{},"image":{"viewList":["qzone","tsina","tqq","renren","weixin"],"viewText":"������","viewSize":"16"},"selectShare":{"bdContainerClass":null,"bdSelectMiniList":["qzone","tsina","tqq","renren","weixin"]}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</span>
+</article>
+
+
+<section id="comment">
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+<div class="widget tag">
+  <h3 class="title">分类</h3>
+  <ul class="entry">
+  
+    <li><a href="/categories/Cybersecurity/">Cybersecurity</a><small>1</small></li>
+  
+    <li><a href="/categories/Debug/">Debug</a><small>7</small></li>
+  
+    <li><a href="/categories/Kernel/">Kernel</a><small>4</small></li>
+  
+    <li><a href="/categories/Learning/">Learning</a><small>8</small></li>
+  
+    <li><a href="/categories/Life/">Life</a><small>7</small></li>
+  
+    <li><a href="/categories/Others/">Others</a><small>1</small></li>
+  
+    <li><a href="/categories/Read-Notes/">Read Notes</a><small>7</small></li>
+  
+    <li><a href="/categories/Tools/">Tools</a><small>6</small></li>
+  
+    <li><a href="/categories/Vulnerabilities/">Vulnerabilities</a><small>0</small></li>
+  
+    <li><a href="/categories/Windows/">Windows</a><small>14</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2019/07/01/Windows/delphi_reverse_summary/">Delphi程序逆向反汇编技巧小记</a>
+      </li>
+    
+      <li>
+        <a href="/2019/06/25/Kernel/kernel_enum_wfp_callout_function/">Windows内核重拾：如何枚举系统中Windows Filtering Platform (WFP)驱动中的callout函数</a>
+      </li>
+    
+      <li>
+        <a href="/2019/05/06/Kernel/windows-driver-testing-basics/">Windows内核重拾：Windows驱动测试基础：工具、功能和示例（翻译/转载）</a>
+      </li>
+    
+      <li>
+        <a href="/2019/04/06/Windows/how-to-reverse-engineer-software-windows-in-a-right-way/">如何正确的对Windows软件进行逆向工程（翻译/转载）</a>
+      </li>
+    
+      <li>
+        <a href="/2019/01/12/Windows/a_crash_lead_deadlock/">Windows平台下一个崩溃而导致的死锁分析</a>
+      </li>
+    
+      <li>
+        <a href="/2018/12/01/Windows/windows_client_dns_over_https/">Windows客户端如何透明使用DNS-over-HTTPS</a>
+      </li>
+    
+      <li>
+        <a href="/2018/10/06/Cybersecurity/ddos-protection-techniques/">现代DDoS对抗技术概述（翻译/转载）</a>
+      </li>
+    
+      <li>
+        <a href="/2018/09/18/Life/xian/">西安周末游</a>
+      </li>
+    
+      <li>
+        <a href="/2018/01/06/Kernel/WindowsKernel_DebugObject/">Windows内核重拾：DebugObject</a>
+      </li>
+    
+      <li>
+        <a href="/2017/10/23/Tools/IDA-Pro-ClassInformer-Tutorial/">IDA Pro ClassInformer使用指南（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2017/05/23/Windows/Kernel Data and Filtering Support/">Kernel Data and Filtering Support for Windows Server 2008（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2017/05/17/Windows/Windows-x64-Shellcode/">Windows x64 Shellcode编写指南(翻译)</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget tagcloud">
+  <h3 class="title">标签云</h3>
+  <div class="entry">
+    <a href="/tags/ASM/" style="font-size: 12.5px;">ASM</a> <a href="/tags/Boost/" style="font-size: 10px;">Boost</a> <a href="/tags/DDoS/" style="font-size: 10px;">DDoS</a> <a href="/tags/DNS-over-HTTPS/" style="font-size: 10px;">DNS-over-HTTPS</a> <a href="/tags/Delphi/" style="font-size: 10px;">Delphi</a> <a href="/tags/Dll劫持/" style="font-size: 10px;">Dll劫持</a> <a href="/tags/GCC-GDB/" style="font-size: 10px;">GCC&GDB</a> <a href="/tags/GetVersionEx/" style="font-size: 10px;">GetVersionEx</a> <a href="/tags/Http/" style="font-size: 10px;">Http</a> <a href="/tags/IDA-Pro/" style="font-size: 12.5px;">IDA Pro</a> <a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/MSDN/" style="font-size: 12.5px;">MSDN</a> <a href="/tags/Malware/" style="font-size: 12.5px;">Malware</a> <a href="/tags/MiniDumpWriteDump/" style="font-size: 10px;">MiniDumpWriteDump</a> <a href="/tags/PEB/" style="font-size: 10px;">PEB</a> <a href="/tags/Procmon/" style="font-size: 10px;">Procmon</a> <a href="/tags/Runtime-Error/" style="font-size: 10px;">Runtime Error</a> <a href="/tags/SEH/" style="font-size: 10px;">SEH</a> <a href="/tags/Shellcode/" style="font-size: 10px;">Shellcode</a> <a href="/tags/SysinternalsSuite/" style="font-size: 10px;">SysinternalsSuite</a> <a href="/tags/Tips/" style="font-size: 10px;">Tips</a> <a href="/tags/UAC/" style="font-size: 10px;">UAC</a> <a href="/tags/UAF漏洞/" style="font-size: 10px;">UAF漏洞</a> <a href="/tags/VC/" style="font-size: 10px;">VC</a> <a href="/tags/Visual-Studio/" style="font-size: 12.5px;">Visual Studio</a> <a href="/tags/Windbg/" style="font-size: 10px;">Windbg</a> <a href="/tags/Windows/" style="font-size: 20px;">Windows</a> <a href="/tags/Windows核心编程/" style="font-size: 17.5px;">Windows核心编程</a> <a href="/tags/android/" style="font-size: 10px;">android</a> <a href="/tags/getaddrinfo/" style="font-size: 10px;">getaddrinfo</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/libeay32/" style="font-size: 10px;">libeay32</a> <a href="/tags/markdown/" style="font-size: 10px;">markdown</a> <a href="/tags/ndk/" style="font-size: 10px;">ndk</a> <a href="/tags/sublime-text3/" style="font-size: 10px;">sublime text3</a> <a href="/tags/x64/" style="font-size: 12.5px;">x64</a> <a href="/tags/体验/" style="font-size: 10px;">体验</a> <a href="/tags/内核/" style="font-size: 12.5px;">内核</a> <a href="/tags/内核结构/" style="font-size: 15px;">内核结构</a> <a href="/tags/学习/" style="font-size: 10px;">学习</a> <a href="/tags/安全机制/" style="font-size: 10px;">安全机制</a> <a href="/tags/异常处理/" style="font-size: 10px;">异常处理</a> <a href="/tags/提权/" style="font-size: 10px;">提权</a> <a href="/tags/服务/" style="font-size: 10px;">服务</a> <a href="/tags/权限/" style="font-size: 12.5px;">权限</a> <a href="/tags/栈溢出漏洞/" style="font-size: 10px;">栈溢出漏洞</a> <a href="/tags/测试/" style="font-size: 10px;">测试</a> <a href="/tags/浮躁/" style="font-size: 10px;">浮躁</a> <a href="/tags/漏洞调试/" style="font-size: 12.5px;">漏洞调试</a> <a href="/tags/生活/" style="font-size: 15px;">生活</a> <a href="/tags/脱壳/" style="font-size: 10px;">脱壳</a> <a href="/tags/西安/" style="font-size: 10px;">西安</a> <a href="/tags/计划/" style="font-size: 10px;">计划</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a> <a href="/tags/调试/" style="font-size: 15px;">调试</a> <a href="/tags/转换/" style="font-size: 10px;">转换</a> <a href="/tags/进程/" style="font-size: 10px;">进程</a> <a href="/tags/逆向/" style="font-size: 10px;">逆向</a> <a href="/tags/重庆/" style="font-size: 10px;">重庆</a> <a href="/tags/驱动/" style="font-size: 15px;">驱动</a>
+  </div>
+</div>
+
+
+  <div class="widget tag">
+<h3 class="title">Links</h3>
+<ul class="entry">
+<li><a href="http://blog.ourren.com/" title="Ourren">Ourren</a></li>
+<li><a href="http://www.hyjal.net/" title="Hyjal">Hyjal</a></li>
+<li><a href="http://www.jianshu.com/users/fa15f4e416ae/latest_articles" title="Daemonceltics">Daemonceltics</a></li>
+<li><a href="http://papap.info/" title="isee">isee</a></li>
+</ul>
+</div>
+
+  <script type="text/javascript" id="clustrmaps" src="//cdn.clustrmaps.com/map_v2.js?u=putG&d=yoFnN6V-ovhL-H4e9_69LvkTiX4uX7rEYJ15yL3G1Wg"></script>
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <div id="go-pg-top"><i class="icon-arrow-up"></i></div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2020 Lyon
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript" charset="utf-8" src="/js/page.js"></script>
+
+</body>
+
+</html>

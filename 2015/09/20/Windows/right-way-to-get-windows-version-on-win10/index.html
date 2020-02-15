@@ -1,0 +1,305 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>获得Windows系统版本信息的正确姿势On Windows10 | Lyon&#39;s blog</title>
+  <meta name="author" content="Lyon">
+  
+  <meta name="description" content="Walk steps step by step">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="获得Windows系统版本信息的正确姿势On Windows10"/>
+  <meta property="og:site_name" content="Lyon&#39;s blog"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  #<link href="/favicon.ico" rel="icon">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="alternate" href="/atom.xml" title="Lyon&#39;s blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  <script src="/js/jquery.min.js"></script>
+  <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?0fe72895c9bcfd0d09da12b5378b1b91";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+</head>
+
+
+<body>
+  <!--[if lte IE 8]> <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'> <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0027_Simplified Chinese.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." style='margin-left:auto;margin-right:auto;display: block;'/></a></div> <![endif]-->
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">Lyon&#39;s blog</a></h1>
+  <h2><a href="/">I hear and I forget.I see and I remember.I do and I understand.</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">首页</a></li>
+    
+      <li><a href="/archives">归档</a></li>
+    
+      <li><a href="/about">关于</a></li>
+    
+	<li> <a href="/atom.xml">RSS</a> </li>
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      
+        <img src="/img/rightway.jpg">
+      
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <time datetime="2015-09-20T03:03:03.000Z"><a href="/2015/09/20/Windows/right-way-to-get-windows-version-on-win10/">2015-09-20</a></time>
+      
+      
+  
+    <h1 class="title">获得Windows系统版本信息的正确姿势On Windows10</h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+  <div id="toc" class="toc-article">
+  <strong class="toc-title">文章目录</strong>
+  
+  </div>
+
+
+	
+    <div class="entry">
+      
+        <p>参考资料：<br><a href="https://msdn.microsoft.com/en-us/library/windows/desktop/dn481241(v=vs.85" target="_blank" rel="external">Targeting your application for Windows</a>.aspx)</p>
+<p>这两天想对一个程序进行升级，原始程序只支持win7。要对系统版本进行确定，正确显示出系统版本信息，本来应该是一个非常简单的事情但是但是为什么在win10上系统版本还是6.2呢buildnumber为什么还是9200呢。奇怪。。。。。<br>既然有问题咱们就来想想有哪些可能性吧：</p>
+<ul>
+<li>1.Win10系统是测试版，系统内核版本信息等都还是win8的</li>
+<li>2.由于使用的是vs2008编译的，可能是程序默认使用兼容性方式运行所以获得的是win8系统信息</li>
+<li>3.打开程序姿势不对，哈哈<br>先试试win10系统吧，由于不记得win10是什么时候装的只有systeminfo看看系统信息。嗯，系统版本buildnumber是10240对的是win10正式版，排除1。<br>再看哈2，程序信息没有选择以兼容性模式运行啊。对了，突然想到好像某些时候只要程序不显式声明支持新系统默认直接兼容运行，那怎么显式声明呢？这里就需要我们前面一篇<a href="http://youngroe/2015/07/13/tech/aboutVisual_Studio/" target="_blank" rel="external">Visual Studio使用备注</a>中提到过的manifest文件，vc6中添加看那篇文章第8点。vs2008附加添加直接vs工程属性里找到“清单工具-&gt;输入和输出-&gt;附加清单文件”里填入manifest文件的相对路径，然后重新链接。<br>针对win10的manifest文件如下：<a id="more"></a>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">&lt;exe&gt;.manifest</span><br><span class="line">&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;</span><br><span class="line">&lt;assembly manifestVersion="1.0" xmlns="urn:schemas-microsoft-com:asm.v1" xmlns:asmv3="urn:schemas-microsoft-com:asm.v3"&gt;</span><br><span class="line">    &lt;assemblyIdentity </span><br><span class="line">        type="win32" </span><br><span class="line">        name=SXS_ASSEMBLY_NAME</span><br><span class="line">        version=SXS_ASSEMBLY_VERSION</span><br><span class="line">        processorArchitecture=SXS_PROCESSOR_ARCHITECTURE</span><br><span class="line">    /&gt;</span><br><span class="line">    &lt;description&gt; my foo exe &lt;/description&gt;</span><br><span class="line">    &lt;trustInfo xmlns="urn:schemas-microsoft-com:asm.v3"&gt;</span><br><span class="line">        &lt;security&gt;</span><br><span class="line">            &lt;requestedPrivileges&gt;</span><br><span class="line">                &lt;requestedExecutionLevel</span><br><span class="line">                    level="asInvoker"</span><br><span class="line">                    uiAccess="false"</span><br><span class="line">                /&gt;	</span><br><span class="line">            &lt;/requestedPrivileges&gt;</span><br><span class="line">        &lt;/security&gt;</span><br><span class="line">    &lt;/trustInfo&gt;</span><br><span class="line">    &lt;compatibility xmlns="urn:schemas-microsoft-com:compatibility.v1"&gt; </span><br><span class="line">        &lt;application&gt; </span><br><span class="line">            &lt;!-- Windows 10 --&gt; </span><br><span class="line">            &lt;supportedOS Id="&#123;8e0f7a12-bfb3-4fe8-b9a5-48fd50a15a9a&#125;"/&gt;</span><br><span class="line">            &lt;!-- Windows 8.1 --&gt;</span><br><span class="line">            &lt;supportedOS Id="&#123;1f676c76-80e1-4239-95bb-83d0f6d0da78&#125;"/&gt;</span><br><span class="line">            &lt;!-- Windows Vista --&gt;</span><br><span class="line">            &lt;supportedOS Id="&#123;e2011457-1546-43c5-a5fe-008deee3d3f0&#125;"/&gt; </span><br><span class="line">            &lt;!-- Windows 7 --&gt;</span><br><span class="line">            &lt;supportedOS Id="&#123;35138b9a-5d96-4fbd-8e2d-a2440225f93a&#125;"/&gt;</span><br><span class="line">            &lt;!-- Windows 8 --&gt;</span><br><span class="line">            &lt;supportedOS Id="&#123;4a2f28e3-53b9-4441-ba9c-d69d4a4a6e38&#125;"/&gt;</span><br><span class="line">        &lt;/application&gt; </span><br><span class="line">    &lt;/compatibility&gt;</span><br><span class="line">&lt;/assembly&gt;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>加上后重新编译果然正确获得信息，试试我新装的vs2015 “error C4996: ‘GetVersionExW’: 被声明为已否决”才发现原来是GetVersionEx这个api已经不提供支持了。赶紧查查msdn，发现说得很清楚“[GetVersionEx may be altered or unavailable for releases after Windows 8.1. Instead, use the Version Helper APIs]With the release of Windows 8.1, the behavior of the GetVersionEx API has changed in the value it will return for the operating system version. The value returned by the GetVersionEx function now depends on how the application is manifested”。</p>
+<p>msdn上说由于GetVersionEx获得的信息有可能会改变在win8.1以后，这些api将由<a href="https://msdn.microsoft.com/en-us/library/windows/desktop/dn424972(v=vs.85" target="_blank" rel="external">Version Helper functions</a>.aspx)代替，继续往下翻 发现有很多人抱怨由于这个api不能用，嗯 然后还有人给出解决方案，这个才是我想要的<br>so 根据这些线索我这里总结出在win10上正确获得系统版本信息的方式：<br>1.在程序中嵌入正确的manifest文件，就是上面说的。显式声明我支持win10<br>2.通过更换api，使用Version Helper APIs<br>3.通过NtQueryInformationProcess获得进程环境块peb地址然后偏移0xa4开始就是关于系统版本信息，在<a href="http://youngroe.com/2015/08/01/tech/peb-analysis/" target="_blank" rel="external">Peb(Process Environment Block)简单学习及分析</a>有简单介绍<br>4.通过使用native api解决RtlGetVersion</p>
+<p>这几种方法推荐使用第4种，基本和原始GetVersionEx相同，不用改动太多。</p>
+<p>附上代码<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//通过peb方式获得系统版本信息</span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">&lt;Windows.h&gt;</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">&lt;winternl.h&gt;</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line">DWORD Major;</span><br><span class="line">DWORD Minor;</span><br><span class="line">DWORD Build;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">typedef</span> <span class="title">NTSTATUS</span> <span class="params">(WINAPI* _NtQueryInformationProcess)</span></span><br><span class="line"><span class="params">(_In_ HANDLE ProcessHandle, _In_ PROCESSINFOCLASS ProcessInformationClass,</span><br><span class="line">    _Out_ PVOID ProcessInformation, _In_ ULONG ProcessInformationLength, _Out_opt_ PULONG ReturnLength)</span></span>;</span><br><span class="line">_NtQueryInformationProcess NtQueryInformationProcess_;</span><br><span class="line"></span><br><span class="line"><span class="function">DWORD <span class="title">GetProcessPEBAddress</span><span class="params">(HANDLE hProc)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    PROCESS_BASIC_INFORMATION peb;</span><br><span class="line">    DWORD tmp;</span><br><span class="line">    NtQueryInformationProcess_ = (_NtQueryInformationProcess)GetProcAddress(GetModuleHandle(<span class="string">"ntdll.dll"</span>), <span class="string">"NtQueryInformationProcess"</span>);</span><br><span class="line">    NtQueryInformationProcess_(hProc, ProcessBasicInformation, &amp;peb, <span class="keyword">sizeof</span>(PROCESS_BASIC_INFORMATION), &amp;tmp);</span><br><span class="line">    <span class="keyword">return</span> (DWORD)peb.PebBaseAddress;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">OSVersion</span><span class="params">(HANDLE handle)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    DWORD pebAddress = GetProcessPEBAddress(handle);</span><br><span class="line">    DWORD OSMajorVersionAddress = pebAddress + <span class="number">0x0a4</span>;</span><br><span class="line">    DWORD OSMinorVersionAddress = pebAddress + <span class="number">0x0a8</span>;</span><br><span class="line">    DWORD OSBuildNumberAddress = pebAddress + <span class="number">0x0ac</span>;</span><br><span class="line">    ReadProcessMemory(handle, (<span class="keyword">void</span>*)OSMajorVersionAddress, &amp;Major, <span class="keyword">sizeof</span>(Major), <span class="number">0</span>);</span><br><span class="line">    ReadProcessMemory(handle, (<span class="keyword">void</span>*)OSMinorVersionAddress, &amp;Minor, <span class="keyword">sizeof</span>(Minor), <span class="number">0</span>);</span><br><span class="line">    ReadProcessMemory(handle, (<span class="keyword">void</span>*)OSBuildNumberAddress, &amp;Build, <span class="keyword">sizeof</span>(Build), <span class="number">0</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    HANDLE handle = OpenProcess(PROCESS_ALL_ACCESS, FALSE, GetCurrentProcessId());</span><br><span class="line">    OSVersion(handle);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"OS version - %d.%d.%d"</span>, Major, Minor, Build);</span><br><span class="line"></span><br><span class="line">    getchar();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//通过RtlGetVersion api获得系统信息</span></span><br><span class="line"></span><br><span class="line">LONG (WINAPI *pfnRtlGetVersion)(RTL_OSVERSIONINFOEXW*);</span><br><span class="line">(FARPROC&amp;)pfnRtlGetVersion = GetProcAddress(GetModuleHandle(_T(<span class="string">"ntdll.dll"</span>)), <span class="string">"RtlGetVersion"</span>);</span><br><span class="line"><span class="keyword">if</span>(pfnRtlGetVersion)</span><br><span class="line">&#123;</span><br><span class="line">    RTL_OSVERSIONINFOEXW ver = &#123;<span class="number">0</span>&#125;;</span><br><span class="line">    ver.dwOSVersionInfoSize = <span class="keyword">sizeof</span>(ver);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span>(pfnRtlGetVersion(&amp;ver) == <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">//Success, read results in `ver`</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">//RtlGetVersion failed</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">//RtlGetVersion was not found...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><strong>最后总结哈，msdn很重要，出现问题应该第一时间查询msdn。经常更新IDE版本很重要，使用新的IDE可以帮助我们检查代码中可能的问题</strong></p>
+<p>##后记补充参考<br><em>——20151220——–这篇文章写得很好很详细</em><br><a href="http://blog.csdn.net/magictong/article/details/40753519#comments" target="_blank" rel="external">Windows系统版本判定那些事儿</a></p>
+
+      
+    </div>
+    <footer>
+      
+
+        
+          <div class="alignleft post-nav">
+            <em>上一篇: </em><a href="/2015/09/24/Kernel/Windbg-Driver-Kernel/">Windows驱动开发备注</a>
+          </div>
+        
+        
+          <div class="alignright post-nav">
+            <em>下一篇: </em><a href="/2015/09/19/Life/about-native-client/">【转】客户端技术的一点思考</a>
+          </div>
+          <div class="clearfix"></div>
+        
+
+        
+          <div class="copyright">
+            
+              <span class="claim">转载请注明youngroe.com</span>
+            
+            
+              <span class="from-link">
+                <em>本文链接地址:</em>
+                <a href="/2015/09/20/Windows/right-way-to-get-windows-version-on-win10/">
+                  http://www.youngroe.com/2015/09/20/Windows/right-way-to-get-windows-version-on-win10/
+                </a>
+              </span>
+            
+          </div>
+        
+		<span id="busuanzi_container_site_pv">
+    本站总访问量<span id="busuanzi_value_site_pv"></span>次
+        
+  
+  <div class="categories">
+    <a href="/categories/Windows/">Windows</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/GetVersionEx/">GetVersionEx</a>, <a href="/tags/Windows/">Windows</a>
+  </div>
+
+        <div class="bdsharebuttonbox"><a href="#" class="bds_more" data-cmd="more"></a><a href="#" class="bds_qzone" data-cmd="qzone"></a><a href="#" class="bds_tsina" data-cmd="tsina"></a><a href="#" class="bds_tqq" data-cmd="tqq"></a><a href="#" class="bds_renren" data-cmd="renren"></a><a href="#" class="bds_weixin" data-cmd="weixin"></a></div>
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdPic":"","bdStyle":"0","bdSize":"16"},"share":{},"image":{"viewList":["qzone","tsina","tqq","renren","weixin"],"viewText":"������","viewSize":"16"},"selectShare":{"bdContainerClass":null,"bdSelectMiniList":["qzone","tsina","tqq","renren","weixin"]}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</span>
+</article>
+
+
+<section id="comment">
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+<div class="widget tag">
+  <h3 class="title">分类</h3>
+  <ul class="entry">
+  
+    <li><a href="/categories/Cybersecurity/">Cybersecurity</a><small>1</small></li>
+  
+    <li><a href="/categories/Debug/">Debug</a><small>7</small></li>
+  
+    <li><a href="/categories/Kernel/">Kernel</a><small>4</small></li>
+  
+    <li><a href="/categories/Learning/">Learning</a><small>8</small></li>
+  
+    <li><a href="/categories/Life/">Life</a><small>7</small></li>
+  
+    <li><a href="/categories/Others/">Others</a><small>1</small></li>
+  
+    <li><a href="/categories/Read-Notes/">Read Notes</a><small>7</small></li>
+  
+    <li><a href="/categories/Tools/">Tools</a><small>6</small></li>
+  
+    <li><a href="/categories/Vulnerabilities/">Vulnerabilities</a><small>0</small></li>
+  
+    <li><a href="/categories/Windows/">Windows</a><small>14</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2019/07/01/Windows/delphi_reverse_summary/">Delphi程序逆向反汇编技巧小记</a>
+      </li>
+    
+      <li>
+        <a href="/2019/06/25/Kernel/kernel_enum_wfp_callout_function/">Windows内核重拾：如何枚举系统中Windows Filtering Platform (WFP)驱动中的callout函数</a>
+      </li>
+    
+      <li>
+        <a href="/2019/05/06/Kernel/windows-driver-testing-basics/">Windows内核重拾：Windows驱动测试基础：工具、功能和示例（翻译/转载）</a>
+      </li>
+    
+      <li>
+        <a href="/2019/04/06/Windows/how-to-reverse-engineer-software-windows-in-a-right-way/">如何正确的对Windows软件进行逆向工程（翻译/转载）</a>
+      </li>
+    
+      <li>
+        <a href="/2019/01/12/Windows/a_crash_lead_deadlock/">Windows平台下一个崩溃而导致的死锁分析</a>
+      </li>
+    
+      <li>
+        <a href="/2018/12/01/Windows/windows_client_dns_over_https/">Windows客户端如何透明使用DNS-over-HTTPS</a>
+      </li>
+    
+      <li>
+        <a href="/2018/10/06/Cybersecurity/ddos-protection-techniques/">现代DDoS对抗技术概述（翻译/转载）</a>
+      </li>
+    
+      <li>
+        <a href="/2018/09/18/Life/xian/">西安周末游</a>
+      </li>
+    
+      <li>
+        <a href="/2018/01/06/Kernel/WindowsKernel_DebugObject/">Windows内核重拾：DebugObject</a>
+      </li>
+    
+      <li>
+        <a href="/2017/10/23/Tools/IDA-Pro-ClassInformer-Tutorial/">IDA Pro ClassInformer使用指南（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2017/05/23/Windows/Kernel Data and Filtering Support/">Kernel Data and Filtering Support for Windows Server 2008（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2017/05/17/Windows/Windows-x64-Shellcode/">Windows x64 Shellcode编写指南(翻译)</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget tagcloud">
+  <h3 class="title">标签云</h3>
+  <div class="entry">
+    <a href="/tags/ASM/" style="font-size: 12.5px;">ASM</a> <a href="/tags/Boost/" style="font-size: 10px;">Boost</a> <a href="/tags/DDoS/" style="font-size: 10px;">DDoS</a> <a href="/tags/DNS-over-HTTPS/" style="font-size: 10px;">DNS-over-HTTPS</a> <a href="/tags/Delphi/" style="font-size: 10px;">Delphi</a> <a href="/tags/Dll劫持/" style="font-size: 10px;">Dll劫持</a> <a href="/tags/GCC-GDB/" style="font-size: 10px;">GCC&GDB</a> <a href="/tags/GetVersionEx/" style="font-size: 10px;">GetVersionEx</a> <a href="/tags/Http/" style="font-size: 10px;">Http</a> <a href="/tags/IDA-Pro/" style="font-size: 12.5px;">IDA Pro</a> <a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/MSDN/" style="font-size: 12.5px;">MSDN</a> <a href="/tags/Malware/" style="font-size: 12.5px;">Malware</a> <a href="/tags/MiniDumpWriteDump/" style="font-size: 10px;">MiniDumpWriteDump</a> <a href="/tags/PEB/" style="font-size: 10px;">PEB</a> <a href="/tags/Procmon/" style="font-size: 10px;">Procmon</a> <a href="/tags/Runtime-Error/" style="font-size: 10px;">Runtime Error</a> <a href="/tags/SEH/" style="font-size: 10px;">SEH</a> <a href="/tags/Shellcode/" style="font-size: 10px;">Shellcode</a> <a href="/tags/SysinternalsSuite/" style="font-size: 10px;">SysinternalsSuite</a> <a href="/tags/Tips/" style="font-size: 10px;">Tips</a> <a href="/tags/UAC/" style="font-size: 10px;">UAC</a> <a href="/tags/UAF漏洞/" style="font-size: 10px;">UAF漏洞</a> <a href="/tags/VC/" style="font-size: 10px;">VC</a> <a href="/tags/Visual-Studio/" style="font-size: 12.5px;">Visual Studio</a> <a href="/tags/Windbg/" style="font-size: 10px;">Windbg</a> <a href="/tags/Windows/" style="font-size: 20px;">Windows</a> <a href="/tags/Windows核心编程/" style="font-size: 17.5px;">Windows核心编程</a> <a href="/tags/android/" style="font-size: 10px;">android</a> <a href="/tags/getaddrinfo/" style="font-size: 10px;">getaddrinfo</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/libeay32/" style="font-size: 10px;">libeay32</a> <a href="/tags/markdown/" style="font-size: 10px;">markdown</a> <a href="/tags/ndk/" style="font-size: 10px;">ndk</a> <a href="/tags/sublime-text3/" style="font-size: 10px;">sublime text3</a> <a href="/tags/x64/" style="font-size: 12.5px;">x64</a> <a href="/tags/体验/" style="font-size: 10px;">体验</a> <a href="/tags/内核/" style="font-size: 12.5px;">内核</a> <a href="/tags/内核结构/" style="font-size: 15px;">内核结构</a> <a href="/tags/学习/" style="font-size: 10px;">学习</a> <a href="/tags/安全机制/" style="font-size: 10px;">安全机制</a> <a href="/tags/异常处理/" style="font-size: 10px;">异常处理</a> <a href="/tags/提权/" style="font-size: 10px;">提权</a> <a href="/tags/服务/" style="font-size: 10px;">服务</a> <a href="/tags/权限/" style="font-size: 12.5px;">权限</a> <a href="/tags/栈溢出漏洞/" style="font-size: 10px;">栈溢出漏洞</a> <a href="/tags/测试/" style="font-size: 10px;">测试</a> <a href="/tags/浮躁/" style="font-size: 10px;">浮躁</a> <a href="/tags/漏洞调试/" style="font-size: 12.5px;">漏洞调试</a> <a href="/tags/生活/" style="font-size: 15px;">生活</a> <a href="/tags/脱壳/" style="font-size: 10px;">脱壳</a> <a href="/tags/西安/" style="font-size: 10px;">西安</a> <a href="/tags/计划/" style="font-size: 10px;">计划</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a> <a href="/tags/调试/" style="font-size: 15px;">调试</a> <a href="/tags/转换/" style="font-size: 10px;">转换</a> <a href="/tags/进程/" style="font-size: 10px;">进程</a> <a href="/tags/逆向/" style="font-size: 10px;">逆向</a> <a href="/tags/重庆/" style="font-size: 10px;">重庆</a> <a href="/tags/驱动/" style="font-size: 15px;">驱动</a>
+  </div>
+</div>
+
+
+  <div class="widget tag">
+<h3 class="title">Links</h3>
+<ul class="entry">
+<li><a href="http://blog.ourren.com/" title="Ourren">Ourren</a></li>
+<li><a href="http://www.hyjal.net/" title="Hyjal">Hyjal</a></li>
+<li><a href="http://www.jianshu.com/users/fa15f4e416ae/latest_articles" title="Daemonceltics">Daemonceltics</a></li>
+<li><a href="http://papap.info/" title="isee">isee</a></li>
+</ul>
+</div>
+
+  <script type="text/javascript" id="clustrmaps" src="//cdn.clustrmaps.com/map_v2.js?u=putG&d=yoFnN6V-ovhL-H4e9_69LvkTiX4uX7rEYJ15yL3G1Wg"></script>
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <div id="go-pg-top"><i class="icon-arrow-up"></i></div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2020 Lyon
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript" charset="utf-8" src="/js/page.js"></script>
+
+</body>
+
+</html>

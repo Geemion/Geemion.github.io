@@ -1,0 +1,302 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>一种让Ring 3程序断下来的方法 | Lyon&#39;s blog</title>
+  <meta name="author" content="Lyon">
+  
+  <meta name="description" content="Walk steps step by step">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="一种让Ring 3程序断下来的方法"/>
+  <meta property="og:site_name" content="Lyon&#39;s blog"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  #<link href="/favicon.ico" rel="icon">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="alternate" href="/atom.xml" title="Lyon&#39;s blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  <script src="/js/jquery.min.js"></script>
+  <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?0fe72895c9bcfd0d09da12b5378b1b91";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+</head>
+
+
+<body>
+  <!--[if lte IE 8]> <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'> <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0027_Simplified Chinese.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." style='margin-left:auto;margin-right:auto;display: block;'/></a></div> <![endif]-->
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">Lyon&#39;s blog</a></h1>
+  <h2><a href="/">I hear and I forget.I see and I remember.I do and I understand.</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">首页</a></li>
+    
+      <li><a href="/archives">归档</a></li>
+    
+      <li><a href="/about">关于</a></li>
+    
+	<li> <a href="/atom.xml">RSS</a> </li>
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <time datetime="2015-10-10T02:46:32.000Z"><a href="/2015/10/10/Debug/A-Tips-about-DbgBreakPoint/">2015-10-10</a></time>
+      
+      
+  
+    <h1 class="title">一种让Ring 3程序断下来的方法</h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+  <div id="toc" class="toc-article">
+  <strong class="toc-title">文章目录</strong>
+  
+  </div>
+
+
+	
+    <div class="entry">
+      
+        <p>解决一个<a href="https://social.msdn.microsoft.com/Forums/en-US/7728257d-3889-48cc-877c-5dc8c2d492b0/winsock-differences-in-store-apps?forum=winappswithnativecode" target="_blank" rel="external">bug</a>**的过程中使用windbg但是断不下来，因为每次符号信息没来得及加载系统就蹦了。so想到之前驱动调试的 int 3但程序是64位的不好嵌入汇编想到DbgBreakPoint()，遂有下面的方法<br>在应用层中直接调用ntdll的DbgBreakPoint。<br>大概就像下面这个样子：<br><a id="more"></a><br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">typedef</span>	<span class="title">void</span> <span class="params">(WINAPI *PDbgBreakPoint)</span><span class="params">()</span></span>;</span><br><span class="line">PDbgBreakPoint DbgBreakPoint;</span><br><span class="line"></span><br><span class="line">HMODULE hntdll=LoadLibraryA(<span class="string">"ntdll.dll"</span>);</span><br><span class="line"><span class="keyword">if</span> (hntdll!=<span class="literal">NULL</span>)</span><br><span class="line">&#123;</span><br><span class="line">	DbgBreakPoint=(<span class="keyword">void</span> (WINAPI *)())GetProcAddress(hntdll,<span class="string">"DbgBreakPoint"</span>);</span><br><span class="line">	DbgBreakPoint();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><em>在逆向分析的时候不好找attach时机的时候都可以先设置实时调试器，然后通过在程序或则dll入口点加入it 3断点自动将程序挂在调试器上</em></p>
+<p>顺带把崩溃堆栈列出来吧，还没找到问题所在。。。。。。。<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">Child-SP          RetAddr           : Args to Child                                                           : Call Site</span><br><span class="line">0000005a`21aad850 00007ff9`cd99cfc6 : 0000005a`21aada10 00007ff9`d01dd140 00000000`00000000 0000005a`210117e8 : ntdll!RtlUnhandledExceptionFilter2+0x340</span><br><span class="line">0000005a`21aad8c0 00007ff9`d01e6b14 : 00007ff9`00000000 00007ff9`d0250524 00000000`00000000 00000000`00000000 : KERNELBASE!UnhandledExceptionFilter+0x196</span><br><span class="line">0000005a`21aad9b0 00007ff9`d01c831f : 00007ff9`cd9b26ec 0000005a`21aae8c0 00007ff9`cd9a1ca0 0000005a`21aada20 : ntdll!RtlUserThreadStart$filt$0+0x34</span><br><span class="line">0000005a`21aad9e0 00007ff9`d01d921d : 00000000`00000000 0000005a`21aadb80 0000005a`21aae930 0000005a`21aae930 : ntdll!_C_specific_handler+0x87</span><br><span class="line">0000005a`21aada50 00007ff9`d0195b5b : 00000000`00000001 00007ff9`d0140000 00000000`00000000 00007ff9`d02754c8 : ntdll!RtlpExecuteHandlerForException+0xd</span><br><span class="line">0000005a`21aada80 00007ff9`d0197f98 : 00000000`000006c4 00007ff9`cc611159 0000005a`21aae930 00000000`00000020 : ntdll!RtlDispatchException+0x19b</span><br><span class="line">0000005a`21aae150 00007ff9`d01d845a : 00000000`00000000 0000005a`21aaea50 00000000`00000038 00000000`000006c4 : ntdll!RtlRaiseException+0xf0</span><br><span class="line">0000005a`21aae910 00007ff9`cd8f9973 : 00000000`00000000 00000000`00000002 0000005a`21010000 00000000`00000000 : ntdll!KiRaiseUserExceptionDispatcher+0x3a</span><br><span class="line">0000005a`21aae9e0 00007ff9`cdde30f0 : 00000000`0000000c 00000000`00000000 00007ff9`cc611159 00000000`0001001c : KERNELBASE!GetHandleInformation+0x3f</span><br><span class="line">0000005a`21aaea20 00007ff9`cdddba00 : 00000000`00000000 00000000`00000000 00000000`00000038 00000000`6d03cb87 : WS2_32!DSOCKET::FindIFSSocket+0x20</span><br><span class="line">0000005a`21aaea50 00007ff9`cc6147ae : 00000000`00000000 00000000`00000000 00000000`00000000 00007ff9`00000000 : WS2_32!Prolog_Detached+0x1dd1</span><br><span class="line">0000005a`21aaeaf0 00000000`00000000 : 00000000`00000000 00000000`00000000 00007ff9`00000000 0000005a`21aaebb0 : 0x00007ff9`cc6147ae</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">RetAddr           : Args to Child                                                           : Call Site</span><br><span class="line">fffff803`7774f6ba : 00000000`00000000 00000000`00000000 00000000`00000000 00000000`00000000 : nt! ?? ::FNODOBFM::`string'+0x4fa13</span><br><span class="line">fffff803`775d5ef5 : 00000000`00000000 fffff803`00000000 00000000`00000000 00000000`00000001 : nt! ?? ::NNGAKEGL::`string'+0x1baca</span><br><span class="line">fffff803`7763ce30 : 00000000`00000000 00000000`00000000 00000000`00000000 00000000`00000000 : nt!ObReferenceObjectByHandle+0x25</span><br><span class="line">fffff803`773634b3 : ffffe000`023285c0 000000f7`da93e878 ffffd000`238bbaa8 08421084`21084211 : nt!NtQueryObject+0xc0</span><br><span class="line">00007ffe`2850667a : 00007ffe`25c29973 00000000`00000000 00000000`00000000 00000000`00000000 : nt!KiSystemServiceCopyEnd+0x13</span><br><span class="line">00007ffe`25c29973 : 00000000`00000000 00000000`00000000 00000000`00000000 00000000`00000000 : ntdll!NtQueryObject+0xa</span><br><span class="line">00007ffe`264230f0 : 00000000`00140012 00000000`00000000 00000000`00000000 00000000`00000000 : KERNELBASE!GetHandleInformation+0x3f</span><br><span class="line">00007ffe`2641b6d9 : 00007ffe`249e98e8 00000000`00000000 00007ffe`249d1c95 00007ffe`25bfaac0 : WS2_32!DSOCKET::FindIFSSocket+0x20</span><br><span class="line">00007ffe`249d1cb3 : 00000000`00000000 00007ffe`00000000 00000000`00000000 00000000`00000000 : WS2_32!Prolog_Detached+0x15d7</span><br></pre></td></tr></table></figure></p>
+<p>##问题解决<br>1.由上面的堆栈找到异常为0xc0000008<br>fffff803<code>773b7b9e b9080000c0      mov     ecx,0C0000008h
+fffff803</code>773b7ba3 e8b0a30200      call    nt!KeRaiseUserException (fffff803`773e1f58)<br>2.解决方案<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">LONG MyFilter ( DWORD dwExceptionCode )&#10;&#123;&#10;&#9;if ( dwExceptionCode == 0xc0000008)&#10;&#9;&#9;return EXCEPTION_EXECUTE_HANDLER ;&#10;&#9;else&#10;&#9;&#9;return EXCEPTION_CONTINUE_SEARCH ;&#10;&#125;&#10;&#10;__try&#10;&#9;&#123;&#10;&#9;&#9;//xxxxxxxxxxxxxxx&#10;&#9;&#125;&#10;&#9;__except (MyFilter(GetExceptionCode()))&#10;&#9;&#123;&#10;&#9;&#9;//xxxxxxxxxxxxxx&#10;&#9;&#125;</span><br></pre></td></tr></table></figure></p>
+<p>3.反思：<br>在异常发生后就想到了异常处理不过当时使用的是 try catch,使用后没有任何效果就否决了这种方案，主要还是对Windows SEH学习理解不够。但是在不断F10、F11也学到很多，也重新学习了Windows　SEH</p>
+<p>４.参考<br>xfocus上一篇文章<a href="http://www.xfocus.net/articles/200412/761.html" target="_blank" rel="external">Windows异常处理流程</a><br>重点：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">内核模式下：</span><br><span class="line">    KiDispatchException-&gt;(第一次机会)KiDebugRoutine-&gt;RtlDispatchException在内核堆栈寻找SEH(VEH)-&gt;(第二次机会)KiDebugRoutine-&gt;KeBugCheckEx</span><br><span class="line"></span><br><span class="line">用户模式下：</span><br><span class="line">    KiDispatchException-&gt;KiDebugRoutine-&gt;(第一次机会)发送消息到进程调试端口-&gt;RtlDispatchException在用户堆栈寻找SEH(VEH)-&gt;ZwRaiseException回到KiDispatchException-&gt;(第二次机会)发送消息到进程调试或异常端口-&gt;KeBugCheckEx。</span><br></pre></td></tr></table></figure></p>
+<p><em>附加一点关于断点的知识:</em></p>
+<ul>
+<li>软件断点:重写断点处代码，在代码中插入INT 3(cc)指令是程序异常，让调试器获取程序控制权限，插入代码后会导致程序的循环冗余码校验和（CRC）改变，很容易被检测到，但是软件断点一般没有数量限制，可以设置很多个。 ollydbg实现软件断点的主要流程:检查INT 3断点是否记录在断点信息表中———-&gt;将INT 3断点信息记录到表中—–&gt;记录INT 3断点处的机器码信息—-&gt;将INT 3断点处的机器码修改为0xCC—-&gt;设置断点信息表</li>
+<li>硬件断点：硬件断点的可行性依赖于CPU的物理支持，在x86处理器中依赖Dr0-Dr7寄存器，其中Dr0~Dr3四个寄存器用来存放中断地址，Dr4、Dr5保留不使用，Dr6、Dr7用来记录Dr0~Dr3的属性（如读，写还是执行，单位是字节，字还是双字），所以硬件断点一般数量有限。和软件断点不同，硬件断点不是用 INT3 中断，而是用 INT1(1 号中断).INT1 负责硬件中断和步进事件。步进（ Single-step）意味着一步一步的执行指令，从而精确的观察关键。代码以便监视数据的变化。在CPU每次执行代码之前，都会先确认当前将执行的代码的地址是否是硬件断点的地址，同时也要确认是否有代码要访问被设置了硬件断点的内存区域。 如果任何储存在 DR0-DR3 中的地址所指向的区域被访问了，就会触发 INT1 中断，同时暂 停 CPU。如果没有，CPU 执行代码，到下一行代码时，CPU 继续重复上面的检查。ollydbg实现：首先通过GetThreadContext获取当前线程中寄存器的信息，再通过SetThreadContext设置当前线程中的寄存器的信息完成对调试寄存器的修改。 </li>
+<li>内存断点：内存断点其实不是真正的断点。当一个调试器设置了一个内存断点的时候，它其实是改变了内存中某个块或者页的权限。一个内存页是操作系统处理的最小的内存单位。一个内存页被申请成功以后，就拥有了一个权限集，它决定了内存该如何被访问。任何对保护页的访问都会引发异常，之后页面恢复访问前的状态，当触发异常后程序的控制权限就交由调试器了，达到了断点的目的。ollydbg实现:通过VirtualQuery获取原内存属性，以便于还原，通过VirtualProtectEx修改内存属性，制造内存访问异常。</li>
+</ul>
+<p><strong>看到一篇文章mark一下</strong><br><a href="http://0cch.com/debugging/2011/04/02/e8-ae-a9-e7-a8-8b-e5-ba-8f-e7-ad-89-e5-be-85-e8-b0-83-e8-af-95-e5-99-a8-e9-99-84-e5-8a-a0.html" target="_blank" rel="external">让程序等待调试器附加</a></p>
+
+      
+    </div>
+    <footer>
+      
+
+        
+          <div class="alignleft post-nav">
+            <em>上一篇: </em><a href="/2015/10/11/Life/Scheduled-Tasks-About-Reading/">读书计划</a>
+          </div>
+        
+        
+          <div class="alignright post-nav">
+            <em>下一篇: </em><a href="/2015/09/26/Windows/Process32First-error-of-command-length/">关于"Process32First"返回false的问题</a>
+          </div>
+          <div class="clearfix"></div>
+        
+
+        
+          <div class="copyright">
+            
+              <span class="claim">转载请注明youngroe.com</span>
+            
+            
+              <span class="from-link">
+                <em>本文链接地址:</em>
+                <a href="/2015/10/10/Debug/A-Tips-about-DbgBreakPoint/">
+                  http://www.youngroe.com/2015/10/10/Debug/A-Tips-about-DbgBreakPoint/
+                </a>
+              </span>
+            
+          </div>
+        
+		<span id="busuanzi_container_site_pv">
+    本站总访问量<span id="busuanzi_value_site_pv"></span>次
+        
+  
+  <div class="categories">
+    <a href="/categories/Debug/">Debug</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/Windbg/">Windbg</a>, <a href="/tags/调试/">调试</a>
+  </div>
+
+        <div class="bdsharebuttonbox"><a href="#" class="bds_more" data-cmd="more"></a><a href="#" class="bds_qzone" data-cmd="qzone"></a><a href="#" class="bds_tsina" data-cmd="tsina"></a><a href="#" class="bds_tqq" data-cmd="tqq"></a><a href="#" class="bds_renren" data-cmd="renren"></a><a href="#" class="bds_weixin" data-cmd="weixin"></a></div>
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdPic":"","bdStyle":"0","bdSize":"16"},"share":{},"image":{"viewList":["qzone","tsina","tqq","renren","weixin"],"viewText":"������","viewSize":"16"},"selectShare":{"bdContainerClass":null,"bdSelectMiniList":["qzone","tsina","tqq","renren","weixin"]}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</span>
+</article>
+
+
+<section id="comment">
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+<div class="widget tag">
+  <h3 class="title">分类</h3>
+  <ul class="entry">
+  
+    <li><a href="/categories/Cybersecurity/">Cybersecurity</a><small>1</small></li>
+  
+    <li><a href="/categories/Debug/">Debug</a><small>7</small></li>
+  
+    <li><a href="/categories/Kernel/">Kernel</a><small>4</small></li>
+  
+    <li><a href="/categories/Learning/">Learning</a><small>8</small></li>
+  
+    <li><a href="/categories/Life/">Life</a><small>7</small></li>
+  
+    <li><a href="/categories/Others/">Others</a><small>1</small></li>
+  
+    <li><a href="/categories/Read-Notes/">Read Notes</a><small>7</small></li>
+  
+    <li><a href="/categories/Tools/">Tools</a><small>6</small></li>
+  
+    <li><a href="/categories/Vulnerabilities/">Vulnerabilities</a><small>0</small></li>
+  
+    <li><a href="/categories/Windows/">Windows</a><small>14</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2019/07/01/Windows/delphi_reverse_summary/">Delphi程序逆向反汇编技巧小记</a>
+      </li>
+    
+      <li>
+        <a href="/2019/06/25/Kernel/kernel_enum_wfp_callout_function/">Windows内核重拾：如何枚举系统中Windows Filtering Platform (WFP)驱动中的callout函数</a>
+      </li>
+    
+      <li>
+        <a href="/2019/05/06/Kernel/windows-driver-testing-basics/">Windows内核重拾：Windows驱动测试基础：工具、功能和示例（翻译/转载）</a>
+      </li>
+    
+      <li>
+        <a href="/2019/04/06/Windows/how-to-reverse-engineer-software-windows-in-a-right-way/">如何正确的对Windows软件进行逆向工程（翻译/转载）</a>
+      </li>
+    
+      <li>
+        <a href="/2019/01/12/Windows/a_crash_lead_deadlock/">Windows平台下一个崩溃而导致的死锁分析</a>
+      </li>
+    
+      <li>
+        <a href="/2018/12/01/Windows/windows_client_dns_over_https/">Windows客户端如何透明使用DNS-over-HTTPS</a>
+      </li>
+    
+      <li>
+        <a href="/2018/10/06/Cybersecurity/ddos-protection-techniques/">现代DDoS对抗技术概述（翻译/转载）</a>
+      </li>
+    
+      <li>
+        <a href="/2018/09/18/Life/xian/">西安周末游</a>
+      </li>
+    
+      <li>
+        <a href="/2018/01/06/Kernel/WindowsKernel_DebugObject/">Windows内核重拾：DebugObject</a>
+      </li>
+    
+      <li>
+        <a href="/2017/10/23/Tools/IDA-Pro-ClassInformer-Tutorial/">IDA Pro ClassInformer使用指南（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2017/05/23/Windows/Kernel Data and Filtering Support/">Kernel Data and Filtering Support for Windows Server 2008（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2017/05/17/Windows/Windows-x64-Shellcode/">Windows x64 Shellcode编写指南(翻译)</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget tagcloud">
+  <h3 class="title">标签云</h3>
+  <div class="entry">
+    <a href="/tags/ASM/" style="font-size: 12.5px;">ASM</a> <a href="/tags/Boost/" style="font-size: 10px;">Boost</a> <a href="/tags/DDoS/" style="font-size: 10px;">DDoS</a> <a href="/tags/DNS-over-HTTPS/" style="font-size: 10px;">DNS-over-HTTPS</a> <a href="/tags/Delphi/" style="font-size: 10px;">Delphi</a> <a href="/tags/Dll劫持/" style="font-size: 10px;">Dll劫持</a> <a href="/tags/GCC-GDB/" style="font-size: 10px;">GCC&GDB</a> <a href="/tags/GetVersionEx/" style="font-size: 10px;">GetVersionEx</a> <a href="/tags/Http/" style="font-size: 10px;">Http</a> <a href="/tags/IDA-Pro/" style="font-size: 12.5px;">IDA Pro</a> <a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/MSDN/" style="font-size: 12.5px;">MSDN</a> <a href="/tags/Malware/" style="font-size: 12.5px;">Malware</a> <a href="/tags/MiniDumpWriteDump/" style="font-size: 10px;">MiniDumpWriteDump</a> <a href="/tags/PEB/" style="font-size: 10px;">PEB</a> <a href="/tags/Procmon/" style="font-size: 10px;">Procmon</a> <a href="/tags/Runtime-Error/" style="font-size: 10px;">Runtime Error</a> <a href="/tags/SEH/" style="font-size: 10px;">SEH</a> <a href="/tags/Shellcode/" style="font-size: 10px;">Shellcode</a> <a href="/tags/SysinternalsSuite/" style="font-size: 10px;">SysinternalsSuite</a> <a href="/tags/Tips/" style="font-size: 10px;">Tips</a> <a href="/tags/UAC/" style="font-size: 10px;">UAC</a> <a href="/tags/UAF漏洞/" style="font-size: 10px;">UAF漏洞</a> <a href="/tags/VC/" style="font-size: 10px;">VC</a> <a href="/tags/Visual-Studio/" style="font-size: 12.5px;">Visual Studio</a> <a href="/tags/Windbg/" style="font-size: 10px;">Windbg</a> <a href="/tags/Windows/" style="font-size: 20px;">Windows</a> <a href="/tags/Windows核心编程/" style="font-size: 17.5px;">Windows核心编程</a> <a href="/tags/android/" style="font-size: 10px;">android</a> <a href="/tags/getaddrinfo/" style="font-size: 10px;">getaddrinfo</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/libeay32/" style="font-size: 10px;">libeay32</a> <a href="/tags/markdown/" style="font-size: 10px;">markdown</a> <a href="/tags/ndk/" style="font-size: 10px;">ndk</a> <a href="/tags/sublime-text3/" style="font-size: 10px;">sublime text3</a> <a href="/tags/x64/" style="font-size: 12.5px;">x64</a> <a href="/tags/体验/" style="font-size: 10px;">体验</a> <a href="/tags/内核/" style="font-size: 12.5px;">内核</a> <a href="/tags/内核结构/" style="font-size: 15px;">内核结构</a> <a href="/tags/学习/" style="font-size: 10px;">学习</a> <a href="/tags/安全机制/" style="font-size: 10px;">安全机制</a> <a href="/tags/异常处理/" style="font-size: 10px;">异常处理</a> <a href="/tags/提权/" style="font-size: 10px;">提权</a> <a href="/tags/服务/" style="font-size: 10px;">服务</a> <a href="/tags/权限/" style="font-size: 12.5px;">权限</a> <a href="/tags/栈溢出漏洞/" style="font-size: 10px;">栈溢出漏洞</a> <a href="/tags/测试/" style="font-size: 10px;">测试</a> <a href="/tags/浮躁/" style="font-size: 10px;">浮躁</a> <a href="/tags/漏洞调试/" style="font-size: 12.5px;">漏洞调试</a> <a href="/tags/生活/" style="font-size: 15px;">生活</a> <a href="/tags/脱壳/" style="font-size: 10px;">脱壳</a> <a href="/tags/西安/" style="font-size: 10px;">西安</a> <a href="/tags/计划/" style="font-size: 10px;">计划</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a> <a href="/tags/调试/" style="font-size: 15px;">调试</a> <a href="/tags/转换/" style="font-size: 10px;">转换</a> <a href="/tags/进程/" style="font-size: 10px;">进程</a> <a href="/tags/逆向/" style="font-size: 10px;">逆向</a> <a href="/tags/重庆/" style="font-size: 10px;">重庆</a> <a href="/tags/驱动/" style="font-size: 15px;">驱动</a>
+  </div>
+</div>
+
+
+  <div class="widget tag">
+<h3 class="title">Links</h3>
+<ul class="entry">
+<li><a href="http://blog.ourren.com/" title="Ourren">Ourren</a></li>
+<li><a href="http://www.hyjal.net/" title="Hyjal">Hyjal</a></li>
+<li><a href="http://www.jianshu.com/users/fa15f4e416ae/latest_articles" title="Daemonceltics">Daemonceltics</a></li>
+<li><a href="http://papap.info/" title="isee">isee</a></li>
+</ul>
+</div>
+
+  <script type="text/javascript" id="clustrmaps" src="//cdn.clustrmaps.com/map_v2.js?u=putG&d=yoFnN6V-ovhL-H4e9_69LvkTiX4uX7rEYJ15yL3G1Wg"></script>
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <div id="go-pg-top"><i class="icon-arrow-up"></i></div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2020 Lyon
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript" charset="utf-8" src="/js/page.js"></script>
+
+</body>
+
+</html>
