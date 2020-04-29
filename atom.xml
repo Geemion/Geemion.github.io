@@ -5,7 +5,7 @@
   <subtitle><![CDATA[I hear and I forget.I see and I remember.I do and I understand.]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://www.youngroe.com//"/>
-  <updated>2020-02-15T08:12:42.951Z</updated>
+  <updated>2020-02-23T12:38:10.293Z</updated>
   <id>http://www.youngroe.com//</id>
   
   <author>
@@ -20,9 +20,9 @@
     <link href="http://www.youngroe.com/2019/07/01/Windows/delphi_reverse_summary/"/>
     <id>http://www.youngroe.com/2019/07/01/Windows/delphi_reverse_summary/</id>
     <published>2019-07-01T12:13:53.000Z</published>
-    <updated>2020-02-15T08:12:42.951Z</updated>
+    <updated>2020-02-23T12:38:10.293Z</updated>
     <content type="html"><![CDATA[<h2 id="0x00_Delphi语言基础">0x00 Delphi语言基础</h2><h3 id="1-Delphi语言概述">1.Delphi语言概述</h3><p>Delphi本身并非一种独立的语言，而是一种软件开发工具，是Object Pascal语言的一种开发工具。本身是大名鼎鼎的Borland公司开发的一种开发环境，包含IDE、图形界面库Visual Component Library(VCL)及数据库相关功能。其图像界面库VCL类似MFC，使用PME（Property/Method/Event）的开发模式。<br><a id="more"></a><br>VCL采用特有的RCDATA资源格式，RCDATA中包含有Delphi窗口（Forms）信息，当程序运行时通过初始化代码建立窗口，从RCDATA中获取所需要的信息。RCDATA信息可以通过PE Explorer等PE编辑器查看。</p>
-<div align="center"><br><img src="/img/Delphi RCDATA.jpg" alt="Delphi窗口Form信息" align="center"><br></div><br>Delphi版本较多，不同版本有一些差异，目前已经发布的版本包括1-7, 2005, 2006, 2007, 2009, 2010, XE-XE8、10、10.1、10.2、10.3。Delphi的API查询可以通过参考链接2进行查询。<br><br>### 2.Delphi二进制特点<br>可以通过exeinfo/Detect It Easy等工具判断PE文件是否为Delphi开发及确定具体的Delphi版本信息，确定具体的版本信息有助于后续反汇编工具的设置，使工具反汇编出可读性更高的汇编代码。<br>Delphi常用的字符串的内存布局不同于C/C++的char*或则string对象，Delphi使用的字符串都是Pascal的字符串，在原始字符串前面存放的是字符串的长度<br><figure class="highlight axapta"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">uint32_t len;</span><br><span class="line"><span class="keyword">char</span>    <span class="keyword">str</span>[];</span><br></pre></td></tr></table></figure><br><br><div align="center"><br><img src="/img/Delphi Str.jpg" alt="Delphi字符串内存布局" align="center"><br></div>
+<div align="center"><br><img src="/img/Delphi RCDATA.jpg" alt="Delphi窗口Form信息" align="center"><br></div><br>Delphi版本较多，不同版本有一些差异，目前已经发布的版本包括1-7, 2005, 2006, 2007, 2009, 2010, XE-XE8、10、10.1、10.2、10.3。Delphi的API查询可以通过参考链接2进行查询。<br><br>### 2.Delphi二进制特点<br><br>可以通过exeinfo/Detect It Easy等工具判断PE文件是否为Delphi开发及确定具体的Delphi版本信息，确定具体的版本信息有助于后续反汇编工具的设置，使工具反汇编出可读性更高的汇编代码。<br>Delphi常用的字符串的内存布局不同于C/C++的char*或则string对象，Delphi使用的字符串都是Pascal的字符串，在原始字符串前面存放的是字符串的长度<br><figure class="highlight axapta"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">uint32_t len;</span><br><span class="line"><span class="keyword">char</span>    <span class="keyword">str</span>[];</span><br></pre></td></tr></table></figure><br><br><div align="center"><br><img src="/img/Delphi Str.jpg" alt="Delphi字符串内存布局" align="center"><br></div>
 
 <p>Delphi遵循_fastcall调用约定，但是与Windows的_fastcall略有不同，参数顺序为eax为第一个参数、edx为第二个参数、ecx为第三个参数，大于3个的参数通过堆栈传递，大于三个的堆栈顺序从左到右依次压栈，堆栈由被调用者恢复。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Add(<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>);</span><br><span class="line"><span class="number">00451F</span>91   <span class="number">6</span>A04                   push    $<span class="number">04</span></span><br><span class="line"><span class="number">00451F</span>93   <span class="number">6</span>A05                   push    $<span class="number">05</span></span><br><span class="line"><span class="number">00451F</span>95   B903000000             mov     ecx, $<span class="number">00000003</span></span><br><span class="line"><span class="number">00451F</span>9A   BA02000000             mov     edx, $<span class="number">00000002</span></span><br><span class="line"><span class="number">00451F</span>9F   B801000000             mov     eax, $<span class="number">00000001</span></span><br><span class="line"><span class="number">00451F</span>A4   E8C7FFFFFF             call    <span class="number">00451F</span>70</span><br></pre></td></tr></table></figure></p>
 <p>Delphi的按钮事件地址是通过按钮名字和地址绑定的，具体为一个按钮名称对应一个按钮事件响应函数地址。而按钮名称可以在Delphi的RCDATA资源中找到，具体为通过PE Explorer打开资源RC数据，找到相应界面的Form，找到按钮名称的字符串值。</p>
@@ -406,7 +406,7 @@
     <link href="http://www.youngroe.com/2018/12/01/Windows/windows_client_dns_over_https/"/>
     <id>http://www.youngroe.com/2018/12/01/Windows/windows_client_dns_over_https/</id>
     <published>2018-12-01T12:13:53.000Z</published>
-    <updated>2020-02-15T07:54:24.205Z</updated>
+    <updated>2020-03-21T04:24:23.569Z</updated>
     <content type="html"><![CDATA[<h2 id="0x00_现有Windows客户端程序dns查询流程">0x00 现有Windows客户端程序dns查询流程</h2><ul>
 <li>1.client通过系统api（gethostbyname/getaddrinfo/getaddrinfoex）发起查询dns请求</li>
 <li>2.系统api会通过rpc查询本地服务dnscache是否有该host的缓存，如果缓存存在则直接返回返回host对应的ip地址，dns查询完成，如果没有则进入下一步</li>
@@ -420,7 +420,7 @@
 <h2 id="0x01_现有dns查询的缺点">0x01 现有dns查询的缺点</h2><p>通过第0x0部分对现有Windows客户端程序dns查询流程的介绍，可以分析出目前dns查询的一些缺陷和风险点。</p>
 <p><strong>对使用客户端的用户：</strong><br>跟踪：由于现有dns数据包为端口固定的明文udp包，可以很容易在网络流量中区分dns流量，并解析其中查询的域名信息。这样一些别有用心的人就可以很容易通过解析dns流量分析一个人的浏览习惯，收集敏感信息，特别是大数据火热的今天。<br>欺骗攻击：从开始查询到最终获取到解析结果，现有的dns查询机制需要经历较多过程，由于是明文信息，攻击者可以在任意一个环节修改解析的结果，给一个错误的解析结果，可以阻止用户访问正确的网站或则引入到攻击者想让用户访问的仍以网站。</p>
 <p><strong>对于开发客户端的厂商：</strong><br>网络劫持：对于一些页面广告或则其他有收益业务，可能会存在通过业务被dns劫持攻击风险，使业务不可访问或则被替换成其他页面。</p>
-<h2 id="0x02_DNS_over_HTTPS是什么？">0x02 DNS over HTTPS是什么？</h2><p> 正式因为目前基于udp查询dns有各种安全缺陷，一些厂商提出了一种安全的dns查询方案DNS over Https，并且以及获得IETF支持，以RFC 8484名义发布。顾名思义DNS over HTTPS是一种通过https协议的Get请求获取域名解析的方案，简称DoH。由于基于http且与普通https请求共用443端口，如果正确部署服务器和客户端程序，理论上很难通过分析https包分析出客户端的域名请求查询结果，也不存在被篡改的风险。</p>
+<h2 id="0x02_DNS_over_HTTPS是什么？">0x02 DNS over HTTPS是什么？</h2><p> 正式因为目前基于udp查询dns有各种安全缺陷，一些厂商提出了一种安全的dns查询方案DNS over Https，并且已经获得IETF支持，以RFC 8484名义发布。顾名思义DNS over HTTPS是一种通过https协议的Get请求获取域名解析的方案，简称DoH。由于基于http且与普通https请求共用443端口，如果正确部署服务器和客户端程序，理论上很难通过分析https包分析出客户端的域名请求查询结果，也不存在被篡改的风险。</p>
 <h2 id="0x03_客户端程序如何透明切换到DoH">0x03 客户端程序如何透明切换到DoH</h2><p>既然DoH相较于基于udp包的dns查询有这么多的优势，那如何将现有的客户端程序切换到DoH呢？<br>我们很容易想到的过程是重写系统域名查询api，然后使用我们重写的api替换掉系统的api。但是这里会存在一个问题，目前的Windows客户端都会使用各种第三方网络库（libcurl、qt network等）及webview引擎（ieframe、libcef、qtwebview等），要想替换掉这些第三方库或则webview引擎中的系统api可能得花费很大的功夫，必须重写这部分代码，然后重新编译（某些库编译异常复杂如libcef）。并且还可能会存在一种情况是某些第三方库我们自己是没代码的，那这部分如何切换到DoH呢？<br>这里有一种不用重编译代码且可以对无代码的第三方库透明切换到使用DoH的简单方法，就是使用hook技术hook 系统dns查询相关系统api实现Windows客户端透明切换到DoH。可能需要hook的api如下：</p>
 <table>
 <thead>
@@ -443,7 +443,7 @@
 </tr>
 </tbody>
 </table>
-<p>当然除了这两个api之外，Windows客户端程序可能还有一些使用其他api的情况（如gethostbyname/DnsQuery）,但是思路相同也是hook替换掉就可以了。<br>在hook函数的实现过程中可能还会遇到一些小问题，如GetAddrinfoW返回结果中的addrinfo内存分配问题。正常情况下返回结果中的addrinfo由GetAddrinfoW函数在其私有堆上分配，然后调用者使用完结果后使用freeaddrinfo释放，但是当我们自己实现的时候很难获取到私有堆的句柄，这样就没办法为addrinfo分配内存，如果使用new分配内存会在freeaddrinfo释放时错误产生问题。我实现的时候通过一个简单粗暴的方式是实现通过调用原始的GetAddrinfoW解析localhost然后直接使用结果中的addrinfo，因为是GetAddrinfoW分配，所以最后使用freeaddrinfo释放也没问题。<br>除此之外在实现过程中还需要考虑很多其他因素，如dns结果优选、dns缓存设计等软件结构问题，这些可以参考微博的HTTPDNSLib的实现。</p>
+<p>当然除了这两个api之外，Windows客户端程序可能还有一些使用其他api的情况（如gethostbyname/DnsQuery）,但是思路相同也是hook替换掉就可以了。<br>在hook函数的实现过程中可能还会遇到一些小问题，如GetAddrinfoW返回结果中的addrinfo内存分配问题。正常情况下返回结果中的addrinfo由GetAddrinfoW函数在其私有堆上分配，然后调用者使用完结果后使用freeaddrinfo释放，但是当我们自己实现的时候很难获取到私有堆的句柄，这样就没办法为addrinfo分配内存，如果使用new分配内存会在freeaddrinfo释放时错误产生问题。我实现的时候通过一个简单粗暴的方式是通过调用原始的GetAddrinfoW解析localhost然后直接使用结果中的addrinfo，因为是GetAddrinfoW分配，所以最后使用freeaddrinfo释放也没问题。<br>除此之外在实现过程中还需要考虑很多其他因素，如dns结果优选、dns缓存设计等软件结构问题，这些可以参考微博的HTTPDNSLib的实现。</p>
 <h2 id="0x4_扩展，如何将操作系统切换到DoH">0x4 扩展，如何将操作系统切换到DoH</h2><p>在0x3部分实现单个客户端进程切换到DoH，那怎样将整个Windows系统切换到DoH？<br>其实同样也可以借鉴0x3的思路，替换系统dns服务的查询接口，实现应该是在一个系统服务进程中，具体没研究过。。。。。<br>不过以及有一个更简单的思路，实现一个udp转https的本地接口，然后将Windows网络设置中的dns服务器地址修改为这个本地接口地址，并且已经有人实现了，具体看参考链接4。</p>
 <h2 id="0x05_参考链接">0x05 参考链接</h2><p><a href="https://mp.weixin.qq.com/s?__biz=MzA3ODgyNzcwMw==&amp;mid=201837080&amp;idx=1&amp;sn=b2a152b84df1c7dbd294ea66037cf262&amp;scene=2&amp;from=timeline&amp;isappinstalled=0#rd" target="_blank" rel="external">1.全局精确流量调度新思路-HttpDNS服务详解</a><br><a href="https://github.com/curl/curl/wiki/DNS-over-HTTPS" target="_blank" rel="external">2.DNS over HTTPS</a><br><a href="https://github.com/CNSRE/HTTPDNSLib" target="_blank" rel="external">3.HTTPDNSLib</a><br><a href="https://blog.3bro.info/archives/windows-dns-over-https/" target="_blank" rel="external">4.[教學] 如何透過 cloudflared 使用 DNS-over-HTTPS？（Windows 適用）</a></p>
 ]]></content>

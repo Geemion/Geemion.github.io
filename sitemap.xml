@@ -3,8 +3,30 @@
 
     
   <url>
+    <loc>http://www.youngroe.com/2018/12/01/Windows/windows_client_dns_over_https/</loc>
+    <lastmod>2020-03-21T04:24:23.569Z</lastmod>
+    <data>
+        <display>
+        <title>Windows客户端如何透明使用DNS-over-HTTPS</title>
+        <pubTime>2018-12-01T12:13:53.000Z</pubTime>
+        
+        <tag>DNS-over-HTTPS </tag>
+         
+        <tag>getaddrinfo </tag>
+         
+         
+           
+             
+              <breadCrumb title="Windows" url="http://www.youngroe.com/categories/Windows/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>http://www.youngroe.com/2019/07/01/Windows/delphi_reverse_summary/</loc>
-    <lastmod>2020-02-15T08:12:42.951Z</lastmod>
+    <lastmod>2020-02-23T12:38:10.293Z</lastmod>
     <data>
         <display>
         <title>Delphi程序逆向反汇编技巧小记</title>
@@ -96,6 +118,7 @@
     </url>
 
     
+    
   <url>
     <loc>http://www.youngroe.com/2015/11/20/Learning/windowservices/</loc>
     <lastmod>2020-02-15T07:54:24.205Z</lastmod>
@@ -117,29 +140,6 @@
     </data>
     </url>
 
-    
-  <url>
-    <loc>http://www.youngroe.com/2018/12/01/Windows/windows_client_dns_over_https/</loc>
-    <lastmod>2020-02-15T07:54:24.205Z</lastmod>
-    <data>
-        <display>
-        <title>Windows客户端如何透明使用DNS-over-HTTPS</title>
-        <pubTime>2018-12-01T12:13:53.000Z</pubTime>
-        
-        <tag>DNS-over-HTTPS </tag>
-         
-        <tag>getaddrinfo </tag>
-         
-         
-           
-             
-              <breadCrumb title="Windows" url="http://www.youngroe.com/categories/Windows/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
     
   <url>
     <loc>http://www.youngroe.com/2015/09/05/Windows/windows-exception-handling-mechanism/</loc>
