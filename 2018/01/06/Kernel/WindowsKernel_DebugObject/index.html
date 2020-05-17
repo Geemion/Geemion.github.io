@@ -126,7 +126,9 @@ var _hmt = _hmt || [];
 <li>Debugobject是一个对调试很重要的一个结构体，用于支持用户模式调试。</li>
 <li>Debugobject创建过程中会依赖一个名为DbgkDebugObjectType的内核全局变量，通过修改这个全局变量可以影响调试过程的创建，并且影响是全局的，对所有进程有效。</li>
 <li>TP通过将DbgkDebugObjectType.TypeInfo.ValidAccessMask清零达到反调目的，可能也是无奈之举毕竟X64的PatchGuard让在内核中能干的事越来越少，至于为什么修改ValidAccessMask不会触发PatchGuard可能DbgkDebugObjectType现在还没纳入PatchGuard保护范围。</li>
-<li>代码可以参考<a href="https://gist.github.com/geemion/b61aa49e1b19dc8421b953ec3939fa4f" target="_blank" rel="external">https://gist.github.com/geemion/b61aa49e1b19dc8421b953ec3939fa4f</a><h2 id="0x04_参考资料">0x04 参考资料</h2></li>
+<li>代码可以参考<a href="https://gist.github.com/geemion/b61aa49e1b19dc8421b953ec3939fa4f" target="_blank" rel="external">https://gist.github.com/geemion/b61aa49e1b19dc8421b953ec3939fa4f</a></li>
+</ul>
+<h2 id="0x04_参考资料">0x04 参考资料</h2><ul>
 <li>[1] 深入解析Windows操作系统</li>
 <li>[2] WRK1.2</li>
 <li>[3] <a href="https://github.com/jilinxiaohuo/VaildAccessMask" target="_blank" rel="external">VaildAccessMask</a></li>
@@ -258,7 +260,7 @@ gitalk.render('gitalk-container')
   
     <li><a href="/categories/Learning/">Learning</a><small>8</small></li>
   
-    <li><a href="/categories/Life/">Life</a><small>6</small></li>
+    <li><a href="/categories/Life/">Life</a><small>5</small></li>
   
     <li><a href="/categories/Others/">Others</a><small>1</small></li>
   

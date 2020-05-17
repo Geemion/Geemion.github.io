@@ -110,15 +110,14 @@ var _hmt = _hmt || [];
     <div class="entry">
       
         <p>参考资料:<br><a href="http://blog.csdn.net/chengyun_chu/article/details/1583601">Windows Vista操作系统最新安全特性分析：改进和局限</a><br><a href="https://technet.microsoft.com/zh-cn/library/bb629420">Windows Vista 安全指南</a><br><a href="http://blogs.itecn.net/blogs/winvista/archive/2006/07/21/2920.aspx">您必须知道的Windows Vista安全功能</a><br><a href="http://wenku.baidu.com/link?url=_monxlxC5ENx9JHByP4s-CgwF44TqyaZfZ0VwaR8pYPWN_etqFnc9anToWzxFyQG1tzL8FNPEeefOVQU-9x46e5pjl-kxI7QOtjOJeAlKxS">Win8的安全特性</a><br><a href="https://technet.microsoft.com/zh-cn/windows/jj983723.aspx">Windows 8 安全性改进</a><br><a href="http://windowsitpro.com/systems-management/understanding-windows-service-hardening">Understanding Windows Service Hardening</a><br><a href="http://hitcon.org/2012/download/0720A5_360.MJ0011_Reversing%20Windows8-Interesting%20Features%20of%20Kernel%20Security_Englisht.pdf">逆向Windows 8:内核安全特性拾趣</a></p>
-<p>##系统安全</p>
-<p>###代码完整性：<br>代码完整性(CI：Code Integrity)可以有效地防范木马、rootkit等对系统文件的恶意修改，防范不安全的第三方驱动对系统的危害。CI会检查代码的hash值(内嵌于代码中的x.509证书，或者位于%windir%\system32\catroot里的编录文件)，一旦发现hash值不符，就会停止加载代码。<br>CI主要检查以下的代码：</p>
+<h2 id="系统安全">系统安全</h2><h3 id="代码完整性：">代码完整性：</h3><p>代码完整性(CI：Code Integrity)可以有效地防范木马、rootkit等对系统文件的恶意修改，防范不安全的第三方驱动对系统的危害。CI会检查代码的hash值(内嵌于代码中的x.509证书，或者位于%windir%\system32\catroot里的编录文件)，一旦发现hash值不符，就会停止加载代码。<br>CI主要检查以下的代码：</p>
 <ul>
 <li>(1) 系统启动时，检查内核、HAL和驱动的完整性</li>
 <li>(2) 检查所有加载到内核内存空间的代码完整性</li>
 <li>(3) 对加载到受保护进程空间里的代码进行完整性检查</li>
 </ul>
-<p>###服务加固</p>
-<p><div align="center"><br><img src="http://windowsitpro.com/site-files/windowsitpro.com/files/archive/windowsitpro.com/content/content/99346/figure1.jpg"  alt="Windows Xp和Vista Session的不同" align="center"/><br></div></p>
+<h3 id="服务加固">服务加固</h3><div align="center"><br><img src="http://windowsitpro.com/site-files/windowsitpro.com/files/archive/windowsitpro.com/content/content/99346/figure1.jpg"  alt="Windows Xp和Vista Session的不同" align="center"/><br></div>
+
 <ul>
 <li>session 0隔离</li>
 <li>最小特权账户（把更多服务的启动帐户，从LocalSystem迁移到LocalService或者NetworkService）</li>
@@ -127,7 +126,7 @@ var _hmt = _hmt || [];
 <li>减少不必要的特权</li>
 <li>限制网络访问</li>
 </ul>
-<p>###完整性级别校验<br>Windows中各种对象都有完整性级别，例如进程主要级别从低到高为Untrust、Low、Medium、Hight和System。Windows 2000/XP安全体系里，安全子系统把进程的访问令牌和资源的访问控制列表进行匹配比较，以确认该进程是否具有访问该资源的权限。而在WindowsVista下，除了遵守传统的安全控制机制外，还必须检查进程和资源对象的完整性级别，完整性级别低的进程，不能写入完整性级别高的资源对象【通过这种完整性级别可以防止一些恶意行为如dll注入、代码注入或则修改pe文件】。<br>
+<h3 id="完整性级别校验">完整性级别校验</h3><p>Windows中各种对象都有完整性级别，例如进程主要级别从低到高为Untrust、Low、Medium、Hight和System。Windows 2000/XP安全体系里，安全子系统把进程的访问令牌和资源的访问控制列表进行匹配比较，以确认该进程是否具有访问该资源的权限。而在WindowsVista下，除了遵守传统的安全控制机制外，还必须检查进程和资源对象的完整性级别，完整性级别低的进程，不能写入完整性级别高的资源对象【通过这种完整性级别可以防止一些恶意行为如dll注入、代码注入或则修改pe文件】。<br>
       
     </div>
     <footer>
@@ -303,7 +302,7 @@ var _hmt = _hmt || [];
 	
     <div class="entry">
       
-        <p>##安装过程<br>去年10月份Windows10预览版刚出来就简单在虚拟机中体验过了，当时感觉就不错。即使用惯了win7的人也能很快上手，没有用win8那么bug学习代价小。正式版出来了就想马上升级试试，但是想着可能存在的兼容性问题就等了两天看了网上反馈都还不错。所以昨天就把笔记本的win7系统升级了。<br>这里说下笔记本配置：</p>
+        <h2 id="安装过程">安装过程</h2><p>去年10月份Windows10预览版刚出来就简单在虚拟机中体验过了，当时感觉就不错。即使用惯了win7的人也能很快上手，没有用win8那么bug学习代价小。正式版出来了就想马上升级试试，但是想着可能存在的兼容性问题就等了两天看了网上反馈都还不错。所以昨天就把笔记本的win7系统升级了。<br>这里说下笔记本配置：</p>
 <ul>
 <li>宏碁的性价比电脑，2010年的4741G现在用着是满目疮痍</li>
 <li>I3的，6G内存（自己淘宝100块买的2手4G条子，体验还不错），GT330的显卡<br>总的来说配置将就，用着win7也还好。但是本着作为搞IT的不能落后吧就升了。升级过程这里简单说下。</li>
@@ -512,9 +511,7 @@ var _hmt = _hmt || [];
     <div class="gallery">
   <div class="photoset">
     
-      
-        <img src="http://7xkam4.com1.z0.glb.clouddn.com/sublime.jpg">
-      
+      <img src="">
     
   </div>
   <div class="control">
@@ -542,17 +539,16 @@ var _hmt = _hmt || [];
     <div class="entry">
       
         <p>参考资料:<br><a href="http://www.ituring.com.cn/article/6815">使用Sublime Text 2 编辑Markdown</a><br><a href="http://www.cnblogs.com/figure9/p/sublime-text-complete-guide.html">Sublime Text 全程指引 by Lucida</a><br><a href="http://xuanwo.org/2014/06/05/sublime-text-3-IDE/">Sublime Text 3 化身为高大上的C/C++ IDE</a><br><a href="https://www.zybuluo.com/king/note/47271">Sublime Text 3 使用技巧</a><br><a href="https://www.zhihu.com/question/36038602?sort=created">Sublime Latex</a></p>
-<p>##使用前准备</p>
-<p>###1.sublime官网下载sublime3安装包<a href="http://www.sublimetext.com/3">http://www.sublimetext.com/3</a></p>
-<p>###2.安装包管理器 Package Control<a href="http://jingyan.baidu.com/article/925f8cb817fd49c0dce05653.html">参考链接</a></p>
-<ul>
+<h2 id="使用前准备">使用前准备</h2><h3 id="1-sublime官网下载sublime3安装包http://www-sublimetext-com/3">1.sublime官网下载sublime3安装包<a href="http://www.sublimetext.com/3">http://www.sublimetext.com/3</a></h3><h3 id="2-安装包管理器_Package_Control参考链接">2.安装包管理器 Package Control<a href="http://jingyan.baidu.com/article/925f8cb817fd49c0dce05653.html">参考链接</a></h3><ul>
 <li>通过快捷键 ctrl+` 或者 View &gt; Show Console 菜单打开控制台</li>
 <li><p>粘贴对应版本的代码后回车安装<br>sublime text 3:</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span>  urllib.request,os;pf=<span class="string">'Package Control.sublime-package'</span>;</span><br><span class="line">ipp=sublime.installed_packages_path();</span><br><span class="line">urllib.request.install_opener(urllib.request.build_opener(urllib.request.ProxyHandler()));</span><br><span class="line">open(os.path.join(ipp,pf),<span class="string">'wb'</span>).write(urllib.request.urlopen(<span class="string">'http://sublime.wbond.net/'</span>+pf.replace(<span class="string">' '</span>,<span class="string">'%20'</span>)).read())</span><br></pre></td></tr></table></figure>
 <p>sublime text 2:</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span>  urllib2,os;pf=<span class="string">'Package Control.sublime-package'</span>;</span><br><span class="line">ipp=sublime.installed_packages_path();</span><br><span class="line">os.makedirs(ipp)ifnotos.path.exists(ipp)elseNone;urllib2.install_opener(urllib2.build_opener(urllib2.ProxyHandler()));</span><br><span class="line">open(os.path.join(ipp,pf),<span class="string">'wb'</span>).write(urllib2.urlopen(<span class="string">'http://sublime.wbond.net/'</span>+pf.replace(<span class="string">' '</span>,<span class="string">'%20'</span>)).read());</span><br><span class="line">print(<span class="string">'Please restart Sublime Text to finish installation'</span>)</span><br></pre></td></tr></table></figure>
-<p>安装完包管理器后记得重启<br>###3.安装markdown preview</p>
+<p>安装完包管理器后记得重启</p>
 </li>
+</ul>
+<h3 id="3-安装markdown_preview">3.安装markdown preview</h3><ul>
 <li>按Ctrl + Shift + P</li>
 <li>输入pci 后回车(Package Control: Install Package)</li>
 <li>稍等… ^_^</li>
@@ -636,66 +632,6 @@ var _hmt = _hmt || [];
 
 
 
-  <article class="post">
-  
-    <div class="gallery">
-  <div class="photoset">
-    
-      <img src="">
-    
-  </div>
-  <div class="control">
-    <div class="prev"></div>
-    <div class="next"></div>
-  </div>
-</div>
-  
-  <div class="post-content">
-    <header>
-      
-        <time datetime="2015-07-10T07:23:36.000Z"><a href="/2015/07/10/Life/hello-world/">2015-07-10</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2015/07/10/Life/hello-world/">Hello World</a></h1>
-  
-
-    </header>
-	
-<!-- Table of Contents -->
-
-
-	
-    <div class="entry">
-      
-        <hr>
-<p>Welcome to <a href="http://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="http://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="http://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p>
-<h2 id="Quick_Start">Quick Start</h2><h3 id="Create_a_new_post">Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-<p>More info: <a href="http://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p>
-<h3 id="Run_server">Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="http://hexo.io/docs/server.html" target="_blank" rel="external">Server</a></p>
-<h3 id="Generate_static_files">Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="http://hexo.io/docs/generating.html" target="_blank" rel="external">Generating</a></p>
-<h3 id="Deploy_to_remote_sites">Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="http://hexo.io/docs/deployment.html" target="_blank" rel="external">Deployment</a></p>
-
-      
-    </div>
-    <footer>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-  <div id="container"></div>
-</span>
-</article>
-
-
-
-
 
 <ul class="page-direction" id="page-direction">
     <li><a class="page-prev icon-chevron-sign-left" href="javascript:;" title="上一页"></a></li>
@@ -725,7 +661,7 @@ var _hmt = _hmt || [];
   
     <li><a href="/categories/Learning/">Learning</a><small>8</small></li>
   
-    <li><a href="/categories/Life/">Life</a><small>6</small></li>
+    <li><a href="/categories/Life/">Life</a><small>5</small></li>
   
     <li><a href="/categories/Others/">Others</a><small>1</small></li>
   

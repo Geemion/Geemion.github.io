@@ -172,7 +172,10 @@ var _hmt = _hmt || [];
     <div class="entry">
       
         <p>参考资料:<br><a href="http://www.vckbase.com/index.php/wv/1193">用 C 语言编写 Windows 服务程序的五个步骤</a><br><a href="http://blog.csdn.net/zhangpeng_linux/article/details/7001084">如何编写windows服务程序</a><br><a href="https://joway.wang/blog/2015/04/22/WindowsService.html">用C创建并调用Windows服务（守护进程）</a><br><a href="http://www.xfocus.net/articles/200308/601.html">创建SvcHost.exe调用的服务原理与实践</a><br>黑客防线201301</p>
-<div align="center"><br><img src="/img/windows%20Service.png" align="center"/><br></div><br>##关于Windows服务<br>Windows系统中的服务几乎是都是默默无闻的存在的，大部分是一些系统进程，负责电源管理、网络及安全方面等与用户无交互的工作,在客户服务模型中主要是作为服务端存在。<br><div align="center"><br><img src="/img/scm_scp_exe.png" align="center"/><br></div><br>Windows服务主要由3个部分组成，包括服务应用、服务控制程序（scp）及服务控制管理器（scm）。<br>服务应用即运行的服务程序，与普通的Windows可执行程序类似，只是有一些与scm的接口函数，负责与scm通信。<br>服务控制程序（scp）即负责控制服务应用的程序，Windows系统内置了一些scm的功能，比如我们可以sc命令控制服务应用的启动、停止等，有一些服务也自带了scp提供一些自定义的共计功能。服务控制程序就是普通的Windows用户程序。<br>服务控制管理器（scm）就是系统中负责在系统中管理全部服务的应用的，包括安装服务、负责服务自启动。容易和服务控制程序（scp）混淆，scp只是一个工具而scm是一个系统，scp就好比一种方法，scm是一个机构[好吧。。。这个比方不好]。<br>
+<div align="center"><br><img src="/img/windows%20Service.png" align="center"/><br></div>
+
+<h2 id="关于Windows服务">关于Windows服务</h2><p>Windows系统中的服务几乎是都是默默无闻的存在的，大部分是一些系统进程，负责电源管理、网络及安全方面等与用户无交互的工作,在客户服务模型中主要是作为服务端存在。</p>
+<div align="center"><br><img src="/img/scm_scp_exe.png" align="center"/><br></div><br>Windows服务主要由3个部分组成，包括服务应用、服务控制程序（scp）及服务控制管理器（scm）。<br>服务应用即运行的服务程序，与普通的Windows可执行程序类似，只是有一些与scm的接口函数，负责与scm通信。<br>服务控制程序（scp）即负责控制服务应用的程序，Windows系统内置了一些scm的功能，比如我们可以sc命令控制服务应用的启动、停止等，有一些服务也自带了scp提供一些自定义的共计功能。服务控制程序就是普通的Windows用户程序。<br>服务控制管理器（scm）就是系统中负责在系统中管理全部服务的应用的，包括安装服务、负责服务自启动。容易和服务控制程序（scp）混淆，scp只是一个工具而scm是一个系统，scp就好比一种方法，scm是一个机构[好吧。。。这个比方不好]。<br>
       
     </div>
     <footer>
@@ -557,7 +560,7 @@ var _hmt = _hmt || [];
     <div class="entry">
       
         <p>接触Windows内核驱动开发有一段时间了，之前由于资料少老旧走了很多弯路，所以在这里备注哈梳理自己所学。</p>
-<p>##学习参考资料<br><a href="http://item.jd.com/11713158.html">1.Windows内核安全驱动开发</a><br><a href="http://www.vbasm.com/thread-7971-1-1.html">2.WIN64驱动编程基础教程</a><br><a href="http://www.vbasm.com/thread-8264-1-1.html">3.各个版本DDK/WDK和sysinternals源码合集</a><br><a href="http://bbs.pediy.com/">4.看雪论坛</a><br><a href="http://blog.csdn.net/magictong/article/details/38277081">5. Windows7驱动调试小Tips</a></p>
+<h2 id="学习参考资料">学习参考资料</h2><p><a href="http://item.jd.com/11713158.html">1.Windows内核安全驱动开发</a><br><a href="http://www.vbasm.com/thread-7971-1-1.html">2.WIN64驱动编程基础教程</a><br><a href="http://www.vbasm.com/thread-8264-1-1.html">3.各个版本DDK/WDK和sysinternals源码合集</a><br><a href="http://bbs.pediy.com/">4.看雪论坛</a><br><a href="http://blog.csdn.net/magictong/article/details/38277081">5. Windows7驱动调试小Tips</a></p>
       
     </div>
     <footer>
@@ -673,9 +676,7 @@ var _hmt = _hmt || [];
     <div class="entry">
       
         <p>参考资料：<br>1.Windows核心编程<br>2.<a href="http://bbs.pediy.com/showthread.php?threadid=32222">Windows系统程序设计之结构化异常处理</a><br>3.<a href="http://www.cnblogs.com/coffeegg/archive/2011/10/01/2197135.html">C++处理异常技巧-try,catch,throw,finally</a><br>4.<a href="http://www.codeceo.com/article/cpp-exception-learn.html">深入理解C++中的异常处理机制</a><br>5.<a href="http://www.jtianling.com/%E8%AF%BBwindows%E6%A0%B8%E5%BF%83%E7%BC%96%E7%A8%8B-%E7%BB%93%E6%9E%84%E5%8C%96%E5%BC%82%E5%B8%B8%E9%83%A8%E5%88%86-%E7%90%86%E8%A7%A3%E6%91%98%E8%A6%81.html">读windows核心编程,结构化异常部分,理解摘要</a><br>6.<a href="http://bbs.pediy.com/showthread.php?t=173853">【原创】白话windows之四 异常处理机制(VEH、SEH、TopLevelEH…)</a></p>
-<p>##关于异常</p>
-<p>###常见异常：</p>
-<ul>
+<h2 id="关于异常">关于异常</h2><h3 id="常见异常：">常见异常：</h3><ul>
 <li>程序访问一个不可用的内存地址（例如，NULL指针）；</li>
 <li>无限递归导致的栈溢出；</li>
 <li>向一个较小的缓冲区写入较大块的数据；</li>
@@ -791,7 +792,7 @@ var _hmt = _hmt || [];
   
     <li><a href="/categories/Learning/">Learning</a><small>8</small></li>
   
-    <li><a href="/categories/Life/">Life</a><small>6</small></li>
+    <li><a href="/categories/Life/">Life</a><small>5</small></li>
   
     <li><a href="/categories/Others/">Others</a><small>1</small></li>
   

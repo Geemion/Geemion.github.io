@@ -79,9 +79,7 @@ var _hmt = _hmt || [];
     <div class="gallery">
   <div class="photoset">
     
-      
-        <img src="http://7xkam4.com1.z0.glb.clouddn.com/sublime.jpg">
-      
+      <img src="">
     
   </div>
   <div class="control">
@@ -106,7 +104,7 @@ var _hmt = _hmt || [];
 
   <div id="toc" class="toc-article">
   <strong class="toc-title">文章目录</strong>
-  
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#使用前准备"><span class="toc-number">1.</span> <span class="toc-text">使用前准备</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-sublime官网下载sublime3安装包http://www-sublimetext-com/3"><span class="toc-number">1.1.</span> <span class="toc-text">1.sublime官网下载sublime3安装包http://www.sublimetext.com/3</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-安装包管理器_Package_Control参考链接"><span class="toc-number">1.2.</span> <span class="toc-text">2.安装包管理器 Package Control参考链接</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-安装markdown_preview"><span class="toc-number">1.3.</span> <span class="toc-text">3.安装markdown preview</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-开始编辑"><span class="toc-number">1.4.</span> <span class="toc-text">4.开始编辑</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-在浏览器预览Markdown文档"><span class="toc-number">1.5.</span> <span class="toc-text">5.在浏览器预览Markdown文档</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#sublime_text3常用插件及快捷键"><span class="toc-number">2.</span> <span class="toc-text">sublime text3常用插件及快捷键</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#常用插件，参考链接"><span class="toc-number">2.1.</span> <span class="toc-text">常用插件，参考链接</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#sublime使用快捷键及一些方法"><span class="toc-number">2.2.</span> <span class="toc-text">sublime使用快捷键及一些方法</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#备份sublime3的设置"><span class="toc-number">2.2.1.</span> <span class="toc-text">备份sublime3的设置</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#将sublime加入到右键"><span class="toc-number">2.2.2.</span> <span class="toc-text">将sublime加入到右键</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#sublime常用快捷键"><span class="toc-number">2.2.3.</span> <span class="toc-text">sublime常用快捷键</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#通用快捷键"><span class="toc-number">2.2.3.1.</span> <span class="toc-text">通用快捷键</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#编辑"><span class="toc-number">2.2.3.2.</span> <span class="toc-text">编辑</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#选择"><span class="toc-number">2.2.3.3.</span> <span class="toc-text">选择</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#查找"><span class="toc-number">2.2.3.4.</span> <span class="toc-text">查找</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#跳转"><span class="toc-number">2.2.3.5.</span> <span class="toc-text">跳转</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#窗口"><span class="toc-number">2.2.3.6.</span> <span class="toc-text">窗口</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#markdown基本语法测试"><span class="toc-number">3.</span> <span class="toc-text">markdown基本语法测试</span></a></li></ol>
   </div>
 
 
@@ -114,33 +112,34 @@ var _hmt = _hmt || [];
     <div class="entry">
       
         <p>参考资料:<br><a href="http://www.ituring.com.cn/article/6815" target="_blank" rel="external">使用Sublime Text 2 编辑Markdown</a><br><a href="http://www.cnblogs.com/figure9/p/sublime-text-complete-guide.html" target="_blank" rel="external">Sublime Text 全程指引 by Lucida</a><br><a href="http://xuanwo.org/2014/06/05/sublime-text-3-IDE/" target="_blank" rel="external">Sublime Text 3 化身为高大上的C/C++ IDE</a><br><a href="https://www.zybuluo.com/king/note/47271" target="_blank" rel="external">Sublime Text 3 使用技巧</a><br><a href="https://www.zhihu.com/question/36038602?sort=created" target="_blank" rel="external">Sublime Latex</a></p>
-<p>##使用前准备</p>
-<p>###1.sublime官网下载sublime3安装包<a href="http://www.sublimetext.com/3" target="_blank" rel="external">http://www.sublimetext.com/3</a></p>
-<p>###2.安装包管理器 Package Control<a href="http://jingyan.baidu.com/article/925f8cb817fd49c0dce05653.html" target="_blank" rel="external">参考链接</a></p>
-<ul>
+<h2 id="使用前准备">使用前准备</h2><h3 id="1-sublime官网下载sublime3安装包http://www-sublimetext-com/3">1.sublime官网下载sublime3安装包<a href="http://www.sublimetext.com/3" target="_blank" rel="external">http://www.sublimetext.com/3</a></h3><h3 id="2-安装包管理器_Package_Control参考链接">2.安装包管理器 Package Control<a href="http://jingyan.baidu.com/article/925f8cb817fd49c0dce05653.html" target="_blank" rel="external">参考链接</a></h3><ul>
 <li>通过快捷键 ctrl+` 或者 View &gt; Show Console 菜单打开控制台</li>
 <li><p>粘贴对应版本的代码后回车安装<br>sublime text 3:</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span>  urllib.request,os;pf=<span class="string">'Package Control.sublime-package'</span>;</span><br><span class="line">ipp=sublime.installed_packages_path();</span><br><span class="line">urllib.request.install_opener(urllib.request.build_opener(urllib.request.ProxyHandler()));</span><br><span class="line">open(os.path.join(ipp,pf),<span class="string">'wb'</span>).write(urllib.request.urlopen(<span class="string">'http://sublime.wbond.net/'</span>+pf.replace(<span class="string">' '</span>,<span class="string">'%20'</span>)).read())</span><br></pre></td></tr></table></figure>
 <p>sublime text 2:</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span>  urllib2,os;pf=<span class="string">'Package Control.sublime-package'</span>;</span><br><span class="line">ipp=sublime.installed_packages_path();</span><br><span class="line">os.makedirs(ipp)ifnotos.path.exists(ipp)elseNone;urllib2.install_opener(urllib2.build_opener(urllib2.ProxyHandler()));</span><br><span class="line">open(os.path.join(ipp,pf),<span class="string">'wb'</span>).write(urllib2.urlopen(<span class="string">'http://sublime.wbond.net/'</span>+pf.replace(<span class="string">' '</span>,<span class="string">'%20'</span>)).read());</span><br><span class="line">print(<span class="string">'Please restart Sublime Text to finish installation'</span>)</span><br></pre></td></tr></table></figure>
-<p>安装完包管理器后记得重启<br>###3.安装markdown preview</p>
+<p>安装完包管理器后记得重启</p>
 </li>
+</ul>
+<h3 id="3-安装markdown_preview">3.安装markdown preview</h3><ul>
 <li>按Ctrl + Shift + P</li>
 <li>输入pci 后回车(Package Control: Install Package)</li>
 <li>稍等… ^_^</li>
 <li>输入Markdown Preview回车<a id="more"></a>
-###4.开始编辑</li>
+</li>
+</ul>
+<h3 id="4-开始编辑">4.开始编辑</h3><ul>
 <li>按Ctrl + N 新建一个文档</li>
 <li>按Ctrl + Shift + P</li>
 <li>使用Markdown语法编辑文档</li>
-<li>语法高亮，输入ssm 后回车(Set Syntax: Markdown)<br>###5.在浏览器预览Markdown文档</li>
+<li>语法高亮，输入ssm 后回车(Set Syntax: Markdown)</li>
+</ul>
+<h3 id="5-在浏览器预览Markdown文档">5.在浏览器预览Markdown文档</h3><ul>
 <li>按Ctrl + Shift + P</li>
 <li>输入mp 后回车(Markdown Preview: current file in browser)</li>
 <li>此时就可以在浏览器里看到刚才编辑的文档了</li>
 </ul>
-<p>##sublime text3常用插件及快捷键</p>
-<p>###常用插件，<a href="http://xuanwo.org/2014/06/05/sublime-text-3-IDE/" target="_blank" rel="external">参考链接</a></p>
-<ul>
+<h2 id="sublime_text3常用插件及快捷键">sublime text3常用插件及快捷键</h2><h3 id="常用插件，参考链接">常用插件，<a href="http://xuanwo.org/2014/06/05/sublime-text-3-IDE/" target="_blank" rel="external">参考链接</a></h3><ul>
 <li>All Autocomplete 自动补全</li>
 <li>DocBlocker 代码注解 /** tab</li>
 <li>ConverToUTF8 解决中文乱码 file–set file encode to</li>
@@ -155,27 +154,58 @@ var _hmt = _hmt || [];
 <li>Pylinter          F12 或 CTRL+B 运行 py文件</li>
 <li>DocBlockr        在函数上面输入/** ,然后按tab 就会自动生成注释</li>
 </ul>
-<p>###sublime使用快捷键及一些方法</p>
-<p>####备份sublime3的设置<br>    只要备份Packages\User文件夹即可，里面的sublime-settings文件都保存了你的所有设置，更换电脑之后，只要恢复过去，打开Sublime的时候会自动检测，下载并安装你需要的包。<br>    <strong>Windows下</strong><br>    备份文件夹：C:\Users\yourusername\AppData\Roaming\Sublime Text 3\Packages\User<br>    <strong>Linux下</strong><br>    备份文件夹：~/Library/Application/Support/Sublime\ Text\ 3/Packages/User<br>    注意空格的转义= =。rm -rf /usr balabala之类的梗我才没有听说过呢。</p>
-<p>####将sublime加入到右键<br> 安装sublime 3时会提示是否加入到右键，但是默认不加入很多人就错过了。错过了就可以这样找回来。<a href="http://www.turen.me/archives/509" target="_blank" rel="external">详细看这</a></p>
+<h3 id="sublime使用快捷键及一些方法">sublime使用快捷键及一些方法</h3><h4 id="备份sublime3的设置">备份sublime3的设置</h4><pre><code>只要备份Packages<span class="command">\User</span>文件夹即可，里面的sublime-settings文件都保存了你的所有设置，更换电脑之后，只要恢复过去，打开Sublime的时候会自动检测，下载并安装你需要的包。
+**Windows下**
+备份文件夹：C:<span class="command">\Users</span><span class="command">\yourusername</span><span class="command">\AppData</span><span class="command">\Roaming</span><span class="command">\Sublime</span> Text 3<span class="command">\Packages</span><span class="command">\User</span>
+**Linux下**
+备份文件夹：<span class="special">~</span>/Library/Application/Support/Sublime<span class="command">\ </span>Text<span class="command">\ </span>3/Packages/User
+注意空格的转义= =。rm -rf /usr balabala之类的梗我才没有听说过呢。
+</code></pre><h4 id="将sublime加入到右键">将sublime加入到右键</h4><p> 安装sublime 3时会提示是否加入到右键，但是默认不加入很多人就错过了。错过了就可以这样找回来。<a href="http://www.turen.me/archives/509" target="_blank" rel="external">详细看这</a></p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"> Windows Registry Editor Version <span class="number">5.00</span></span><br><span class="line">[HKEY_CLASSES_ROOT\*\shell\Edit <span class="keyword">with</span> Sublime3]</span><br><span class="line"><span class="string">"Icon"</span>=<span class="string">"C:\\Program Files (x86)\\Sublime Text 3\\sublime_text.exe,0"</span></span><br><span class="line">[HKEY_CLASSES_ROOT\*\shell\Edit <span class="keyword">with</span> Sublime3\command]</span><br><span class="line"><span class="decorator">@="C:\\Program Files (x86)\\Sublime Text 3\\sublime_text.exe %1"</span></span><br></pre></td></tr></table></figure>
 <p>也可以把上边这段代码中的路径改为你的sublime安装路径，然后保存为后缀为.reg的文件运行就直接可以添加成功。</p>
 <p>####可能会有更好效果的设置<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">// 设置Sans-serif（无衬线）等宽字体，以便阅读</span><br><span class="line"><span class="string">"font_face"</span>: <span class="string">"YaHei Consolas Hybrid"</span>,</span><br><span class="line"><span class="string">"font_size"</span>: <span class="number">12</span>,</span><br><span class="line">// 使光标闪动更加柔和</span><br><span class="line"><span class="string">"caret_style"</span>: <span class="string">"phase"</span>,</span><br><span class="line">// 高亮当前行</span><br><span class="line"><span class="string">"highlight_line"</span>: true,</span><br><span class="line">// 高亮有修改的标签</span><br><span class="line"><span class="string">"highlight_modified_tabs"</span>: true,</span><br></pre></td></tr></table></figure></p>
-<p>####<strong>sublime常用快捷键</strong></p>
-<p>#####<strong>通用快捷键</strong><br>     ↑↓←→：上下左右移动光标，注意不是不是KJHL！<br>    Alt：调出菜单<br>    Ctrl + Shift + P：调出命令板（Command Palette）<br>    Ctrl + `：调出控制台<br>    Alt + Shift + 2进行左右分屏（2为分屏数量）<br>     Ctrl +数字  跳到指定的分屏<br>     F11/Shift+F11 切换到全屏模式</p>
-<p>#####<strong>编辑</strong><br>    Ctrl + Enter：在当前行下面新增一行然后跳至该行<br>    Ctrl + Shift + Enter：在当前行上面增加一行并跳至该行<br>    Ctrl + ←/→：进行逐词移动<br>    Ctrl + Shift + ←/→进行逐词选择<br>    Ctrl + ↑/↓移动当前显示区域<br>    Ctrl + Shift + ↑/↓移动当前行<br>    Ctrl + /       单行注释<br>    Ctrl + Shift + /多行注释<br>    Ctrl + J 合并选中的多行代码为一行<br>    Ctrl + Shift + D  复制光标所在整行，插入到下一行<br>    Ctrl + F2 设置书签</p>
-<p>#####<strong>选择</strong><br>    Ctrl + D：选择当前光标所在的词并高亮该词所有出现的位置，再次Ctrl + D选择该词出现的下一个位置，在多重选词的过程中，使用Ctrl + K进行跳过，使用Ctrl + U进行回退，使用Esc退出多重编辑<br>    Ctrl + Shift + L：将当前选中区域打散<br>    Ctrl + J：把当前选中区域合并为一行<br>    Ctrl + M：在起始括号和结尾括号间切换<br>    Ctrl + Shift + M：快速选择括号间的内容<br>    Ctrl + Shift + J：快速选择同缩进的内容<br>    Ctrl + Shift + Space：快速选择当前作用域（Scope）的内容</p>
-<p>#####<strong>查找</strong><br>    F3：跳至当前关键字下一个位置<br>    Shift + F3：跳到当前关键字上一个位置<br>    Alt + F3：选中当前关键字出现的所有位置<br>    Ctrl + F/H：进行标准查找/替换，之后：</p>
-<pre><code>    + Alt + C：切换大小写敏感（<span class="keyword">Case</span>-sensitive）模式
-    + Alt + W：切换整字匹配（Whole <span class="keyword">matching</span>）模式
-    + Alt + R：切换正则匹配（Regex <span class="keyword">matching</span>）模式
-    + Ctrl + Shift + H：替换当前关键字
+<h4 id="sublime常用快捷键"><strong>sublime常用快捷键</strong></h4><h5 id="通用快捷键"><strong>通用快捷键</strong></h5><pre><code> ↑↓←→：上下左右移动光标，注意不是不是KJHL！
+Alt：调出菜单
+Ctrl + <span class="keyword">Shift</span> + P：调出命令板（Command Palette）
+Ctrl + `：调出控制台
+Alt + <span class="keyword">Shift</span> + <span class="number">2</span>进行左右分屏（<span class="number">2</span>为分屏数量）
+ Ctrl +数字  跳到指定的分屏
+ F11/<span class="keyword">Shift</span>+F11 切换到全屏模式
+</code></pre><h5 id="编辑"><strong>编辑</strong></h5><pre><code>Ctrl + Enter：在当前行下面新增一行然后跳至该行
+Ctrl + <span class="keyword">Shift</span> + Enter：在当前行上面增加一行并跳至该行
+Ctrl + ←/→：进行逐词移动
+Ctrl + <span class="keyword">Shift</span> + ←/→进行逐词选择
+Ctrl + ↑/↓移动当前显示区域
+Ctrl + <span class="keyword">Shift</span> + ↑/↓移动当前行
+Ctrl + /       单行注释
+Ctrl + <span class="keyword">Shift</span> + /多行注释
+Ctrl + J 合并选中的多行代码为一行
+Ctrl + <span class="keyword">Shift</span> + D  复制光标所在整行，插入到下一行
+Ctrl + F2 设置书签
+</code></pre><h5 id="选择"><strong>选择</strong></h5><pre><code>Ctrl + <span class="keyword">D</span>：选择当前光标所在的词并高亮该词所有出现的位置，再次Ctrl + <span class="keyword">D</span>选择该词出现的下一个位置，在多重选词的过程中，使用Ctrl + K进行跳过，使用Ctrl + <span class="keyword">U</span>进行回退，使用Esc退出多重编辑
+Ctrl + Shift + <span class="keyword">L</span>：将当前选中区域打散
+Ctrl + J：把当前选中区域合并为一行
+Ctrl + <span class="keyword">M</span>：在起始括号和结尾括号间切换
+Ctrl + Shift + <span class="keyword">M</span>：快速选择括号间的内容
+Ctrl + Shift + J：快速选择同缩进的内容
+Ctrl + Shift + Space：快速选择当前作用域（Scope）的内容
+</code></pre><h5 id="查找"><strong>查找</strong></h5><pre><code>F3：跳至当前关键字下一个位置
+<span class="keyword">Shift</span> + F3：跳到当前关键字上一个位置
+Alt + F3：选中当前关键字出现的所有位置
+Ctrl + F/H：进行标准查找/替换，之后：
+    + Alt + C：切换大小写敏感（Case-sensitive）模式
+    + Alt + W：切换整字匹配（Whole matching）模式
+    + Alt + R：切换正则匹配（Regex matching）模式
+    + Ctrl + <span class="keyword">Shift</span> + H：替换当前关键字
     + Ctrl + Alt + Enter：替换所有关键字匹配
-Ctrl + Shift + F：多文件搜索&amp;替换
-</code></pre><p>#####<strong>跳转</strong><br>    Ctrl + R：跳转到指定符号<br>    Ctrl + G：跳转到指定行号</p>
-<p>#####<strong>窗口</strong><br>    Ctrl + Shift + N：创建一个新窗口<br>    Ctrl + N：在当前窗口创建一个新标签<br>    Ctrl + W：关闭当前标签，当窗口内没有标签时会关闭该窗口<br>    Ctrl + Shift + T：恢复刚刚关闭的标签</p>
-<p>##markdown基本语法测试</p>
-<ul>
+Ctrl + <span class="keyword">Shift</span> + F：多文件搜索&amp;替换
+</code></pre><h5 id="跳转"><strong>跳转</strong></h5><pre><code><span class="title">Ctrl</span> + R：跳转到指定符号
+Ctrl + G：跳转到指定行号
+</code></pre><h5 id="窗口"><strong>窗口</strong></h5><pre><code>Ctrl + <span class="keyword">Shift</span> + N：创建一个新窗口
+Ctrl + N：在当前窗口创建一个新标签
+Ctrl + W：关闭当前标签，当窗口内没有标签时会关闭该窗口
+Ctrl + <span class="keyword">Shift</span> + T：恢复刚刚关闭的标签
+</code></pre><h2 id="markdown基本语法测试">markdown基本语法测试</h2><ul>
 <li><em>在内容两边加一个星号为斜体</em></li>
 <li><strong>在内容两个星号为加粗</strong></li>
 <li><em>一个\</em>号斜体*</li>
@@ -352,7 +382,7 @@ gitalk.render('gitalk-container')
   
     <li><a href="/categories/Learning/">Learning</a><small>8</small></li>
   
-    <li><a href="/categories/Life/">Life</a><small>6</small></li>
+    <li><a href="/categories/Life/">Life</a><small>5</small></li>
   
     <li><a href="/categories/Others/">Others</a><small>1</small></li>
   

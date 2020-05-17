@@ -166,7 +166,7 @@ var _hmt = _hmt || [];
 	
     <div class="entry">
       
-        <div align="center"><br><img src="/img/20160826billgates_XORDDOSsumary.png" align="center"/><br></div><br>分析工具：<br><br>- ida pro<br>- edb<br>- strace<br><br>事情是这样的，某一天发现某一台服务器数据流量异常，怀疑中了木马而且是一台Windows机器，想着就能一展我手动杀毒的技能了，但是开了机才发下这台机器上通过Hyper-V装了另外5台虚拟机，比我想象中复杂多了而且在机房狭小的环境中。在几台Windows机器上找了良久也未发现木马的踪迹，难道是什么高级木马？好在师兄经验丰富一想肯定是剩下的那台centos有问题，果然一找一大堆，billgates附送个xorddos，不是说linux很安全么，怎么会中马呢？ linux是很安全但是耐不住用的人没安全意识啊，直接暴露在公网的主机被设置了ssh弱密码。好了故事编完了，进入正题，这篇博客主要是这两天的linux系统下的木马分析与查杀的一个简单记录。<br><br>## BillGates<br><br>BillGates就是上面那个比重最大的Linux.BackDoor.Gates.5，2014年就被drweb曝光过，网上很多分析的很多了，但是还是自己跟着走一遍还是能学到很多东西的，特别是第一次分析Linux木马的我。<br><br>### 静态分析<br><br>基本信息<br>
+        <div align="center"><br><img src="/img/20160826billgates_XORDDOSsumary.png" align="center"/><br></div><br>分析工具：<br><br>- ida pro<br>- edb<br>- strace<br><br>事情是这样的，某一天发现某一台服务器数据流量异常，怀疑中了木马而且是一台Windows机器，想着就能一展我手动杀毒的技能了，但是开了机才发下这台机器上通过Hyper-V装了另外5台虚拟机，比我想象中复杂多了而且在机房狭小的环境中。在几台Windows机器上找了良久也未发现木马的踪迹，难道是什么高级木马？好在师兄经验丰富一想肯定是剩下的那台centos有问题，果然一找一大堆，billgates附送个xorddos，不是说linux很安全么，怎么会中马呢？ linux是很安全但是耐不住用的人没安全意识啊，直接暴露在公网的主机被设置了ssh弱密码。好了故事编完了，进入正题，这篇博客主要是这两天的linux系统下的木马分析与查杀的一个简单记录。<br><br>## BillGates<br>BillGates就是上面那个比重最大的Linux.BackDoor.Gates.5，2014年就被drweb曝光过，网上很多分析的很多了，但是还是自己跟着走一遍还是能学到很多东西的，特别是第一次分析Linux木马的我。<br><br>### 静态分析<br>基本信息<br>
       
     </div>
     <footer>
@@ -336,9 +336,9 @@ var _hmt = _hmt || [];
 	
     <div class="entry">
       
-        <p>##实验环境<br>操作系统：Windows 7（7600）、office 2007（12.0.4518.1014）<br>辅助环境: MetaSploit、Windbg、ida pro</p>
-<p>##前言<br>这个漏洞很老，但是很好用，经常看到有利用的文章，之前也没有认真分析过系统漏洞相关的东西（ps 主要是找工作的时候被问漏洞相关的时候自己基本答不上来），所以花上2天时间分析研究下。<br>网上关于这个漏洞分析的文章比较多，主要看了<a href="http://bbs.pediy.com/showthread.php?t=149957">看雪</a>的那篇分析文章，发现就是一个由于程序员疏忽小于写成大于造成的栈溢出漏洞，比较经典典型。</p>
-<p>##漏洞调试</p>
+        <h2 id="实验环境">实验环境</h2><p>操作系统：Windows 7（7600）、office 2007（12.0.4518.1014）<br>辅助环境: MetaSploit、Windbg、ida pro</p>
+<h2 id="前言">前言</h2><p>这个漏洞很老，但是很好用，经常看到有利用的文章，之前也没有认真分析过系统漏洞相关的东西（ps 主要是找工作的时候被问漏洞相关的时候自己基本答不上来），所以花上2天时间分析研究下。<br>网上关于这个漏洞分析的文章比较多，主要看了<a href="http://bbs.pediy.com/showthread.php?t=149957">看雪</a>的那篇分析文章，发现就是一个由于程序员疏忽小于写成大于造成的栈溢出漏洞，比较经典典型。</p>
+<h2 id="漏洞调试">漏洞调试</h2>
       
     </div>
     <footer>
@@ -784,7 +784,7 @@ var _hmt = _hmt || [];
   
     <li><a href="/categories/Learning/">Learning</a><small>8</small></li>
   
-    <li><a href="/categories/Life/">Life</a><small>6</small></li>
+    <li><a href="/categories/Life/">Life</a><small>5</small></li>
   
     <li><a href="/categories/Others/">Others</a><small>1</small></li>
   

@@ -104,7 +104,7 @@ var _hmt = _hmt || [];
 
   <div id="toc" class="toc-article">
   <strong class="toc-title">文章目录</strong>
-  
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#学习参考资料"><span class="toc-number">1.</span> <span class="toc-text">学习参考资料</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#常用工具"><span class="toc-number">2.</span> <span class="toc-text">常用工具</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#工具使用"><span class="toc-number">3.</span> <span class="toc-text">工具使用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#编译器"><span class="toc-number">3.1.</span> <span class="toc-text">编译器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#调试器"><span class="toc-number">3.2.</span> <span class="toc-text">调试器</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#一些其他有用的东西"><span class="toc-number">4.</span> <span class="toc-text">一些其他有用的东西</span></a></li></ol>
   </div>
 
 
@@ -112,24 +112,22 @@ var _hmt = _hmt || [];
     <div class="entry">
       
         <p>接触Windows内核驱动开发有一段时间了，之前由于资料少老旧走了很多弯路，所以在这里备注哈梳理自己所学。</p>
-<p>##学习参考资料<br><a href="http://item.jd.com/11713158.html" target="_blank" rel="external">1.Windows内核安全驱动开发</a><br><a href="http://www.vbasm.com/thread-7971-1-1.html" target="_blank" rel="external">2.WIN64驱动编程基础教程</a><br><a href="http://www.vbasm.com/thread-8264-1-1.html" target="_blank" rel="external">3.各个版本DDK/WDK和sysinternals源码合集</a><br><a href="http://bbs.pediy.com/" target="_blank" rel="external">4.看雪论坛</a><br><a href="http://blog.csdn.net/magictong/article/details/38277081" target="_blank" rel="external">5. Windows7驱动调试小Tips</a></p>
+<h2 id="学习参考资料">学习参考资料</h2><p><a href="http://item.jd.com/11713158.html" target="_blank" rel="external">1.Windows内核安全驱动开发</a><br><a href="http://www.vbasm.com/thread-7971-1-1.html" target="_blank" rel="external">2.WIN64驱动编程基础教程</a><br><a href="http://www.vbasm.com/thread-8264-1-1.html" target="_blank" rel="external">3.各个版本DDK/WDK和sysinternals源码合集</a><br><a href="http://bbs.pediy.com/" target="_blank" rel="external">4.看雪论坛</a><br><a href="http://blog.csdn.net/magictong/article/details/38277081" target="_blank" rel="external">5. Windows7驱动调试小Tips</a></p>
 <a id="more"></a>
-<p>##常用工具</p>
-<ul>
+<h2 id="常用工具">常用工具</h2><ul>
 <li></li>
 <li>可能要使用到的注册表修改代码:<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//解决win7以上Kdprint、Dbgprint不能输出的问题</span></span><br><span class="line"><span class="comment">//需要重启</span></span><br><span class="line"><span class="comment">//和DbgPrintEx的两个参数相关，不同级别。推荐第二种和Android的Log差不多 </span></span><br><span class="line">Windows Registry Editor Version <span class="number">5.00</span></span><br><span class="line"></span><br><span class="line">[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Debug Print Filter]</span><br><span class="line"></span><br><span class="line"><span class="string">"DEFAULT"</span>=dword:<span class="number">00000008</span></span><br></pre></td></tr></table></figure>
 </li>
 </ul>
 <p>或则使用这种方式:<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//不需要重启</span></span><br><span class="line"><span class="number">1.</span> windbg连接好被调试的操作系统后，载入符号 (.reload)</span><br><span class="line"><span class="number">2.</span> 枚举符号x nt!kd_default*</span><br><span class="line"><span class="number">3.</span> 修改全局变量的值 ed nt!Kd_DEFAULT_Mask <span class="number">8</span>   ed nt!Kd_IHVDRIVER_Mask <span class="number">0x8</span></span><br></pre></td></tr></table></figure></p>
 <ul>
-<li>##工具使用</li>
+<li><h2 id="工具使用">工具使用</h2></li>
 </ul>
-<p>###编译器</p>
-<p>###调试器<br><a href="http://www.freebuf.com/articles/system/92499.html" target="_blank" rel="external">Windbg入门实战讲解</a><br><a href="http://bbs.pediy.com/showthread.php?t=100391" target="_blank" rel="external">WinDbg的几个默认工作空间（窗口布局）</a><br><a href="http://bbs.pediy.com/showthread.php?t=78027" target="_blank" rel="external">Windows调试工具入门 — 1、2</a><br><a href="http://www.cppblog.com/Walker/archive/2012/06/28/146523.html" target="_blank" rel="external">windbg常用命令</a></p>
+<h3 id="编译器">编译器</h3><h3 id="调试器">调试器</h3><p><a href="http://www.freebuf.com/articles/system/92499.html" target="_blank" rel="external">Windbg入门实战讲解</a><br><a href="http://bbs.pediy.com/showthread.php?t=100391" target="_blank" rel="external">WinDbg的几个默认工作空间（窗口布局）</a><br><a href="http://bbs.pediy.com/showthread.php?t=78027" target="_blank" rel="external">Windows调试工具入门 — 1、2</a><br><a href="http://www.cppblog.com/Walker/archive/2012/06/28/146523.html" target="_blank" rel="external">windbg常用命令</a></p>
 <ul>
 <li>窗口布局<br>单纯的直接使用Windbg会发现界面很单一，不方便查看信息，这时候我们会使用View菜单下多选取几个窗口，但是会发现拖动起来很困难，特别是对于有强迫症的人简直不能忍受。其实Windbg已经给我们提供好了几个布局，这些文件在Windbg安装目录下themes文件夹下，还有个doc文档说明，我们可以直接使用File菜单下的Open Workplace in file打开，也可以寻找其他人的布局如上面的参考2，特别适合内核调试。这些布局配置都保存在HKCU\Software\Microsoft\Windbg项下。<br>具体命令用法学习参考1、3（参考3有后续几篇文章都不错，适合学习）</li>
 </ul>
-<p>##一些其他有用的东西<br><a href="http://blog.csdn.net/qiaoli278141408/article/details/39497141" target="_blank" rel="external">论ntoskrnl.exe中的导出函数、非导出函数、公开函数、非公开函数</a><br><a href="http://bbs.pediy.com/showthread.php?t=95640" target="_blank" rel="external">ntoskrnl.exe导出函数用MmGetSystemRoutineAddress获取地址</a></p>
+<h2 id="一些其他有用的东西">一些其他有用的东西</h2><p><a href="http://blog.csdn.net/qiaoli278141408/article/details/39497141" target="_blank" rel="external">论ntoskrnl.exe中的导出函数、非导出函数、公开函数、非公开函数</a><br><a href="http://bbs.pediy.com/showthread.php?t=95640" target="_blank" rel="external">ntoskrnl.exe导出函数用MmGetSystemRoutineAddress获取地址</a></p>
 
       
     </div>
@@ -257,7 +255,7 @@ gitalk.render('gitalk-container')
   
     <li><a href="/categories/Learning/">Learning</a><small>8</small></li>
   
-    <li><a href="/categories/Life/">Life</a><small>6</small></li>
+    <li><a href="/categories/Life/">Life</a><small>5</small></li>
   
     <li><a href="/categories/Others/">Others</a><small>1</small></li>
   
