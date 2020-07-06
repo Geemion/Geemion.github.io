@@ -183,9 +183,9 @@ var _hmt = _hmt || [];
     <div class="entry">
       
         <p>参考资料：<br><a href="http://bbs.pediy.com/showthread.php?t=173381">【原创】白话windows之 访问控制模型(Access Control Model)</a><br><a href="http://www.cppblog.com/weiym/archive/2013/08/25/202751.html?opt=admin">浅析Windows安全相关的一些概念</a><br><a href="http://blog.csdn.net/gwzz1228/article/details/9031835">CreateEvent 和OpenEvent时事件全局名称问题 Global</a></p>
-<p>##对windows权限机制最直观的认识</p>
-<p>###Windows用户权限<br>在之前的学习中对于windows权限机制有过零散的学习，但是对于整个windows权限管理机制没有一个全面的认识所以在这总结学习哈，虽然现在也没有搞清楚完。</p>
-<p>Windows权限管理我觉得最常用的就是UAC权限（管理员权限）。每个进程都有自己的用户最常用的有标准用户、管理员（UAC）【注：这两个就是平常用户启用的进程的用户】，SYSTEM、LOCAL SERVICE、NETWORK SERVICE【注：这三个一般是系统进程及服务启动的且Windows启动后system用户已经登录到系统 】。而每个用户又有不同的特权Privilege，我们可以通过whoami -all查看当前用户所拥有的Privilege。<br><strong>Standard用户拥有的特权</strong><br>
+<h2 id="对windows权限机制最直观的认识">对windows权限机制最直观的认识</h2><h3 id="Windows用户权限">Windows用户权限</h3><p>在之前的学习中对于windows权限机制有过零散的学习，但是对于整个windows权限管理机制没有一个全面的认识所以在这总结学习哈，虽然现在也没有搞清楚完。</p>
+<p>Windows权限管理我觉得最常用的就是UAC权限（管理员权限）。每个进程都有自己的用户最常用的有标准用户、管理员（UAC）【注：这两个就是平常用户启用的进程的用户】，SYSTEM、LOCAL SERVICE、NETWORK SERVICE【注：这三个一般是系统进程及服务启动的且Windows启动后system用户已经登录到系统 】。而每个用户又有不同的特权Privilege，我们可以通过whoami -all查看当前用户所拥有的Privilege。</p>
+<p><strong>Standard用户拥有的特权</strong><br>
       
     </div>
     <footer>
