@@ -166,7 +166,17 @@ var _hmt = _hmt || [];
 	
     <div class="entry">
       
-        <div align="center"><br><img src="/img/20160826billgates_XORDDOSsumary.png" align="center"/><br></div><br>分析工具：<br><br>- ida pro<br>- edb<br>- strace<br><br>事情是这样的，某一天发现某一台服务器数据流量异常，怀疑中了木马而且是一台Windows机器，想着就能一展我手动杀毒的技能了，但是开了机才发下这台机器上通过Hyper-V装了另外5台虚拟机，比我想象中复杂多了而且在机房狭小的环境中。在几台Windows机器上找了良久也未发现木马的踪迹，难道是什么高级木马？好在师兄经验丰富一想肯定是剩下的那台centos有问题，果然一找一大堆，billgates附送个xorddos，不是说linux很安全么，怎么会中马呢？ linux是很安全但是耐不住用的人没安全意识啊，直接暴露在公网的主机被设置了ssh弱密码。好了故事编完了，进入正题，这篇博客主要是这两天的linux系统下的木马分析与查杀的一个简单记录。<br><br>## BillGates<br>BillGates就是上面那个比重最大的Linux.BackDoor.Gates.5，2014年就被drweb曝光过，网上很多分析的很多了，但是还是自己跟着走一遍还是能学到很多东西的，特别是第一次分析Linux木马的我。<br><br>### 静态分析<br>基本信息<br>
+        <div align="center"><br><img src="/img/20160826billgates_XORDDOSsumary.png" align="center"/><br></div>
+
+<p>分析工具：</p>
+<ul>
+<li>ida pro</li>
+<li>edb</li>
+<li>strace</li>
+</ul>
+<p>事情是这样的，某一天发现某一台服务器数据流量异常，怀疑中了木马而且是一台Windows机器，想着就能一展我手动杀毒的技能了，但是开了机才发下这台机器上通过Hyper-V装了另外5台虚拟机，比我想象中复杂多了而且在机房狭小的环境中。在几台Windows机器上找了良久也未发现木马的踪迹，难道是什么高级木马？好在师兄经验丰富一想肯定是剩下的那台centos有问题，果然一找一大堆，billgates附送个xorddos，不是说linux很安全么，怎么会中马呢？ linux是很安全但是耐不住用的人没安全意识啊，直接暴露在公网的主机被设置了ssh弱密码。好了故事编完了，进入正题，这篇博客主要是这两天的linux系统下的木马分析与查杀的一个简单记录。</p>
+<h2 id="BillGates">BillGates</h2><p>BillGates就是上面那个比重最大的Linux.BackDoor.Gates.5，2014年就被drweb曝光过，网上很多分析的很多了，但是还是自己跟着走一遍还是能学到很多东西的，特别是第一次分析Linux木马的我。</p>
+<h3 id="静态分析">静态分析</h3><p>基本信息<br>
       
     </div>
     <footer>
