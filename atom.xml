@@ -5,7 +5,7 @@
   <subtitle><![CDATA[I hear and I forget.I see and I remember.I do and I understand.]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://www.youngroe.com//"/>
-  <updated>2020-08-02T13:20:56.259Z</updated>
+  <updated>2020-08-02T13:23:26.525Z</updated>
   <id>http://www.youngroe.com//</id>
   
   <author>
@@ -16,13 +16,12 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title></title>
-    <link href="http://www.youngroe.com/2020/08/02/uncategorized/dns_hijacking/"/>
-    <id>http://www.youngroe.com/2020/08/02/uncategorized/dns_hijacking/</id>
-    <published>2020-08-02T13:20:56.259Z</published>
-    <updated>2020-08-02T13:20:56.259Z</updated>
-    <content type="html"><![CDATA[<p>title: 记录一次被DNS劫持及解决方案<br>date: 2020-08-02 12:45:15<br>categories: Life<br>tags: [DNS劫持]</p>
-<h2 id="0x00_现象">0x00 现象</h2><p>现象是访问Github Pages服务浏览器打不开，域名都是*.github.io类似的，即使走代理也不行，Chrome报错NET::ERR_CERT_AUTHORITY_INVALID，查看https证书居然是Vmware的</p>
+    <title><![CDATA[记录一次被DNS劫持及解决方案]]></title>
+    <link href="http://www.youngroe.com/2020/08/02/Life/dns_hijacking/"/>
+    <id>http://www.youngroe.com/2020/08/02/Life/dns_hijacking/</id>
+    <published>2020-08-02T04:45:15.000Z</published>
+    <updated>2020-08-02T13:23:26.525Z</updated>
+    <content type="html"><![CDATA[<h2 id="0x00_现象">0x00 现象</h2><p>现象是访问Github Pages服务浏览器打不开，域名都是*.github.io类似的，即使走代理也不行，Chrome报错NET::ERR_CERT_AUTHORITY_INVALID，查看https证书居然是Vmware的</p>
 <div align="center"><br><img src="/img/20200802_dns_vmware.png" align="https证书错误，为Vmware"><br></div>
 
 <a id="more"></a>
@@ -43,11 +42,14 @@
 </ul>
 ]]></content>
     <summary type="html">
-    <![CDATA[<p>title: 记录一次被DNS劫持及解决方案<br>date: 2020-08-02 12:45:15<br>categories: Life<br>tags: [DNS劫持]</p>
-<h2 id="0x00_现象">0x00 现象</h2><p>现象是访问Github Pages服务浏览器打不开，域名都是*.github.io类似的，即使走代理也不行，Chrome报错NET::ERR_CERT_AUTHORITY_INVALID，查看https证书居然是Vmware的</p>
+    <![CDATA[<h2 id="0x00_现象">0x00 现象</h2><p>现象是访问Github Pages服务浏览器打不开，域名都是*.github.io类似的，即使走代理也不行，Chrome报错NET::ERR_CERT_AUTHORITY_INVALID，查看https证书居然是Vmware的</p>
 <div align="center"><br><img src="/img/20200802_dns_vmware.png" align="https证书错误，为Vmware"/><br></div>]]>
     
     </summary>
+    
+      <category term="DNS劫持" scheme="http://www.youngroe.com/tags/DNS%E5%8A%AB%E6%8C%81/"/>
+    
+      <category term="Life" scheme="http://www.youngroe.com/categories/Life/"/>
     
   </entry>
   

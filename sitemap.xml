@@ -3,15 +3,20 @@
 
     
   <url>
-    <loc>http://www.youngroe.com/2020/08/02/uncategorized/dns_hijacking/</loc>
-    <lastmod>2020-08-02T13:20:56.259Z</lastmod>
+    <loc>http://www.youngroe.com/2020/08/02/Life/dns_hijacking/</loc>
+    <lastmod>2020-08-02T13:23:26.525Z</lastmod>
     <data>
         <display>
-        <title></title>
-        <pubTime>2020-08-02T13:20:56.259Z</pubTime>
+        <title>记录一次被DNS劫持及解决方案</title>
+        <pubTime>2020-08-02T04:45:15.000Z</pubTime>
         
+        <tag>DNS劫持 </tag>
+         
          
            
+             
+              <breadCrumb title="Life" url="http://www.youngroe.com/categories/Life/"/>
+          
         </display>
     </data>
     </url>
