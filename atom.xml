@@ -5,7 +5,7 @@
   <subtitle><![CDATA[I hear and I forget.I see and I remember.I do and I understand.]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://www.youngroe.com//"/>
-  <updated>2020-02-23T12:38:10.293Z</updated>
+  <updated>2020-08-02T13:20:56.259Z</updated>
   <id>http://www.youngroe.com//</id>
   
   <author>
@@ -14,6 +14,42 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title></title>
+    <link href="http://www.youngroe.com/2020/08/02/uncategorized/dns_hijacking/"/>
+    <id>http://www.youngroe.com/2020/08/02/uncategorized/dns_hijacking/</id>
+    <published>2020-08-02T13:20:56.259Z</published>
+    <updated>2020-08-02T13:20:56.259Z</updated>
+    <content type="html"><![CDATA[<p>title: 记录一次被DNS劫持及解决方案<br>date: 2020-08-02 12:45:15<br>categories: Life<br>tags: [DNS劫持]</p>
+<h2 id="0x00_现象">0x00 现象</h2><p>现象是访问Github Pages服务浏览器打不开，域名都是*.github.io类似的，即使走代理也不行，Chrome报错NET::ERR_CERT_AUTHORITY_INVALID，查看https证书居然是Vmware的</p>
+<div align="center"><br><img src="/img/20200802_dns_vmware.png" align="https证书错误，为Vmware"><br></div>
+
+<a id="more"></a>
+<p>初步判断是不是电脑系统出问题了，但是手机连接上电脑宽带的wifi也连接不上，但是用4G网络可以，那肯定是运营商宽带的问题了，但是还是有点迷糊那个环节出问题了。搜索到一篇blog现象基本相同 <a href="https://www.wanvi.net/10200.html" target="_blank" rel="external">记录一个奇怪的问题 访问网页，证书错误是VMware</a>，但是文章中没有提解决方案，不过却明确了问题原因，遇到dns劫持了。<br>只要是<em>.github.io下的域名全部被解析到了127.0.0.1，导致访问本地网络，同时正好装了Vmware的虚拟机，Vmware在本地会监听443端口，这样访问</em>.github.io相关域名都会遇到证书错误，网页肯定也打不开。<br>尝试换DNS服务器，能正常几秒钟马上又被解析到127.0.0.1了，因此这次遇到的DNS劫持是直接修改的DNS返回包，太丧心病狂了。</p>
+<div align="center"><br><img src="/img/20200808_dns_nslookup.png" align="修改DNS服务器也不行"><br></div>
+
+<div align="center"><br><img src="/img/20200802_dns_wireshark.png" align="Wireshark抓包发现，DNS返回包被修改"><br></div>
+
+<h2 id="0x01_解决方案">0x01 解决方案</h2><p>在文章<a href="http://www.youngroe.com/2018/12/01/Windows/windows_client_dns_over_https/">Windows客户端如何透明使用DNS-over-HTTPS</a>中提到过通过HTTPS协议查询DNS的方式，正好可以解决这个问题，步骤如下：</p>
+<ul>
+<li>下载<a href="https://developers.cloudflare.com/argo-tunnel/downloads#windows" target="_blank" rel="external">cloudflare的https dns客户端</a>，直接运行cloudflared.exe</li>
+<li>修改电脑的dns服务器地址为127.0.0.1<br>这样设置后就不会被劫持了，可以正常访问*.github.io下的域名了，具体原理参考<a href="http://www.youngroe.com/2018/12/01/Windows/windows_client_dns_over_https/">Windows客户端如何透明使用DNS-over-HTTPS</a><br>希望对遇到这个问题的人有用。</li>
+</ul>
+<h2 id="0x02_参考文章">0x02 参考文章</h2><ul>
+<li><a href="https://www.wanvi.net/10200.html" target="_blank" rel="external">记录一个奇怪的问题 访问网页，证书错误是VMware</a></li>
+<li><a href="https://developers.cloudflare.com/argo-tunnel/downloads#windows" target="_blank" rel="external">cloudflare的https dns客户端</a></li>
+<li><a href="http://www.youngroe.com/2018/12/01/Windows/windows_client_dns_over_https/">Windows客户端如何透明使用DNS-over-HTTPS</a></li>
+</ul>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>title: 记录一次被DNS劫持及解决方案<br>date: 2020-08-02 12:45:15<br>categories: Life<br>tags: [DNS劫持]</p>
+<h2 id="0x00_现象">0x00 现象</h2><p>现象是访问Github Pages服务浏览器打不开，域名都是*.github.io类似的，即使走代理也不行，Chrome报错NET::ERR_CERT_AUTHORITY_INVALID，查看https证书居然是Vmware的</p>
+<div align="center"><br><img src="/img/20200802_dns_vmware.png" align="https证书错误，为Vmware"/><br></div>]]>
+    
+    </summary>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[Delphi程序逆向反汇编技巧小记]]></title>
@@ -1255,39 +1291,6 @@
       <category term="调试" scheme="http://www.youngroe.com/tags/%E8%B0%83%E8%AF%95/"/>
     
       <category term="Debug" scheme="http://www.youngroe.com/categories/Debug/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[Ubuntu Boost使用小记]]></title>
-    <link href="http://www.youngroe.com/2016/03/18/Learning/Using-Linux-boost-Record/"/>
-    <id>http://www.youngroe.com/2016/03/18/Learning/Using-Linux-boost-Record/</id>
-    <published>2016-03-18T04:04:54.000Z</published>
-    <updated>2020-02-15T07:54:24.196Z</updated>
-    <content type="html"><![CDATA[<p>最近写一个linux版的小程序需要用到Boost库，这里记录下使用。<br>使用Linux版boost库有两种方式，apt-get和下源码自己编译，这里使用第一种方式。<br><strong>过程记录</strong></p>
-<ul>
-<li>1.sudo apt-get install libboost-dev libboost-thread1.55-dev libboost-system1.55-dev</li>
-<li>2.gcc选项 -L/usr/lib -lstdc++ $(PTHREAD) -lboost_thread -lboost_system</li>
-<li>3.然后make就可以了</li>
-</ul>
-<a id="more"></a>
-<p>我出现的问题主要是以为使用boost只需要libboost-dev库就可以了，然后导致gcc编译不过报错<br>“/usr/bin/ld: cannot find -lboost_thread”。这里就需要安装对应的库-lboost_thread就代表libboost-thread,使用apt-cache search libboost-thread就能找到可用的库版本然后apt-get install就好了。</p>
-]]></content>
-    <summary type="html">
-    <![CDATA[<p>最近写一个linux版的小程序需要用到Boost库，这里记录下使用。<br>使用Linux版boost库有两种方式，apt-get和下源码自己编译，这里使用第一种方式。<br><strong>过程记录</strong></p>
-<ul>
-<li>1.sudo apt-get install libboost-dev libboost-thread1.55-dev libboost-system1.55-dev</li>
-<li>2.gcc选项 -L/usr/lib -lstdc++ $(PTHREAD) -lboost_thread -lboost_system</li>
-<li>3.然后make就可以了</li>
-</ul>]]>
-    
-    </summary>
-    
-      <category term="Boost" scheme="http://www.youngroe.com/tags/Boost/"/>
-    
-      <category term="Linux" scheme="http://www.youngroe.com/tags/Linux/"/>
-    
-      <category term="Learning" scheme="http://www.youngroe.com/categories/Learning/"/>
     
   </entry>
   

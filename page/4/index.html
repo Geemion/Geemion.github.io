@@ -80,6 +80,60 @@ var _hmt = _hmt || [];
     <div class="gallery">
   <div class="photoset">
     
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <time datetime="2015-08-25T11:39:28.000Z"><a href="/2015/08/25/Windows/VC-BMPtoJPG/">2015-08-25</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2015/08/25/Windows/VC-BMPtoJPG/">VC++直接利用api实现bmp图像转jpg图像</a></h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+
+	
+    <div class="entry">
+      
+        <p>网上找了很久寻找直接bmp格式转jpg，大部分都是利用libjpeg/libjpeg-turbo实现的。libjpeg实现有很多有点支持多平台Windows/linux/嵌入式,但是使用较为麻烦，需要自己编译lib可能还需要自己懂一点make语法之类的。so 能不能直接在Windows找个api实现呢？遂打开msdn输入”bmp converting to jpg”，还不错找到两个相关问题<a href="https://social.msdn.microsoft.com/Forums/vstudio/en-US/e30af0cb-de22-4c95-9b0f-eacb00181387/convert-bmp-image-to-jpg?forum=vcgeneral">链接1</a>、<a href="https://social.msdn.microsoft.com/Forums/en-US/0a4126bb-2e5b-4972-ac2f-a6055fe692c2/converting-jpg-file-into-bmp-file?forum=vcmfcatl">链接2</a> 。使用<a href="https://msdn.microsoft.com/en-us/library/ms534077(VS.85">GDI+</a>.aspx)、<a href="https://msdn.microsoft.com/en-us/library/d06f3fhw(VS.80">CImage</a>.aspx)，而且使用这些几乎可以实现任何图片格式之间的转换GDI+库封装了很多图像处理相关的函数还有很多待学习。例子只是一个很简单的bmp转jpg</p>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/2015/08/25/Windows/VC-BMPtoJPG/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+  <div id="container"></div>
+</span>
+</article>
+
+
+
+
+  <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
       
         <img src="/img/session.png">
       
@@ -681,6 +735,10 @@ var _hmt = _hmt || [];
   <ul class="entry">
     
       <li>
+        <a href="/2020/08/02/uncategorized/dns_hijacking/"></a>
+      </li>
+    
+      <li>
         <a href="/2019/07/01/Windows/delphi_reverse_summary/">Delphi程序逆向反汇编技巧小记</a>
       </li>
     
@@ -722,10 +780,6 @@ var _hmt = _hmt || [];
     
       <li>
         <a href="/2017/05/23/Windows/Kernel Data and Filtering Support/">Kernel Data and Filtering Support for Windows Server 2008（翻译）</a>
-      </li>
-    
-      <li>
-        <a href="/2016/12/23/Learning/The-Art-of-Unpacking/">脱壳的艺术（翻译:The Art of Unpacking）</a>
       </li>
     
   </ul>
