@@ -4,10 +4,10 @@
     
   <url>
     <loc>http://www.youngroe.com/2020/08/02/Life/dns_hijacking/</loc>
-    <lastmod>2020-08-02T13:25:59.575Z</lastmod>
+    <lastmod>2020-08-04T11:34:18.905Z</lastmod>
     <data>
         <display>
-        <title>记录一次被DNS劫持及解决方案</title>
+        <title>记录一次被DNS劫持及解决方案(非改hosts方式)</title>
         <pubTime>2020-08-02T04:45:15.000Z</pubTime>
         
         <tag>DNS劫持 </tag>
