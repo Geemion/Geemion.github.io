@@ -123,7 +123,7 @@ var _hmt = _hmt || [];
 <li>下载<a href="https://developers.cloudflare.com/argo-tunnel/downloads#windows" target="_blank" rel="external">cloudflare的https dns客户端</a>，直接运行cloudflared.exe</li>
 <li>修改电脑的dns服务器地址为127.0.0.1<br>这样设置后就不会被劫持了，可以正常访问github.io下的域名了，具体原理参考<a href="http://www.youngroe.com/2018/12/01/Windows/windows_client_dns_over_https/">Windows客户端如何透明使用DNS-over-HTTPS</a></li>
 </ul>
-<p>另外如果cloudflare的doh服务器地址（1.1.1.1）被ban也可以使用<a href="https://github.com/bitbeans/SimpleDnsCrypt/" target="_blank" rel="external">SimpleDnsCrypt</a>，原理相同。<br>希望对遇到这个问题的人有用。</p>
+<p>另外如果cloudflare的doh服务器地址（1.1.1.1）被ban也可以使用<a href="https://github.com/bitbeans/SimpleDnsCrypt/" target="_blank" rel="external">SimpleDnsCrypt</a>原理相同。当然也可以使用带有DOH功能得浏览器，如firefox，不过仅对浏览器本身有效，非全局，其他程序还是存在被DNS劫持风险。<br>希望对遇到这个问题的人有用。</p>
 <h2 id="0x02_参考文章">0x02 参考文章</h2><ul>
 <li><a href="https://www.wanvi.net/10200.html" target="_blank" rel="external">记录一个奇怪的问题 访问网页，证书错误是VMware</a></li>
 <li><a href="https://developers.cloudflare.com/argo-tunnel/downloads#windows" target="_blank" rel="external">cloudflare的https dns客户端</a></li>
