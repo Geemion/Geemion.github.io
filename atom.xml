@@ -5,7 +5,7 @@
   <subtitle><![CDATA[I hear and I forget.I see and I remember.I do and I understand.]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://www.youngroe.com//"/>
-  <updated>2020-08-06T13:08:00.357Z</updated>
+  <updated>2020-08-07T16:15:52.418Z</updated>
   <id>http://www.youngroe.com//</id>
   
   <author>
@@ -20,12 +20,12 @@
     <link href="http://www.youngroe.com/2020/08/02/Life/dns_hijacking/"/>
     <id>http://www.youngroe.com/2020/08/02/Life/dns_hijacking/</id>
     <published>2020-08-02T04:45:15.000Z</published>
-    <updated>2020-08-06T13:08:00.357Z</updated>
+    <updated>2020-08-07T16:15:52.418Z</updated>
     <content type="html"><![CDATA[<h2 id="0x00_现象">0x00 现象</h2><p>现象是访问Github Pages服务浏览器打不开，域名都是*.github.io类似的，即使走代理也不行，Chrome报错NET::ERR_CERT_AUTHORITY_INVALID，查看https证书居然是Vmware的</p>
 <div align="center"><br><img src="/img/20200802_dns_vmware.png" align="https证书错误，为Vmware"><br></div>
 
 <a id="more"></a>
-<p>初步判断是不是电脑系统出问题了，但是手机连接上电脑宽带的wifi也连接不上，但是用4G网络可以，那肯定是运营商宽带的问题了，但是还是有点迷糊那个环节出问题了。搜索到一篇blog现象基本相同 <a href="https://www.wanvi.net/10200.html" target="_blank" rel="external">记录一个奇怪的问题 访问网页，证书错误是VMware</a>，但是文章中没有提解决方案，不过却明确了问题原因，遇到dns劫持了。<br>只要是github.io下的域名全部被解析到了127.0.0.1，导致访问本地网络，同时正好装了Vmware的虚拟机，Vmware在本地会监听443端口，这样访问github.io相关域名会访问到本地Vmware开的端口上，同时都会遇到证书错误，因为Vmware在443端口也没有提供http服务，网页也打不开。<br>尝试换DNS服务器，能正常几秒钟马上又被解析到127.0.0.1了，因此这次遇到的DNS劫持是直接修改的DNS返回包，太丧心病狂了。</p>
+<p>猜测是不是电脑系统出现问题了，但是手机连接上电脑宽带的wifi也连接不上，但是用4G网络可以，问题应该与系统无关，是运营商宽带的问题了。但是还是不知道具体那个环节出问题了，搜到一篇blog现象基本相同 <a href="https://www.wanvi.net/10200.html" target="_blank" rel="external">记录一个奇怪的问题 访问网页，证书错误是VMware</a>，但是文章中没有提解决方案，不过通过文章描述的现象及本地Wireshark抓包分析，是遇到dns劫持了，劫持方式是直接修改dns返回包。<br>只要是github.io下的域名全部被解析到了127.0.0.1，导致访问本地网络，同时正好装了Vmware的虚拟机，Vmware在本地会监听443端口，这样访问github.io相关域名会访问到本地Vmware开的端口上，并且Vmware的证书没有经过CA认证，Chrome会首先报证书错误，同时Vmware在443端口可能也没有提供http服务，即使忽略证书错误，网页也打不开。<br>尝试换DNS服务器，能正常几秒钟马上又被解析到127.0.0.1了，太丧心病狂了。</p>
 <div align="center"><br><img src="/img/20200808_dns_nslookup.png" align="修改DNS服务器也不行"><br></div><br><div align="center"><br><img src="/img/20200802_dns_wireshark.png" align="Wireshark抓包发现，DNS返回包被修改"><br></div>
 
 <h2 id="0x01_解决方案">0x01 解决方案</h2><p>在文章<a href="http://www.youngroe.com/2018/12/01/Windows/windows_client_dns_over_https/">Windows客户端如何透明使用DNS-over-HTTPS</a>中提到过通过HTTPS协议查询DNS的方式，正好可以解决这个问题，步骤如下：</p>
