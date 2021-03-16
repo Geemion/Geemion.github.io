@@ -1,0 +1,425 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>反检测的艺术2-如何制作PE文件后门（翻译） | Lyon&#39;s blog</title>
+  <meta name="author" content="Lyon">
+  
+  <meta name="description" content="Walk steps step by step">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="反检测的艺术2-如何制作PE文件后门（翻译）"/>
+  <meta property="og:site_name" content="Lyon&#39;s blog"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  #<link href="/favicon.ico" rel="icon">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="alternate" href="/atom.xml" title="Lyon&#39;s blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  <script src="/js/jquery.min.js"></script>
+  <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?1d807422614f63c8de98cdc3b546860c";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+  <script>
+    (function(){
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        }
+        else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+    
+  <script data-ad-client="ca-pub-6317609007693835" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+</head>
+
+
+<body>
+  <!--[if lte IE 8]> <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'> <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0027_Simplified Chinese.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." style='margin-left:auto;margin-right:auto;display: block;'/></a></div> <![endif]-->
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">Lyon&#39;s blog</a></h1>
+  <h2><a href="/">I hear and I forget.I see and I remember.I do and I understand.</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">首页</a></li>
+    
+      <li><a href="/archives">归档</a></li>
+    
+      <li><a href="/about">关于</a></li>
+    
+	<li> <a href="/atom.xml">RSS</a> </li>
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <time datetime="2020-09-04T11:39:22.000Z"><a href="/2020/09/04/Cybersecurity/art-of-anti-detection-2-pe-backdoor-manufacturing/">2020-09-04</a></time>
+      
+      
+  
+    <h1 class="title">反检测的艺术2-如何制作PE文件后门（翻译）</h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+  <div id="toc" class="toc-article">
+  <strong class="toc-title">文章目录</strong>
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x00_介绍"><span class="toc-number">1.</span> <span class="toc-text">0x00 介绍</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x01_相关术语"><span class="toc-number">2.</span> <span class="toc-text">0x01 相关术语</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#红队渗透测试"><span class="toc-number">2.1.</span> <span class="toc-text">红队渗透测试</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#地址空间布局随机化"><span class="toc-number">2.2.</span> <span class="toc-text">地址空间布局随机化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Code_Caves"><span class="toc-number">2.3.</span> <span class="toc-text">Code Caves</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#校验和"><span class="toc-number">2.4.</span> <span class="toc-text">校验和</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x02_主要方法"><span class="toc-number">3.</span> <span class="toc-text">0x02 主要方法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#可用空间问题"><span class="toc-number">3.1.</span> <span class="toc-text">可用空间问题</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1）添加一个新的section"><span class="toc-number">3.1.1.</span> <span class="toc-text">1）添加一个新的section</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2）Code_Caves"><span class="toc-number">3.1.2.</span> <span class="toc-text">2）Code Caves</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#劫持执行流程"><span class="toc-number">3.2.</span> <span class="toc-text">劫持执行流程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#恢复执行流程"><span class="toc-number">3.3.</span> <span class="toc-text">恢复执行流程</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x03_结论与预防措施"><span class="toc-number">4.</span> <span class="toc-text">0x03 结论与预防措施</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1）section权限检查"><span class="toc-number">4.1.</span> <span class="toc-text">1）section权限检查</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2）异常section识别"><span class="toc-number">4.2.</span> <span class="toc-text">2）异常section识别</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3）签名检查"><span class="toc-number">4.3.</span> <span class="toc-text">3）签名检查</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4）文件校验和检查"><span class="toc-number">4.4.</span> <span class="toc-text">4）文件校验和检查</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x04_POC"><span class="toc-number">5.</span> <span class="toc-text">0x04 POC</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考"><span class="toc-number">6.</span> <span class="toc-text">参考</span></a></li></ol>
+  </div>
+
+
+	
+    <div class="entry">
+      
+        <p>本文将会介绍用于安全测试红队目的几种制作PE（Portable Executable）文件后门的方法，如果需要完全理解本文，读者至少需要对x86汇编有一定的了解，同时需要熟悉调试器并且对PE文件格式有较高的理解。<br><a id="more"></a></p>
+<h2 id="0x00_介绍">0x00 介绍</h2><p>现在，几乎所有安全研究人员，测试人员和恶意软件分析师在日常工作中都会处理后门，维持后门访问权限最流行的方式是将后门安装到系统或某个软件中。本文的大部分内容是如何在32位PE文件中植入后门的方法，但是由于PE文件格式是Unix COFF（通用对象文件格式）的修改版本，因此这些方法也可以移植用于所有其他可执行二进制文件文件类型。植入后门的隐蔽性对在系统中停留更长的时间非常重要，因此本文介绍的方法都会尽量减少被反病毒软件检出的概率。在继续阅读本文之前，请先阅读第一篇文章<a href="http://www.youngroe.com/art-of-anti-detection-1-introduction-to-av-detection-techniques">反检测的艺术1-反病毒软件及检测技术概述</a>，这对于理解反病毒产品的内部工作原理和有关反检测的基本思路将非常有帮助。</p>
+<h2 id="0x01_相关术语">0x01 相关术语</h2><h3 id="红队渗透测试">红队渗透测试</h3><p>在网络安全领域，红队是一群白帽黑客，他们像攻击者一样攻击组织的网络基础架构，目的是测试（通常称为渗透测试）组织的防御能力。包括Microsoft在内的公司会定期组织红蓝两队进行渗透测试。组织红蓝两队的渗透测试体现了以攻促防的安全理念，可以快速发现网络安全问题并及早解决。</p>
+<h3 id="地址空间布局随机化">地址空间布局随机化</h3><p>（ASLR）是一种计算机安全技术，主要用于防止缓冲区溢出攻击。防止攻击者精确的跳转到内存中的某个特定漏洞地址空间地址实现漏洞利用，ASLR随机布局进程内存的关键数据区域的地址空间位置，包括可执行文件的基地址以及栈，堆和相关库的地址。</p>
+<h3 id="Code_Caves">Code Caves</h3><p>Code Caves是一个程序写入另一个进程的内存的一段代码。这段代码可以通过在目标进程内创建远程线程来执行。代码的Code Caves通常是对代码的脚本函数的一部分的引用，该脚本函数具有注入自定义指令的能力。例如，如果脚本的内存允许5个字节，并且只使用3个字节，则剩余的2个字节可以用于向脚本添加外部代码, 这就是所谓的code cave。</p>
+<h3 id="校验和">校验和</h3><p>校验和是对一段数据进行计算得到的一段小尺寸的数据，目的是检测可能在传输或存储过程中引入的错误。通常应用于安装文件从下载服务器收到安装文件的场景。就其本身而言，校验和通常用于验证数据完整性，但并不依赖于校验和来验证数据的真实性。</p>
+<h2 id="0x02_主要方法">0x02 主要方法</h2><p>本文所有实现和示例都将使用putty SSH客户端实现。选择putty作为后门实践的宿主原因有很多，其中之一是putty是一个使用多个库和Windows API原生的C++客户端，另一个原因是使用SSH客户端作为后门将很难被注意到，因为putty客户端本身需要使用tcp连接。可以避免被蓝队网络监控发现，使用的后门代码是metasploit项目中Stephen Fever的反向TCP meterpreter shellcode。主要目标是将meterpreter shellcode注入目标PE文件，同时不破坏程序的实际功能。注入的shellcode将在新线程上执行，并将尝试持续连接到服务端。在执行所有这些操作时，另一个目标是使检测分数保持尽可能低的水平。<br>在PE文件中植入后门的常用方法包括4个主要步骤。</p>
+<ul>
+<li>1）为后门代码寻找可用空间</li>
+<li>2）劫持程序执行流程</li>
+<li>3）注入后门代码</li>
+<li>4）恢复执行流程<br>在每个步骤中，都有很多细节的关键东西，这些细节保证了后门的隐蔽性防止被检测。</li>
+</ul>
+<h3 id="可用空间问题">可用空间问题</h3><p>第一步需要找到一块可用的空间，在PE文件中找到合适空间插入后门代码非常重要，被插入后门后的PE文件威胁检测分数很大程序上取决于如何在可用空间插入后门代码，一般有两种方式解决空间空间问题：</p>
+<h4 id="1）添加一个新的section">1）添加一个新的section</h4><p>与另一种方法相比，此方法在检测分数上有更多缺点，但是通过添加一个新的section，对将要植入的后门代码没有大小限制。<br>通过使用反汇编工具或如LordPE的PE编辑器，可以通过添加新的section header来增加所有PE文件大小，下面是putty可执行文件的节表，通过PE编辑器，增加一个名称为NewSec大小为1000字节新section。</p>
+<div align="center"><br><img src="/img/anti_av2_putty_sections.png" align><br></div>
+
+<p>创建新section时，必须将section flags设置为”Read/Write/Execute”，否则PE文件被映射到内存后shellcode不能正常运行。</p>
+<div align="center"><br><img src="/img/anti_av2_sectionflags.png" align><br></div>
+
+<p>添加节头后，需要调整文件大小，可以使用十六进制编辑器在文件末尾添加section大小的空字节实现。</p>
+<div align="center"><br><img src="/img/anti_av2_sectionflags.png" align><br></div>
+
+<p>完成上述操作后，建议运行添加新section后的可执行问价你，以防出现任何错误，如果可执行文件运行顺利，则可以在调试器上修改新section。</p>
+<div align="center"><br><img src="/img/anti_av2_newsec.png" align><br></div>
+
+<p>通过添加新section来解决空间问题，在反检测分数上几乎没有任何优势，几乎所有的反病毒软件都可以识别不常见的section，而对不常见的section赋予所有（Read/Write/Execute）权限肯定是非常可疑的。<br>即使在putty可执行文件中添加一个空的完整权限section，某些反病毒软件也会将其标记为恶意。</p>
+<div align="center"><br><img src="/img/anti_av2_VirusTotal.png" align><br></div>
+
+<h4 id="2）Code_Caves">2）Code Caves</h4><p>解决空间问题的第二种方法是使用目标可执行文件的Code Caves。几乎所有编译的二进制文件都有可以用于插入后门代码的Code Caves。由于使用原始PE可执行文件空间，使用Code Caves代替增加section有助于减小被反病毒产品判定为恶意代码的风险。而且PE文件的大小在后门程序结束时不会更改，但是这种方法也有一些缺点。<br>Code Caves的数量和大小因文件而异，但是与添加新节相比，通常没有太多空间。使用Code Caves时，应尽量减少后门代码的尺寸。另一个缺点是section flag，由于应用程序的执行流程将劫持到到Code Caves，因此包含Code Caves的部分应具有Execute权限，为了修改section中的代码需要write权限，即使使某些shellcode是以自修改方式编码或混淆的。<br>多个Code Caves的使用将有助于解决空间限制问题，同时将后门代码拆分为多个片段有助于减少检测分数，但不幸的是，更改段权限看起来依然很可疑。有高级方法可以在运行时修改内存区域权限，以避免直接更改section flag，但是由于这些方法需要定制的shellcode，编码和IAT解析技术，因此将在下一篇文章中讨论。<br>借助名为Cminer的工具，可以很容易地枚举二进制文件的所有Code Caves。使用./Cminer putty.exe 300命令，可以枚举大于300字节的Code Caves。</p>
+<div align="center"><br><img src="/img/anti_av2_cminer1.png" align><br></div>
+
+<p>在本例中有5个比较好的Code Caves。start address给出了Code Caves的虚拟内存地址（VMA）。这是PE文件加载到内存中时Code Caves的地址，file offest是以字节为单位的PE文件形式Code Caves的位置起始地址。</p>
+<div align="center"><br><img src="/img/anti_av2_cminer2.png" align><br></div>
+
+<p>似乎大多数Code Caves都在data section，但data部分没有execute section flag，因此需要进行更改。后门代码大约为400-500字节，因此第5个Code Caves应该绰绰有余。应将所选Code Caves的起始地址保存下来，将section flag更改为R/W/E，后门程序的第一步将完成了，现在该劫持代码执行流程了。</p>
+<h3 id="劫持执行流程">劫持执行流程</h3><p>在本小结中，目标是通过修改目标可执行文件中的指令将执行流重定向到后门代码。关于如何选择要修改的指令，有一个重要的细节。所有二进制指令的大小均以字节为单位，为了跳转到后门代码地址，将使用5或6个字节的长跳转。因此，在patch二进制文件时，要修改的指令必须与长跳转指令具有相同的大小，否则被修改位置上一条或下一条指令将被破坏。<br>选择正确的位置来重定向执行对于绕过反病毒软件的动态和沙箱分析非常重要。如果直接重定向，则可能会被反病毒软件的动态分析阶段检测到重定向。</p>
+<p><strong>通过用户交互隐藏</strong>：<br>绕过沙箱/动态分析首先想到的是延迟Shellcode的执行或设计可识别沙箱的Shellcode和触发机制。但在插入后门代码时，大多数时候没有太多空间可以在PE文件中添加这些额外的代码。此外，通过汇编级语言编写反检测机制也需要大量时间和专业的知识。<br>利用需要用户交互才能执行后门代码，只有在实际用户操作程序时，通过用户交互才重定向执行后门代码。如果可以正确实现此方法，则成功率将为%100，并且不会增加后门代码的大小。<br>Putty可执行UI上的“Open”按钮启动一个功能，该功能实际检查给定IP地址的有效性。</p>
+<div align="center"><br><img src="/img/anti_av2_putty.png" align><br></div>
+
+<p>如果IP地址字段值不为空且有效，它将启动连接功能尝试连接给定的IP地址。<br>如果客户端成功创建SSH会话，则会弹出一个新窗口并要求提供凭据。</p>
+<div align="center"><br><img src="/img/anti_av2_puttyLogin.png" align><br></div><br>这将是发生重定向的关键，因为没有足够的反病毒产品能够克隆这种复杂的操作手法，因此不会通过沙箱和动态分析机制检测到植入的后门。<br>使用基础的逆向工程方法，例如跟随字符串和字符串引用，将不难找到connect函数的地址。客户端与给定IP建立连接后，将在显示的窗口中显示一个字符串”login as：”。该字符串将帮助我们找到connect函数的地址，IDA Pro在查找字符串引用方面做得很好。<br>为了找到 “login as:”字符串，可以通过在IDA中点击Views-&gt;Open Subviews-&gt;Strings。<br><br><div align="center"><br><img src="/img/anti_av2_idastring.png" align><br></div><br>找到字符串并双击后，IDA会在数据部分内部找到为字符串创建的所有交叉引用，按Ctrl + X将显示所有交叉引用，在函数中引用字符串并显现“login as:”字符串。<br><div align="center"><br><img src="/img/anti_av2_Screenshot_2.png" align><br></div>
+
+<div align="center"><br><img src="/img/anti_av2_Screenshot_3.png" align><br></div>
+
+<p>这就是要patch的指令，在进行任何更改之前，请备份该指令。在后门代码执行后，将再次使用它。</p>
+<div align="center"><br><img src="/img/anti_av2_Screenshot_4.png" align><br></div><br>将PUSH 467C7C指令更改为JMP 0x47A478的后门程序的重定向已完成。请注意下一条指令地址，这一点很重要。执行后门代码后，它将用作返回地址。下一步将注入后门代码。<br><br>### 注入后门代码<br>在注入后门代码时，首先需要做的是在执行后门之前保存寄存器。所有寄存器中的每个值对于程序的执行都非常重要。通过在Code Caves的开头放置PUSHAD和PUSHFD指令，所有寄存器和寄存器标志都存储栈中。这些值将在执行后门代码后弹出，因此程序可以继续执行而不会出现任何问题。<br><br><div align="center"><br><img src="/img/anti_av2_savereg.png" align><br></div><br>如前所述，将使用的后门代码是metasploit项目中的meterpreter反向TCP Shell代码。但是shellcode几乎不需要更改。通常反向TCP Shellcode会尝试连接给定次数，如果连接失败，它将通过调用ExitProcess API调用来关闭进程。<br><br><div align="center"><br><img src="/img/anti_av2_dmet.png" align><br></div><br>问题是，如果到处理程序的连接失败，则putty客户端的执行将停止，现在修改每次连接失败时shellcode程序集的几行，shellcode就会重试连接到原始程序，并且shellcode的大小也会减小。<br><br><div align="center"><br><img src="/img/anti_av2_nmet.png" align><br></div><br>在汇编代码中进行必要的修改后，使用nasm -f bin stager_reverse_tcp_nx.asm命令对其进行编译。现在，可以使用反向TCP Shellcode，但不能直接使用它。目标是在新线程上执行shellcode。为了创建一个新的线程，需要有另一个shellcode进行CreateThread的API调用，该调用指向反向TCP shellcode。在Stephen Fever编写的metasploit项目中还有一个用于创建线程的shellcode，<br><br><div align="center"><br><img src="/img/anti_av2_CreateThread.png" align><br></div>
+
+<p>将shellcode字节以十六进制格式放置在createthread.asm文件中后，即可使用nasm -f bin createthread.asm命令进行汇编。此时，可以将Shellcode插入到code cave中了，但是在插入Shellcode之前，应该对它进行编码，以绕过反病毒产品的静态/签名分析机制。由于大多数反病毒软件都能识别metasploit项目中的所有编码器，因此强烈建议使用自定义编码器。本文将不讨论这种自定义shellcode编码器的制作方法，因为这将是另一篇文章的主题，但是使用多个metasploit编码器也可能会起作用。在每个编码过程之后，建议以原始格式将编码的shellcode上传到virus total并检查检测分数。尝试每种组合，直到无法检测到为止，或者等待下一篇文章。<br>在对shellcode进行正确编码之后，是时候将其插入到code cave中了。选择PUSHFD下的指令，然后在调试器上按Ctrl + E，shellcode将以十六进制格式粘贴到此处。</p>
+<div align="center"><br><img src="/img/anti_av2_Insert.png" align><br></div>
+
+<p>使用xxd -ps createthread命令，以十六进制格式打印编码的createthread shellcode或使用十六进制编辑器打开shellcode并复制十六进制值。在将十六进制值粘贴到immunity 调试器时，请注意字节数限制，这些patch操作是使用immunity 调试器进行的，而immunity 调试器在粘贴以编辑代码窗口时具有字节数限制。它不会粘贴所有的shellcode，记住在“编辑代码”窗口中粘贴的shellcode的最后2个字节，在按下OK按钮之后，继续将字节粘贴到它们结束的位置，当所有的shellcode粘贴到代码中后，插入后门代码操作就做完了。</p>
+<h3 id="恢复执行流程">恢复执行流程</h3><p>创建后门代码线程后，程序需要返回到原始程序执行流程执行，这意味着EIP应该跳回到将执行重定向到插入后门代码功能位置。但是在跳回该功能之前，应先恢复所有已保存的寄存器。</p>
+<div align="center"><br><img src="/img/anti_av2_pop.png" align><br></div>
+
+<p>通过在shellcode的末尾插入POPFD和POPAD指令，所有保存的寄存器都以相同的顺序从栈中弹出。弹出寄存器后，在跳回之前还需要再做一个思考。之前为了执行被劫持指令，将PUSH 467C7C指令替换为JMP 0x47A478，以便将程序的执行重定向到code cave。现在，需要将PUSH 467C7C指令放在最后，才能恢复被劫持的指令。最后通过插入JMP 0x41CB73指令将执行重定向到code cave的函数了，最后生成的代码应如下所示</p>
+<div align="center"><br><img src="/img/anti_av2_end.png" align><br></div>
+
+<p>最后，选择所有patch和插入的指令，按右键单击并复制到可执行文件。应该对已修改的每条指令执行此操作。将所有指令复制并保存到文件后，请关闭调试器并测试可执行文件，如果可执行文件运行顺利，则后门即可使用。<br>最后，建议修改最终文件的校验和，以保持文件的真实性而不显得可疑，这也可能会降低检测分数。</p>
+<div align="center"><br><img src="/img/anti_av2_Screenshot_6.png" align><br></div>
+
+<h2 id="0x03_结论与预防措施">0x03 结论与预防措施</h2><p>最后，当正确应用上述步骤后，可生成完全无法检测后门。针对以上的两种代码注入方式，下面给出这些相应技术的对策，这些策略可以帮助系统管理员、恶意软件记录器、反病毒与反恶意软件产品的开发人员。</p>
+<h3 id="1）section权限检查">1）section权限检查</h3><p>在谈到后门文件时，section权限flag对于检测异常非常重要，除非编译器愿意，否则当前的编译器绝不会为该节设置完整权限，尤其是像.data或.rdata这样的数据节不应如此具有执行权限，例如.text之类的代码段也不应具有写权限，这些异常应被视为可疑行为。</p>
+<h3 id="2）异常section识别">2）异常section识别</h3><p>如果程序员不进行任何配置，编译器通常会创建5-6个通用类型的节，则所有安全产品都应具有识别不常见和可疑节的机制，如果节包含以下内容，则该机制可以查找节内的熵和数据对齐方式高熵和异常有序的数据，应该将其视为可疑的。</p>
+<h3 id="3）签名检查">3）签名检查</h3><p>这种方法非常经典，但最有效，当下载新程序或任何可执行文件时，检查sha1签名是避免系统被植入后门文件的最安全方法。</p>
+<h3 id="4）文件校验和检查">4）文件校验和检查</h3><p>如果可执行文件的校验和值与文件的实际校验和之间存在差异，则表明文件已被修改，安全产品和系统管理员应通过计算实际校验和并将其与文件的真实性进行比较来检查文件的真实性。</p>
+<div align="center"><br><img src="/img/anti_av2_scan.png" align><br></div>
+
+<h2 id="0x04_POC">0x04 POC</h2><p>是时候展示我们的后门putty客户端了？</p>
+<embed src="https://youtu.be/ZeauXofZw-g" quality="high" width="480" height="400" align="middle" allowscriptaccess="always" allowfullscreen="true" mode="transparent" type="application/x-shockwave-flash">
+
+<h2 id="参考">参考</h2><p>[1] – <a href="https://github.com/secretsquirrel/the-backdoor-factory" target="_blank" rel="external">https://github.com/secretsquirrel/the-backdoor-factory</a><br>[2] – <a href="https://www.shellterproject.com/" target="_blank" rel="external">https://www.shellterproject.com/</a><br>[3] – <a href="https://en.wikipedia.org/wiki/Red_team" target="_blank" rel="external">https://en.wikipedia.org/wiki/Red_team</a><br>[4] – htt<a href="https://en.wikipedia.org/wiki/Address_space_layout_randomization" target="_blank" rel="external">https://en.wikipedia.org/wiki/Address_space_layout_randomization</a><br>[5] – <a href="https://en.wikipedia.org/wiki/Code_cave" target="_blank" rel="external">https://en.wikipedia.org/wiki/Code_cave</a><br>[6] – <a href="https://en.wikipedia.org/wiki/Checksum" target="_blank" rel="external">https://en.wikipedia.org/wiki/Checksum</a></p>
+<p><em>原文链接：<a href="https://pentest.blog/art-of-anti-detection-2-pe-backdoor-manufacturing/" target="_blank" rel="external">https://pentest.blog/art-of-anti-detection-2-pe-backdoor-manufacturing/</a></em></p>
+
+      
+    </div>
+    <footer>
+      
+
+        
+        
+          <div class="alignright post-nav">
+            <em>下一篇: </em><a href="/2020/09/03/Cybersecurity/art-of-anti-detection-1-introduction-to-av-detection-techniques/">反检测的艺术1-反病毒软件及检测技术概述（翻译）</a>
+          </div>
+          <div class="clearfix"></div>
+        
+
+        
+          <div class="copyright">
+            
+              <span class="claim">转载请注明youngroe.com</span>
+            
+            
+              <span class="from-link">
+                <em>本文链接地址:</em>
+                <a href="/2020/09/04/Cybersecurity/art-of-anti-detection-2-pe-backdoor-manufacturing/">
+                  http://www.youngroe.com/2020/09/04/Cybersecurity/art-of-anti-detection-2-pe-backdoor-manufacturing/
+                </a>
+              </span>
+            
+          </div>
+        
+        
+  
+  <div class="categories">
+    <a href="/categories/Cybersecurity/">Cybersecurity</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/反病毒/">反病毒</a>
+  </div>
+
+        
+          <! -- 添加捐赠图标 -->
+<div class ="post-donate">
+    <div id="donate_board" class="donate_bar center">
+        <a id="btn_donate" class="btn_donate" href="javascript:;" title="打赏"></a>
+        <span class="donate_txt">
+           ↑<br>
+           欣赏此文？求鼓励，求支持！
+        </span>
+        <br>
+      </div>  
+    <div id="donate_guide" class="donate_bar center hidden" >
+        <!-- 方式一： 
+            ![](/img/Alipay.jpg)
+            ![](/img/WeChatpay.jpg)
+        -->
+        <!-- 方式二；
+            step1：在_config.yml中添加配置
+                Alipay: /img/Alipay.jpg
+                WeChatpay: /img/WeChatpay.jpg
+            step2：此处两张图片的路径分别设置为如下
+                <img src="undefined"
+                <img src="undefined"
+        -->
+        <!-- 支付宝打赏图案 -->
+        <img src="/img/Alipay.png" alt="支付宝打赏">
+        <!-- 微信打赏图案 -->
+        <img src="/img/WeChatpay.png" alt="微信打赏">
+    </div>
+    <script type="text/javascript">
+        document.getElementById('btn_donate').onclick = function(){
+            $('#donate_board').addClass('hidden');
+            $('#donate_guide').removeClass('hidden');
+        }
+    </script>
+</div>
+<! -- 添加捐赠图标 -->
+        
+        <div id="gitalk-container"></div>
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+<script src="https://cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.js"></script>
+<script type="text/javascript">
+    var gitalk = new Gitalk({
+  clientID: '503c39aa3fb2b8c1b734',
+  clientSecret: '65d784ff7a95a9dbf4a4208c9e32166ca29654f2',
+  repo: 'geemion.github.io',
+  owner: 'geemion',
+  admin: 'geemion',
+  pagerDirection:'first',
+  id: md5(window.location.pathname)
+})
+
+gitalk.render('gitalk-container')
+</script>
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+  <div id="container"></div>
+</span>
+</article>
+
+
+<section id="comment">
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+<div class="widget tag">
+  <h3 class="title">分类</h3>
+  <ul class="entry">
+  
+    <li><a href="/categories/Cybersecurity/">Cybersecurity</a><small>3</small></li>
+  
+    <li><a href="/categories/Debug/">Debug</a><small>7</small></li>
+  
+    <li><a href="/categories/Kernel/">Kernel</a><small>4</small></li>
+  
+    <li><a href="/categories/Learning/">Learning</a><small>8</small></li>
+  
+    <li><a href="/categories/Life/">Life</a><small>6</small></li>
+  
+    <li><a href="/categories/Others/">Others</a><small>1</small></li>
+  
+    <li><a href="/categories/Tools/">Tools</a><small>6</small></li>
+  
+    <li><a href="/categories/Vulnerabilities/">Vulnerabilities</a><small>0</small></li>
+  
+    <li><a href="/categories/Windows/">Windows</a><small>13</small></li>
+  
+    <li><a href="/categories/life/">life</a><small>0</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2020/09/04/Cybersecurity/art-of-anti-detection-2-pe-backdoor-manufacturing/">反检测的艺术2-如何制作PE文件后门（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2020/09/03/Cybersecurity/art-of-anti-detection-1-introduction-to-av-detection-techniques/">反检测的艺术1-反病毒软件及检测技术概述（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2020/08/02/Life/dns_hijacking/">记录一次被DNS劫持及解决方案(非改hosts方式)</a>
+      </li>
+    
+      <li>
+        <a href="/2019/07/01/Windows/delphi_reverse_summary/">Delphi程序逆向反汇编技巧小记</a>
+      </li>
+    
+      <li>
+        <a href="/2019/06/25/Kernel/kernel_enum_wfp_callout_function/">Windows内核重拾：如何枚举系统中Windows Filtering Platform (WFP)驱动中的callout函数</a>
+      </li>
+    
+      <li>
+        <a href="/2019/05/06/Kernel/windows-driver-testing-basics/">Windows内核重拾：Windows驱动测试基础：工具、功能和示例（翻译/转载）</a>
+      </li>
+    
+      <li>
+        <a href="/2019/04/06/Windows/how-to-reverse-engineer-software-windows-in-a-right-way/">如何正确的对Windows软件进行逆向工程（翻译/转载）</a>
+      </li>
+    
+      <li>
+        <a href="/2019/01/12/Windows/a_crash_lead_deadlock/">Windows平台下一个崩溃而导致的死锁分析</a>
+      </li>
+    
+      <li>
+        <a href="/2018/12/01/Windows/windows_client_dns_over_https/">Windows客户端如何透明使用DNS-over-HTTPS</a>
+      </li>
+    
+      <li>
+        <a href="/2018/10/06/Cybersecurity/ddos-protection-techniques/">现代DDoS对抗技术概述（翻译/转载）</a>
+      </li>
+    
+      <li>
+        <a href="/2018/09/18/Life/xian/">西安周末游</a>
+      </li>
+    
+      <li>
+        <a href="/2018/01/06/Kernel/WindowsKernel_DebugObject/">Windows内核重拾：DebugObject</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget tagcloud">
+  <h3 class="title">标签云</h3>
+  <div class="entry">
+    <a href="/tags/ASM/" style="font-size: 10px;">ASM</a> <a href="/tags/Boost/" style="font-size: 10px;">Boost</a> <a href="/tags/DDoS/" style="font-size: 10px;">DDoS</a> <a href="/tags/DNS-over-HTTPS/" style="font-size: 10px;">DNS-over-HTTPS</a> <a href="/tags/DNS劫持/" style="font-size: 10px;">DNS劫持</a> <a href="/tags/Delphi/" style="font-size: 10px;">Delphi</a> <a href="/tags/Dll劫持/" style="font-size: 10px;">Dll劫持</a> <a href="/tags/GCC-GDB/" style="font-size: 10px;">GCC&GDB</a> <a href="/tags/GetVersionEx/" style="font-size: 10px;">GetVersionEx</a> <a href="/tags/Http/" style="font-size: 10px;">Http</a> <a href="/tags/IDA-Pro/" style="font-size: 13.33px;">IDA Pro</a> <a href="/tags/Linux/" style="font-size: 16.67px;">Linux</a> <a href="/tags/MSDN/" style="font-size: 13.33px;">MSDN</a> <a href="/tags/Malware/" style="font-size: 13.33px;">Malware</a> <a href="/tags/MiniDumpWriteDump/" style="font-size: 10px;">MiniDumpWriteDump</a> <a href="/tags/PEB/" style="font-size: 10px;">PEB</a> <a href="/tags/Procmon/" style="font-size: 10px;">Procmon</a> <a href="/tags/Runtime-Error/" style="font-size: 10px;">Runtime Error</a> <a href="/tags/SEH/" style="font-size: 10px;">SEH</a> <a href="/tags/SysinternalsSuite/" style="font-size: 10px;">SysinternalsSuite</a> <a href="/tags/Tips/" style="font-size: 10px;">Tips</a> <a href="/tags/UAC/" style="font-size: 10px;">UAC</a> <a href="/tags/UAF漏洞/" style="font-size: 10px;">UAF漏洞</a> <a href="/tags/VC/" style="font-size: 10px;">VC</a> <a href="/tags/Visual-Studio/" style="font-size: 13.33px;">Visual Studio</a> <a href="/tags/Windbg/" style="font-size: 10px;">Windbg</a> <a href="/tags/Windows/" style="font-size: 20px;">Windows</a> <a href="/tags/android/" style="font-size: 10px;">android</a> <a href="/tags/getaddrinfo/" style="font-size: 10px;">getaddrinfo</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/libeay32/" style="font-size: 10px;">libeay32</a> <a href="/tags/markdown/" style="font-size: 10px;">markdown</a> <a href="/tags/ndk/" style="font-size: 10px;">ndk</a> <a href="/tags/sublime-text3/" style="font-size: 10px;">sublime text3</a> <a href="/tags/x64/" style="font-size: 10px;">x64</a> <a href="/tags/体验/" style="font-size: 10px;">体验</a> <a href="/tags/内核/" style="font-size: 13.33px;">内核</a> <a href="/tags/内核结构/" style="font-size: 16.67px;">内核结构</a> <a href="/tags/反病毒/" style="font-size: 13.33px;">反病毒</a> <a href="/tags/安全机制/" style="font-size: 10px;">安全机制</a> <a href="/tags/异常处理/" style="font-size: 10px;">异常处理</a> <a href="/tags/提权/" style="font-size: 10px;">提权</a> <a href="/tags/服务/" style="font-size: 10px;">服务</a> <a href="/tags/权限/" style="font-size: 13.33px;">权限</a> <a href="/tags/栈溢出漏洞/" style="font-size: 10px;">栈溢出漏洞</a> <a href="/tags/测试/" style="font-size: 10px;">测试</a> <a href="/tags/漏洞调试/" style="font-size: 13.33px;">漏洞调试</a> <a href="/tags/生活/" style="font-size: 16.67px;">生活</a> <a href="/tags/脱壳/" style="font-size: 10px;">脱壳</a> <a href="/tags/西安/" style="font-size: 10px;">西安</a> <a href="/tags/计划/" style="font-size: 10px;">计划</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a> <a href="/tags/调试/" style="font-size: 16.67px;">调试</a> <a href="/tags/转换/" style="font-size: 10px;">转换</a> <a href="/tags/进程/" style="font-size: 10px;">进程</a> <a href="/tags/逆向/" style="font-size: 10px;">逆向</a> <a href="/tags/重庆/" style="font-size: 10px;">重庆</a> <a href="/tags/驱动/" style="font-size: 16.67px;">驱动</a>
+  </div>
+</div>
+
+
+  <div class="widget tag">
+<h3 class="title">Links</h3>
+<ul class="entry">
+<li><a href="http://blog.ourren.com/" title="Ourren">Ourren</a></li>
+<li><a href="http://www.hyjal.net/" title="Hyjal">Hyjal</a></li>
+<li><a href="http://www.jianshu.com/users/fa15f4e416ae/latest_articles" title="Daemonceltics">Daemonceltics</a></li>
+<li><a href="http://papap.info/" title="isee">isee</a></li>
+</ul>
+</div>
+
+  <script type="text/javascript" id="clustrmaps" src="//cdn.clustrmaps.com/map_v2.js?u=putG&d=yoFnN6V-ovhL-H4e9_69LvkTiX4uX7rEYJ15yL3G1Wg"></script>
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <div id="go-pg-top"><i class="icon-arrow-up"></i></div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2021 Lyon
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript" charset="utf-8" src="/js/page.js"></script>
+
+</body>
+
+</html>

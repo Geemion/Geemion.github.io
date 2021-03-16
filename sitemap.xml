@@ -3,6 +3,46 @@
 
     
   <url>
+    <loc>http://www.youngroe.com/2020/09/04/Cybersecurity/art-of-anti-detection-2-pe-backdoor-manufacturing/</loc>
+    <lastmod>2021-03-16T15:02:52.382Z</lastmod>
+    <data>
+        <display>
+        <title>反检测的艺术2-如何制作PE文件后门（翻译）</title>
+        <pubTime>2020-09-04T11:39:22.000Z</pubTime>
+        
+        <tag>反病毒 </tag>
+         
+         
+           
+             
+              <breadCrumb title="Cybersecurity" url="http://www.youngroe.com/categories/Cybersecurity/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.youngroe.com/2020/09/03/Cybersecurity/art-of-anti-detection-1-introduction-to-av-detection-techniques/</loc>
+    <lastmod>2021-03-16T15:02:42.881Z</lastmod>
+    <data>
+        <display>
+        <title>反检测的艺术1-反病毒软件及检测技术概述（翻译）</title>
+        <pubTime>2020-09-03T11:39:22.000Z</pubTime>
+        
+        <tag>反病毒 </tag>
+         
+         
+           
+             
+              <breadCrumb title="Cybersecurity" url="http://www.youngroe.com/categories/Cybersecurity/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>http://www.youngroe.com/2020/08/02/Life/dns_hijacking/</loc>
     <lastmod>2020-08-07T16:15:52.418Z</lastmod>
     <data>
@@ -546,16 +586,16 @@
 
     
   <url>
-    <loc>http://www.youngroe.com/2016/05/03/Learning/note-about-linux-md/</loc>
+    <loc>http://www.youngroe.com/2016/06/03/Learning/note-about-ndk-md/</loc>
     <lastmod>2020-02-15T07:54:24.202Z</lastmod>
     <data>
         <display>
-        <title>Linux笔记</title>
-        <pubTime>2016-05-03T08:54:18.000Z</pubTime>
+        <title>Android初学笔记</title>
+        <pubTime>2016-06-03T08:54:33.000Z</pubTime>
         
-        <tag>GCC&amp;GDB </tag>
+        <tag>android </tag>
          
-        <tag>Linux </tag>
+        <tag>ndk </tag>
          
          
            
@@ -590,41 +630,21 @@
 
     
   <url>
-    <loc>http://www.youngroe.com/2016/06/03/Learning/note-about-ndk-md/</loc>
+    <loc>http://www.youngroe.com/2016/05/03/Learning/note-about-linux-md/</loc>
     <lastmod>2020-02-15T07:54:24.202Z</lastmod>
     <data>
         <display>
-        <title>Android初学笔记</title>
-        <pubTime>2016-06-03T08:54:33.000Z</pubTime>
+        <title>Linux笔记</title>
+        <pubTime>2016-05-03T08:54:18.000Z</pubTime>
         
-        <tag>android </tag>
+        <tag>GCC&amp;GDB </tag>
          
-        <tag>ndk </tag>
+        <tag>Linux </tag>
          
          
            
              
               <breadCrumb title="Learning" url="http://www.youngroe.com/categories/Learning/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://www.youngroe.com/2019/06/25/Kernel/kernel_enum_wfp_callout_function/</loc>
-    <lastmod>2020-02-15T07:54:24.201Z</lastmod>
-    <data>
-        <display>
-        <title>Windows内核重拾：如何枚举系统中Windows Filtering Platform (WFP)驱动中的callout函数</title>
-        <pubTime>2019-06-25T04:45:15.000Z</pubTime>
-        
-        <tag>驱动 </tag>
-         
-         
-           
-             
-              <breadCrumb title="Kernel" url="http://www.youngroe.com/categories/Kernel/"/>
           
         </display>
     </data>
@@ -647,6 +667,26 @@
            
              
               <breadCrumb title="Windows" url="http://www.youngroe.com/categories/Windows/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.youngroe.com/2019/06/25/Kernel/kernel_enum_wfp_callout_function/</loc>
+    <lastmod>2020-02-15T07:54:24.201Z</lastmod>
+    <data>
+        <display>
+        <title>Windows内核重拾：如何枚举系统中Windows Filtering Platform (WFP)驱动中的callout函数</title>
+        <pubTime>2019-06-25T04:45:15.000Z</pubTime>
+        
+        <tag>驱动 </tag>
+         
+         
+           
+             
+              <breadCrumb title="Kernel" url="http://www.youngroe.com/categories/Kernel/"/>
           
         </display>
     </data>
@@ -720,6 +760,28 @@
 
     
   <url>
+    <loc>http://www.youngroe.com/2016/03/18/Learning/Using-Linux-boost-Record/</loc>
+    <lastmod>2020-02-15T07:54:24.196Z</lastmod>
+    <data>
+        <display>
+        <title>Ubuntu Boost使用小记</title>
+        <pubTime>2016-03-18T04:04:54.000Z</pubTime>
+        
+        <tag>Boost </tag>
+         
+        <tag>Linux </tag>
+         
+         
+           
+             
+              <breadCrumb title="Learning" url="http://www.youngroe.com/categories/Learning/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>http://www.youngroe.com/2015/08/25/Windows/VC-BMPtoJPG/</loc>
     <lastmod>2020-02-15T07:54:24.196Z</lastmod>
     <data>
@@ -752,28 +814,6 @@
         <pubTime>2016-12-23T11:25:23.000Z</pubTime>
         
         <tag>脱壳 </tag>
-         
-         
-           
-             
-              <breadCrumb title="Learning" url="http://www.youngroe.com/categories/Learning/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://www.youngroe.com/2016/03/18/Learning/Using-Linux-boost-Record/</loc>
-    <lastmod>2020-02-15T07:54:24.196Z</lastmod>
-    <data>
-        <display>
-        <title>Ubuntu Boost使用小记</title>
-        <pubTime>2016-03-18T04:04:54.000Z</pubTime>
-        
-        <tag>Boost </tag>
-         
-        <tag>Linux </tag>
          
          
            
@@ -850,6 +890,26 @@
 
     
   <url>
+    <loc>http://www.youngroe.com/2015/12/23/Tools/Malware-Regulary-Api/</loc>
+    <lastmod>2020-02-15T07:54:24.192Z</lastmod>
+    <data>
+        <display>
+        <title>病毒木马常用api</title>
+        <pubTime>2015-12-23T09:25:11.000Z</pubTime>
+        
+        <tag>Malware </tag>
+         
+         
+           
+             
+              <breadCrumb title="Tools" url="http://www.youngroe.com/categories/Tools/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>http://www.youngroe.com/2017/05/23/Windows/Kernel%20Data%20and%20Filtering%20Support/</loc>
     <lastmod>2020-02-15T07:54:24.192Z</lastmod>
     <data>
@@ -865,26 +925,6 @@
            
              
               <breadCrumb title="Windows" url="http://www.youngroe.com/categories/Windows/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://www.youngroe.com/2015/12/23/Tools/Malware-Regulary-Api/</loc>
-    <lastmod>2020-02-15T07:54:24.192Z</lastmod>
-    <data>
-        <display>
-        <title>病毒木马常用api</title>
-        <pubTime>2015-12-23T09:25:11.000Z</pubTime>
-        
-        <tag>Malware </tag>
-         
-         
-           
-             
-              <breadCrumb title="Tools" url="http://www.youngroe.com/categories/Tools/"/>
           
         </display>
     </data>
