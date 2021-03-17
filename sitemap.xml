@@ -3,6 +3,26 @@
 
     
   <url>
+    <loc>http://www.youngroe.com/2020/09/10/Cybersecurity/art-of-anti-detection-3-art-of-anti-detection-3-shellcode-alchemy/</loc>
+    <lastmod>2021-03-17T14:29:05.074Z</lastmod>
+    <data>
+        <display>
+        <title>反检测的艺术3-shellcode的魔力 （翻译）</title>
+        <pubTime>2020-09-10T11:39:22.000Z</pubTime>
+        
+        <tag>反病毒 </tag>
+         
+         
+           
+             
+              <breadCrumb title="Cybersecurity" url="http://www.youngroe.com/categories/Cybersecurity/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>http://www.youngroe.com/2020/09/04/Cybersecurity/art-of-anti-detection-2-pe-backdoor-manufacturing/</loc>
     <lastmod>2021-03-16T15:19:39.846Z</lastmod>
     <data>
@@ -890,26 +910,6 @@
 
     
   <url>
-    <loc>http://www.youngroe.com/2015/12/23/Tools/Malware-Regulary-Api/</loc>
-    <lastmod>2020-02-15T07:54:24.192Z</lastmod>
-    <data>
-        <display>
-        <title>病毒木马常用api</title>
-        <pubTime>2015-12-23T09:25:11.000Z</pubTime>
-        
-        <tag>Malware </tag>
-         
-         
-           
-             
-              <breadCrumb title="Tools" url="http://www.youngroe.com/categories/Tools/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
     <loc>http://www.youngroe.com/2017/05/23/Windows/Kernel%20Data%20and%20Filtering%20Support/</loc>
     <lastmod>2020-02-15T07:54:24.192Z</lastmod>
     <data>
@@ -945,6 +945,26 @@
            
              
               <breadCrumb title="Learning" url="http://www.youngroe.com/categories/Learning/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.youngroe.com/2015/12/23/Tools/Malware-Regulary-Api/</loc>
+    <lastmod>2020-02-15T07:54:24.192Z</lastmod>
+    <data>
+        <display>
+        <title>病毒木马常用api</title>
+        <pubTime>2015-12-23T09:25:11.000Z</pubTime>
+        
+        <tag>Malware </tag>
+         
+         
+           
+             
+              <breadCrumb title="Tools" url="http://www.youngroe.com/categories/Tools/"/>
           
         </display>
     </data>

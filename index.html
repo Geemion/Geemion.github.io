@@ -92,6 +92,60 @@ var _hmt = _hmt || [];
   <div class="post-content">
     <header>
       
+        <time datetime="2020-09-10T11:39:22.000Z"><a href="/2020/09/10/Cybersecurity/art-of-anti-detection-3-art-of-anti-detection-3-shellcode-alchemy/">2020-09-10</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2020/09/10/Cybersecurity/art-of-anti-detection-3-art-of-anti-detection-3-shellcode-alchemy/">反检测的艺术3-shellcode的魔力 （翻译）</a></h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+
+	
+    <div class="entry">
+      
+        <p> 本文将讨论编写shellcode的基础知识和相关改变，包含汇编级别的编码器/解码器设计以及几种绕过漏洞缓解方案的方法，如微软的增强缓解应急工具包（Microsoft’s Enhanced Mitigation Experience Toolkit，EMET）。为了理解本文的内容，读者需要至少具有一定的x86汇编方面的基础，并对COFF和PE等基本文件格式有相当的了解，也可以读之前的文章<a href="http://www.youngroe.com/2020/09/03/Cybersecurity/art-of-anti-detection-1-introduction-to-av-detection-techniques/">反检测的艺术1-反病毒软件及检测技术概述</a>、<a href="http://www.youngroe.com/2020/09/04/Cybersecurity/art-of-anti-detection-2-pe-backdoor-manufacturing/">反检测的艺术2-如何制作PE文件后门</a>理解反病毒软件使用的基本检测技术的内部工作原理和相关术语。<br>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/2020/09/10/Cybersecurity/art-of-anti-detection-3-art-of-anti-detection-3-shellcode-alchemy/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+  <div id="container"></div>
+</span>
+</article>
+
+
+
+
+  <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
         <time datetime="2020-09-04T11:39:22.000Z"><a href="/2020/09/04/Cybersecurity/art-of-anti-detection-2-pe-backdoor-manufacturing/">2020-09-04</a></time>
       
       
@@ -675,67 +729,13 @@ var _hmt = _hmt || [];
 
 
 
-  <article class="post">
-  
-    <div class="gallery">
-  <div class="photoset">
-    
-      <img src="">
-    
-  </div>
-  <div class="control">
-    <div class="prev"></div>
-    <div class="next"></div>
-  </div>
-</div>
-  
-  <div class="post-content">
-    <header>
-      
-        <time datetime="2018-01-06T04:45:15.000Z"><a href="/2018/01/06/Kernel/WindowsKernel_DebugObject/">2018-01-06</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2018/01/06/Kernel/WindowsKernel_DebugObject/">Windows内核重拾：DebugObject</a></h1>
-  
-
-    </header>
-	
-<!-- Table of Contents -->
-
-
-	
-    <div class="entry">
-      
-        <h2 id="0x00_什么是DebugObject">0x00 什么是DebugObject</h2><p>在Windows系统中对调试的支持主要在三个模块中，分别为内核执行体（多核处理器一般为ntkrnlmp.exe,以Dbgk为前缀,主要负责注册和监听调试事件、管理调试对象等）、原生系统库ntdll.dll（DbgUi为前缀，负责将底层的调试对象封装起来）、子系统dll（kernelbase.dll）。而调试对象（DebugObject）是一个结构体，支持用户模式调试，由一系列的标志（决定对象的状态）、一个事件、一个调试事件双链表组成。<br>
-      
-    </div>
-    <footer>
-      
-        
-          <div class="alignleft">
-            <a href="/2018/01/06/Kernel/WindowsKernel_DebugObject/#more" class="more-link">Read More</a>
-          </div>
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-  <div id="container"></div>
-</span>
-</article>
-
-
-
-
 
 <ul class="page-direction" id="page-direction">
     <li><a class="page-prev icon-chevron-sign-left" href="javascript:;" title="上一页"></a></li>
     <li><a class="page-next icon-chevron-sign-right" href="javascript:;" title="下一页"></a></li>
 </ul>
 
-    <nav id="page-list" class="page-list"><span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/2/">Next</a></nav>
+    <nav id="page-list" class="page-list"><span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" href="/page/2/">Next</a></nav>
 
 <nav id="pagination">
   
@@ -750,7 +750,7 @@ var _hmt = _hmt || [];
   <h3 class="title">分类</h3>
   <ul class="entry">
   
-    <li><a href="/categories/Cybersecurity/">Cybersecurity</a><small>3</small></li>
+    <li><a href="/categories/Cybersecurity/">Cybersecurity</a><small>4</small></li>
   
     <li><a href="/categories/Debug/">Debug</a><small>7</small></li>
   
@@ -778,6 +778,10 @@ var _hmt = _hmt || [];
 <div class="widget tag">
   <h3 class="title">最新文章</h3>
   <ul class="entry">
+    
+      <li>
+        <a href="/2020/09/10/Cybersecurity/art-of-anti-detection-3-art-of-anti-detection-3-shellcode-alchemy/">反检测的艺术3-shellcode的魔力 （翻译）</a>
+      </li>
     
       <li>
         <a href="/2020/09/04/Cybersecurity/art-of-anti-detection-2-pe-backdoor-manufacturing/">反检测的艺术2-如何制作PE文件后门（翻译）</a>
@@ -823,10 +827,6 @@ var _hmt = _hmt || [];
         <a href="/2018/09/18/Life/xian/">西安周末游</a>
       </li>
     
-      <li>
-        <a href="/2018/01/06/Kernel/WindowsKernel_DebugObject/">Windows内核重拾：DebugObject</a>
-      </li>
-    
   </ul>
 </div>
 
@@ -835,7 +835,7 @@ var _hmt = _hmt || [];
 <div class="widget tagcloud">
   <h3 class="title">标签云</h3>
   <div class="entry">
-    <a href="/tags/ASM/" style="font-size: 10px;">ASM</a> <a href="/tags/Boost/" style="font-size: 10px;">Boost</a> <a href="/tags/DDoS/" style="font-size: 10px;">DDoS</a> <a href="/tags/DNS-over-HTTPS/" style="font-size: 10px;">DNS-over-HTTPS</a> <a href="/tags/DNS劫持/" style="font-size: 10px;">DNS劫持</a> <a href="/tags/Delphi/" style="font-size: 10px;">Delphi</a> <a href="/tags/Dll劫持/" style="font-size: 10px;">Dll劫持</a> <a href="/tags/GCC-GDB/" style="font-size: 10px;">GCC&GDB</a> <a href="/tags/GetVersionEx/" style="font-size: 10px;">GetVersionEx</a> <a href="/tags/Http/" style="font-size: 10px;">Http</a> <a href="/tags/IDA-Pro/" style="font-size: 13.33px;">IDA Pro</a> <a href="/tags/Linux/" style="font-size: 16.67px;">Linux</a> <a href="/tags/MSDN/" style="font-size: 13.33px;">MSDN</a> <a href="/tags/Malware/" style="font-size: 13.33px;">Malware</a> <a href="/tags/MiniDumpWriteDump/" style="font-size: 10px;">MiniDumpWriteDump</a> <a href="/tags/PEB/" style="font-size: 10px;">PEB</a> <a href="/tags/Procmon/" style="font-size: 10px;">Procmon</a> <a href="/tags/Runtime-Error/" style="font-size: 10px;">Runtime Error</a> <a href="/tags/SEH/" style="font-size: 10px;">SEH</a> <a href="/tags/SysinternalsSuite/" style="font-size: 10px;">SysinternalsSuite</a> <a href="/tags/Tips/" style="font-size: 10px;">Tips</a> <a href="/tags/UAC/" style="font-size: 10px;">UAC</a> <a href="/tags/UAF漏洞/" style="font-size: 10px;">UAF漏洞</a> <a href="/tags/VC/" style="font-size: 10px;">VC</a> <a href="/tags/Visual-Studio/" style="font-size: 13.33px;">Visual Studio</a> <a href="/tags/Windbg/" style="font-size: 10px;">Windbg</a> <a href="/tags/Windows/" style="font-size: 20px;">Windows</a> <a href="/tags/android/" style="font-size: 10px;">android</a> <a href="/tags/getaddrinfo/" style="font-size: 10px;">getaddrinfo</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/libeay32/" style="font-size: 10px;">libeay32</a> <a href="/tags/markdown/" style="font-size: 10px;">markdown</a> <a href="/tags/ndk/" style="font-size: 10px;">ndk</a> <a href="/tags/sublime-text3/" style="font-size: 10px;">sublime text3</a> <a href="/tags/x64/" style="font-size: 10px;">x64</a> <a href="/tags/体验/" style="font-size: 10px;">体验</a> <a href="/tags/内核/" style="font-size: 13.33px;">内核</a> <a href="/tags/内核结构/" style="font-size: 16.67px;">内核结构</a> <a href="/tags/反病毒/" style="font-size: 13.33px;">反病毒</a> <a href="/tags/安全机制/" style="font-size: 10px;">安全机制</a> <a href="/tags/异常处理/" style="font-size: 10px;">异常处理</a> <a href="/tags/提权/" style="font-size: 10px;">提权</a> <a href="/tags/服务/" style="font-size: 10px;">服务</a> <a href="/tags/权限/" style="font-size: 13.33px;">权限</a> <a href="/tags/栈溢出漏洞/" style="font-size: 10px;">栈溢出漏洞</a> <a href="/tags/测试/" style="font-size: 10px;">测试</a> <a href="/tags/漏洞调试/" style="font-size: 13.33px;">漏洞调试</a> <a href="/tags/生活/" style="font-size: 16.67px;">生活</a> <a href="/tags/脱壳/" style="font-size: 10px;">脱壳</a> <a href="/tags/西安/" style="font-size: 10px;">西安</a> <a href="/tags/计划/" style="font-size: 10px;">计划</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a> <a href="/tags/调试/" style="font-size: 16.67px;">调试</a> <a href="/tags/转换/" style="font-size: 10px;">转换</a> <a href="/tags/进程/" style="font-size: 10px;">进程</a> <a href="/tags/逆向/" style="font-size: 10px;">逆向</a> <a href="/tags/重庆/" style="font-size: 10px;">重庆</a> <a href="/tags/驱动/" style="font-size: 16.67px;">驱动</a>
+    <a href="/tags/ASM/" style="font-size: 10px;">ASM</a> <a href="/tags/Boost/" style="font-size: 10px;">Boost</a> <a href="/tags/DDoS/" style="font-size: 10px;">DDoS</a> <a href="/tags/DNS-over-HTTPS/" style="font-size: 10px;">DNS-over-HTTPS</a> <a href="/tags/DNS劫持/" style="font-size: 10px;">DNS劫持</a> <a href="/tags/Delphi/" style="font-size: 10px;">Delphi</a> <a href="/tags/Dll劫持/" style="font-size: 10px;">Dll劫持</a> <a href="/tags/GCC-GDB/" style="font-size: 10px;">GCC&GDB</a> <a href="/tags/GetVersionEx/" style="font-size: 10px;">GetVersionEx</a> <a href="/tags/Http/" style="font-size: 10px;">Http</a> <a href="/tags/IDA-Pro/" style="font-size: 13.33px;">IDA Pro</a> <a href="/tags/Linux/" style="font-size: 16.67px;">Linux</a> <a href="/tags/MSDN/" style="font-size: 13.33px;">MSDN</a> <a href="/tags/Malware/" style="font-size: 13.33px;">Malware</a> <a href="/tags/MiniDumpWriteDump/" style="font-size: 10px;">MiniDumpWriteDump</a> <a href="/tags/PEB/" style="font-size: 10px;">PEB</a> <a href="/tags/Procmon/" style="font-size: 10px;">Procmon</a> <a href="/tags/Runtime-Error/" style="font-size: 10px;">Runtime Error</a> <a href="/tags/SEH/" style="font-size: 10px;">SEH</a> <a href="/tags/SysinternalsSuite/" style="font-size: 10px;">SysinternalsSuite</a> <a href="/tags/Tips/" style="font-size: 10px;">Tips</a> <a href="/tags/UAC/" style="font-size: 10px;">UAC</a> <a href="/tags/UAF漏洞/" style="font-size: 10px;">UAF漏洞</a> <a href="/tags/VC/" style="font-size: 10px;">VC</a> <a href="/tags/Visual-Studio/" style="font-size: 13.33px;">Visual Studio</a> <a href="/tags/Windbg/" style="font-size: 10px;">Windbg</a> <a href="/tags/Windows/" style="font-size: 20px;">Windows</a> <a href="/tags/android/" style="font-size: 10px;">android</a> <a href="/tags/getaddrinfo/" style="font-size: 10px;">getaddrinfo</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/libeay32/" style="font-size: 10px;">libeay32</a> <a href="/tags/markdown/" style="font-size: 10px;">markdown</a> <a href="/tags/ndk/" style="font-size: 10px;">ndk</a> <a href="/tags/sublime-text3/" style="font-size: 10px;">sublime text3</a> <a href="/tags/x64/" style="font-size: 10px;">x64</a> <a href="/tags/体验/" style="font-size: 10px;">体验</a> <a href="/tags/内核/" style="font-size: 13.33px;">内核</a> <a href="/tags/内核结构/" style="font-size: 16.67px;">内核结构</a> <a href="/tags/反病毒/" style="font-size: 16.67px;">反病毒</a> <a href="/tags/安全机制/" style="font-size: 10px;">安全机制</a> <a href="/tags/异常处理/" style="font-size: 10px;">异常处理</a> <a href="/tags/提权/" style="font-size: 10px;">提权</a> <a href="/tags/服务/" style="font-size: 10px;">服务</a> <a href="/tags/权限/" style="font-size: 13.33px;">权限</a> <a href="/tags/栈溢出漏洞/" style="font-size: 10px;">栈溢出漏洞</a> <a href="/tags/测试/" style="font-size: 10px;">测试</a> <a href="/tags/漏洞调试/" style="font-size: 13.33px;">漏洞调试</a> <a href="/tags/生活/" style="font-size: 16.67px;">生活</a> <a href="/tags/脱壳/" style="font-size: 10px;">脱壳</a> <a href="/tags/西安/" style="font-size: 10px;">西安</a> <a href="/tags/计划/" style="font-size: 10px;">计划</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a> <a href="/tags/调试/" style="font-size: 16.67px;">调试</a> <a href="/tags/转换/" style="font-size: 10px;">转换</a> <a href="/tags/进程/" style="font-size: 10px;">进程</a> <a href="/tags/逆向/" style="font-size: 10px;">逆向</a> <a href="/tags/重庆/" style="font-size: 10px;">重庆</a> <a href="/tags/驱动/" style="font-size: 16.67px;">驱动</a>
   </div>
 </div>
 

