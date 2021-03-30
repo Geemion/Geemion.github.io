@@ -114,6 +114,7 @@ var _hmt = _hmt || [];
         <h2 id="0x0_简介">0x0 简介</h2><p>获取到一个设备的固件，有6M，基本没在网上找到对该固件进行分析的文章，因此决定按照固件分析的一般思路对该固件进行逆向分析，实践学习下。主要用到的工具binwalk、ida pro 7.5、ghidra。首先使用binwalk获取固件基础信息，首先看下能不能提取出文件来：</p>
 <div align="center"><br><img src="/img/firmware_binwalk_e.png" align><br></div>
 
+<a id="more"></a>
 <p>失败，猜测可能是个单文件固件或者有没有可能是个加密的固件，但明文字符串信息分布比较均匀，应该不是加密固件，再使用-A选项看看固件中的字节码信息。</p>
 <div align="center"><br><img src="/img/firmware_binwalk_a.png" align><br></div>
 

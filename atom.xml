@@ -5,7 +5,7 @@
   <subtitle><![CDATA[I hear and I forget.I see and I remember.I do and I understand.]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://www.youngroe.com//"/>
-  <updated>2021-03-30T13:41:41.733Z</updated>
+  <updated>2021-03-30T13:48:40.700Z</updated>
   <id>http://www.youngroe.com//</id>
   
   <author>
@@ -20,10 +20,11 @@
     <link href="http://www.youngroe.com/2021/03/20/Cybersecurity/powerpc_binary_blob_firmware_reverse/"/>
     <id>http://www.youngroe.com/2021/03/20/Cybersecurity/powerpc_binary_blob_firmware_reverse/</id>
     <published>2021-03-20T11:39:22.000Z</published>
-    <updated>2021-03-30T13:41:41.733Z</updated>
+    <updated>2021-03-30T13:48:40.700Z</updated>
     <content type="html"><![CDATA[<h2 id="0x0_简介">0x0 简介</h2><p>获取到一个设备的固件，有6M，基本没在网上找到对该固件进行分析的文章，因此决定按照固件分析的一般思路对该固件进行逆向分析，实践学习下。主要用到的工具binwalk、ida pro 7.5、ghidra。首先使用binwalk获取固件基础信息，首先看下能不能提取出文件来：</p>
 <div align="center"><br><img src="/img/firmware_binwalk_e.png" align><br></div>
 
+<a id="more"></a>
 <p>失败，猜测可能是个单文件固件或者有没有可能是个加密的固件，但明文字符串信息分布比较均匀，应该不是加密固件，再使用-A选项看看固件中的字节码信息。</p>
 <div align="center"><br><img src="/img/firmware_binwalk_a.png" align><br></div>
 
@@ -61,7 +62,9 @@
 <h2 id="0x05_参考">0x05 参考</h2><p><a href="https://cq674350529.github.io/2021/03/04/Zyxel设备eCos固件加载地址分析/" target="_blank" rel="external">Zyxel设备eCos固件加载地址分析</a><br><a href="http://gb.oversea.cnki.net/KCMS/detail/detail.aspx?filename=1018812112.nh&amp;dbcode=CDFD&amp;dbname=CDFDREF" target="_blank" rel="external">ARM设备固件装载基址定位的研究_朱瑞瑾</a><br><a href="https://bbs.pediy.com/thread-191928.htm" target="_blank" rel="external">PowerPC下C逆向指南</a><br><a href="http://blog.nsfocus.net/function-recognition-reverse-engineering-iot-equipment/" target="_blank" rel="external">IOT设备逆向工程中的函数识别</a></p>
 ]]></content>
     <summary type="html">
-    <![CDATA[<h2 id="0x0_简介">0x0 简介</h2><p>获取到一个设备的固件，有6M，基本没在网上找到对该固件进行分析的文章，因此决定按照固件分析的一般思路对该固件进行逆向分析，实践学习下。主要用到的工具binwalk、ida pro 7.5、ghidra。首先使用binwa]]>
+    <![CDATA[<h2 id="0x0_简介">0x0 简介</h2><p>获取到一个设备的固件，有6M，基本没在网上找到对该固件进行分析的文章，因此决定按照固件分析的一般思路对该固件进行逆向分析，实践学习下。主要用到的工具binwalk、ida pro 7.5、ghidra。首先使用binwalk获取固件基础信息，首先看下能不能提取出文件来：</p>
+<div align="center"><br><img src="/img/firmware_binwalk_e.png" align=""/><br></div>]]>
+    
     </summary>
     
       <category term="IOT安全" scheme="http://www.youngroe.com/tags/IOT%E5%AE%89%E5%85%A8/"/>
