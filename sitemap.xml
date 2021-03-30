@@ -3,6 +3,26 @@
 
     
   <url>
+    <loc>http://www.youngroe.com/2021/03/20/Cybersecurity/powerpc_binary_blob_firmware_reverse/</loc>
+    <lastmod>2021-03-30T13:41:41.733Z</lastmod>
+    <data>
+        <display>
+        <title>一次嵌入式固件逆向实践</title>
+        <pubTime>2021-03-20T11:39:22.000Z</pubTime>
+        
+        <tag>IOT安全 </tag>
+         
+         
+           
+             
+              <breadCrumb title="Cybersecurity" url="http://www.youngroe.com/categories/Cybersecurity/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>http://www.youngroe.com/2020/10/02/Cybersecurity/art-of-anti-detection-4-art-of-anti-detection-4-self-defense/</loc>
     <lastmod>2021-03-18T12:43:38.267Z</lastmod>
     <data>
@@ -536,28 +556,6 @@
     
     
   <url>
-    <loc>http://www.youngroe.com/2019/05/06/Kernel/windows-driver-testing-basics/</loc>
-    <lastmod>2020-02-15T07:54:24.204Z</lastmod>
-    <data>
-        <display>
-        <title>Windows内核重拾：Windows驱动测试基础：工具、功能和示例（翻译/转载）</title>
-        <pubTime>2019-05-06T04:45:15.000Z</pubTime>
-        
-        <tag>测试 </tag>
-         
-        <tag>驱动 </tag>
-         
-         
-           
-             
-              <breadCrumb title="Kernel" url="http://www.youngroe.com/categories/Kernel/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
     <loc>http://www.youngroe.com/2015/07/15/Windows/windows-auto-elevated-binaries/</loc>
     <lastmod>2020-02-15T07:54:24.204Z</lastmod>
     <data>
@@ -582,21 +580,21 @@
 
     
   <url>
-    <loc>http://www.youngroe.com/2015/09/25/Debug/vs2008-debug-vs2015/</loc>
-    <lastmod>2020-02-15T07:54:24.203Z</lastmod>
+    <loc>http://www.youngroe.com/2019/05/06/Kernel/windows-driver-testing-basics/</loc>
+    <lastmod>2020-02-15T07:54:24.204Z</lastmod>
     <data>
         <display>
-        <title>装x的一次调试（用vs2008调试vs2015）</title>
-        <pubTime>2015-09-25T03:45:44.000Z</pubTime>
+        <title>Windows内核重拾：Windows驱动测试基础：工具、功能和示例（翻译/转载）</title>
+        <pubTime>2019-05-06T04:45:15.000Z</pubTime>
         
-        <tag>Visual Studio </tag>
+        <tag>测试 </tag>
          
-        <tag>调试 </tag>
+        <tag>驱动 </tag>
          
          
            
              
-              <breadCrumb title="Debug" url="http://www.youngroe.com/categories/Debug/"/>
+              <breadCrumb title="Kernel" url="http://www.youngroe.com/categories/Kernel/"/>
           
         </display>
     </data>
@@ -626,21 +624,21 @@
 
     
   <url>
-    <loc>http://www.youngroe.com/2016/05/03/Learning/note-about-linux-md/</loc>
-    <lastmod>2020-02-15T07:54:24.202Z</lastmod>
+    <loc>http://www.youngroe.com/2015/09/25/Debug/vs2008-debug-vs2015/</loc>
+    <lastmod>2020-02-15T07:54:24.203Z</lastmod>
     <data>
         <display>
-        <title>Linux笔记</title>
-        <pubTime>2016-05-03T08:54:18.000Z</pubTime>
+        <title>装x的一次调试（用vs2008调试vs2015）</title>
+        <pubTime>2015-09-25T03:45:44.000Z</pubTime>
         
-        <tag>GCC&amp;GDB </tag>
+        <tag>Visual Studio </tag>
          
-        <tag>Linux </tag>
+        <tag>调试 </tag>
          
          
            
              
-              <breadCrumb title="Learning" url="http://www.youngroe.com/categories/Learning/"/>
+              <breadCrumb title="Debug" url="http://www.youngroe.com/categories/Debug/"/>
           
         </display>
     </data>
@@ -692,19 +690,21 @@
 
     
   <url>
-    <loc>http://www.youngroe.com/2019/06/25/Kernel/kernel_enum_wfp_callout_function/</loc>
-    <lastmod>2020-02-15T07:54:24.201Z</lastmod>
+    <loc>http://www.youngroe.com/2016/05/03/Learning/note-about-linux-md/</loc>
+    <lastmod>2020-02-15T07:54:24.202Z</lastmod>
     <data>
         <display>
-        <title>Windows内核重拾：如何枚举系统中Windows Filtering Platform (WFP)驱动中的callout函数</title>
-        <pubTime>2019-06-25T04:45:15.000Z</pubTime>
+        <title>Linux笔记</title>
+        <pubTime>2016-05-03T08:54:18.000Z</pubTime>
         
-        <tag>驱动 </tag>
+        <tag>GCC&amp;GDB </tag>
+         
+        <tag>Linux </tag>
          
          
            
              
-              <breadCrumb title="Kernel" url="http://www.youngroe.com/categories/Kernel/"/>
+              <breadCrumb title="Learning" url="http://www.youngroe.com/categories/Learning/"/>
           
         </display>
     </data>
@@ -727,6 +727,26 @@
            
              
               <breadCrumb title="Windows" url="http://www.youngroe.com/categories/Windows/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.youngroe.com/2019/06/25/Kernel/kernel_enum_wfp_callout_function/</loc>
+    <lastmod>2020-02-15T07:54:24.201Z</lastmod>
+    <data>
+        <display>
+        <title>Windows内核重拾：如何枚举系统中Windows Filtering Platform (WFP)驱动中的callout函数</title>
+        <pubTime>2019-06-25T04:45:15.000Z</pubTime>
+        
+        <tag>驱动 </tag>
+         
+         
+           
+             
+              <breadCrumb title="Kernel" url="http://www.youngroe.com/categories/Kernel/"/>
           
         </display>
     </data>
@@ -800,30 +820,6 @@
 
     
   <url>
-    <loc>http://www.youngroe.com/2015/08/25/Windows/VC-BMPtoJPG/</loc>
-    <lastmod>2020-02-15T07:54:24.196Z</lastmod>
-    <data>
-        <display>
-        <title>VC++直接利用api实现bmp图像转jpg图像</title>
-        <pubTime>2015-08-25T11:39:28.000Z</pubTime>
-        
-        <tag>VC </tag>
-         
-        <tag>Windows </tag>
-         
-        <tag>转换 </tag>
-         
-         
-           
-             
-              <breadCrumb title="Windows" url="http://www.youngroe.com/categories/Windows/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
     <loc>http://www.youngroe.com/2016/12/23/Learning/The-Art-of-Unpacking/</loc>
     <lastmod>2020-02-15T07:54:24.196Z</lastmod>
     <data>
@@ -859,6 +855,30 @@
            
              
               <breadCrumb title="Learning" url="http://www.youngroe.com/categories/Learning/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.youngroe.com/2015/08/25/Windows/VC-BMPtoJPG/</loc>
+    <lastmod>2020-02-15T07:54:24.196Z</lastmod>
+    <data>
+        <display>
+        <title>VC++直接利用api实现bmp图像转jpg图像</title>
+        <pubTime>2015-08-25T11:39:28.000Z</pubTime>
+        
+        <tag>VC </tag>
+         
+        <tag>Windows </tag>
+         
+        <tag>转换 </tag>
+         
+         
+           
+             
+              <breadCrumb title="Windows" url="http://www.youngroe.com/categories/Windows/"/>
           
         </display>
     </data>
@@ -930,26 +950,6 @@
 
     
   <url>
-    <loc>http://www.youngroe.com/2016/02/26/Learning/Learn-windows-ASM/</loc>
-    <lastmod>2020-02-15T07:54:24.192Z</lastmod>
-    <data>
-        <display>
-        <title>汇编语言学习</title>
-        <pubTime>2016-02-26T07:42:48.000Z</pubTime>
-        
-        <tag>ASM </tag>
-         
-         
-           
-             
-              <breadCrumb title="Learning" url="http://www.youngroe.com/categories/Learning/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
     <loc>http://www.youngroe.com/2015/12/23/Tools/Malware-Regulary-Api/</loc>
     <lastmod>2020-02-15T07:54:24.192Z</lastmod>
     <data>
@@ -963,6 +963,26 @@
            
              
               <breadCrumb title="Tools" url="http://www.youngroe.com/categories/Tools/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.youngroe.com/2016/02/26/Learning/Learn-windows-ASM/</loc>
+    <lastmod>2020-02-15T07:54:24.192Z</lastmod>
+    <data>
+        <display>
+        <title>汇编语言学习</title>
+        <pubTime>2016-02-26T07:42:48.000Z</pubTime>
+        
+        <tag>ASM </tag>
+         
+         
+           
+             
+              <breadCrumb title="Learning" url="http://www.youngroe.com/categories/Learning/"/>
           
         </display>
     </data>
@@ -992,26 +1012,6 @@
 
     
   <url>
-    <loc>http://www.youngroe.com/2015/10/30/Learning/Http-Protocl-learn/</loc>
-    <lastmod>2020-02-15T07:54:24.191Z</lastmod>
-    <data>
-        <display>
-        <title>Http协议初学</title>
-        <pubTime>2015-10-30T11:40:09.000Z</pubTime>
-        
-        <tag>Http </tag>
-         
-         
-           
-             
-              <breadCrumb title="Learning" url="http://www.youngroe.com/categories/Learning/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
     <loc>http://www.youngroe.com/2016/04/17/Debug/How-to-debug-a-Visual-C-Runtime-Error/</loc>
     <lastmod>2020-02-15T07:54:24.191Z</lastmod>
     <data>
@@ -1027,6 +1027,26 @@
            
              
               <breadCrumb title="Debug" url="http://www.youngroe.com/categories/Debug/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.youngroe.com/2015/10/30/Learning/Http-Protocl-learn/</loc>
+    <lastmod>2020-02-15T07:54:24.191Z</lastmod>
+    <data>
+        <display>
+        <title>Http协议初学</title>
+        <pubTime>2015-10-30T11:40:09.000Z</pubTime>
+        
+        <tag>Http </tag>
+         
+         
+           
+             
+              <breadCrumb title="Learning" url="http://www.youngroe.com/categories/Learning/"/>
           
         </display>
     </data>

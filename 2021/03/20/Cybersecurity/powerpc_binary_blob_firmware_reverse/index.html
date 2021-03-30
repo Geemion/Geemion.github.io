@@ -1,0 +1,390 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>一次嵌入式固件逆向实践 | Lyon&#39;s blog</title>
+  <meta name="author" content="Lyon">
+  
+  <meta name="description" content="Walk steps step by step">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="一次嵌入式固件逆向实践"/>
+  <meta property="og:site_name" content="Lyon&#39;s blog"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  #<link href="/favicon.ico" rel="icon">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="alternate" href="/atom.xml" title="Lyon&#39;s blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  <script src="/js/jquery.min.js"></script>
+  <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?1d807422614f63c8de98cdc3b546860c";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+  <script>
+    (function(){
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        }
+        else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+    
+  <script data-ad-client="ca-pub-6317609007693835" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+</head>
+
+
+<body>
+  <!--[if lte IE 8]> <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'> <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0027_Simplified Chinese.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." style='margin-left:auto;margin-right:auto;display: block;'/></a></div> <![endif]-->
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">Lyon&#39;s blog</a></h1>
+  <h2><a href="/">I hear and I forget.I see and I remember.I do and I understand.</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">首页</a></li>
+    
+      <li><a href="/archives">归档</a></li>
+    
+      <li><a href="/about">关于</a></li>
+    
+	<li> <a href="/atom.xml">RSS</a> </li>
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <time datetime="2021-03-20T11:39:22.000Z"><a href="/2021/03/20/Cybersecurity/powerpc_binary_blob_firmware_reverse/">2021-03-20</a></time>
+      
+      
+  
+    <h1 class="title">一次嵌入式固件逆向实践</h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+  <div id="toc" class="toc-article">
+  <strong class="toc-title">文章目录</strong>
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x0_简介"><span class="toc-number">1.</span> <span class="toc-text">0x0 简介</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x01_确定加载基地址"><span class="toc-number">2.</span> <span class="toc-text">0x01 确定加载基地址</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x02_IDA_Pro反编译函数"><span class="toc-number">3.</span> <span class="toc-text">0x02 IDA Pro反编译函数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x03_通过sig优化库函数识别"><span class="toc-number">4.</span> <span class="toc-text">0x03 通过sig优化库函数识别</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x04_TODO"><span class="toc-number">5.</span> <span class="toc-text">0x04 TODO</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x05_参考"><span class="toc-number">6.</span> <span class="toc-text">0x05 参考</span></a></li></ol>
+  </div>
+
+
+	
+    <div class="entry">
+      
+        <h2 id="0x0_简介">0x0 简介</h2><p>获取到一个设备的固件，有6M，基本没在网上找到对该固件进行分析的文章，因此决定按照固件分析的一般思路对该固件进行逆向分析，实践学习下。主要用到的工具binwalk、ida pro 7.5、ghidra。首先使用binwalk获取固件基础信息，首先看下能不能提取出文件来：</p>
+<div align="center"><br><img src="/img/firmware_binwalk_e.png" align><br></div>
+
+<p>失败，猜测可能是个单文件固件或者有没有可能是个加密的固件，但明文字符串信息分布比较均匀，应该不是加密固件，再使用-A选项看看固件中的字节码信息。</p>
+<div align="center"><br><img src="/img/firmware_binwalk_a.png" align><br></div>
+
+<p>很明确了，扫描出来全是PowerPC大端指令，包括函数开始prologue、结束epilogue相关的指令。</p>
+<h2 id="0x01_确定加载基地址">0x01 确定加载基地址</h2><p>首先使用32位ida pro对firmware进行反汇编，不过需要首先设定处理器类型，选择PowerPc big-endian。</p>
+<div align="center"><br><img src="/img/firmware_ida_set.png" align><br></div>
+
+<p>然后一路点确定，很遗憾ida pro没有自动分析，没有一个函数被识别出来，试试binwalk扫描出的函数prologue地址0x2004，跳转到这个地址按C键反汇编，可以自动识别关联的一些函数，查看字符串窗口也无法查看到对字符串的引用，猜测可能有两个原因：</p>
+<ul>
+<li>ida pro现在识别出的函数太少，很多函数还未识别出来，导致无引用</li>
+<li>加载基地址不正确，导致引用地址错误，无法形成交叉引用<br>识别出来的函数太少，可以写一个脚本根据函数序言特征识别出函数头，再自动分析函数，特征码为94 21 FF ?? 7C 08 02 A6，binwalk中的识别码为0x7C0802A6（mflr r0），不过这里没有这么干，而是直接使用ghidra，ghidra可以直接分析，</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ROM:<span class="number">000020</span>EC <span class="number">94</span> <span class="number">21</span> FF F8                             stwu      r1, back_chain(r1)       <span class="comment">//开辟栈空间</span></span><br><span class="line">ROM:<span class="number">000020F</span>0 <span class="number">7</span>C <span class="number">08</span> <span class="number">02</span> A6                             mflr      r0                       <span class="comment">//</span></span><br></pre></td></tr></table></figure>
+<div align="center"><br><img src="/img/firmware_ghirda.png" align><br></div>
+
+<p>总共识别出来26000多个函数，应该识别出来差不多了，但是字符串仍然无法形成引用，要不然就是不正确，必须要解决基地址问题。<br>搜索powerpc固件加载基地址可以获取到一些信息，<a href="https://github.com/ilovepp/ppc_rebase" target="_blank" rel="external">ppc_rebase</a>运行可以得到一个基地址，但验证后发现不正确。通过参考其他资料，目前主要有四种固件基地址识别方法，具体参考<a href="http://gb.oversea.cnki.net/KCMS/detail/detail.aspx?filename=1018812112.nh&amp;dbcode=CDFD&amp;dbname=CDFDREF" target="_blank" rel="external">ARM设备固件装载基址定位的研究_朱瑞瑾</a>，然后通过学习PowerPC相关指令集<a href="https://bbs.pediy.com/thread-191928.htm" target="_blank" rel="external">PowerPC下C逆向指南</a>，发现PowerPC switch语句汇编实现中存在一个跳转表，通过跳转表及函数语句地址之间的关系可以计算出PowerPC固件基地址，具体参考脚本。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#coding=utf-8</span></span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">import</span> re</span><br><span class="line"><span class="keyword">import</span> struct</span><br><span class="line"><span class="string">'''</span><br><span class="line">get powerpc big endin base addr by switch case jmp_table</span><br><span class="line">ROM:0000FAF4 28 03 00 07                             cmplwi    r3, 7</span><br><span class="line">ROM:0000FAF8 54 63 10 3A                             slwi      r3, r3, 2</span><br><span class="line">ROM:0000FAFC 3D 83 00 07                             addis     r12, r3, 7</span><br><span class="line">ROM:0000FB00 41 81 01 D0                             bgt       loc_FCD0</span><br><span class="line">ROM:0000FB04 81 6C FB 10                             lwz       r11, -0x4F0(r12)</span><br><span class="line">ROM:0000FB08 7D 69 03 A6                             mtctr     r11</span><br><span class="line">ROM:0000FB0C 4E 80 04 20                             bctr</span><br><span class="line">ROM:0000FB0C                         # ---------------------------------------------------------------------------</span><br><span class="line">ROM:0000FB10 00 06 FB 30                             .long unk_6FB30</span><br><span class="line">ROM:0000FB14 00 06 FB 54                             .long unk_6FB54</span><br><span class="line">ROM:0000FB18 00 06 FB 70                             .long unk_6FB70</span><br><span class="line">ROM:0000FB1C 00 06 FB A8                             .long unk_6FBA8</span><br><span class="line">ROM:0000FB20 00 06 FB C4                             .long unk_6FBC4</span><br><span class="line">ROM:0000FB24 00 06 FC 18                             .long unk_6FC18</span><br><span class="line">ROM:0000FB28 00 06 FC 34                             .long unk_6FC34</span><br><span class="line">ROM:0000FB2C 00 06 FC B8                             .long unk_6FCB8</span><br><span class="line">ROM:0000FB30                         # ---------------------------------------------------------------------------</span><br><span class="line">ROM:0000FB30 80 7F 01 68                             lwz       r3, 0x168(r31)</span><br><span class="line">ROM:0000FB34 48 01 D3 85                             bl        sub_2CEB8</span><br><span class="line">ROM:0000FB38 38 83 00 00                             addi      r4, r3, 0</span><br><span class="line">ROM:0000FB3C 38 7F 00 00                             addi      r3, r31, 0</span><br><span class="line"></span><br><span class="line">ida pro crtl+B  "7D ?? 03 A6 4E 80 04 20"  匹配查找到类似代码</span><br><span class="line">方法1：</span><br><span class="line">bctr 根据ctr寄存器值跳转</span><br><span class="line">mtctr r11 表示将r11的值加载到ctr寄存器</span><br><span class="line">r11 = 0x70000+r3*4-0x4F0，可以计算得到 当r3为0时，r11为0x6FB10 则ctr寄存器值也为0x6FB10</span><br><span class="line">则第一个跳转地址表实际所在的地址应该为0x6FB10，  0x6FB10 = base_addr + file_offset(0xFB10)</span><br><span class="line">可以计算base_addr = 0x6FB10 - 0xFB10</span><br><span class="line"></span><br><span class="line">方法2：</span><br><span class="line">最后一个跳转地址后面应该是第一个case语句跳转地址，这里的文件偏移为0xFB30</span><br><span class="line">在跳转地址表中找到最小的一个地址，这里为0x6FB30</span><br><span class="line">实际这两个地址应该相等，则 base_addr =  0x6FB30 - 0xFB30</span><br><span class="line"></span><br><span class="line">脚本实现的方法2，但是在某些固件中跳转地址表中的跳转地址不是绝对地址而是相对地址，脚本就无法通过方法二计算</span><br><span class="line">需要手动根据方法1计算</span><br><span class="line">'''</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_ppc_base_by_switch_table</span><span class="params">(image_data, start_addr, max_gap=<span class="number">1</span>&lt;&lt;<span class="number">16</span>)</span>:</span></span><br><span class="line">    <span class="string">'''</span><br><span class="line">    通过跳转表首地址获取跳转地址表、第一个case语句地址</span><br><span class="line">    跳转地址表中的地址应该是紧凑的，有一个地址范围差max_gap，通过该条件可以获取到所有跳转地址</span><br><span class="line">    与最后一个跳转地址相邻的是第一个case语句的地址，如果基地址正确则该地址应该和跳转地址表中最小的地址相等</span><br><span class="line">    这里设置的基地址为0，则这两个地址之间的差值即为基地址</span><br><span class="line">    '''</span></span><br><span class="line">    offset = start_addr</span><br><span class="line">    gap = <span class="number">0</span></span><br><span class="line">    jmp_table_addr = struct.unpack_from(<span class="string">"&gt;i"</span>, image_data, offset)[<span class="number">0</span>]</span><br><span class="line">    <span class="keyword">if</span> jmp_table_addr == <span class="number">0</span>:</span><br><span class="line">        <span class="keyword">return</span> -<span class="number">1</span></span><br><span class="line">    jmp_table_addrs = []</span><br><span class="line">    <span class="keyword">while</span> gap &lt; max_gap:</span><br><span class="line">        jmp_table_addrs.append(jmp_table_addr)</span><br><span class="line">        offset = offset + <span class="number">4</span></span><br><span class="line">        addr = struct.unpack_from(<span class="string">"&gt;i"</span>, image_data, offset)[<span class="number">0</span>]</span><br><span class="line">        gap = abs(addr - jmp_table_addr)</span><br><span class="line">        jmp_table_addr = addr</span><br><span class="line">    jmp_table_addrs.sort()</span><br><span class="line">    file_loc1_addr = offset</span><br><span class="line">    true_loc1_addr = jmp_table_addrs[<span class="number">0</span>]</span><br><span class="line">    ppc_base = true_loc1_addr - file_loc1_addr</span><br><span class="line">    <span class="keyword">return</span> ppc_base</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_switch_code_addrs</span><span class="params">(image_data)</span>:</span></span><br><span class="line">    <span class="string">'''</span><br><span class="line">    #ida 7D ?? 03 A6 4E 80 04 20</span><br><span class="line">    7D ?? 03 A6                             mtctr     rS          </span><br><span class="line">    4E 80 04 20                             bctr </span><br><span class="line">    通过switch语句字节码匹配查找固件中switch case跳转表首地址               </span><br><span class="line">    '''</span></span><br><span class="line">    re_switch_opcode = <span class="string">b"\x7d.&#123;1&#125;\x03\xA6\x4E\x80\x04\x20"</span>  </span><br><span class="line">    bytes_data = bytearray(image_data)</span><br><span class="line">    re_pattern = re.compile(re_switch_opcode)</span><br><span class="line">    addrs = []</span><br><span class="line">    <span class="keyword">for</span> match_obj <span class="keyword">in</span> re_pattern.finditer(bytes_data):</span><br><span class="line">        addrs.append(match_obj.start()+<span class="number">8</span>)                  <span class="comment">#7D ?? 03 A6 4E 80 04 20  len = 8</span></span><br><span class="line">    <span class="keyword">return</span> addrs</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">ppc_base_count</span><span class="params">(ppc_bases)</span>:</span></span><br><span class="line">    freq_dict = &#123;&#125;</span><br><span class="line">    <span class="keyword">for</span> ppc_base <span class="keyword">in</span> ppc_bases:</span><br><span class="line">        freq_dict[ppc_base] = freq_dict.get(ppc_base, <span class="number">0</span>) +<span class="number">1</span></span><br><span class="line">    <span class="keyword">return</span> freq_dict</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">print_success</span><span class="params">(ppc_bases)</span>:</span></span><br><span class="line">    ppc_base_freq = ppc_base_count(ppc_bases)</span><br><span class="line">    ppc_base_freq = sorted(ppc_base_freq.items(), key = <span class="keyword">lambda</span> kv:(kv[<span class="number">0</span>], kv[<span class="number">1</span>]))</span><br><span class="line">    <span class="keyword">for</span> base <span class="keyword">in</span> ppc_base_freq:</span><br><span class="line">        print(<span class="string">'%#x:%d'</span>%(base[<span class="number">0</span>], base[<span class="number">1</span>]))</span><br><span class="line">    print(<span class="string">"The rebase address is:%#x"</span>%ppc_base_freq[<span class="number">0</span>][<span class="number">0</span>])</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">find_ppc_rebase</span><span class="params">(firmware_path)</span>:</span></span><br><span class="line">    f = open(firmware_path, <span class="string">"rb"</span>)</span><br><span class="line">    image_data = f.read()</span><br><span class="line">    f.close()</span><br><span class="line">    addrs = get_switch_code_addrs(image_data)</span><br><span class="line">    <span class="keyword">if</span> len(addrs) == <span class="number">0</span>:</span><br><span class="line">        print(<span class="string">"[-] error find switch table addrs"</span>)</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    ppc_bases = []</span><br><span class="line">    <span class="keyword">for</span> addr <span class="keyword">in</span> addrs:</span><br><span class="line">        ppc_base = get_ppc_base_by_switch_table(image_data, addr)</span><br><span class="line">        <span class="keyword">if</span> ppc_base &lt; <span class="number">0</span>:</span><br><span class="line">            <span class="keyword">continue</span></span><br><span class="line">        ppc_bases.append(ppc_base)</span><br><span class="line">    <span class="keyword">if</span> len(ppc_bases) &gt; <span class="number">0</span>:</span><br><span class="line">        print(firmware_path + <span class="string">" firmware base addr:\n"</span>)</span><br><span class="line">        print_success(ppc_bases)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        print(<span class="string">"find rebase address failed, you can see the fllow addr use ida pro:"</span>)</span><br><span class="line">        <span class="keyword">for</span> inx, val <span class="keyword">in</span> enumerate(addrs):</span><br><span class="line">            <span class="keyword">if</span> inx &gt; <span class="number">5</span>:</span><br><span class="line">                <span class="keyword">break</span></span><br><span class="line">            print(<span class="string">"%#x"</span>%(val-<span class="number">16</span>))</span><br><span class="line">        print(<span class="string">"press key C, find addi ra,rb, eg:addi r9, r11, 0x71A4 # 0x271A4"</span>)</span><br><span class="line">        print(<span class="string">"base = \"0x271A4\" - %#x"</span> %addrs[<span class="number">0</span>])</span><br><span class="line">        </span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">usage</span><span class="params">()</span>:</span></span><br><span class="line">    print(<span class="string">"ppc_rebase.py firmware_path"</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">if</span> len(sys.argv) &lt; <span class="number">2</span>:</span><br><span class="line">        usage()</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        firmware_path = sys.argv[<span class="number">1</span>]</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> os.path.exists(firmware_path):</span><br><span class="line">            usage()</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            find_ppc_rebase(firmware_path)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
+<p>关键是通过7D ?? 03 A6 4E 80 04 20特征码获取switch语句地址，然后根据地址关系可以计算出固件基地址为0x60000，设置基地址后字符串可以正常引用</p>
+<div align="center"><br><img src="/img/firmware_ghirda_xerf.png" align><br></div>
+
+<h2 id="0x02_IDA_Pro反编译函数">0x02 IDA Pro反编译函数</h2><p>设置正确的基地址后，ghirda基本可以正常进行静态反汇编分析了，也有伪代码功能，但是用得不熟悉、插件貌似也很少，还是习惯ida pro，但是ida不能自动反汇编，必须手动make code。不过可以将ghirda反汇编得函数地址信息导出，然后使用脚本导入到ida中make code。<br>ghirda中导出函数列表方法：Window-&gt;Functions 在Functions窗口右键Export-&gt;Export to CSV保存。<br>ida中导入ghirda函数脚本如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#coding=utf-8</span></span><br><span class="line"><span class="keyword">import</span> csv</span><br><span class="line"><span class="keyword">import</span> ida_funcs</span><br><span class="line"><span class="string">'''</span><br><span class="line">ida pro 7.5  python3</span><br><span class="line">'''</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_funcs_addr</span><span class="params">(csv_path)</span>:</span></span><br><span class="line">    starts = []</span><br><span class="line">    <span class="keyword">with</span> open(csv_path, <span class="string">'r'</span>) <span class="keyword">as</span> file:</span><br><span class="line">        reader = csv.DictReader(file)</span><br><span class="line">        <span class="keyword">for</span> row <span class="keyword">in</span> reader:</span><br><span class="line">            start = int(row[<span class="string">'Location'</span>], <span class="number">16</span>)</span><br><span class="line">            starts.append(start)</span><br><span class="line">    <span class="keyword">return</span> starts</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">add_ida_funcs</span><span class="params">(starts)</span>:</span></span><br><span class="line">    <span class="keyword">for</span> index, start <span class="keyword">in</span> enumerate(starts):</span><br><span class="line">        ida_funcs.add_func(start)</span><br><span class="line"></span><br><span class="line">starts = get_funcs_addr(<span class="string">"ghirda_functions.csv"</span>)</span><br><span class="line">add_ida_funcs(starts)</span><br></pre></td></tr></table></figure>
+<p>只需要填入ghirda导出的csv文件路径即可。</p>
+<div align="center"><br><img src="/img/firmware_ida_functions.png" align><br></div>
+
+<h2 id="0x03_通过sig优化库函数识别">0x03 通过sig优化库函数识别</h2><p>由于固件文件并不像PE、ELF文件有导入表，ida中也没有内置的sig文件，所有的函数都必须靠自己人工识别，工作量太大了，不过强大的ida pro可以自己创建sig文件，经过一番折腾，可以识别libc中一些字符串处理的函数，这里列以下尝试了哪些方法。</p>
+<ul>
+<li>搜索获取powerpc相关sig库，<a href="https://github.com/IridiumXOR/uclibc-sig" target="_blank" rel="external">https://github.com/IridiumXOR/uclibc-sig</a></li>
+<li>安装linux powerpc交叉编译库，提取lib</li>
+<li>根据固件中的Copyright string: “Copyright MGC 2004 - Nucleus PLUS - MPC860 Diab C/C++ v. 1.14”字符串，安装VxWorks Tornado开发环境，提取lib<br>最后还是Tornado开发环境中提取的lib制作的sig有效，这里分享下<a href="https://pan.baidu.com/s/17ulZN" target="_blank" rel="external">Tornado.V2.2.POWERPC下载地址</a>，我是xp环境才安装运行成功的，提取的路径如下C:\Tornado\host\diab\PPCCS<br>效果如下：</li>
+</ul>
+<div align="center"><br><img src="/img/firmware_ida_sig.png" align><br></div>
+
+<h2 id="0x04_TODO">0x04 TODO</h2><p>由于并没有实际运行环境，这里并没有进行动态分析，分析起来难度较大，后续可能尝试能否使用qemu-system模式将固件运行起来进行动态调试。</p>
+<h2 id="0x05_参考">0x05 参考</h2><p><a href="https://cq674350529.github.io/2021/03/04/Zyxel设备eCos固件加载地址分析/" target="_blank" rel="external">Zyxel设备eCos固件加载地址分析</a><br><a href="http://gb.oversea.cnki.net/KCMS/detail/detail.aspx?filename=1018812112.nh&amp;dbcode=CDFD&amp;dbname=CDFDREF" target="_blank" rel="external">ARM设备固件装载基址定位的研究_朱瑞瑾</a><br><a href="https://bbs.pediy.com/thread-191928.htm" target="_blank" rel="external">PowerPC下C逆向指南</a><br><a href="http://blog.nsfocus.net/function-recognition-reverse-engineering-iot-equipment/" target="_blank" rel="external">IOT设备逆向工程中的函数识别</a></p>
+
+      
+    </div>
+    <footer>
+      
+
+        
+        
+          <div class="alignright post-nav">
+            <em>下一篇: </em><a href="/2020/10/02/Cybersecurity/art-of-anti-detection-4-art-of-anti-detection-4-self-defense/">反检测的艺术4-自保护（翻译）</a>
+          </div>
+          <div class="clearfix"></div>
+        
+
+        
+          <div class="copyright">
+            
+              <span class="claim">转载请注明youngroe.com</span>
+            
+            
+              <span class="from-link">
+                <em>本文链接地址:</em>
+                <a href="/2021/03/20/Cybersecurity/powerpc_binary_blob_firmware_reverse/">
+                  http://www.youngroe.com/2021/03/20/Cybersecurity/powerpc_binary_blob_firmware_reverse/
+                </a>
+              </span>
+            
+          </div>
+        
+        
+  
+  <div class="categories">
+    <a href="/categories/Cybersecurity/">Cybersecurity</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/IOT安全/">IOT安全</a>
+  </div>
+
+        
+          <! -- 添加捐赠图标 -->
+<div class ="post-donate">
+    <div id="donate_board" class="donate_bar center">
+        <a id="btn_donate" class="btn_donate" href="javascript:;" title="打赏"></a>
+        <span class="donate_txt">
+           ↑<br>
+           欣赏此文？求鼓励，求支持！
+        </span>
+        <br>
+      </div>  
+    <div id="donate_guide" class="donate_bar center hidden" >
+        <!-- 方式一： 
+            ![](/img/Alipay.jpg)
+            ![](/img/WeChatpay.jpg)
+        -->
+        <!-- 方式二；
+            step1：在_config.yml中添加配置
+                Alipay: /img/Alipay.jpg
+                WeChatpay: /img/WeChatpay.jpg
+            step2：此处两张图片的路径分别设置为如下
+                <img src="undefined"
+                <img src="undefined"
+        -->
+        <!-- 支付宝打赏图案 -->
+        <img src="/img/Alipay.png" alt="支付宝打赏">
+        <!-- 微信打赏图案 -->
+        <img src="/img/WeChatpay.png" alt="微信打赏">
+    </div>
+    <script type="text/javascript">
+        document.getElementById('btn_donate').onclick = function(){
+            $('#donate_board').addClass('hidden');
+            $('#donate_guide').removeClass('hidden');
+        }
+    </script>
+</div>
+<! -- 添加捐赠图标 -->
+        
+        <div id="gitalk-container"></div>
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+<script src="https://cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.js"></script>
+<script type="text/javascript">
+    var gitalk = new Gitalk({
+  clientID: '503c39aa3fb2b8c1b734',
+  clientSecret: '65d784ff7a95a9dbf4a4208c9e32166ca29654f2',
+  repo: 'geemion.github.io',
+  owner: 'geemion',
+  admin: 'geemion',
+  pagerDirection:'first',
+  id: md5(window.location.pathname)
+})
+
+gitalk.render('gitalk-container')
+</script>
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+  <div id="container"></div>
+</span>
+</article>
+
+
+<section id="comment">
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+<div class="widget tag">
+  <h3 class="title">分类</h3>
+  <ul class="entry">
+  
+    <li><a href="/categories/Cybersecurity/">Cybersecurity</a><small>6</small></li>
+  
+    <li><a href="/categories/Debug/">Debug</a><small>7</small></li>
+  
+    <li><a href="/categories/Kernel/">Kernel</a><small>4</small></li>
+  
+    <li><a href="/categories/Learning/">Learning</a><small>8</small></li>
+  
+    <li><a href="/categories/Life/">Life</a><small>6</small></li>
+  
+    <li><a href="/categories/Others/">Others</a><small>1</small></li>
+  
+    <li><a href="/categories/Tools/">Tools</a><small>6</small></li>
+  
+    <li><a href="/categories/Vulnerabilities/">Vulnerabilities</a><small>0</small></li>
+  
+    <li><a href="/categories/Windows/">Windows</a><small>13</small></li>
+  
+    <li><a href="/categories/life/">life</a><small>0</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2021/03/20/Cybersecurity/powerpc_binary_blob_firmware_reverse/">一次嵌入式固件逆向实践</a>
+      </li>
+    
+      <li>
+        <a href="/2020/10/02/Cybersecurity/art-of-anti-detection-4-art-of-anti-detection-4-self-defense/">反检测的艺术4-自保护（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2020/09/10/Cybersecurity/art-of-anti-detection-3-art-of-anti-detection-3-shellcode-alchemy/">反检测的艺术3-shellcode的魔力 （翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2020/09/04/Cybersecurity/art-of-anti-detection-2-pe-backdoor-manufacturing/">反检测的艺术2-如何制作PE文件后门（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2020/09/03/Cybersecurity/art-of-anti-detection-1-introduction-to-av-detection-techniques/">反检测的艺术1-反病毒软件及检测技术概述（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2020/08/02/Life/dns_hijacking/">记录一次被DNS劫持及解决方案(非改hosts方式)</a>
+      </li>
+    
+      <li>
+        <a href="/2019/07/01/Windows/delphi_reverse_summary/">Delphi程序逆向反汇编技巧小记</a>
+      </li>
+    
+      <li>
+        <a href="/2019/06/25/Kernel/kernel_enum_wfp_callout_function/">Windows内核重拾：如何枚举系统中Windows Filtering Platform (WFP)驱动中的callout函数</a>
+      </li>
+    
+      <li>
+        <a href="/2019/05/06/Kernel/windows-driver-testing-basics/">Windows内核重拾：Windows驱动测试基础：工具、功能和示例（翻译/转载）</a>
+      </li>
+    
+      <li>
+        <a href="/2019/04/06/Windows/how-to-reverse-engineer-software-windows-in-a-right-way/">如何正确的对Windows软件进行逆向工程（翻译/转载）</a>
+      </li>
+    
+      <li>
+        <a href="/2019/01/12/Windows/a_crash_lead_deadlock/">Windows平台下一个崩溃而导致的死锁分析</a>
+      </li>
+    
+      <li>
+        <a href="/2018/12/01/Windows/windows_client_dns_over_https/">Windows客户端如何透明使用DNS-over-HTTPS</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget tagcloud">
+  <h3 class="title">标签云</h3>
+  <div class="entry">
+    <a href="/tags/ASM/" style="font-size: 10px;">ASM</a> <a href="/tags/Boost/" style="font-size: 10px;">Boost</a> <a href="/tags/DDoS/" style="font-size: 10px;">DDoS</a> <a href="/tags/DNS-over-HTTPS/" style="font-size: 10px;">DNS-over-HTTPS</a> <a href="/tags/DNS劫持/" style="font-size: 10px;">DNS劫持</a> <a href="/tags/Delphi/" style="font-size: 10px;">Delphi</a> <a href="/tags/Dll劫持/" style="font-size: 10px;">Dll劫持</a> <a href="/tags/GCC-GDB/" style="font-size: 10px;">GCC&GDB</a> <a href="/tags/GetVersionEx/" style="font-size: 10px;">GetVersionEx</a> <a href="/tags/Http/" style="font-size: 10px;">Http</a> <a href="/tags/IDA-Pro/" style="font-size: 12.5px;">IDA Pro</a> <a href="/tags/IOT安全/" style="font-size: 10px;">IOT安全</a> <a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/MSDN/" style="font-size: 12.5px;">MSDN</a> <a href="/tags/Malware/" style="font-size: 12.5px;">Malware</a> <a href="/tags/MiniDumpWriteDump/" style="font-size: 10px;">MiniDumpWriteDump</a> <a href="/tags/PEB/" style="font-size: 10px;">PEB</a> <a href="/tags/Procmon/" style="font-size: 10px;">Procmon</a> <a href="/tags/Runtime-Error/" style="font-size: 10px;">Runtime Error</a> <a href="/tags/SEH/" style="font-size: 10px;">SEH</a> <a href="/tags/SysinternalsSuite/" style="font-size: 10px;">SysinternalsSuite</a> <a href="/tags/Tips/" style="font-size: 10px;">Tips</a> <a href="/tags/UAC/" style="font-size: 10px;">UAC</a> <a href="/tags/UAF漏洞/" style="font-size: 10px;">UAF漏洞</a> <a href="/tags/VC/" style="font-size: 10px;">VC</a> <a href="/tags/Visual-Studio/" style="font-size: 12.5px;">Visual Studio</a> <a href="/tags/Windbg/" style="font-size: 10px;">Windbg</a> <a href="/tags/Windows/" style="font-size: 20px;">Windows</a> <a href="/tags/android/" style="font-size: 10px;">android</a> <a href="/tags/getaddrinfo/" style="font-size: 10px;">getaddrinfo</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/libeay32/" style="font-size: 10px;">libeay32</a> <a href="/tags/markdown/" style="font-size: 10px;">markdown</a> <a href="/tags/ndk/" style="font-size: 10px;">ndk</a> <a href="/tags/sublime-text3/" style="font-size: 10px;">sublime text3</a> <a href="/tags/x64/" style="font-size: 10px;">x64</a> <a href="/tags/体验/" style="font-size: 10px;">体验</a> <a href="/tags/内核/" style="font-size: 12.5px;">内核</a> <a href="/tags/内核结构/" style="font-size: 15px;">内核结构</a> <a href="/tags/反病毒/" style="font-size: 17.5px;">反病毒</a> <a href="/tags/安全机制/" style="font-size: 10px;">安全机制</a> <a href="/tags/异常处理/" style="font-size: 10px;">异常处理</a> <a href="/tags/提权/" style="font-size: 10px;">提权</a> <a href="/tags/服务/" style="font-size: 10px;">服务</a> <a href="/tags/权限/" style="font-size: 12.5px;">权限</a> <a href="/tags/栈溢出漏洞/" style="font-size: 10px;">栈溢出漏洞</a> <a href="/tags/测试/" style="font-size: 10px;">测试</a> <a href="/tags/漏洞调试/" style="font-size: 12.5px;">漏洞调试</a> <a href="/tags/生活/" style="font-size: 15px;">生活</a> <a href="/tags/脱壳/" style="font-size: 10px;">脱壳</a> <a href="/tags/西安/" style="font-size: 10px;">西安</a> <a href="/tags/计划/" style="font-size: 10px;">计划</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a> <a href="/tags/调试/" style="font-size: 15px;">调试</a> <a href="/tags/转换/" style="font-size: 10px;">转换</a> <a href="/tags/进程/" style="font-size: 10px;">进程</a> <a href="/tags/逆向/" style="font-size: 10px;">逆向</a> <a href="/tags/重庆/" style="font-size: 10px;">重庆</a> <a href="/tags/驱动/" style="font-size: 15px;">驱动</a>
+  </div>
+</div>
+
+
+  <div class="widget tag">
+<h3 class="title">Links</h3>
+<ul class="entry">
+<li><a href="http://blog.ourren.com/" title="Ourren">Ourren</a></li>
+<li><a href="http://www.hyjal.net/" title="Hyjal">Hyjal</a></li>
+<li><a href="http://www.jianshu.com/users/fa15f4e416ae/latest_articles" title="Daemonceltics">Daemonceltics</a></li>
+<li><a href="http://papap.info/" title="isee">isee</a></li>
+</ul>
+</div>
+
+  <script type="text/javascript" id="clustrmaps" src="//cdn.clustrmaps.com/map_v2.js?u=putG&d=yoFnN6V-ovhL-H4e9_69LvkTiX4uX7rEYJ15yL3G1Wg"></script>
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <div id="go-pg-top"><i class="icon-arrow-up"></i></div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2021 Lyon
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript" charset="utf-8" src="/js/page.js"></script>
+
+</body>
+
+</html>
