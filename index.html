@@ -102,6 +102,91 @@ var _hmt = _hmt || [];
   <div class="post-content">
     <header>
       
+        <time datetime="2021-10-20T11:39:22.000Z"><a href="/2021/10/20/Cybersecurity/using-rasberrypi-as-poor-mans-hardware-hacking-tool/">2021-10-20</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2021/10/20/Cybersecurity/using-rasberrypi-as-poor-mans-hardware-hacking-tool/">穷人的硬件黑客工具树莓派（翻译）</a></h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+
+	
+    <div class="entry">
+      
+        <h2 id="0x00_介绍">0x00 介绍</h2><p>本文将介绍如何使用Raspberry Pi完成SPI、I2C、JTAG/SWD和JTAGenum通信，这里我将使用Raspberry Pi Zero，因为它足够便宜和小。</p>
+<p>0x01 设置树莓派<br>在本节开始之前，我建议你先开启你的树莓派并从树莓派配置选项中启用SPI、I2C、GPIO功能，你可一参考这个<a href="https://learn.sparkfun.com/tutorials/getting-started-with-the-raspberry-pi-zero-wireless/all" target="_blank" rel="external">链接</a>完成设置。<br>在下面Pin#针脚图中的编号是硬件位置编号而非GPIO接口编号。</p>
+<div align="center"><br><img src="/img/20211103gpio.png" align><br></div><br>在树莓派中克隆这个项目代码：<a href="https://github.com/arunmagesh/raspi-sec-tool" target="_blank" rel="external">https://github.com/arunmagesh/raspi-sec-tool</a><br><br>## 0x01 SPI 串行外设接口<br><br>树莓派自带SPI接口，硬件测试中最常见的测试是利用SPI通信接口提取目标设备Flash闪存数据。常用的软件工具是flashrom，支持多种flash。我们将使用树莓派的bcm2385处理器/dev/spidev0.0 实现SPI Flash读取和写入。<br><br><strong>安装：</strong><br><br><figure class="highlight q"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-<span class="built_in">get</span> install build-essential pciutils usbutils libpci-<span class="built_in">dev</span> libusb-<span class="built_in">dev</span> libftdi1 libftdi-<span class="built_in">dev</span> zlib1g-<span class="built_in">dev</span> subversion libusb-<span class="number">1.0</span>-<span class="number">0</span>-<span class="built_in">dev</span></span><br><span class="line">svn co svn:<span class="comment">//flashrom.org/flashrom/trunk flashrom</span></span><br><span class="line">cd flashrom</span><br><span class="line">make</span><br></pre></td></tr></table></figure><br><br><strong>连接：</strong><br><br>CS – 24<br>MISO – 21<br>MOSI – 19<br>CLK – 23<br>3.3v – 17<br><br><div align="center"><br><img src="/img/20211103SPI_Connect.jpg" al ign><br></div>
+
+<p>从flash中读取数据：<br><code>flashrom -p linux_spi:dev=/dev/spidev0.0,spispeed=512 -r spi_dump.bin</code></p>
+<div align="center"><br><img src="/img/20211103SPI_read.jpg" align><br></div><br>不要忘记设置spispeed=512。<br>现在你可以使用binwalk或者fmk分析提取到的固件。<br><br>## 0x02 I2C 集成电路总线连接<br>I2C通信类似于SPI，但它只使用两条线进行通信——SDA/SCL。每个设备都通过使用其内部 i2c 地址进行访问。这里我们以 I2C EEPROM 为例，看看我们如何读写内存。i2ctools 是 Linux 软件包的一部分，因此无需安装任何东西。<br><br><strong>连接：</strong><br>SDA – 3<br>SCL – 5<br>VCC – 1<br>VSS – A0 – A1 – A2 – A3 – WP – 6<br><br><div align="center"><br><img src="/img/20211103I2C_Connect.jpg" align><br></div>
+
+<p>获取设备的I2C地址<br>i2cdetect -y 1</p>
+<div align="center"><br><img src="/img/20211103I2C_addr.jpg" align><br></div><br>本例中地址为0x50，-y 1表明你使用了哪些i2c的引脚，本例中使用 i2c-1。<br>现在使用eeprog工具读取和写入EEPROM。<br>wget <a href="http://darkswarm.org/eeprog-0.7.6-tear5.tar.gz" target="_blank" rel="external">http://darkswarm.org/eeprog-0.7.6-tear5.tar.gz</a><br>tar -xvf eeprog-0.7.6-tear5.tar.gz eeprog-0.7.6-tear12/<br>cd eeprog-0.7.6-tear12/<br>make<br>sudo make install<br><br><strong>写入数据：</strong><br><code>echo &quot;hello&quot; | ./eeprog -f -16 -w 0 -t 5 /dev/i2c-1 0x50</code><br>-w 数据偏移选项<br>-t 写入延迟<br><div align="center"><br><img src="/img/20211103I2C_write.jpg" align><br></div>
+
+<p><strong>读取数据：</strong><br><code>./eeprog  -x /dev/i2c-1 0x50 -16  -r 0x00:0x10</code></p>
+<div align="center"><br><img src="/img/20211103I2C_read.jpg" align><br></div>
+
+<h2 id="0x03_调试器-JTAG/SWD">0x03 调试器-JTAG/SWD</h2><p>JTAG/SWD 是允许开发人员调试微控制器或微处理器的标准接口。从攻击者的角度来看，拥有调试权限意味着完全控制了设备，攻击者可以转储设备内部数据或动态更改内存。让我们看看仅使用 Raspberry pi 访问 JTAG 和 SWD接口。我们使用开源工具 openOCD与调试器进行交互。<br><strong>连接：</strong><br>JTAG:</p>
+<p>TCK – 23<br>TMS – 22<br>TDI – 19<br>TDO – 21<br>SRST – 12<br>GND – 20</p>
+<p>SWD:</p>
+<p>SWDIO – 18<br>SWCLK – 22<br>SRST – 12<br>GND – 14</p>
+<h3 id="安装openOCD">安装openOCD</h3><figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">git clone gi<span class="variable">t:</span>//git.code.<span class="keyword">sf</span>.net/<span class="keyword">p</span>/openocd/code openocd</span><br><span class="line"><span class="keyword">cd</span> openocd/</span><br><span class="line">./bootstrap</span><br><span class="line">./configure –enable-maintainer-<span class="built_in">mode</span> –enable-bcm2835gpio –enable-sysfsgpio</span><br><span class="line"><span class="keyword">make</span> &amp; sudo <span class="keyword">make</span> install</span><br></pre></td></tr></table></figure>
+<p>耐心等待一会就回安装完成。</p>
+<h3 id="JTAG">JTAG</h3><p>JTAG 的配置文件随 openOCD 包一起提供。只需带上目标 cfg文件运行它就会连接到JTAG。<br><code>openocd -f interface/raspberrypi-native.cfg -f target/stm32f4x.cfg</code></p>
+<div align="center"><br><img src="/img/20211103JTAG.jpg" align><br></div><br>现在你可以使用gdb连接并调试设备。<br><br>### SWD<br><code>openocd -f raspberrypi_swd.cfg -f target/stm32f4x.cfg</code><br>raspberrypi_swd.cfg 位于你之前下载的 git 文件夹中。<br><div align="center"><br><img src="/img/20211103SWD.jpg" align><br></div><br>现在你可以使用gdb连接并调试设备。<br><br>### JTAGenum<br>在大部分设备中，很少能找到 JTAG 接口和引脚所在的位置。因此我们使用JTAGenum 工具扫描设备的所有引脚并告诉你哪些引脚是 TMS-TCK-TDI-TDO。如果你没有目标设备的开发文档，这将非常有用。<br>安装：<br><figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">git clone http<span class="variable">s:</span>//github.<span class="keyword">com</span>/cyphunk/JTAGenum</span><br><span class="line"><span class="keyword">cd</span> JTAGenum</span><br><span class="line"><span class="keyword">source</span> JTAGenum.<span class="keyword">sh</span></span><br><span class="line">scan</span><br></pre></td></tr></table></figure><br><br>需要使用3 – 5 – 7 – 11 – 13 – 15及ground引脚。<br>这将需要一些时间，因为 GPIO 非常慢。<br><div align="center"><br><img src="/img/20211103JTAG_SCAN_Done.jpg" align><br></div><br>成功找到。<br><div align="center"><br><img src="/img/20211103JTAG_SCAN_Done2.jpg" align><br></div><br>我花的时间。<br><div align="center"><br><img src="/img/20211103JTAG_SCAN_time.jpg" align><br></div>
+
+<p>伙计们，这就是全部。如果我发现更多关于使用 Raspberry Pi 作为其他很酷的东西的信息，我会更新。<br>我们设计了一个板子，可以在没有杂乱电线的情况下执行这些操作。如果你碰巧遇到 <a href="https://twitter.com/aseemjakhar?lang=en" target="_blank" rel="external">Aseem Jakhar</a>，你可以得到一个。</p>
+<blockquote>
+<p>译注：国内也有人设计了板子，淘宝有卖 <a href="https://www.muselab-tech.com/geekgong-ju-ba-shu-mei-pai-bian-cheng-duo-gong-neng-diao-shi-shao-lu-qi/" target="_blank" rel="external">https://www.muselab-tech.com/geekgong-ju-ba-shu-mei-pai-bian-cheng-duo-gong-neng-diao-shi-shao-lu-qi/</a></p>
+</blockquote>
+<h2 id="0x04_参考">0x04 参考</h2><ul>
+<li><a href="https://github.com/cyphunk/JTAGenum" target="_blank" rel="external">https://github.com/cyphunk/JTAGenum</a></li>
+<li><a href="https://github.com/synthetos/PiOCD/wiki/Using-a-Raspberry-Pi-as-a-JTAG-Dongle" target="_blank" rel="external">https://github.com/synthetos/PiOCD/wiki/Using-a-Raspberry-Pi-as-a-JTAG-Dongle</a></li>
+<li><a href="http://catch22.eu/baremetal/openocd_sysfs_stm32/" target="_blank" rel="external">http://catch22.eu/baremetal/openocd_sysfs_stm32/</a></li>
+<li><a href="https://movr0.com/2016/09/02/use-raspberry-pi-23-as-a-jtagswd-adapter/" target="_blank" rel="external">https://movr0.com/2016/09/02/use-raspberry-pi-23-as-a-jtagswd-adapter/</a></li>
+<li><a href="https://www.richud.com/wiki/Rasberry_Pi_I2C_EEPROM_Program" target="_blank" rel="external">https://www.richud.com/wiki/Rasberry_Pi_I2C_EEPROM_Program</a></li>
+<li><a href="https://libreboot.org/docs/install/rpi_setup.html" target="_blank" rel="external">https://libreboot.org/docs/install/rpi_setup.html</a></li>
+</ul>
+<p><em>原文链接：<a href="https://payatu.com/using-rasberrypi-as-poor-mans-hardware-hacking-tool" target="_blank" rel="external">https://payatu.com/using-rasberrypi-as-poor-mans-hardware-hacking-tool</a></em></p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+  <div id="container"></div>
+</span>
+</article>
+
+
+
+
+  <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
         <time datetime="2021-03-20T11:39:22.000Z"><a href="/2021/03/20/Cybersecurity/powerpc_binary_blob_firmware_reverse/">2021-03-20</a></time>
       
       
@@ -681,64 +766,6 @@ var _hmt = _hmt || [];
 
 
 
-  <article class="post">
-  
-    <div class="gallery">
-  <div class="photoset">
-    
-      <img src="">
-    
-  </div>
-  <div class="control">
-    <div class="prev"></div>
-    <div class="next"></div>
-  </div>
-</div>
-  
-  <div class="post-content">
-    <header>
-      
-        <time datetime="2018-12-01T12:13:53.000Z"><a href="/2018/12/01/Windows/windows_client_dns_over_https/">2018-12-01</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2018/12/01/Windows/windows_client_dns_over_https/">Windows客户端如何透明使用DNS-over-HTTPS</a></h1>
-  
-
-    </header>
-	
-<!-- Table of Contents -->
-
-
-	
-    <div class="entry">
-      
-        <h2 id="0x00_现有Windows客户端程序dns查询流程">0x00 现有Windows客户端程序dns查询流程</h2><ul>
-<li>1.client通过系统api（gethostbyname/getaddrinfo/getaddrinfoex）发起查询dns请求</li>
-<li>2.系统api会通过rpc查询本地服务dnscache是否有该host的缓存，如果缓存存在则直接返回返回host对应的ip地址，dns查询完成，如果没有则进入下一步</li>
-<li>3.如果不存在该host的缓存，则首先会通过解析本地hosts文件看是否有该host对应的ip，如果存在，则直接返回该ip，否则进入下一步</li>
-<li>4.如果本地hosts文件中没有该host的记录，则系统会通过发送dns udp包向本地dns服务器发起请求查询该host对应的ip，后面的dns查询过程如下图所示。
-      
-    </div>
-    <footer>
-      
-        
-          <div class="alignleft">
-            <a href="/2018/12/01/Windows/windows_client_dns_over_https/#more" class="more-link">Read More</a>
-          </div>
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-  <div id="container"></div>
-</span>
-</article>
-
-
-
-
 
 <ul class="page-direction" id="page-direction">
     <li><a class="page-prev icon-chevron-sign-left" href="javascript:;" title="上一页"></a></li>
@@ -760,7 +787,7 @@ var _hmt = _hmt || [];
   <h3 class="title">分类</h3>
   <ul class="entry">
   
-    <li><a href="/categories/Cybersecurity/">Cybersecurity</a><small>6</small></li>
+    <li><a href="/categories/Cybersecurity/">Cybersecurity</a><small>7</small></li>
   
     <li><a href="/categories/Debug/">Debug</a><small>7</small></li>
   
@@ -788,6 +815,10 @@ var _hmt = _hmt || [];
 <div class="widget tag">
   <h3 class="title">最新文章</h3>
   <ul class="entry">
+    
+      <li>
+        <a href="/2021/10/20/Cybersecurity/using-rasberrypi-as-poor-mans-hardware-hacking-tool/">穷人的硬件黑客工具树莓派（翻译）</a>
+      </li>
     
       <li>
         <a href="/2021/03/20/Cybersecurity/powerpc_binary_blob_firmware_reverse/">一次嵌入式固件逆向实践</a>
@@ -833,10 +864,6 @@ var _hmt = _hmt || [];
         <a href="/2019/01/12/Windows/a_crash_lead_deadlock/">Windows平台下一个崩溃而导致的死锁分析</a>
       </li>
     
-      <li>
-        <a href="/2018/12/01/Windows/windows_client_dns_over_https/">Windows客户端如何透明使用DNS-over-HTTPS</a>
-      </li>
-    
   </ul>
 </div>
 
@@ -845,7 +872,7 @@ var _hmt = _hmt || [];
 <div class="widget tagcloud">
   <h3 class="title">标签云</h3>
   <div class="entry">
-    <a href="/tags/ASM/" style="font-size: 10px;">ASM</a> <a href="/tags/Boost/" style="font-size: 10px;">Boost</a> <a href="/tags/DDoS/" style="font-size: 10px;">DDoS</a> <a href="/tags/DNS-over-HTTPS/" style="font-size: 10px;">DNS-over-HTTPS</a> <a href="/tags/DNS劫持/" style="font-size: 10px;">DNS劫持</a> <a href="/tags/Delphi/" style="font-size: 10px;">Delphi</a> <a href="/tags/Dll劫持/" style="font-size: 10px;">Dll劫持</a> <a href="/tags/GCC-GDB/" style="font-size: 10px;">GCC&GDB</a> <a href="/tags/GetVersionEx/" style="font-size: 10px;">GetVersionEx</a> <a href="/tags/Http/" style="font-size: 10px;">Http</a> <a href="/tags/IDA-Pro/" style="font-size: 12.5px;">IDA Pro</a> <a href="/tags/IOT安全/" style="font-size: 10px;">IOT安全</a> <a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/MSDN/" style="font-size: 12.5px;">MSDN</a> <a href="/tags/Malware/" style="font-size: 12.5px;">Malware</a> <a href="/tags/MiniDumpWriteDump/" style="font-size: 10px;">MiniDumpWriteDump</a> <a href="/tags/PEB/" style="font-size: 10px;">PEB</a> <a href="/tags/Procmon/" style="font-size: 10px;">Procmon</a> <a href="/tags/Runtime-Error/" style="font-size: 10px;">Runtime Error</a> <a href="/tags/SEH/" style="font-size: 10px;">SEH</a> <a href="/tags/SysinternalsSuite/" style="font-size: 10px;">SysinternalsSuite</a> <a href="/tags/Tips/" style="font-size: 10px;">Tips</a> <a href="/tags/UAC/" style="font-size: 10px;">UAC</a> <a href="/tags/UAF漏洞/" style="font-size: 10px;">UAF漏洞</a> <a href="/tags/VC/" style="font-size: 10px;">VC</a> <a href="/tags/Visual-Studio/" style="font-size: 12.5px;">Visual Studio</a> <a href="/tags/Windbg/" style="font-size: 10px;">Windbg</a> <a href="/tags/Windows/" style="font-size: 20px;">Windows</a> <a href="/tags/android/" style="font-size: 10px;">android</a> <a href="/tags/getaddrinfo/" style="font-size: 10px;">getaddrinfo</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/libeay32/" style="font-size: 10px;">libeay32</a> <a href="/tags/markdown/" style="font-size: 10px;">markdown</a> <a href="/tags/ndk/" style="font-size: 10px;">ndk</a> <a href="/tags/sublime-text3/" style="font-size: 10px;">sublime text3</a> <a href="/tags/x64/" style="font-size: 10px;">x64</a> <a href="/tags/体验/" style="font-size: 10px;">体验</a> <a href="/tags/内核/" style="font-size: 12.5px;">内核</a> <a href="/tags/内核结构/" style="font-size: 15px;">内核结构</a> <a href="/tags/反病毒/" style="font-size: 17.5px;">反病毒</a> <a href="/tags/安全机制/" style="font-size: 10px;">安全机制</a> <a href="/tags/异常处理/" style="font-size: 10px;">异常处理</a> <a href="/tags/提权/" style="font-size: 10px;">提权</a> <a href="/tags/服务/" style="font-size: 10px;">服务</a> <a href="/tags/权限/" style="font-size: 12.5px;">权限</a> <a href="/tags/栈溢出漏洞/" style="font-size: 10px;">栈溢出漏洞</a> <a href="/tags/测试/" style="font-size: 10px;">测试</a> <a href="/tags/漏洞调试/" style="font-size: 12.5px;">漏洞调试</a> <a href="/tags/生活/" style="font-size: 15px;">生活</a> <a href="/tags/脱壳/" style="font-size: 10px;">脱壳</a> <a href="/tags/西安/" style="font-size: 10px;">西安</a> <a href="/tags/计划/" style="font-size: 10px;">计划</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a> <a href="/tags/调试/" style="font-size: 15px;">调试</a> <a href="/tags/转换/" style="font-size: 10px;">转换</a> <a href="/tags/进程/" style="font-size: 10px;">进程</a> <a href="/tags/逆向/" style="font-size: 10px;">逆向</a> <a href="/tags/重庆/" style="font-size: 10px;">重庆</a> <a href="/tags/驱动/" style="font-size: 15px;">驱动</a>
+    <a href="/tags/ASM/" style="font-size: 10px;">ASM</a> <a href="/tags/Boost/" style="font-size: 10px;">Boost</a> <a href="/tags/DDoS/" style="font-size: 10px;">DDoS</a> <a href="/tags/DNS-over-HTTPS/" style="font-size: 10px;">DNS-over-HTTPS</a> <a href="/tags/DNS劫持/" style="font-size: 10px;">DNS劫持</a> <a href="/tags/Delphi/" style="font-size: 10px;">Delphi</a> <a href="/tags/Dll劫持/" style="font-size: 10px;">Dll劫持</a> <a href="/tags/GCC-GDB/" style="font-size: 10px;">GCC&GDB</a> <a href="/tags/GetVersionEx/" style="font-size: 10px;">GetVersionEx</a> <a href="/tags/Http/" style="font-size: 10px;">Http</a> <a href="/tags/IDA-Pro/" style="font-size: 12.5px;">IDA Pro</a> <a href="/tags/IOT安全/" style="font-size: 12.5px;">IOT安全</a> <a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/MSDN/" style="font-size: 12.5px;">MSDN</a> <a href="/tags/Malware/" style="font-size: 12.5px;">Malware</a> <a href="/tags/MiniDumpWriteDump/" style="font-size: 10px;">MiniDumpWriteDump</a> <a href="/tags/PEB/" style="font-size: 10px;">PEB</a> <a href="/tags/Procmon/" style="font-size: 10px;">Procmon</a> <a href="/tags/Runtime-Error/" style="font-size: 10px;">Runtime Error</a> <a href="/tags/SEH/" style="font-size: 10px;">SEH</a> <a href="/tags/SysinternalsSuite/" style="font-size: 10px;">SysinternalsSuite</a> <a href="/tags/Tips/" style="font-size: 10px;">Tips</a> <a href="/tags/UAC/" style="font-size: 10px;">UAC</a> <a href="/tags/UAF漏洞/" style="font-size: 10px;">UAF漏洞</a> <a href="/tags/VC/" style="font-size: 10px;">VC</a> <a href="/tags/Visual-Studio/" style="font-size: 12.5px;">Visual Studio</a> <a href="/tags/Windbg/" style="font-size: 10px;">Windbg</a> <a href="/tags/Windows/" style="font-size: 20px;">Windows</a> <a href="/tags/android/" style="font-size: 10px;">android</a> <a href="/tags/getaddrinfo/" style="font-size: 10px;">getaddrinfo</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/libeay32/" style="font-size: 10px;">libeay32</a> <a href="/tags/markdown/" style="font-size: 10px;">markdown</a> <a href="/tags/ndk/" style="font-size: 10px;">ndk</a> <a href="/tags/sublime-text3/" style="font-size: 10px;">sublime text3</a> <a href="/tags/x64/" style="font-size: 10px;">x64</a> <a href="/tags/体验/" style="font-size: 10px;">体验</a> <a href="/tags/内核/" style="font-size: 12.5px;">内核</a> <a href="/tags/内核结构/" style="font-size: 15px;">内核结构</a> <a href="/tags/反病毒/" style="font-size: 17.5px;">反病毒</a> <a href="/tags/安全机制/" style="font-size: 10px;">安全机制</a> <a href="/tags/异常处理/" style="font-size: 10px;">异常处理</a> <a href="/tags/提权/" style="font-size: 10px;">提权</a> <a href="/tags/服务/" style="font-size: 10px;">服务</a> <a href="/tags/权限/" style="font-size: 12.5px;">权限</a> <a href="/tags/栈溢出漏洞/" style="font-size: 10px;">栈溢出漏洞</a> <a href="/tags/测试/" style="font-size: 10px;">测试</a> <a href="/tags/漏洞调试/" style="font-size: 12.5px;">漏洞调试</a> <a href="/tags/生活/" style="font-size: 15px;">生活</a> <a href="/tags/脱壳/" style="font-size: 10px;">脱壳</a> <a href="/tags/西安/" style="font-size: 10px;">西安</a> <a href="/tags/计划/" style="font-size: 10px;">计划</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a> <a href="/tags/调试/" style="font-size: 15px;">调试</a> <a href="/tags/转换/" style="font-size: 10px;">转换</a> <a href="/tags/进程/" style="font-size: 10px;">进程</a> <a href="/tags/逆向/" style="font-size: 10px;">逆向</a> <a href="/tags/重庆/" style="font-size: 10px;">重庆</a> <a href="/tags/驱动/" style="font-size: 15px;">驱动</a>
   </div>
 </div>
 
