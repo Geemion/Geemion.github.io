@@ -3,28 +3,8 @@
 
     
   <url>
-    <loc>http://www.youngroe.com/2021/10/20/Cybersecurity/using-rasberrypi-as-poor-mans-hardware-hacking-tool/</loc>
-    <lastmod>2021-11-03T14:31:19.533Z</lastmod>
-    <data>
-        <display>
-        <title>树莓派-穷人的硬件黑客工具（翻译）</title>
-        <pubTime>2021-10-20T11:39:22.000Z</pubTime>
-        
-        <tag>IOT安全 </tag>
-         
-         
-           
-             
-              <breadCrumb title="Cybersecurity" url="http://www.youngroe.com/categories/Cybersecurity/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://www.youngroe.com/2021/03/20/Cybersecurity/powerpc_binary_blob_firmware_reverse/</loc>
-    <lastmod>2021-08-03T04:19:15.957Z</lastmod>
+    <loc>http://www.youngroe.com/2021/03/20/IOT/powerpc_binary_blob_firmware_reverse/</loc>
+    <lastmod>2021-11-03T14:38:05.770Z</lastmod>
     <data>
         <display>
         <title>一次嵌入式固件逆向实践</title>
@@ -35,7 +15,27 @@
          
            
              
-              <breadCrumb title="Cybersecurity" url="http://www.youngroe.com/categories/Cybersecurity/"/>
+              <breadCrumb title="IOT" url="http://www.youngroe.com/categories/IOT/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.youngroe.com/2021/10/20/IOT/using-rasberrypi-as-poor-mans-hardware-hacking-tool/</loc>
+    <lastmod>2021-11-03T14:37:56.650Z</lastmod>
+    <data>
+        <display>
+        <title>树莓派-穷人的硬件黑客工具（翻译）</title>
+        <pubTime>2021-10-20T11:39:22.000Z</pubTime>
+        
+        <tag>IOT安全 </tag>
+         
+         
+           
+             
+              <breadCrumb title="IOT" url="http://www.youngroe.com/categories/IOT/"/>
           
         </display>
     </data>

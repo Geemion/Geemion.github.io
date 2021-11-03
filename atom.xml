@@ -5,7 +5,7 @@
   <subtitle><![CDATA[I hear and I forget.I see and I remember.I do and I understand.]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://www.youngroe.com//"/>
-  <updated>2021-11-03T14:31:19.533Z</updated>
+  <updated>2021-11-03T14:37:56.650Z</updated>
   <id>http://www.youngroe.com//</id>
   
   <author>
@@ -17,10 +17,10 @@
   
   <entry>
     <title><![CDATA[树莓派-穷人的硬件黑客工具（翻译）]]></title>
-    <link href="http://www.youngroe.com/2021/10/20/Cybersecurity/using-rasberrypi-as-poor-mans-hardware-hacking-tool/"/>
-    <id>http://www.youngroe.com/2021/10/20/Cybersecurity/using-rasberrypi-as-poor-mans-hardware-hacking-tool/</id>
+    <link href="http://www.youngroe.com/2021/10/20/IOT/using-rasberrypi-as-poor-mans-hardware-hacking-tool/"/>
+    <id>http://www.youngroe.com/2021/10/20/IOT/using-rasberrypi-as-poor-mans-hardware-hacking-tool/</id>
     <published>2021-10-20T11:39:22.000Z</published>
-    <updated>2021-11-03T14:31:19.533Z</updated>
+    <updated>2021-11-03T14:37:56.650Z</updated>
     <content type="html"><![CDATA[<h2 id="0x00_介绍">0x00 介绍</h2><p>本文将介绍如何使用Raspberry Pi完成SPI、I2C、JTAG/SWD和JTAGenum通信，这里我将使用Raspberry Pi Zero，因为它足够便宜和小。</p>
 <h2 id="0x01_设置树莓派">0x01 设置树莓派</h2><p>在本节开始之前，我建议你先开启你的树莓派并从树莓派配置选项中启用SPI、I2C、GPIO功能，你可一参考这个<a href="https://learn.sparkfun.com/tutorials/getting-started-with-the-raspberry-pi-zero-wireless/all" target="_blank" rel="external">链接</a>完成设置。</p>
 <a id="more"></a>
@@ -67,16 +67,16 @@
     
       <category term="IOT安全" scheme="http://www.youngroe.com/tags/IOT%E5%AE%89%E5%85%A8/"/>
     
-      <category term="Cybersecurity" scheme="http://www.youngroe.com/categories/Cybersecurity/"/>
+      <category term="IOT" scheme="http://www.youngroe.com/categories/IOT/"/>
     
   </entry>
   
   <entry>
     <title><![CDATA[一次嵌入式固件逆向实践]]></title>
-    <link href="http://www.youngroe.com/2021/03/20/Cybersecurity/powerpc_binary_blob_firmware_reverse/"/>
-    <id>http://www.youngroe.com/2021/03/20/Cybersecurity/powerpc_binary_blob_firmware_reverse/</id>
+    <link href="http://www.youngroe.com/2021/03/20/IOT/powerpc_binary_blob_firmware_reverse/"/>
+    <id>http://www.youngroe.com/2021/03/20/IOT/powerpc_binary_blob_firmware_reverse/</id>
     <published>2021-03-20T11:39:22.000Z</published>
-    <updated>2021-08-03T04:19:15.957Z</updated>
+    <updated>2021-11-03T14:38:05.770Z</updated>
     <content type="html"><![CDATA[<h2 id="0x0_简介">0x0 简介</h2><p><strong>本文已被看雪智能设备版本设置为精华文章：<a href="https://bbs.pediy.com/thread-266803.htm" target="_blank" rel="external">https://bbs.pediy.com/thread-266803.htm</a></strong><br>获取到一个设备的固件，有6M，基本没在网上找到对该固件进行分析的文章，因此决定按照固件分析的一般思路对该固件进行逆向分析，实践学习下。主要用到的工具binwalk、ida pro 7.5、ghidra。首先使用binwalk获取固件基础信息，首先看下能不能提取出文件来：</p>
 <div align="center"><br><img src="/img/firmware_binwalk_e.png" align><br></div>
 
@@ -132,7 +132,7 @@
     
       <category term="IOT安全" scheme="http://www.youngroe.com/tags/IOT%E5%AE%89%E5%85%A8/"/>
     
-      <category term="Cybersecurity" scheme="http://www.youngroe.com/categories/Cybersecurity/"/>
+      <category term="IOT" scheme="http://www.youngroe.com/categories/IOT/"/>
     
   </entry>
   
