@@ -102,171 +102,6 @@ var _hmt = _hmt || [];
   <div class="post-content">
     <header>
       
-        <time datetime="2015-10-10T02:46:32.000Z"><a href="/2015/10/10/Debug/A-Tips-about-DbgBreakPoint/">2015-10-10</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2015/10/10/Debug/A-Tips-about-DbgBreakPoint/">一种让Ring 3程序断下来的方法</a></h1>
-  
-
-    </header>
-	
-<!-- Table of Contents -->
-
-
-	
-    <div class="entry">
-      
-        <h2 id="背景">背景</h2><p>解决一个<a href="https://social.msdn.microsoft.com/Forums/en-US/7728257d-3889-48cc-877c-5dc8c2d492b0/winsock-differences-in-store-apps?forum=winappswithnativecode">bug</a>**的过程中使用windbg但是断不下来，因为每次符号信息没来得及加载系统就蹦了。so想到之前驱动调试的 int 3但程序是64位的不好嵌入汇编想到DbgBreakPoint()，遂有下面的方法<br>在应用层中直接调用ntdll的DbgBreakPoint。<br>大概就像下面这个样子：<br>
-      
-    </div>
-    <footer>
-      
-        
-          <div class="alignleft">
-            <a href="/2015/10/10/Debug/A-Tips-about-DbgBreakPoint/#more" class="more-link">Read More</a>
-          </div>
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-  <div id="container"></div>
-</span>
-</article>
-
-
-
-
-  <article class="post">
-  
-    <div class="gallery">
-  <div class="photoset">
-    
-      <img src="">
-    
-  </div>
-  <div class="control">
-    <div class="prev"></div>
-    <div class="next"></div>
-  </div>
-</div>
-  
-  <div class="post-content">
-    <header>
-      
-        <time datetime="2015-09-26T03:03:03.000Z"><a href="/2015/09/26/Windows/Process32First-error-of-command-length/">2015-09-26</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2015/09/26/Windows/Process32First-error-of-command-length/">关于&quot;Process32First&quot;返回false的问题</a></h1>
-  
-
-    </header>
-	
-<!-- Table of Contents -->
-
-
-	
-    <div class="entry">
-      
-        <h2 id="问题描述">问题描述</h2><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">http://blog.csdn.net/hbu_dcf/article/details/3491276</span><br><span class="line">现象：Process32First"返回值为0，GetLastError()取到的错误是：〖24〗-程序发出命令，但命令长度</span><br><span class="line">不正确。</span><br><span class="line">分析：在调用这个函数前，需要：pe32.dwSize = sizeof(PROCESSENTRY32);，</span><br><span class="line">不设的话，就会一直返回0，而虽然我设定了大小，但是出错原因是命令长度不正确，所以肯定还是这句</span><br><span class="line">代码出了问题。</span><br><span class="line">参考：</span><br><span class="line">有因为使用了"unicode模式"而且没有初始化PROCESSENTRY32对象里面的dwsize对象,可以使用sizeof</span><br><span class="line">(PROCESSENTRY32)来初始化.有时候在release模式下不能通过但debug可以通过也可能是这个原因</span><br><span class="line">解决方案：最后实在没了办法，把工程属性-配置属性-常规-字符集-未设定，原来是unicode字符集。</span><br><span class="line">问题解决，不过还是很晕。</span><br></pre></td></tr></table></figure>
-      
-    </div>
-    <footer>
-      
-        
-          <div class="alignleft">
-            <a href="/2015/09/26/Windows/Process32First-error-of-command-length/#more" class="more-link">Read More</a>
-          </div>
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-  <div id="container"></div>
-</span>
-</article>
-
-
-
-
-  <article class="post">
-  
-    <div class="gallery">
-  <div class="photoset">
-    
-      
-        <img src="/img/crashvs2015.png">
-      
-    
-  </div>
-  <div class="control">
-    <div class="prev"></div>
-    <div class="next"></div>
-  </div>
-</div>
-  
-  <div class="post-content">
-    <header>
-      
-        <time datetime="2015-09-25T03:45:44.000Z"><a href="/2015/09/25/Debug/vs2008-debug-vs2015/">2015-09-25</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2015/09/25/Debug/vs2008-debug-vs2015/">装x的一次调试（用vs2008调试vs2015）</a></h1>
-  
-
-    </header>
-	
-<!-- Table of Contents -->
-
-
-	
-    <div class="entry">
-      
-        <p><em>题目很装逼，其实就是用08找到了导致15崩溃的原因</em></p>
-<p>事情是这个样子的，装上vs2015后只是运行了个HelloWord就没管了。今天突然想起来了，想试试15的功能有没有什么变化，但是吧 一打开再一点击就崩了，难道又是姿势没对，那就再来一次吧还是崩了，看来是哪个地方出现问题了。<br><strong>那我们就来看看问题详细信息吧</strong><br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">  问题事件名称:	BEX</span><br><span class="line">  应用程序名:	devenv.exe</span><br><span class="line">  应用程序版本:	<span class="number">14.0</span><span class="number">.23107</span><span class="number">.0</span></span><br><span class="line">  应用程序时间戳:	<span class="number">559</span>b7ead</span><br><span class="line">  故障模块名称:	StackHash_0a9e</span><br><span class="line">  故障模块版本:	<span class="number">0.0</span><span class="number">.0</span><span class="number">.0</span></span><br><span class="line">  故障模块时间戳:	<span class="number">00000000</span></span><br><span class="line">  异常偏移:	<span class="number">000</span>b0000</span><br><span class="line">  异常代码:	c0000005</span><br><span class="line">  异常数据:	<span class="number">00000008</span></span><br><span class="line">  OS 版本:	<span class="number">6.1</span><span class="number">.7601</span><span class="number">.2</span><span class="number">.1</span><span class="number">.0</span><span class="number">.256</span><span class="number">.1</span></span><br><span class="line">  区域设置 ID:	<span class="number">2052</span></span><br><span class="line">  其他信息 <span class="number">1</span>:	<span class="number">0</span>a9e</span><br><span class="line">  其他信息 <span class="number">2</span>:	<span class="number">0</span>a9e372d3b4ad19135b953a78882e789</span><br><span class="line">  其他信息 <span class="number">3</span>:	<span class="number">0</span>a9e</span><br><span class="line">  其他信息 <span class="number">4</span>:	<span class="number">0</span>a9e372d3b4ad19135b953a78882e789</span><br><span class="line"></span><br><span class="line">联机阅读隐私声明:</span><br><span class="line">  http:<span class="comment">//go.microsoft.com/fwlink/?linkid=104288&amp;clcid=0x0804</span></span><br><span class="line"></span><br><span class="line">如果无法获取联机隐私声明，请脱机阅读我们的隐私声明:</span><br><span class="line">  C:\Windows\system32\zh-CN\erofflps.txt</span><br></pre></td></tr></table></figure></p>
-      
-    </div>
-    <footer>
-      
-        
-          <div class="alignleft">
-            <a href="/2015/09/25/Debug/vs2008-debug-vs2015/#more" class="more-link">Read More</a>
-          </div>
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-  <div id="container"></div>
-</span>
-</article>
-
-
-
-
-  <article class="post">
-  
-    <div class="gallery">
-  <div class="photoset">
-    
-      <img src="">
-    
-  </div>
-  <div class="control">
-    <div class="prev"></div>
-    <div class="next"></div>
-  </div>
-</div>
-  
-  <div class="post-content">
-    <header>
-      
         <time datetime="2015-09-24T09:44:03.000Z"><a href="/2015/09/24/Kernel/Windbg-Driver-Kernel/">2015-09-24</a></time>
       
       
@@ -683,69 +518,6 @@ var _hmt = _hmt || [];
   <div class="photoset">
     
       
-        <img src="/img/Win10.jpg">
-      
-    
-  </div>
-  <div class="control">
-    <div class="prev"></div>
-    <div class="next"></div>
-  </div>
-</div>
-  
-  <div class="post-content">
-    <header>
-      
-        <time datetime="2015-08-02T02:26:39.000Z"><a href="/2015/08/02/Life/win10-Simpleexperience/">2015-08-02</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2015/08/02/Life/win10-Simpleexperience/">win10正式版简单体验</a></h1>
-  
-
-    </header>
-	
-<!-- Table of Contents -->
-
-
-	
-    <div class="entry">
-      
-        <h2 id="安装过程">安装过程</h2><p>去年10月份Windows10预览版刚出来就简单在虚拟机中体验过了，当时感觉就不错。即使用惯了win7的人也能很快上手，没有用win8那么bug学习代价小。正式版出来了就想马上升级试试，但是想着可能存在的兼容性问题就等了两天看了网上反馈都还不错。所以昨天就把笔记本的win7系统升级了。<br>这里说下笔记本配置：</p>
-<ul>
-<li>宏碁的性价比电脑，2010年的4741G现在用着是满目疮痍</li>
-<li>I3的，6G内存（自己淘宝100块买的2手4G条子，体验还不错），GT330的显卡<br>总的来说配置将就，用着win7也还好。但是本着作为搞IT的不能落后吧就升了。升级过程这里简单说下。</li>
-<li>我是下好的win10镜像升级的<a href="http://msdn.itellyou.cn/">传送门</a>版本是Windows 10 (Multiple Editions) (x64) - DVD (Chinese-Simplified)</li>
-<li>下好解压直接运行解压包中的setup.exe，就和安装一个普通软件一样</li>
-<li>然后就是“选择、同意”这些安装过程（注意这里有选择是否更新，注意不要选择更新不然可能等待n久）</li>
-<li>经过两个多小时等待，基本上就装完了。然后发现以前的软件都还能正常运行符合预期只是分辨率不对，要重新装哈显卡驱动<br>这样就安装完成了，比较便捷。这里说哈这样安装的好处，据我所知现在win10还没有激活工具但是能免费升级（我原来win7也是D版的），但是在线升级可能这两天微软的服务器可能有点繁忙毕竟这么多人win10也4个多G，所以我是迅雷下好再升级的。但是这种方式必须满足64位win7才能升64位win10，因为那个setup.exe是64位程序。
-      
-    </div>
-    <footer>
-      
-        
-          <div class="alignleft">
-            <a href="/2015/08/02/Life/win10-Simpleexperience/#more" class="more-link">Read More</a>
-          </div>
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-  <div id="container"></div>
-</span>
-</article>
-
-
-
-
-  <article class="post">
-  
-    <div class="gallery">
-  <div class="photoset">
-    
-      
         <img src="http://www.youngroe.com/img/pebhedad.png">
       
     
@@ -798,20 +570,191 @@ var _hmt = _hmt || [];
 
 
 
+  <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      
+        <img src="http://7xkam4.com1.z0.glb.clouddn.com/autoevlate.jpg">
+      
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <time datetime="2015-07-15T12:23:41.000Z"><a href="/2015/07/15/Windows/windows-auto-elevated-binaries/">2015-07-15</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2015/07/15/Windows/windows-auto-elevated-binaries/">关于Windows自动提权autoElevate</a></h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+
+	
+    <div class="entry">
+      
+        <p><strong>参考资料：</strong><br><a href="https://technet.microsoft.com/zh-cn/magazine/2009.07.uac.aspx">深入了解 Windows 7 用户帐户控制</a><br><a href="http://withinwindows.com/blog/2009/02/05/list-of-windows-7-beta-build-7000-auto-elevated-binaries">List of Windows 7 (beta build 7000) auto-elevated binaries</a><br><strong>工具：</strong><br>Strings.exe<br>Sigcheck.exe<br>Procexp.exe<br>Procmon.exe<br><strong>知识点：</strong><br>Manifest文件<br>UAC</p>
+<p>一直想怎么才能找到类似sysprep.exe这样可以有UAC权限但是运行的时候不会触发UAC弹框（即我们常说的Windows白名单程序），在网络上搜寻良久也未成发现有什么可用的信息。最后只有重头看看UAC相关信息，终于在MSDN上发现相关信息即参考资料1。<em>(其实之前微软是一直公布这份名单的，而且连rundll32都是)</em><br>从参考资料1中我们可以获得很多信息，由于vista在启用uac时貌似平等对待不管是Windows系统的还是第三方应用获得uac权限都要弹框获得用户许可，所以在win7上微软启用了白名单机制，对于某些系统应用可以直接获得uac权限。<br>条件就是：</p>
+<ul>
+<li>1.该可执行文件必须经过 Windows Publisher 的数字签名，Windows Publisher 是用于对 Windows 附带的所有代码进行签名的证书（仅由 Microsoft 进行签名是不够的，因此 Windows 未附带的 Microsoft 软件不包括在内）；</li>
+<li>2.该可执行文件必须位于其中一个为数不多的“安全”目录中。安全目录是指标准用户无法修改的目录，并且它们包括 %SystemRoot%\System32（例如，\Windows\System32）及其大多数子目录、%SystemRoot%\Ehome，以及 %ProgramFiles% 下的少许目录（其中包括 Windows Defender 和 Windows 日记本）。<br>而要能够autoElevate还必须满足的一点就是要在程序的manifest文件中申明成类似这个样子的<autoElevate>true</autoElevate>，而且参考资料1还提供了两个工具来获得这个manifest文件搜寻满足条件的exe。<br><strong>strings.exe  -s *.exe | findstr /i “autoElevate”&gt;”D:\Program Files (x86)\SysinternalsSuite\autoevate.txt”</strong></li>
+</ul>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/2015/07/15/Windows/windows-auto-elevated-binaries/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+  <div id="container"></div>
+</span>
+</article>
+
+
+
+
+  <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <time datetime="2015-07-13T12:13:53.000Z"><a href="/2015/07/13/Tools/aboutVisual_Studio/">2015-07-13</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2015/07/13/Tools/aboutVisual_Studio/">Visual Studio使用备注</a></h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+
+	
+    <div class="entry">
+      
+        <p><em>这里添加一点别人写的为什么还使用vc6的原因,描述比较清楚</em><br><a href="http://blog.csdn.net/weolar/article/details/52456886">http://blog.csdn.net/weolar/article/details/52456886</a><br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1</span>、可以无视VS2015的MD版本需要的那一堆api-xxxx-xxx的dll了。那堆玩意有几十个，恶心的要死。</span><br><span class="line"><span class="number">2</span>、可以不用管manifest的问题。这东西巨恶心，有一个没设置好，就是各种加载不了。关键是本机没问题，</span><br><span class="line">说不定客户机器上哪里就不对了。</span><br><span class="line"><span class="number">3</span>、小巧。vc6的是msvcp60.dll和mscrt.dll。这东西全系列windows都自带了，非常爽，这意味着你可以省</span><br><span class="line">下MT的那堆额外的size了。其实windows的</span><br><span class="line">所有dll基本都是用这个两个来运行的，等于说windows自己用的很爽，但就是没告诉你怎么用····</span><br></pre></td></tr></table></figure></p>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/2015/07/13/Tools/aboutVisual_Studio/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+  <div id="container"></div>
+</span>
+</article>
+
+
+
+
+  <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      
+        <img src="/img/hexo.jpg">
+      
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <time datetime="2015-07-12T07:23:36.000Z"><a href="/2015/07/12/Others/Hexo_some_problem/">2015-07-12</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2015/07/12/Others/Hexo_some_problem/">Hexo搭建中的一些问题</a></h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+
+	
+    <div class="entry">
+      
+        <p><strong>参考资料:</strong><br>    <a href="http://ibruce.info/2013/11/22/hexo-your-blog/">hexo你的博客</a><br>    <a href="http://blog.lmintlcx.com/post/blog-with-hexo.html">使用Hexo搭建博客</a><br>    <a href="http://bubkoo.com/2013/12/16/hexo-issure/">关于 Hexo 的若干问题</a><br>    <a href="http://xote.tk/7.html">快速开始Hexo的正确姿势</a><br>    <a href="http://xote.tk/9.html">把Hexo同时部署到GitHub和GitCafe</a></p>
+<p> 一直想自己搭个blog玩玩，主要是在别人平台总是感觉有所束缚不管写什么东西都要审核半天，同时也想自己学习下一些网页知识。但行动一直没有。在今年5月份的时候终于有了行动，租了个digitalocean的ubuntu的vps想自己在上面搭个vpn自己用然后也能跑个wordpress的博客。开始还用得很舒服，但是之后就是每天崩溃也不知道是自己搭的问题还是vps的问题最后人也崩溃了就果断放弃了。。。。。。<br> 然后之后看了github也能搭blog，而且看了效果也不错。就果断试试效果果然不错哈哈，而且搭建也简单再也不用什么apache，mysql什么的了。而且免费还能自己绑定域名。<br> 搭建方法就是参考资料中的，先看1然后一步步跟着来然后搭好了再看2 3 很详细。但是中间也遇到过一些问题所以这里也总结一下。</p>
+<p>##a.整个blog系统的架构<br>由于web不是很懂，这里就只是我的理解。本地端就是自己电脑上需要的主要是mygit+node.js+hexo（主要作用主要是将本地的网页组合成静态的网页就不需要什么服务器解析了只需要访问的浏览器解析）,然后服务端需要一个gitbub pages项目（这边主要作用就是一个云存储器）。然后分享和统计用的百度、评论用的多说<br>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/2015/07/12/Others/Hexo_some_problem/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+  <div id="container"></div>
+</span>
+</article>
+
+
+
+
 
 <ul class="page-direction" id="page-direction">
     <li><a class="page-prev icon-chevron-sign-left" href="javascript:;" title="上一页"></a></li>
     <li><a class="page-next icon-chevron-sign-right" href="javascript:;" title="下一页"></a></li>
 </ul>
 
-    <nav id="page-list" class="page-list"><a class="extend prev" rel="prev" href="/page/3/">Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" href="/page/5/">Next</a></nav>
+    <nav id="page-list" class="page-list"><a class="extend prev" rel="prev" href="/page/3/">Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span></nav>
 
 <nav id="pagination">
   
     <a href="/page/3/" class="alignleft prev">上一页</a>
   
-  
-    <a href="/page/5/" class="alignright next">下一页</a>
   
   <div class="clearfix"></div>
 </nav></div></div>
@@ -829,13 +772,13 @@ var _hmt = _hmt || [];
   
     <li><a href="/categories/Kernel/">Kernel</a><small>4</small></li>
   
-    <li><a href="/categories/Learning/">Learning</a><small>8</small></li>
+    <li><a href="/categories/Learning/">Learning</a><small>5</small></li>
   
-    <li><a href="/categories/Life/">Life</a><small>6</small></li>
+    <li><a href="/categories/Life/">Life</a><small>5</small></li>
   
     <li><a href="/categories/Others/">Others</a><small>1</small></li>
   
-    <li><a href="/categories/Tools/">Tools</a><small>6</small></li>
+    <li><a href="/categories/Tools/">Tools</a><small>5</small></li>
   
     <li><a href="/categories/Vulnerabilities/">Vulnerabilities</a><small>0</small></li>
   
@@ -908,7 +851,7 @@ var _hmt = _hmt || [];
 <div class="widget tagcloud">
   <h3 class="title">标签云</h3>
   <div class="entry">
-    <a href="/tags/ASM/" style="font-size: 10px;">ASM</a> <a href="/tags/Boost/" style="font-size: 10px;">Boost</a> <a href="/tags/DDoS/" style="font-size: 10px;">DDoS</a> <a href="/tags/DNS-over-HTTPS/" style="font-size: 10px;">DNS-over-HTTPS</a> <a href="/tags/DNS劫持/" style="font-size: 10px;">DNS劫持</a> <a href="/tags/Delphi/" style="font-size: 10px;">Delphi</a> <a href="/tags/Dll劫持/" style="font-size: 10px;">Dll劫持</a> <a href="/tags/GCC-GDB/" style="font-size: 10px;">GCC&GDB</a> <a href="/tags/GetVersionEx/" style="font-size: 10px;">GetVersionEx</a> <a href="/tags/Http/" style="font-size: 10px;">Http</a> <a href="/tags/IDA-Pro/" style="font-size: 12.5px;">IDA Pro</a> <a href="/tags/IOT安全/" style="font-size: 12.5px;">IOT安全</a> <a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/MSDN/" style="font-size: 12.5px;">MSDN</a> <a href="/tags/Malware/" style="font-size: 12.5px;">Malware</a> <a href="/tags/MiniDumpWriteDump/" style="font-size: 10px;">MiniDumpWriteDump</a> <a href="/tags/PEB/" style="font-size: 10px;">PEB</a> <a href="/tags/Procmon/" style="font-size: 10px;">Procmon</a> <a href="/tags/Runtime-Error/" style="font-size: 10px;">Runtime Error</a> <a href="/tags/SEH/" style="font-size: 10px;">SEH</a> <a href="/tags/SysinternalsSuite/" style="font-size: 10px;">SysinternalsSuite</a> <a href="/tags/Tips/" style="font-size: 10px;">Tips</a> <a href="/tags/UAC/" style="font-size: 10px;">UAC</a> <a href="/tags/UAF漏洞/" style="font-size: 10px;">UAF漏洞</a> <a href="/tags/VC/" style="font-size: 10px;">VC</a> <a href="/tags/Visual-Studio/" style="font-size: 12.5px;">Visual Studio</a> <a href="/tags/Windbg/" style="font-size: 10px;">Windbg</a> <a href="/tags/Windows/" style="font-size: 20px;">Windows</a> <a href="/tags/android/" style="font-size: 10px;">android</a> <a href="/tags/getaddrinfo/" style="font-size: 10px;">getaddrinfo</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/libeay32/" style="font-size: 10px;">libeay32</a> <a href="/tags/markdown/" style="font-size: 10px;">markdown</a> <a href="/tags/ndk/" style="font-size: 10px;">ndk</a> <a href="/tags/sublime-text3/" style="font-size: 10px;">sublime text3</a> <a href="/tags/x64/" style="font-size: 10px;">x64</a> <a href="/tags/体验/" style="font-size: 10px;">体验</a> <a href="/tags/内核/" style="font-size: 12.5px;">内核</a> <a href="/tags/内核结构/" style="font-size: 15px;">内核结构</a> <a href="/tags/反病毒/" style="font-size: 17.5px;">反病毒</a> <a href="/tags/安全机制/" style="font-size: 10px;">安全机制</a> <a href="/tags/异常处理/" style="font-size: 10px;">异常处理</a> <a href="/tags/提权/" style="font-size: 10px;">提权</a> <a href="/tags/服务/" style="font-size: 10px;">服务</a> <a href="/tags/权限/" style="font-size: 12.5px;">权限</a> <a href="/tags/栈溢出漏洞/" style="font-size: 10px;">栈溢出漏洞</a> <a href="/tags/测试/" style="font-size: 10px;">测试</a> <a href="/tags/漏洞调试/" style="font-size: 12.5px;">漏洞调试</a> <a href="/tags/生活/" style="font-size: 15px;">生活</a> <a href="/tags/脱壳/" style="font-size: 10px;">脱壳</a> <a href="/tags/西安/" style="font-size: 10px;">西安</a> <a href="/tags/计划/" style="font-size: 10px;">计划</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a> <a href="/tags/调试/" style="font-size: 15px;">调试</a> <a href="/tags/转换/" style="font-size: 10px;">转换</a> <a href="/tags/进程/" style="font-size: 10px;">进程</a> <a href="/tags/逆向/" style="font-size: 10px;">逆向</a> <a href="/tags/重庆/" style="font-size: 10px;">重庆</a> <a href="/tags/驱动/" style="font-size: 15px;">驱动</a>
+    <a href="/tags/Boost/" style="font-size: 10px;">Boost</a> <a href="/tags/DDoS/" style="font-size: 10px;">DDoS</a> <a href="/tags/DNS-over-HTTPS/" style="font-size: 10px;">DNS-over-HTTPS</a> <a href="/tags/DNS劫持/" style="font-size: 10px;">DNS劫持</a> <a href="/tags/Delphi/" style="font-size: 10px;">Delphi</a> <a href="/tags/Dll劫持/" style="font-size: 10px;">Dll劫持</a> <a href="/tags/GetVersionEx/" style="font-size: 10px;">GetVersionEx</a> <a href="/tags/Http/" style="font-size: 10px;">Http</a> <a href="/tags/IDA-Pro/" style="font-size: 12.5px;">IDA Pro</a> <a href="/tags/IOT安全/" style="font-size: 12.5px;">IOT安全</a> <a href="/tags/Linux/" style="font-size: 12.5px;">Linux</a> <a href="/tags/MSDN/" style="font-size: 12.5px;">MSDN</a> <a href="/tags/Malware/" style="font-size: 12.5px;">Malware</a> <a href="/tags/MiniDumpWriteDump/" style="font-size: 10px;">MiniDumpWriteDump</a> <a href="/tags/PEB/" style="font-size: 10px;">PEB</a> <a href="/tags/Procmon/" style="font-size: 10px;">Procmon</a> <a href="/tags/Runtime-Error/" style="font-size: 10px;">Runtime Error</a> <a href="/tags/SEH/" style="font-size: 10px;">SEH</a> <a href="/tags/SysinternalsSuite/" style="font-size: 10px;">SysinternalsSuite</a> <a href="/tags/Tips/" style="font-size: 10px;">Tips</a> <a href="/tags/UAC/" style="font-size: 10px;">UAC</a> <a href="/tags/UAF漏洞/" style="font-size: 10px;">UAF漏洞</a> <a href="/tags/VC/" style="font-size: 10px;">VC</a> <a href="/tags/Visual-Studio/" style="font-size: 12.5px;">Visual Studio</a> <a href="/tags/Windbg/" style="font-size: 10px;">Windbg</a> <a href="/tags/Windows/" style="font-size: 20px;">Windows</a> <a href="/tags/getaddrinfo/" style="font-size: 10px;">getaddrinfo</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/libeay32/" style="font-size: 10px;">libeay32</a> <a href="/tags/x64/" style="font-size: 10px;">x64</a> <a href="/tags/内核/" style="font-size: 12.5px;">内核</a> <a href="/tags/内核结构/" style="font-size: 15px;">内核结构</a> <a href="/tags/反病毒/" style="font-size: 17.5px;">反病毒</a> <a href="/tags/安全机制/" style="font-size: 10px;">安全机制</a> <a href="/tags/异常处理/" style="font-size: 10px;">异常处理</a> <a href="/tags/提权/" style="font-size: 10px;">提权</a> <a href="/tags/服务/" style="font-size: 10px;">服务</a> <a href="/tags/权限/" style="font-size: 12.5px;">权限</a> <a href="/tags/栈溢出漏洞/" style="font-size: 10px;">栈溢出漏洞</a> <a href="/tags/测试/" style="font-size: 10px;">测试</a> <a href="/tags/漏洞调试/" style="font-size: 12.5px;">漏洞调试</a> <a href="/tags/生活/" style="font-size: 15px;">生活</a> <a href="/tags/脱壳/" style="font-size: 10px;">脱壳</a> <a href="/tags/西安/" style="font-size: 10px;">西安</a> <a href="/tags/计划/" style="font-size: 10px;">计划</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a> <a href="/tags/调试/" style="font-size: 15px;">调试</a> <a href="/tags/转换/" style="font-size: 10px;">转换</a> <a href="/tags/进程/" style="font-size: 10px;">进程</a> <a href="/tags/逆向/" style="font-size: 10px;">逆向</a> <a href="/tags/重庆/" style="font-size: 10px;">重庆</a> <a href="/tags/驱动/" style="font-size: 15px;">驱动</a>
   </div>
 </div>
 

@@ -197,7 +197,7 @@
     <link href="http://www.youngroe.com/2020/09/10/Cybersecurity/art-of-anti-detection-3-art-of-anti-detection-3-shellcode-alchemy/"/>
     <id>http://www.youngroe.com/2020/09/10/Cybersecurity/art-of-anti-detection-3-art-of-anti-detection-3-shellcode-alchemy/</id>
     <published>2020-09-10T11:39:22.000Z</published>
-    <updated>2021-03-17T14:29:05.074Z</updated>
+    <updated>2021-03-17T14:37:55.966Z</updated>
     <content type="html"><![CDATA[<p> 本文将讨论编写shellcode的基础知识和相关改变，包含汇编级别的编码器/解码器设计以及几种绕过漏洞缓解方案的方法，如微软的增强缓解应急工具包（Microsoft’s Enhanced Mitigation Experience Toolkit，EMET）。为了理解本文的内容，读者需要至少具有一定的x86汇编方面的基础，并对COFF和PE等基本文件格式有相当的了解，也可以读之前的文章<a href="http://www.youngroe.com/2020/09/03/Cybersecurity/art-of-anti-detection-1-introduction-to-av-detection-techniques/">反检测的艺术1-反病毒软件及检测技术概述</a>、<a href="http://www.youngroe.com/2020/09/04/Cybersecurity/art-of-anti-detection-2-pe-backdoor-manufacturing/">反检测的艺术2-如何制作PE文件后门</a>理解反病毒软件使用的基本检测技术的内部工作原理和相关术语。<br><a id="more"></a></p>
 <h2 id="0x00_相关术语">0x00 相关术语</h2><h3 id="进程环境块（PEB）">进程环境块（PEB）</h3><p>在计算机中进程环境块（缩写为PEB）是Windows NT操作系统中的一种数据结构。它是操作系统内部使用的不透明数据结构，其中大多数字段除操作系统外均不供其他人使用。微软在其MSDN库文档（仅记录了一些字段）中指出，该结构可能会在Windows的未来版本中更改。PEB包含涉及整个进程很多阐述，包括全局上下文，启动参数，程序映像加载器的数据结构，程序映像基址以及用于为进程范围的数据结构提供互斥的同步对象。</p>
 <h3 id="导入表（IAT）">导入表（IAT）</h3><p>导入表是一种用于查找地址的表，用于程序调用其他模块中的函数时查找地址。它可以采用按序号导入和按名称导入两种形式。由于已编译的程序无法知道其依赖的库的存储位置，因此，每当进行API调用时，都需要进行间接跳转。当动态链接器加载模块并将它们连接在一起时，它会将实际地址写入IAT插槽，以便它们指向相应库函数的所在的内存位置。</p>
@@ -457,7 +457,7 @@
     <link href="http://www.youngroe.com/2019/07/01/Windows/delphi_reverse_summary/"/>
     <id>http://www.youngroe.com/2019/07/01/Windows/delphi_reverse_summary/</id>
     <published>2019-07-01T12:13:53.000Z</published>
-    <updated>2020-02-23T12:38:10.293Z</updated>
+    <updated>2020-07-22T12:59:47.350Z</updated>
     <content type="html"><![CDATA[<h2 id="0x00_Delphi语言基础">0x00 Delphi语言基础</h2><h3 id="1-Delphi语言概述">1.Delphi语言概述</h3><p>Delphi本身并非一种独立的语言，而是一种软件开发工具，是Object Pascal语言的一种开发工具。本身是大名鼎鼎的Borland公司开发的一种开发环境，包含IDE、图形界面库Visual Component Library(VCL)及数据库相关功能。其图像界面库VCL类似MFC，使用PME（Property/Method/Event）的开发模式。<br><a id="more"></a><br>VCL采用特有的RCDATA资源格式，RCDATA中包含有Delphi窗口（Forms）信息，当程序运行时通过初始化代码建立窗口，从RCDATA中获取所需要的信息。RCDATA信息可以通过PE Explorer等PE编辑器查看。</p>
 <div align="center"><br><img src="/img/Delphi RCDATA.jpg" alt="Delphi窗口Form信息" align="center"><br></div><br>Delphi版本较多，不同版本有一些差异，目前已经发布的版本包括1-7, 2005, 2006, 2007, 2009, 2010, XE-XE8、10、10.1、10.2、10.3。Delphi的API查询可以通过参考链接2进行查询。<br><br>### 2.Delphi二进制特点<br><br>可以通过exeinfo/Detect It Easy等工具判断PE文件是否为Delphi开发及确定具体的Delphi版本信息，确定具体的版本信息有助于后续反汇编工具的设置，使工具反汇编出可读性更高的汇编代码。<br>Delphi常用的字符串的内存布局不同于C/C++的char*或则string对象，Delphi使用的字符串都是Pascal的字符串，在原始字符串前面存放的是字符串的长度<br><figure class="highlight axapta"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">uint32_t len;</span><br><span class="line"><span class="keyword">char</span>    <span class="keyword">str</span>[];</span><br></pre></td></tr></table></figure><br><br><div align="center"><br><img src="/img/Delphi Str.jpg" alt="Delphi字符串内存布局" align="center"><br></div>
 
