@@ -102,6 +102,60 @@ var _hmt = _hmt || [];
   <div class="post-content">
     <header>
       
+        <time datetime="2019-01-12T12:13:53.000Z"><a href="/2019/01/12/Windows/a_crash_lead_deadlock/">2019-01-12</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2019/01/12/Windows/a_crash_lead_deadlock/">Windows平台下一个崩溃而导致的死锁分析</a></h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+
+	
+    <div class="entry">
+      
+        <h2 id="0x00_问题介绍">0x00 问题介绍</h2><p>测试反馈测试过程中发现程序进程存在但是界面没加载出来，看现场很快发现是因为版本不匹配而导致程序崩溃，在写dmp的过程中死锁而导致进程卡死，由于程序是卡死而非退出守护进程也未重启程序，最终导致界面一直没加载出来。<br>现象就如上面所说，但是为什么写dmp为什么会导致程序死锁呢？<br>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/2019/01/12/Windows/a_crash_lead_deadlock/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+  <div id="container"></div>
+</span>
+</article>
+
+
+
+
+  <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
         <time datetime="2018-12-01T12:13:53.000Z"><a href="/2018/12/01/Windows/windows_client_dns_over_https/">2018-12-01</a></time>
       
       
@@ -703,60 +757,6 @@ var _hmt = _hmt || [];
 
 
 
-  <article class="post">
-  
-    <div class="gallery">
-  <div class="photoset">
-    
-      <img src="">
-    
-  </div>
-  <div class="control">
-    <div class="prev"></div>
-    <div class="next"></div>
-  </div>
-</div>
-  
-  <div class="post-content">
-    <header>
-      
-        <time datetime="2016-04-17T10:20:32.000Z"><a href="/2016/04/17/Debug/How-to-debug-a-Visual-C-Runtime-Error/">2016-04-17</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2016/04/17/Debug/How-to-debug-a-Visual-C-Runtime-Error/">How to debug a Visual C++ Runtime Error</a></h1>
-  
-
-    </header>
-	
-<!-- Table of Contents -->
-
-
-	
-    <div class="entry">
-      
-        <p><div align="center"><br><img src="/img/runtime%20error.png"  align="center"/><br></div><br>一个程序总算是把一些异常崩溃这些弄得差不多了，能够长时间稳定运行了，但是还是会随机出现崩溃这个问题，而且崩溃了没提供调试选项，没有装VS，只有复制个windbg过去，然后出现断点 查看堆栈信息<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">0</span>:<span class="number">009</span>&gt; k</span><br><span class="line">ChildEBP RetAddr  </span><br><span class="line"><span class="number">064</span>afd8c <span class="number">779</span>ef826 ntdll!DbgBreakPoint</span><br><span class="line"><span class="number">064</span>afdbc <span class="number">757833</span>ca ntdll!DbgUiRemoteBreakin+<span class="number">0x3c</span></span><br><span class="line"><span class="number">064</span>afdc8 <span class="number">77989</span>ed2 kernel32!BaseThreadInitThunk+<span class="number">0xe</span></span><br><span class="line"><span class="number">064</span>afe08 <span class="number">77989</span>ea5 ntdll!__RtlUserThreadStart+<span class="number">0x70</span></span><br><span class="line"><span class="number">064</span>afe20 <span class="number">00000000</span> ntdll!_RtlUserThreadStart+<span class="number">0x1b</span></span><br></pre></td></tr></table></figure></p>
-      
-    </div>
-    <footer>
-      
-        
-          <div class="alignleft">
-            <a href="/2016/04/17/Debug/How-to-debug-a-Visual-C-Runtime-Error/#more" class="more-link">Read More</a>
-          </div>
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-  <div id="container"></div>
-</span>
-</article>
-
-
-
-
 
 <ul class="page-direction" id="page-direction">
     <li><a class="page-prev icon-chevron-sign-left" href="javascript:;" title="上一页"></a></li>
@@ -780,7 +780,7 @@ var _hmt = _hmt || [];
   <h3 class="title">分类</h3>
   <ul class="entry">
   
-    <li><a href="/categories/Cybersecurity/">Cybersecurity</a><small>5</small></li>
+    <li><a href="/categories/Cybersecurity/">Cybersecurity</a><small>6</small></li>
   
     <li><a href="/categories/Debug/">Debug</a><small>7</small></li>
   
@@ -813,6 +813,10 @@ var _hmt = _hmt || [];
     
       <li>
         <a href="/2021/10/20/IOT/using-rasberrypi-as-poor-mans-hardware-hacking-tool/">树莓派-穷人的硬件黑客工具（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2021/08/20/Cybersecurity/guide-linux-privilege-escalation/">Linux权限提升指南（翻译）</a>
       </li>
     
       <li>
@@ -855,10 +859,6 @@ var _hmt = _hmt || [];
         <a href="/2019/04/06/Windows/how-to-reverse-engineer-software-windows-in-a-right-way/">如何正确的对Windows软件进行逆向工程（翻译/转载）</a>
       </li>
     
-      <li>
-        <a href="/2019/01/12/Windows/a_crash_lead_deadlock/">Windows平台下一个崩溃而导致的死锁分析</a>
-      </li>
-    
   </ul>
 </div>
 
@@ -867,7 +867,7 @@ var _hmt = _hmt || [];
 <div class="widget tagcloud">
   <h3 class="title">标签云</h3>
   <div class="entry">
-    <a href="/tags/Boost/" style="font-size: 10px;">Boost</a> <a href="/tags/DDoS/" style="font-size: 10px;">DDoS</a> <a href="/tags/DNS-over-HTTPS/" style="font-size: 10px;">DNS-over-HTTPS</a> <a href="/tags/DNS劫持/" style="font-size: 10px;">DNS劫持</a> <a href="/tags/Delphi/" style="font-size: 10px;">Delphi</a> <a href="/tags/Dll劫持/" style="font-size: 10px;">Dll劫持</a> <a href="/tags/GetVersionEx/" style="font-size: 10px;">GetVersionEx</a> <a href="/tags/Http/" style="font-size: 10px;">Http</a> <a href="/tags/IDA-Pro/" style="font-size: 12.5px;">IDA Pro</a> <a href="/tags/IOT安全/" style="font-size: 12.5px;">IOT安全</a> <a href="/tags/Linux/" style="font-size: 12.5px;">Linux</a> <a href="/tags/MSDN/" style="font-size: 12.5px;">MSDN</a> <a href="/tags/Malware/" style="font-size: 12.5px;">Malware</a> <a href="/tags/MiniDumpWriteDump/" style="font-size: 10px;">MiniDumpWriteDump</a> <a href="/tags/PEB/" style="font-size: 10px;">PEB</a> <a href="/tags/Procmon/" style="font-size: 10px;">Procmon</a> <a href="/tags/Runtime-Error/" style="font-size: 10px;">Runtime Error</a> <a href="/tags/SEH/" style="font-size: 10px;">SEH</a> <a href="/tags/SysinternalsSuite/" style="font-size: 10px;">SysinternalsSuite</a> <a href="/tags/Tips/" style="font-size: 10px;">Tips</a> <a href="/tags/UAC/" style="font-size: 10px;">UAC</a> <a href="/tags/UAF漏洞/" style="font-size: 10px;">UAF漏洞</a> <a href="/tags/VC/" style="font-size: 10px;">VC</a> <a href="/tags/Visual-Studio/" style="font-size: 12.5px;">Visual Studio</a> <a href="/tags/Windbg/" style="font-size: 10px;">Windbg</a> <a href="/tags/Windows/" style="font-size: 20px;">Windows</a> <a href="/tags/getaddrinfo/" style="font-size: 10px;">getaddrinfo</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/libeay32/" style="font-size: 10px;">libeay32</a> <a href="/tags/x64/" style="font-size: 10px;">x64</a> <a href="/tags/内核/" style="font-size: 12.5px;">内核</a> <a href="/tags/内核结构/" style="font-size: 15px;">内核结构</a> <a href="/tags/反病毒/" style="font-size: 17.5px;">反病毒</a> <a href="/tags/安全机制/" style="font-size: 10px;">安全机制</a> <a href="/tags/异常处理/" style="font-size: 10px;">异常处理</a> <a href="/tags/提权/" style="font-size: 10px;">提权</a> <a href="/tags/服务/" style="font-size: 10px;">服务</a> <a href="/tags/权限/" style="font-size: 12.5px;">权限</a> <a href="/tags/栈溢出漏洞/" style="font-size: 10px;">栈溢出漏洞</a> <a href="/tags/测试/" style="font-size: 10px;">测试</a> <a href="/tags/漏洞调试/" style="font-size: 12.5px;">漏洞调试</a> <a href="/tags/生活/" style="font-size: 15px;">生活</a> <a href="/tags/脱壳/" style="font-size: 10px;">脱壳</a> <a href="/tags/西安/" style="font-size: 10px;">西安</a> <a href="/tags/计划/" style="font-size: 10px;">计划</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a> <a href="/tags/调试/" style="font-size: 15px;">调试</a> <a href="/tags/转换/" style="font-size: 10px;">转换</a> <a href="/tags/进程/" style="font-size: 10px;">进程</a> <a href="/tags/逆向/" style="font-size: 10px;">逆向</a> <a href="/tags/重庆/" style="font-size: 10px;">重庆</a> <a href="/tags/驱动/" style="font-size: 15px;">驱动</a>
+    <a href="/tags/Boost/" style="font-size: 10px;">Boost</a> <a href="/tags/DDoS/" style="font-size: 10px;">DDoS</a> <a href="/tags/DNS-over-HTTPS/" style="font-size: 10px;">DNS-over-HTTPS</a> <a href="/tags/DNS劫持/" style="font-size: 10px;">DNS劫持</a> <a href="/tags/Delphi/" style="font-size: 10px;">Delphi</a> <a href="/tags/Dll劫持/" style="font-size: 10px;">Dll劫持</a> <a href="/tags/GetVersionEx/" style="font-size: 10px;">GetVersionEx</a> <a href="/tags/Http/" style="font-size: 10px;">Http</a> <a href="/tags/IDA-Pro/" style="font-size: 12.5px;">IDA Pro</a> <a href="/tags/IOT安全/" style="font-size: 12.5px;">IOT安全</a> <a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/MSDN/" style="font-size: 12.5px;">MSDN</a> <a href="/tags/Malware/" style="font-size: 12.5px;">Malware</a> <a href="/tags/MiniDumpWriteDump/" style="font-size: 10px;">MiniDumpWriteDump</a> <a href="/tags/PEB/" style="font-size: 10px;">PEB</a> <a href="/tags/Procmon/" style="font-size: 10px;">Procmon</a> <a href="/tags/Runtime-Error/" style="font-size: 10px;">Runtime Error</a> <a href="/tags/SEH/" style="font-size: 10px;">SEH</a> <a href="/tags/SysinternalsSuite/" style="font-size: 10px;">SysinternalsSuite</a> <a href="/tags/Tips/" style="font-size: 10px;">Tips</a> <a href="/tags/UAC/" style="font-size: 10px;">UAC</a> <a href="/tags/UAF漏洞/" style="font-size: 10px;">UAF漏洞</a> <a href="/tags/VC/" style="font-size: 10px;">VC</a> <a href="/tags/Visual-Studio/" style="font-size: 12.5px;">Visual Studio</a> <a href="/tags/Windbg/" style="font-size: 10px;">Windbg</a> <a href="/tags/Windows/" style="font-size: 20px;">Windows</a> <a href="/tags/getaddrinfo/" style="font-size: 10px;">getaddrinfo</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/libeay32/" style="font-size: 10px;">libeay32</a> <a href="/tags/x64/" style="font-size: 10px;">x64</a> <a href="/tags/内核/" style="font-size: 12.5px;">内核</a> <a href="/tags/内核结构/" style="font-size: 15px;">内核结构</a> <a href="/tags/反病毒/" style="font-size: 17.5px;">反病毒</a> <a href="/tags/安全机制/" style="font-size: 10px;">安全机制</a> <a href="/tags/异常处理/" style="font-size: 10px;">异常处理</a> <a href="/tags/提权/" style="font-size: 12.5px;">提权</a> <a href="/tags/服务/" style="font-size: 10px;">服务</a> <a href="/tags/权限/" style="font-size: 12.5px;">权限</a> <a href="/tags/栈溢出漏洞/" style="font-size: 10px;">栈溢出漏洞</a> <a href="/tags/测试/" style="font-size: 10px;">测试</a> <a href="/tags/漏洞调试/" style="font-size: 12.5px;">漏洞调试</a> <a href="/tags/生活/" style="font-size: 15px;">生活</a> <a href="/tags/脱壳/" style="font-size: 10px;">脱壳</a> <a href="/tags/西安/" style="font-size: 10px;">西安</a> <a href="/tags/计划/" style="font-size: 10px;">计划</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a> <a href="/tags/调试/" style="font-size: 15px;">调试</a> <a href="/tags/转换/" style="font-size: 10px;">转换</a> <a href="/tags/进程/" style="font-size: 10px;">进程</a> <a href="/tags/逆向/" style="font-size: 10px;">逆向</a> <a href="/tags/重庆/" style="font-size: 10px;">重庆</a> <a href="/tags/驱动/" style="font-size: 15px;">驱动</a>
   </div>
 </div>
 

@@ -3,12 +3,34 @@
 
     
   <url>
-    <loc>http://www.youngroe.com/2021/03/20/IOT/powerpc_binary_blob_firmware_reverse/</loc>
-    <lastmod>2021-11-03T14:38:05.770Z</lastmod>
+    <loc>http://www.youngroe.com/2021/08/20/Cybersecurity/guide-linux-privilege-escalation/</loc>
+    <lastmod>2021-11-05T14:22:46.798Z</lastmod>
     <data>
         <display>
-        <title>一次嵌入式固件逆向实践</title>
-        <pubTime>2021-03-20T11:39:22.000Z</pubTime>
+        <title>Linux权限提升指南（翻译）</title>
+        <pubTime>2021-08-20T11:39:22.000Z</pubTime>
+        
+        <tag>Linux </tag>
+         
+        <tag>提权 </tag>
+         
+         
+           
+             
+              <breadCrumb title="Cybersecurity" url="http://www.youngroe.com/categories/Cybersecurity/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.youngroe.com/2021/10/20/IOT/using-rasberrypi-as-poor-mans-hardware-hacking-tool/</loc>
+    <lastmod>2021-11-04T13:15:37.908Z</lastmod>
+    <data>
+        <display>
+        <title>树莓派-穷人的硬件黑客工具（翻译）</title>
+        <pubTime>2021-10-20T11:39:22.000Z</pubTime>
         
         <tag>IOT安全 </tag>
          
@@ -23,12 +45,12 @@
 
     
   <url>
-    <loc>http://www.youngroe.com/2021/10/20/IOT/using-rasberrypi-as-poor-mans-hardware-hacking-tool/</loc>
-    <lastmod>2021-11-03T14:37:56.650Z</lastmod>
+    <loc>http://www.youngroe.com/2021/03/20/IOT/powerpc_binary_blob_firmware_reverse/</loc>
+    <lastmod>2021-11-03T14:38:05.770Z</lastmod>
     <data>
         <display>
-        <title>树莓派-穷人的硬件黑客工具（翻译）</title>
-        <pubTime>2021-10-20T11:39:22.000Z</pubTime>
+        <title>一次嵌入式固件逆向实践</title>
+        <pubTime>2021-03-20T11:39:22.000Z</pubTime>
         
         <tag>IOT安全 </tag>
          
@@ -752,21 +774,23 @@
 
     
   <url>
-    <loc>http://www.youngroe.com/2016/03/18/Learning/Using-Linux-boost-Record/</loc>
+    <loc>http://www.youngroe.com/2015/08/25/Windows/VC-BMPtoJPG/</loc>
     <lastmod>2020-02-15T07:54:24.196Z</lastmod>
     <data>
         <display>
-        <title>Ubuntu Boost使用小记</title>
-        <pubTime>2016-03-18T04:04:54.000Z</pubTime>
+        <title>VC++直接利用api实现bmp图像转jpg图像</title>
+        <pubTime>2015-08-25T11:39:28.000Z</pubTime>
         
-        <tag>Boost </tag>
+        <tag>VC </tag>
          
-        <tag>Linux </tag>
+        <tag>Windows </tag>
+         
+        <tag>转换 </tag>
          
          
            
              
-              <breadCrumb title="Learning" url="http://www.youngroe.com/categories/Learning/"/>
+              <breadCrumb title="Windows" url="http://www.youngroe.com/categories/Windows/"/>
           
         </display>
     </data>
@@ -794,23 +818,21 @@
 
     
   <url>
-    <loc>http://www.youngroe.com/2015/08/25/Windows/VC-BMPtoJPG/</loc>
+    <loc>http://www.youngroe.com/2016/03/18/Learning/Using-Linux-boost-Record/</loc>
     <lastmod>2020-02-15T07:54:24.196Z</lastmod>
     <data>
         <display>
-        <title>VC++直接利用api实现bmp图像转jpg图像</title>
-        <pubTime>2015-08-25T11:39:28.000Z</pubTime>
+        <title>Ubuntu Boost使用小记</title>
+        <pubTime>2016-03-18T04:04:54.000Z</pubTime>
         
-        <tag>VC </tag>
+        <tag>Boost </tag>
          
-        <tag>Windows </tag>
-         
-        <tag>转换 </tag>
+        <tag>Linux </tag>
          
          
            
              
-              <breadCrumb title="Windows" url="http://www.youngroe.com/categories/Windows/"/>
+              <breadCrumb title="Learning" url="http://www.youngroe.com/categories/Learning/"/>
           
         </display>
     </data>
@@ -882,6 +904,26 @@
 
     
   <url>
+    <loc>http://www.youngroe.com/2015/12/23/Tools/Malware-Regulary-Api/</loc>
+    <lastmod>2020-02-15T07:54:24.192Z</lastmod>
+    <data>
+        <display>
+        <title>病毒木马常用api</title>
+        <pubTime>2015-12-23T09:25:11.000Z</pubTime>
+        
+        <tag>Malware </tag>
+         
+         
+           
+             
+              <breadCrumb title="Tools" url="http://www.youngroe.com/categories/Tools/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>http://www.youngroe.com/2017/05/23/Windows/Kernel%20Data%20and%20Filtering%20Support/</loc>
     <lastmod>2020-02-15T07:54:24.192Z</lastmod>
     <data>
@@ -897,26 +939,6 @@
            
              
               <breadCrumb title="Windows" url="http://www.youngroe.com/categories/Windows/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://www.youngroe.com/2015/12/23/Tools/Malware-Regulary-Api/</loc>
-    <lastmod>2020-02-15T07:54:24.192Z</lastmod>
-    <data>
-        <display>
-        <title>病毒木马常用api</title>
-        <pubTime>2015-12-23T09:25:11.000Z</pubTime>
-        
-        <tag>Malware </tag>
-         
-         
-           
-             
-              <breadCrumb title="Tools" url="http://www.youngroe.com/categories/Tools/"/>
           
         </display>
     </data>
@@ -966,6 +988,28 @@
 
     
   <url>
+    <loc>http://www.youngroe.com/2016/01/06/Life/Hello-2016/</loc>
+    <lastmod>2020-02-15T07:54:24.190Z</lastmod>
+    <data>
+        <display>
+        <title>Hello 2016</title>
+        <pubTime>2016-01-06T04:45:15.000Z</pubTime>
+        
+        <tag>生活 </tag>
+         
+        <tag>计划 </tag>
+         
+         
+           
+             
+              <breadCrumb title="Life" url="http://www.youngroe.com/categories/Life/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>http://www.youngroe.com/2015/07/12/Others/Hexo_some_problem/</loc>
     <lastmod>2020-02-15T07:54:24.190Z</lastmod>
     <data>
@@ -1001,28 +1045,6 @@
            
              
               <breadCrumb title="Tools" url="http://www.youngroe.com/categories/Tools/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://www.youngroe.com/2016/01/06/Life/Hello-2016/</loc>
-    <lastmod>2020-02-15T07:54:24.190Z</lastmod>
-    <data>
-        <display>
-        <title>Hello 2016</title>
-        <pubTime>2016-01-06T04:45:15.000Z</pubTime>
-        
-        <tag>生活 </tag>
-         
-        <tag>计划 </tag>
-         
-         
-           
-             
-              <breadCrumb title="Life" url="http://www.youngroe.com/categories/Life/"/>
           
         </display>
     </data>

@@ -1,0 +1,485 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Linux权限提升指南（翻译） | Lyon&#39;s blog</title>
+  <meta name="author" content="Lyon">
+  
+  <meta name="description" content="Walk steps step by step">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="Linux权限提升指南（翻译）"/>
+  <meta property="og:site_name" content="Lyon&#39;s blog"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  #<link href="/favicon.ico" rel="icon">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="alternate" href="/atom.xml" title="Lyon&#39;s blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  <script src="/js/jquery.min.js"></script>
+  <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?1d807422614f63c8de98cdc3b546860c";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+  <script>
+    (function(){
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        }
+        else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+    
+  <script data-ad-client="ca-pub-6317609007693835" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-66542057-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-66542057-1');
+</script>
+
+</head>
+
+
+<body>
+  <!--[if lte IE 8]> <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'> <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0027_Simplified Chinese.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." style='margin-left:auto;margin-right:auto;display: block;'/></a></div> <![endif]-->
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">Lyon&#39;s blog</a></h1>
+  <h2><a href="/">I hear and I forget.I see and I remember.I do and I understand.</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">首页</a></li>
+    
+      <li><a href="/archives">归档</a></li>
+    
+      <li><a href="/about">关于</a></li>
+    
+	<li> <a href="/atom.xml">RSS</a> </li>
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <time datetime="2021-08-20T11:39:22.000Z"><a href="/2021/08/20/Cybersecurity/guide-linux-privilege-escalation/">2021-08-20</a></time>
+      
+      
+  
+    <h1 class="title">Linux权限提升指南（翻译）</h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+  <div id="toc" class="toc-article">
+  <strong class="toc-title">文章目录</strong>
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x0_介绍"><span class="toc-number">1.</span> <span class="toc-text">0x0 介绍</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x01_什么是权限提升？"><span class="toc-number">2.</span> <span class="toc-text">0x01 什么是权限提升？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x02_目的"><span class="toc-number">3.</span> <span class="toc-text">0x02 目的</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x03_Linux权限模型"><span class="toc-number">4.</span> <span class="toc-text">0x03 Linux权限模型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x04_为什么需要提权"><span class="toc-number">5.</span> <span class="toc-text">0x04 为什么需要提权</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x05_提权主要使用的技术"><span class="toc-number">6.</span> <span class="toc-text">0x05 提权主要使用的技术</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-内核漏洞利用代码"><span class="toc-number">6.1.</span> <span class="toc-text">1.内核漏洞利用代码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-利用以_root_身份运行的服务"><span class="toc-number">6.2.</span> <span class="toc-text">2.利用以 root 身份运行的服务</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-利用_SUID_可执行文件"><span class="toc-number">6.3.</span> <span class="toc-text">3.利用 SUID 可执行文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-利用_SUDO_权限/用户"><span class="toc-number">6.4.</span> <span class="toc-text">4.利用 SUDO 权限/用户</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-_利用配置不当的_cron_任务"><span class="toc-number">7.</span> <span class="toc-text">5. 利用配置不当的 cron 任务</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#6-_在PATH环境变量中使用’-’提权"><span class="toc-number">7.1.</span> <span class="toc-text">6. 在PATH环境变量中使用’.’提权</span></a></li></ol></li></ol>
+  </div>
+
+
+	
+    <div class="entry">
+      
+        <h2 id="0x0_介绍">0x0 介绍</h2><p>应用或者进程获取的权限应该按照最小权限原则赋予，只授予执行各自功能最小权限。授予不需要的权限可能回导致权限滥用，同时权限提升也是检测恶意代码的一个重要指标。</p>
+<h2 id="0x01_什么是权限提升？">0x01 什么是权限提升？</h2><p>大多数计算机系统被设计为供多个用户使用。权限是指允许用户做什么。常见权限包括查看和编辑文件、修改系统文件等。权限提升是指用户获得他们无权获得的权限。这些权限可用于删除文件、查看隐私信息或安装恶意程序（如病毒）。它通常发生在系统存在允许绕过系统安全机制漏洞时，或者系统设计假设存在缺陷时。<br>权限提升是利用操作系统或软件应用程序中的错误、设计缺陷或配置疏忽来获得应用程序或用户保护的资源的更高访问权限的行为。结果是应用程序拥有比执行未经授权操作的开发人员或系统管理员预期更多的权限。<br>虽然根据统计大部分公司使用的更多的是 Windows 客户端程序，但在考虑到公司的网络安全时，Linux 特权升级攻击则是需要应对的更大的威胁。公司的关键基础设施，例如 Web 服务器、数据库、防火墙等，很可能运行在 Linux 操作系统。对这些关键基础设施的损害有可能严重破坏组织的运营。此外，物联网 (IoT) 和嵌入式系统在工作场所变得无处不在，从而增加了恶意黑客的潜在目标数量。鉴于 Linux 设备在工作场所的流行，公司应该加强和保护这些设备。</p>
+<a id="more"></a>
+<h2 id="0x02_目的">0x02 目的</h2><p>在本文中，我们将详细讨论任何可能对基于 Linux 的系统成功进行权限提升攻击的安全问题。我们还将讨论攻击者如何使用已知技术提升在远程主机上的权限，以及如何保护我们的系统免受任何此类攻击。最后，我们将举例说明如何在不同的 Linux 系统上在不同的条件下实现权限提升。<br>本文旨在通过示例帮助初学者了解 Linux 权限提升的基础知识。它不是列举 Linux 提权方法的备忘单。权限提升与使用正确的方法有关。有多种方法可以执行示例中相同任务。如果你想要一个对 Linux 进行提权的备忘单，那么你一定要看看 g0tmi1k 的文章 – <a href="https://blog.g0tmi1k.com/2011/08/basic-linux-privilege-escalation/" target="_blank" rel="external">https://blog.g0tmi1k.com/2011/08/basic-linux-privilege-escalation/</a></p>
+<h2 id="0x03_Linux权限模型">0x03 Linux权限模型</h2><div align="center"><br><img src="/img/20210820Linux_privage.png" align><br></div><br>Linux 从 UNIX 继承了文件所有权和权限的概念。文件权限是系统保护自己免受恶意篡改的一种方式。在 UNIX 网络服务器上，存储在硬盘驱动器上的每个文件和文件夹都有一组与之相关的权限，这说明了谁可以对文件执行什么操作。<br><br><div align="center"><br><img src="/img/20210820Linux_whoami.png" align><br></div>
+
+<p>在上面的两个截图中，我们可以看到文件“docker-compose.yml”只有所有者“root”具有读取权限。如果任何其他用户尝试读取此文件，他将无法读取它。当我不是超级用户时尝试读取文件时，我们可以看到权限被拒绝。</p>
+<p>我们不会在这里详细介绍权限模型，因为这是另一个大话题。这只是为了理解用户无法访问（read/write/execute）他不被允许访问的文件的事实。但是，超级用户（root）可以访问系统上存在的所有文件。为了修改任何重要的配置或执行任何进一步的攻击，首先我们需要在任何基于 Linux 的系统上获得 root 访问权限。</p>
+<h2 id="0x04_为什么需要提权">0x04 为什么需要提权</h2><ul>
+<li>读/写任何敏感文件</li>
+<li>即使重启也能持久化</li>
+<li>植入永久后门</li>
+</ul>
+<h2 id="0x05_提权主要使用的技术">0x05 提权主要使用的技术</h2><p>我们假设现在我们在远程系统上有 shell。但我们可能没有“root”权限。下面提到的技术可用于在系统上获得“root”权限。</p>
+<h3 id="1-内核漏洞利用代码">1.内核漏洞利用代码</h3><p>内核漏洞利用代码是利用内核漏洞以提升权限执行任意代码的程序。成功的内核漏洞利用通常会以 root 命令提示符的形式为攻击者提供对目标系统的超级用户访问权限。在许多情况下，在 Linux 系统上提升到 root 权限就像将内核漏洞下载到目标文件系统、编译漏洞然后执行它一样简单。<br>假设我们可以以非特权用户身份运行代码，这就是内核漏洞利用的通用工作流程。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1.</span> 欺骗内核在内核模式下运行我们的payload</span><br><span class="line"><span class="number">2.</span> 操作内核数据，例如进程权限</span><br><span class="line"><span class="number">3.</span> 以新权限启动shell 获取root！</span><br></pre></td></tr></table></figure>
+<p>内核漏洞攻击要成功，攻击者需要四个条件：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1.</span> 有漏洞的内核</span><br><span class="line"><span class="number">2.</span> 与漏洞相匹配的漏洞利用程序</span><br><span class="line"><span class="number">3.</span> 将漏洞利用程序上传到目标的能力</span><br><span class="line"><span class="number">4.</span> 在目标上执行漏洞利用的能力</span><br></pre></td></tr></table></figure>
+<p>防御内核漏洞的最简单方法是对内核进行打补丁和更新。在没有补丁的情况下，管理员需要截断向目标上传和执行漏洞利用程序的过程。考虑到这些因素，如果管理员可以阻止将漏洞利用引入或执行到 Linux 文件系统，则内核漏洞利用攻击不再可行。因此，管理员应重点限制或删除启用文件传输的程序，例如 FTP、TFTP、SCP、wget 和 curl。当需要这些程序时，它们的使用应限于特定用户、目录、应用程序（例如 SCP）和特定 IP 地址或域。</p>
+<p><strong>臭名昭著的 DirtyCow 漏洞——Linux 内核 &lt;= 3.19.0-73.8</strong></p>
+<p>在 Linux 内核的内存子系统处理私有只读内存映射的写时复制 (COW) 的方式中存在竞争条件漏洞。无特权的本地用户可以利用此漏洞获得对其他只读内存映射的写访问权限，从而增加他们在系统上的特权。这是有史以来发现的最严重的提权漏洞之一，几乎影响了所有主要的 Linux 发行版。<br>通过dirtycow漏洞实现利用</p>
+<figure class="highlight crystal"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$ </span>whoami – 告诉我们当前用户是 john（非 root 用户）</span><br><span class="line"><span class="variable">$ </span>uname -a – 让我们知道容易受到dirtycow 攻击的内核版本</span><br><span class="line">&gt; 从这里下载了dirtycow漏洞——<span class="symbol">https:</span>/<span class="regexp">/www.exploit-db.com/exploits</span><span class="regexp">/40839/</span></span><br><span class="line">&gt; 编译并执行它。它通过编辑 /etc/passwd 文件将“root”用户替换为新用户“rash”。</span><br><span class="line"><span class="variable">$ </span>su rash - 它将当前登录的用户更改为 root 的“rash”。</span><br></pre></td></tr></table></figure>
+<div align="center"><br><img src="/img/20210820dirtycow.png" align><br></div>
+
+<p>您可以在这里查看dirtycow漏洞利用的其他版本 – <a href="https://github.com/dirtycow/dirtycow.github.io/wiki/PoCs" target="_blank" rel="external">https://github.com/dirtycow/dirtycow.github.io/wiki/PoCs</a><br>有许多不同的本地提权漏洞可用于不同的内核和操作系统。是否可以使用内核漏洞在 Linux 主机上获得 root 访问权限取决于内核是否有漏洞。 Kali Linux 有一个exploit-db 漏洞的本地副本，可以更容易地搜索本地root 漏洞。虽然我不建议在搜索 Linux 内核漏洞时完全依赖这个数据库。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ searchsploit Linux Kernel <span class="number">2.6</span><span class="number">.24</span> – 它向我们展示了 kali Linux 中已经存在的特定 Linux 内核的所有可用漏洞。</span><br></pre></td></tr></table></figure>
+<div align="center"><br><img src="/img/20210820searchsploit.png" align><br></div>
+
+<p>为什么应该首先避免运行任何本地提权漏洞利用程序呢？<br>虽然，运行漏洞利用程序并获得 root 访问权限感觉很诱人，但您应该始终将此作为最后的选择。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1.</span> 远程主机可能会崩溃，因为许多公开可用的 root 漏洞都不是很稳定。</span><br><span class="line"><span class="number">2.</span> 您可能获得了 root 权限，然后系统崩溃了。</span><br><span class="line"><span class="number">3.</span> 漏洞利用可能会留下可以让您被抓住的痕迹/日志。</span><br></pre></td></tr></table></figure>
+<p>在运行内核提权漏洞之前，您应该始终尝试使用下面讨论的其他技术来获取 root。</p>
+<p><strong>对策：</strong><br>经常对内核打补丁和更新。</p>
+<h3 id="2-利用以_root_身份运行的服务">2.利用以 root 身份运行的服务</h3><p>利用以 root 身份运行的任何服务都会为您提供 Root 权限！</p>
+<p>著名的 <a href="https://en.wikipedia.org/wiki/EternalBlue" target="_blank" rel="external">EternalBlue</a> 和 <a href="https://thehackernews.com/2017/05/samba-rce-exploit.html" target="_blank" rel="external">SambaCry</a> 漏洞利用，利用了通常以 root 身份运行的 smb 服务。<br>只需一个漏洞，攻击者就可以获得远程代码执行和本地权限提升。<br>由于它的致命组合，它被大量用于在全球范围内传播勒索软件。<br>您应该经常检查 Web 服务器、邮件服务器、数据库服务器等是否以 root 身份运行。很多时候，Web 管理员以 root 身份运行这些服务而忘记了它可能导致的安全问题。可能存在在本地运行且未公开的服务也可以被利用。</p>
+<p><code>$ netstat -antup – 它会显示所有打开并正在侦听的端口。我们可以检查本地运行的服务是否可以被利用。</code></p>
+<p><strong>利用以 root 身份运行的易受攻击的 MySQL 版本来获取 root 访问权限</strong></p>
+<p><a href="https://www.exploit-db.com/exploits/1518/" target="_blank" rel="external">MySQL UDF 动态库漏洞利用</a>允许您从 mysql shell 执行任意命令。如果 mysql 以 root 权限运行，则命令将以 root 身份执行。</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="keyword">ps</span> -aux | <span class="keyword">grep</span> root - 它向我们展示了以 root 身份运行的服务。</span><br><span class="line">&gt; 我们可以使用 MySQL <span class="keyword">shell</span> 执行任意命令，这些命令将以 root 身份执行。</span><br></pre></td></tr></table></figure>
+<div align="center"><br><img src="/img/20210820mysql_root.png" align><br></div>
+
+<div align="center"><br><img src="/img/20210820mysql_udf_root.png" align><br></div>
+
+<p>Web 管理员犯的最大错误之一就是以 root 权限运行 Web 服务器。 Web 应用程序上的命令注入漏洞可将攻击者引导至 root shell。这是一个典型的例子，说明为什么除非真的需要，否则不应以 root 身份运行任何服务。</p>
+<p>对拥有 root 权限的程序进行二进制漏洞利用远没有内核漏洞利用那么危险，因为即使服务崩溃，主机也不会崩溃，服务可能会自动重启。</p>
+<p><strong>对策：</strong><br>除非确实需要，否则切勿以 root 身份运行任何服务，尤其是 Web、数据库和文件服务器。</p>
+<h3 id="3-利用_SUID_可执行文件">3.利用 SUID 可执行文件</h3><p>SUID 代表 set user ID，是 Linux 的一项功能，允许用户以指定用户的权限执行文件。例如，Linux ping 命令通常需要 root 权限才能打开原始网络套接字。通过将 ping 程序标记为 SUID，所有者为 root，只要低权限用户执行程序，ping 就会以 root 权限执行。</p>
+<p><code>&gt; -rwsr-xr-x——“s”字符而不是“x”表示设置了 SUID 位。</code></p>
+<div align="center"><br><img src="/img/20210820ping_suid_bit.png" align><br></div>
+
+<p>SUID 是一项功能，如果使用得当，实际上可以增强 Linux 的安全性。问题是管理员在安装第三方应用程序或进行逻辑配置更改时可能会在不知不觉中引入危险的 SUID 配置。<br>很多系统管理员不明白在哪里设置 SUID 位，在哪里不设置。不应在任何文件编辑器上特别设置 SUID 位，因为攻击者可以覆盖系统上存在的任何文件。</p>
+<p><strong>利用易受攻击的 SUID 可执行文件获取 root 访问权限</strong></p>
+<p><code>$ find / -perm -u=s -type f 2&gt;/dev/null – 打印设置了 SUID 位的可执行文件</code></p>
+<div align="center"><br><img src="/img/20210820suid_bit_set_nmap.png" align><br></div>
+
+<p><code>$ ls -la /usr/local/bin/nmap – 让我们确认 nmap 是否设置了 SUID 位。</code></p>
+<div align="center"><br><img src="/img/20210820suid_nmap.png" align><br></div>
+
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&gt; Nmap 设置了 SUID 位。很多时候管理员为<span class="keyword">nmap</span>设置了SUID，以便它可以用于有效地扫描网络，因为如果您不以 root 权限运行它，所有 <span class="keyword">nmap</span> 扫描技术都不起作用。</span><br><span class="line">&gt; 但是，<span class="keyword">nmap</span> 旧版本中有一项功能，您可以在其中以交互模式运行 <span class="keyword">nmap</span>，从而可以转义到 <span class="keyword">shell</span>。如果 <span class="keyword">nmap</span> 设置了 SUID 位，它将以 root 权限运行，我们可以通过它的交互模式访问“root”<span class="keyword">shell</span>。</span><br><span class="line">$ <span class="keyword">nmap</span> –interactive – 运行 <span class="keyword">nmap</span> 交互模式</span><br><span class="line">$ !sh – 让你从 <span class="keyword">nmap</span> <span class="keyword">shell</span> 切换到系统 <span class="keyword">shell</span></span><br></pre></td></tr></table></figure>
+<div align="center"><br><img src="/img/20210820nmap_root.png" align><br></div>
+
+<p><strong>对策：</strong></p>
+<ul>
+<li>不应将 SUID 位设置为任何能够变换为 shell 的程序。</li>
+<li>永远不要在任何文件编辑器/编译器/解释器上设置 SUID 位，因为攻击者可以轻松读取/覆盖系统上存在的任何文件。</li>
+</ul>
+<h3 id="4-利用_SUDO_权限/用户">4.利用 SUDO 权限/用户</h3><p>如果攻击者无法通过任何其他技术直接获得 root 访问权限，他可能会尝试危害任何具有 SUDO 访问权限的用户。一旦他可以访问任何 SUDO 用户，他基本上可以使用 root 权限执行任何命令。<br>一个典型的例子是为 find 命令分配 SUDO 权限，以便其他用户可以搜索系统中的特定文件/日志。虽然管理员可能不知道“find”命令包含用于命令执行的参数，但攻击者可以使用 root 权限执行命令。</p>
+<p><strong>利用错误配置的 SUDO 权限获取 root 访问权限</strong></p>
+<p><code>$ sudo -l – 打印允许我们作为 SUDO 运行的命令</code></p>
+<div align="center"><br><img src="/img/20210820sudo-l.png" align><br></div>
+
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">我们可以使用 SUDO 运行 <span class="keyword">find</span>、<span class="keyword">cat</span> 和 <span class="keyword">python</span>。当使用 SUDO 运行时，所有这些命令都将以 root 身份运行。</span><br><span class="line">如果我们可以通过这些命令中的任何一个以某种方式运行 <span class="keyword">shell</span>，我们就可以获得 root 访问权限。</span><br><span class="line">$ sudo <span class="keyword">find</span> /home -exec <span class="keyword">sh</span> -<span class="keyword">i</span> \; – <span class="keyword">find</span> 命令的 exec 参数可用于任意代码执行。</span><br></pre></td></tr></table></figure>
+<div align="center"><br><img src="/img/20210820find_command_root.png" align><br></div>
+
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt; 永远不要给任何编程语言编译器、解释器和编辑器的 SUDO 权限。</span><br><span class="line">&gt; 这项准则也适用于 <span class="keyword">vi</span>、more、less、<span class="keyword">perl</span>、<span class="keyword">ruby</span>、gdb 等。</span><br><span class="line">$ sudo <span class="keyword">python</span> -<span class="keyword">c</span> <span class="string">'import pty;pty.spawn("/bin/bash");'</span> —— 启动一个<span class="keyword">shell</span></span><br></pre></td></tr></table></figure>
+<p><strong>对策：</strong></p>
+<ul>
+<li>不要向任何可以切换为 shell 的程序授予 sudo 权限。</li>
+<li>永远不要给 vi、more、less、nmap、perl、ruby、python、gdb 等类型程序 SUDO 权限。</li>
+</ul>
+<h2 id="5-_利用配置不当的_cron_任务">5. 利用配置不当的 cron 任务</h2><p>Cron 任务，如果配置不当，可以被利用来获得 root 权限。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1.</span> cron 任务中是否有任何可写的脚本或二进制文件？ </span><br><span class="line"><span class="number">2.</span> 我们能不能改写cron文件本身。 </span><br><span class="line"><span class="number">3.</span> cron.d 目录是否可写？</span><br></pre></td></tr></table></figure>
+<p>Cron 任务通常以 root 权限运行。如果我们可以成功修改在 cron 任务中定义的任何脚本或二进制文件，那么我们就可以使用 root 权限执行任意代码。</p>
+<p><code>$ ls -la /etc/cron.d – 打印已经存在于 cron.d 中的 cron 任务</code></p>
+<div align="center"><br><img src="/img/20210820cron-1.png" align><br></div>
+
+<figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ find / -perm -2 -<span class="keyword">type</span> f 2&gt;/dev/null – 打印可写文件</span><br><span class="line">$ <span class="keyword">ls</span> -<span class="keyword">la</span> /usr/<span class="keyword">local</span>/sbin/cron-logrotate.<span class="keyword">sh</span> – 让我们确认 cron-logrotate.<span class="keyword">sh</span> 是否可写入。</span><br></pre></td></tr></table></figure>
+<div align="center"><br><img src="/img/20210820logrotate_Cron_job_worl_writable.png" align><br></div>
+
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt; cron-lograte<span class="class">.sh</span> 是全局可写的，它由 logrotate cronjob 运行。我们在 cron-lograte<span class="class">.sh</span> 中写入/附加的任何命令都将以“root”身份执行。</span><br><span class="line">&gt; 我们在 /tmp 目录下写一个 C 文件并编译它。</span><br></pre></td></tr></table></figure>
+<div align="center"><br><img src="/img/20210820rootme.c_cronjob.png" align><br></div>
+
+<figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt; rootme 可执行文件将生成一个 <span class="keyword">shell</span>。</span><br><span class="line">$ <span class="keyword">ls</span> -<span class="keyword">la</span> rootme - 它告诉我们它归用户“SHayslett”所有</span><br></pre></td></tr></table></figure>
+<div align="center"><br><img src="/img/20210820cron_job_.png" align><br></div>
+
+<figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ echo <span class="string">"chown root:root /tmp/rootme; chmod u+s /tmp/rootme;"</span>&gt;/usr/<span class="keyword">local</span>/sbin/cron-logrotate.<span class="keyword">sh</span> </span><br><span class="line">– 这将更改可执行文件的所有者和组为 root。它还将设置 SUID 位。</span><br><span class="line">$ <span class="keyword">ls</span> -<span class="keyword">la</span> rootme – 5 分钟后，logrotate cronjob 运行，cron-logrotate.<span class="keyword">sh</span> 以 root 权限执行。</span><br><span class="line">$ ./rootme – 产生一个 root <span class="keyword">shell</span>。</span><br></pre></td></tr></table></figure>
+<div align="center"><br><img src="/img/20210820cronjobs_After5min.png" align><br></div>
+
+<p><strong>对策：</strong></p>
+<ul>
+<li>cron 任务中定义的任何脚本或二进制文件都不应是可写的 </li>
+<li>cron 文件不应被除 root 之外的任何人写入。 </li>
+<li>cron.d 目录不应被除 root 之外的任何人写入。</li>
+</ul>
+<h3 id="6-_在PATH环境变量中使用’-’提权">6. 在PATH环境变量中使用’.’提权</h3><p>在您的 PATH 中包含“.”意味着用户能够从当前目录执行二进制文件/脚本。为了避免每次都输入这两个额外的字符，用户在他们的 PATH 中添加了“.”。这可能是攻击者提升其特权的绝佳方法。<br>假设 Susan 是管理员，她在路径中添加了“.”，这样她就不必再次写入这 2 个字符（./）。</p>
+<p><strong>PATH中带有“.” - Program<br>PATH中没有“.” – ./program</strong></p>
+<p>发生这种情况是因为在添加“.”后 Linux 首先在 PATH 开头搜索当前目录中的程序，然后搜索其他任何地方。</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="blockquote">&gt; 另一个用户“rashid”知道 susan 在她的路径中添加了“.”，因为她很懒</span></span><br><span class="line"><span class="blockquote">&gt; rashid告诉susan “ls”命令在他的目录中不起作用</span></span><br><span class="line"><span class="blockquote">&gt; Rashid 在他的目录中添加了一个代码，该代码将更改 sudoers 文件并使他成为管理员</span></span><br><span class="line"><span class="blockquote">&gt; Rashid 将该代码存储在名为“ls”的文件中并使其可执行</span></span><br><span class="line"><span class="blockquote">&gt; 苏珊拥有 root 权限。她来了，在拉希德的主目录中执行“ls”命令</span></span><br><span class="line"><span class="blockquote">&gt; 使用 root 访问权限执行恶意代码，而不是原始的“ls”命令</span></span><br><span class="line"><span class="blockquote">&gt; 在保存为“ls”的文件中，添加了将打印“Hello world”的代码</span></span><br></pre></td></tr></table></figure>
+<div align="center"><br><img src="/img/20210820path_1.png" align><br></div>
+
+<p><code>$ PATH=.:${PATH} – 在 PATH 变量中添加“.”</code></p>
+<div align="center"><br><img src="/img/20210820path_2.png" align><br></div>
+
+<figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="keyword">ls</span> – 执行 ./<span class="keyword">ls</span> 文件而不是运行 <span class="keyword">list</span> 命令。</span><br><span class="line">&gt; 现在，如果 root 用户以 root 权限执行代码，我们可以实现以 root 权限执行任意代码。</span><br></pre></td></tr></table></figure>
+<div align="center"><br><img src="/img/20210820path_3.png" align><br></div>
+
+<p>在这里，我们总结了对任何基于 Linux 的系统的成功提权攻击。现在你知道攻击者如何利用某些技术来提升他们的权限，你可以进一步利用这些技术来保护您的系统和应用程序免受入侵和攻击。</p>
+<p><em>原文链接：<a href="https://payatu.com/guide-linux-privilege-escalation" target="_blank" rel="external">https://payatu.com/guide-linux-privilege-escalation</a></em></p>
+
+      
+    </div>
+    <footer>
+      
+
+        
+          <div class="alignleft post-nav">
+            <em>上一篇: </em><a href="/2021/10/20/IOT/using-rasberrypi-as-poor-mans-hardware-hacking-tool/">树莓派-穷人的硬件黑客工具（翻译）</a>
+          </div>
+        
+        
+          <div class="alignright post-nav">
+            <em>下一篇: </em><a href="/2021/03/20/IOT/powerpc_binary_blob_firmware_reverse/">一次嵌入式固件逆向实践</a>
+          </div>
+          <div class="clearfix"></div>
+        
+
+        
+          <div class="copyright">
+            
+              <span class="claim">转载请注明youngroe.com</span>
+            
+            
+              <span class="from-link">
+                <em>本文链接地址:</em>
+                <a href="/2021/08/20/Cybersecurity/guide-linux-privilege-escalation/">
+                  http://www.youngroe.com/2021/08/20/Cybersecurity/guide-linux-privilege-escalation/
+                </a>
+              </span>
+            
+          </div>
+        
+        
+  
+  <div class="categories">
+    <a href="/categories/Cybersecurity/">Cybersecurity</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/Linux/">Linux</a>, <a href="/tags/提权/">提权</a>
+  </div>
+
+        
+          <! -- 添加捐赠图标 -->
+<div class ="post-donate">
+    <div id="donate_board" class="donate_bar center">
+        <a id="btn_donate" class="btn_donate" href="javascript:;" title="打赏"></a>
+        <span class="donate_txt">
+           ↑<br>
+           欣赏此文？求鼓励，求支持！
+        </span>
+        <br>
+      </div>  
+    <div id="donate_guide" class="donate_bar center hidden" >
+        <!-- 方式一： 
+            ![](/img/Alipay.jpg)
+            ![](/img/WeChatpay.jpg)
+        -->
+        <!-- 方式二；
+            step1：在_config.yml中添加配置
+                Alipay: /img/Alipay.jpg
+                WeChatpay: /img/WeChatpay.jpg
+            step2：此处两张图片的路径分别设置为如下
+                <img src="undefined"
+                <img src="undefined"
+        -->
+        <!-- 支付宝打赏图案 -->
+        <img src="/img/Alipay.png" alt="支付宝打赏">
+        <!-- 微信打赏图案 -->
+        <img src="/img/WeChatpay.png" alt="微信打赏">
+    </div>
+    <script type="text/javascript">
+        document.getElementById('btn_donate').onclick = function(){
+            $('#donate_board').addClass('hidden');
+            $('#donate_guide').removeClass('hidden');
+        }
+    </script>
+</div>
+<! -- 添加捐赠图标 -->
+        
+        <div id="gitalk-container"></div>
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+<script src="https://cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.js"></script>
+<script type="text/javascript">
+    var gitalk = new Gitalk({
+  clientID: '503c39aa3fb2b8c1b734',
+  clientSecret: '65d784ff7a95a9dbf4a4208c9e32166ca29654f2',
+  repo: 'geemion.github.io',
+  owner: 'geemion',
+  admin: 'geemion',
+  pagerDirection:'first',
+  id: md5(window.location.pathname)
+})
+
+gitalk.render('gitalk-container')
+</script>
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+  <div id="container"></div>
+</span>
+</article>
+
+
+<section id="comment">
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+<div class="widget tag">
+  <h3 class="title">分类</h3>
+  <ul class="entry">
+  
+    <li><a href="/categories/Cybersecurity/">Cybersecurity</a><small>6</small></li>
+  
+    <li><a href="/categories/Debug/">Debug</a><small>7</small></li>
+  
+    <li><a href="/categories/IOT/">IOT</a><small>2</small></li>
+  
+    <li><a href="/categories/Kernel/">Kernel</a><small>4</small></li>
+  
+    <li><a href="/categories/Learning/">Learning</a><small>5</small></li>
+  
+    <li><a href="/categories/Life/">Life</a><small>5</small></li>
+  
+    <li><a href="/categories/Others/">Others</a><small>1</small></li>
+  
+    <li><a href="/categories/Tools/">Tools</a><small>5</small></li>
+  
+    <li><a href="/categories/Vulnerabilities/">Vulnerabilities</a><small>0</small></li>
+  
+    <li><a href="/categories/Windows/">Windows</a><small>13</small></li>
+  
+    <li><a href="/categories/life/">life</a><small>0</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2021/10/20/IOT/using-rasberrypi-as-poor-mans-hardware-hacking-tool/">树莓派-穷人的硬件黑客工具（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2021/08/20/Cybersecurity/guide-linux-privilege-escalation/">Linux权限提升指南（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2021/03/20/IOT/powerpc_binary_blob_firmware_reverse/">一次嵌入式固件逆向实践</a>
+      </li>
+    
+      <li>
+        <a href="/2020/10/02/Cybersecurity/art-of-anti-detection-4-art-of-anti-detection-4-self-defense/">反检测的艺术4-自保护（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2020/09/10/Cybersecurity/art-of-anti-detection-3-art-of-anti-detection-3-shellcode-alchemy/">反检测的艺术3-shellcode的魔力 （翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2020/09/04/Cybersecurity/art-of-anti-detection-2-pe-backdoor-manufacturing/">反检测的艺术2-如何制作PE文件后门（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2020/09/03/Cybersecurity/art-of-anti-detection-1-introduction-to-av-detection-techniques/">反检测的艺术1-反病毒软件及检测技术概述（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2020/08/02/Life/dns_hijacking/">记录一次被DNS劫持及解决方案(非改hosts方式)</a>
+      </li>
+    
+      <li>
+        <a href="/2019/07/01/Windows/delphi_reverse_summary/">Delphi程序逆向反汇编技巧小记</a>
+      </li>
+    
+      <li>
+        <a href="/2019/06/25/Kernel/kernel_enum_wfp_callout_function/">Windows内核重拾：如何枚举系统中Windows Filtering Platform (WFP)驱动中的callout函数</a>
+      </li>
+    
+      <li>
+        <a href="/2019/05/06/Kernel/windows-driver-testing-basics/">Windows内核重拾：Windows驱动测试基础：工具、功能和示例（翻译/转载）</a>
+      </li>
+    
+      <li>
+        <a href="/2019/04/06/Windows/how-to-reverse-engineer-software-windows-in-a-right-way/">如何正确的对Windows软件进行逆向工程（翻译/转载）</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget tagcloud">
+  <h3 class="title">标签云</h3>
+  <div class="entry">
+    <a href="/tags/Boost/" style="font-size: 10px;">Boost</a> <a href="/tags/DDoS/" style="font-size: 10px;">DDoS</a> <a href="/tags/DNS-over-HTTPS/" style="font-size: 10px;">DNS-over-HTTPS</a> <a href="/tags/DNS劫持/" style="font-size: 10px;">DNS劫持</a> <a href="/tags/Delphi/" style="font-size: 10px;">Delphi</a> <a href="/tags/Dll劫持/" style="font-size: 10px;">Dll劫持</a> <a href="/tags/GetVersionEx/" style="font-size: 10px;">GetVersionEx</a> <a href="/tags/Http/" style="font-size: 10px;">Http</a> <a href="/tags/IDA-Pro/" style="font-size: 12.5px;">IDA Pro</a> <a href="/tags/IOT安全/" style="font-size: 12.5px;">IOT安全</a> <a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/MSDN/" style="font-size: 12.5px;">MSDN</a> <a href="/tags/Malware/" style="font-size: 12.5px;">Malware</a> <a href="/tags/MiniDumpWriteDump/" style="font-size: 10px;">MiniDumpWriteDump</a> <a href="/tags/PEB/" style="font-size: 10px;">PEB</a> <a href="/tags/Procmon/" style="font-size: 10px;">Procmon</a> <a href="/tags/Runtime-Error/" style="font-size: 10px;">Runtime Error</a> <a href="/tags/SEH/" style="font-size: 10px;">SEH</a> <a href="/tags/SysinternalsSuite/" style="font-size: 10px;">SysinternalsSuite</a> <a href="/tags/Tips/" style="font-size: 10px;">Tips</a> <a href="/tags/UAC/" style="font-size: 10px;">UAC</a> <a href="/tags/UAF漏洞/" style="font-size: 10px;">UAF漏洞</a> <a href="/tags/VC/" style="font-size: 10px;">VC</a> <a href="/tags/Visual-Studio/" style="font-size: 12.5px;">Visual Studio</a> <a href="/tags/Windbg/" style="font-size: 10px;">Windbg</a> <a href="/tags/Windows/" style="font-size: 20px;">Windows</a> <a href="/tags/getaddrinfo/" style="font-size: 10px;">getaddrinfo</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/libeay32/" style="font-size: 10px;">libeay32</a> <a href="/tags/x64/" style="font-size: 10px;">x64</a> <a href="/tags/内核/" style="font-size: 12.5px;">内核</a> <a href="/tags/内核结构/" style="font-size: 15px;">内核结构</a> <a href="/tags/反病毒/" style="font-size: 17.5px;">反病毒</a> <a href="/tags/安全机制/" style="font-size: 10px;">安全机制</a> <a href="/tags/异常处理/" style="font-size: 10px;">异常处理</a> <a href="/tags/提权/" style="font-size: 12.5px;">提权</a> <a href="/tags/服务/" style="font-size: 10px;">服务</a> <a href="/tags/权限/" style="font-size: 12.5px;">权限</a> <a href="/tags/栈溢出漏洞/" style="font-size: 10px;">栈溢出漏洞</a> <a href="/tags/测试/" style="font-size: 10px;">测试</a> <a href="/tags/漏洞调试/" style="font-size: 12.5px;">漏洞调试</a> <a href="/tags/生活/" style="font-size: 15px;">生活</a> <a href="/tags/脱壳/" style="font-size: 10px;">脱壳</a> <a href="/tags/西安/" style="font-size: 10px;">西安</a> <a href="/tags/计划/" style="font-size: 10px;">计划</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a> <a href="/tags/调试/" style="font-size: 15px;">调试</a> <a href="/tags/转换/" style="font-size: 10px;">转换</a> <a href="/tags/进程/" style="font-size: 10px;">进程</a> <a href="/tags/逆向/" style="font-size: 10px;">逆向</a> <a href="/tags/重庆/" style="font-size: 10px;">重庆</a> <a href="/tags/驱动/" style="font-size: 15px;">驱动</a>
+  </div>
+</div>
+
+
+  <div class="widget tag">
+<h3 class="title">Links</h3>
+<ul class="entry">
+<li><a href="http://blog.ourren.com/" title="Ourren">Ourren</a></li>
+<li><a href="http://www.hyjal.net/" title="Hyjal">Hyjal</a></li>
+<li><a href="http://www.jianshu.com/users/fa15f4e416ae/latest_articles" title="Daemonceltics">Daemonceltics</a></li>
+<li><a href="http://papap.info/" title="isee">isee</a></li>
+</ul>
+</div>
+
+  <script type="text/javascript" id="clustrmaps" src="//cdn.clustrmaps.com/map_v2.js?u=putG&d=yoFnN6V-ovhL-H4e9_69LvkTiX4uX7rEYJ15yL3G1Wg"></script>
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <div id="go-pg-top"><i class="icon-arrow-up"></i></div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2021 Lyon
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript" charset="utf-8" src="/js/page.js"></script>
+
+</body>
+
+</html>
