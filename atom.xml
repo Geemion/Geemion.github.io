@@ -74,6 +74,369 @@
   </entry>
   
   <entry>
+    <title><![CDATA[物联网安全101-4.低功耗蓝牙BLE（翻译）]]></title>
+    <link href="http://www.youngroe.com/2021/09/22/IOT/iot-security-part-4-bluetooth-low-energy-101/"/>
+    <id>http://www.youngroe.com/2021/09/22/IOT/iot-security-part-4-bluetooth-low-energy-101/</id>
+    <published>2021-09-22T12:50:22.000Z</published>
+    <updated>2021-11-06T15:28:21.547Z</updated>
+    <content type="html"><![CDATA[<p>如果您还没有通读我们的 IoT 安全博客系列的第 1 部分到第 3 部分，我建议您先阅读它们，除非您已经熟悉 IoT 的基础知识。上一篇博客的链接——<a href="/2021/09/22/IOT/iot-security-part-3-101-iot-top-ten-vulnerabilities/">物联网安全——第 3 部分</a>。<br>蓝牙一直是一个流行词，因为人们希望他们的所有设备都是智能的，这基本上意味着您可以跨设备控制事物而无需携带电线。蓝牙已经进入市场十多年了。如果您是千禧一代，您会使用那些带有蓝牙功能的经典诺基亚手机。蓝牙是由爱立信发明的，其他厂商也开始使用蓝牙。不久之后，所有主要供应商都创建了一个名为<a href="https://en.wikipedia.org/wiki/Bluetooth_Special_Interest_Group" target="_blank" rel="external">蓝牙特别兴趣小组- SIG的联盟</a>，该联盟管理标准应该如何以及不同版本之间的互操作性。<br>我们不打算谈论蓝牙。蓝牙本身就是一个庞大的协议栈，它们的规范大约有2000 多页。在本博客中，我将仅介绍更为著名的 BLE 蓝牙低功耗。<br><a id="more"></a></p>
+<p>随着万物互联时代的到来，随之而来的是能量和资源的问题。正如我之前提到的，蓝牙是一个巨大的协议栈。在像健身手环这样的终端设备中实施它需要更多的能量和资源。因此，在蓝牙 4.0 标准中，他们引入了一种称为 Low energy 的技术，专门针对在内存和功率受限的设备上运行的物联网和智能设备。</p>
+<div align="center"><br><img src="/img/2021092150941367.jpg" align><br></div>
+
+<p>Bluetooth SIG 开始将该标准作为 <a href="https://www.laptopmag.com/articles/just-what-is-bluetooth-4-0-anyway" target="_blank" rel="external">Bluetooth Smart</a>进行销售。它有两个组件，Bluetooth Smart设备是只有蓝牙低功耗组件的终端设备，Bluetooth Ready是能够同时执行Bluetooth LE 和 EDR-Bluetooth经典组件的设备，这可能是您的中心设备，如手机或笔记本电脑。<br>现在让我们来看看蓝牙规范的技术细节</p>
+<div align="center"><br><img src="/img/202109212961815527.gif" align><br></div><br>来源：<a href="https://archive.eetindia.co.in/www.eetindia.co.in/STATIC/ARTICLE_IMAGES/201312/EEIOL_2013DEC13_RFD_NET_TA_01Tab1.gif" target="_blank" rel="external">https://archive.eetindia.co.in/www.eetindia.co.in/STATIC/ARTICLE_IMAGES/201312/EEIOL_2013DEC13_RFD_NET_TA_01Tab1.gif</a><br><br>该表本身将使您更好地了解规格、范围和带宽已减少以承受低功耗和低资源。<br>正如我之前提到的，LE 有两种不同类型的设备。<br><br><a href="https://www.digikey.com/Web%20Export/Supplier%20Content/Laird_776/PDF/laird-wireless-bluetooth-smart-ready.pdf" target="_blank" rel="external">Bluetooth Smart Ready</a>- 这是电池供电和高资源的中央设备，能够运行所有蓝牙协议。它们是您的笔记本电脑和手机。<br><br><div align="center"><br><img src="/img/3391617601.jpg" align><br></div>
+
+<p><a href="https://www.digikey.com/Web%20Export/Supplier%20Content/Laird_776/PDF/laird-wireless-bluetooth-smart-ready.pdf" target="_blank" rel="external">Bluetooth Smart</a>– 它们是您的终端设备，如健身追踪器、行李追踪器或智能假阳具。他们不必运行整个堆栈，他们需要节省电力和资源。它们仅运行 Bluetooth LE 服务器。它们是中央设备可以连接的外围设备。</p>
+<div align="center"><br><img src="/img/170392843.jpg" align><br></div>
+
+<p>蓝牙和 LE 堆栈详细信息超出了本文的范围。<br>但是我们将关注的两个重要组件是 GAT 和 GAPP，它们负责 BLE 服务的运行。</p>
+<div align="center"><br><img src="/img/Bluetooth_stack.jpg" align><br></div>
+
+<h2 id="Generic_Access_Profile_(GAP)_通用访问配置文件">Generic Access Profile (GAP) 通用访问配置文件</h2><p><a href="https://www.bluetooth.com/specifications/assigned-numbers/generic-access-profile" target="_blank" rel="external">GAP</a>定义了您与中央和外围设备的通信和连接应该如何工作。</p>
+<div align="center"><br><img src="/img/Bluetooth_GAP.jpg" align><br></div>
+
+<h2 id="Generic_Attribute_(GATT)通用属性_(GATT)">Generic Attribute (GATT)通用属性 (GATT)</h2><p><a href="https://www.bluetooth.com/specifications/gatt/generic-attributes-overview" target="_blank" rel="external">GATT</a>就像一个管理您的数据需要如何处理的服务器。<br>您的Bluetooth LE 设备按照服务器-客户端原理工作。在这里，您的终端设备/外围设备充当运行 GATT 服务器的服务器，而您的中央设备充当客户端。因此，您的最终应用程序或工具连接到 GATT 服务器并从设备请求数据。<br>在您的 GATT 服务器内。有三个组成部分。</p>
+<ul>
+<li><ol>
+<li><a href="http://dev.ti.com/tirex/content/simplelink_cc2640r2_sdk_1_40_00_45/docs/blestack/ble_user_guide/html/ble-stack-3.x/gatt.html" target="_blank" rel="external">Profile</a> – Bluetooth SIG 定义，它可以基于设备的类型，可以是血压设备或温度传感器，也可以是任何最常用的具有互操作性优势的设备。</li>
+</ol>
+</li>
+<li><ol start="2">
+<li><a href="https://www.bluetooth.com/specifications/gatt/services" target="_blank" rel="external">Services</a> - 每个设备内部都有多个参数。假设设备可以有名称、固件版本、OTA 功能、设备操作。它们被分组到称为服务的特定数据集。</li>
+</ol>
+</li>
+<li><ol start="3">
+<li><a href="https://www.bluetooth.com/specifications/gatt/characteristics" target="_blank" rel="external">Characteristics</a> - 在您的服务中放置您的数据。它可以是 16 位Bluetooth SIG 派生特征或特定于供应商的 128 位特征。</li>
+</ol>
+</li>
+</ul>
+<p>简而言之，service就像一个文件夹，characteristics是保存数据的文件。</p>
+<div align="center"><br><img src="/img/GATT.png" align><br></div>
+
+<p>现在我们了解了什么是低功耗蓝牙及其工作原理的基础知识。让我们来看看有关如何访问 BLE 设备的一些工具和方法。<br>如果您使用的是 Windows，我会认真建议您使用 Ubuntu，因为它带有所有必要的工具来访问 ble 设备并从亚马逊获得那些便宜的蓝牙 4.0 模块。（有些笔记本电脑不附带它。）</p>
+<h3 id="连接蓝牙适配器：">连接蓝牙适配器：</h3><ul>
+<li><ol>
+<li>将蓝牙 USB 模块连接到笔记本电脑的空闲 USB 端口。（无需从主机安装任何驱动程序）。</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>连接后，打开终端并输入”sudo hciconfig “， 您应该能够看到此窗口，该窗口为您提供 mac 地址（蓝牙USB模块），并且应该显示 UP and RUNNING。</li>
+</ol>
+</li>
+<li><ol start="3">
+<li>如果您遇到任何问题，请通过”sudo hciconfig hci0 reset”重新启动蓝牙接口→这会很方便。<div align="center"><br><img src="/img/connect_ble.png" align><br></div>
+
+</li>
+</ol>
+</li>
+</ul>
+<h3 id="扫描蓝牙设备">扫描蓝牙设备</h3><ul>
+<li><ol>
+<li>成功将蓝牙适配器连接到机器后</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>您现在可以使用”sudo hcitool lescan”扫描您周围的所有 ble 设备<div align="center"><br><img src="/img/scan_ble.png" align><br></div>
+</li>
+</ol>
+</li>
+<li><ol start="3">
+<li>您将看到带有名称和 MAC 地址的设备列表。</li>
+</ol>
+</li>
+<li><ol start="4">
+<li>通过关闭和打开设备并找出差异来找出设备的 mac。</li>
+</ol>
+</li>
+<li><ol start="5">
+<li>现在获取有关该设备的更多信息。执行”sudo hcitool leinfo –random <mac>“ –random 取决于类型寻址。</mac></li>
+</ol>
+</li>
+</ul>
+<div align="center"><br><img src="/img/scan_ble.png" align><br></div>
+
+<ul>
+<li><ol start="6">
+<li>您将获得基本信息，例如蓝牙设备的制造商。</li>
+</ol>
+</li>
+</ul>
+<h3 id="读取和写入数据">读取和写入数据</h3><ul>
+<li>获得设备的MAC地址后。将其保存在一个文件中。它会很有用。</li>
+<li>连接到智能设备的 GATT 服务器。我们使用名为 gatttool 的工具。</li>
+<li>使用这个命令”sudo gatttool -I -b <mac> -t random “你会得到一个像这样的CLI并输入”connect”。<div align="center"><br><img src="/img/connected_ble.png" align><br></div></mac></li>
+<li>现在您可以通过使用”primary”、”characteristics”和”char-desc”查看设备中运行的所有UUID来查看设备上运行的特性和服务。<div align="center"><br><img src="/img/bluetooth_primary.png" align><br></div>
+
+</li>
+</ul>
+<div align="center"><br><img src="/img/bluetooth_characteristics.png" align><br></div>
+
+<ul>
+<li>现在您可以使用”char-read-hnd <handle> “和” char-write-req <handle> <data> “读取和写入这些句柄来读取和写入它。<div align="center"><br><img src="/img/4150880507.png" align><br></div>
+
+</data></handle></handle></li>
+</ul>
+<div align="center"><br><img src="/img/Selection_278.png" align><br></div>
+
+<ul>
+<li>这里的字符属性为您提供了句柄的权限，如读取、写入、通知、指示。<div align="center"><br><img src="/img/2634211564.png" align><br></div>
+
+</li>
+</ul>
+<div align="center"><br><img src="/img/177460243.png" align><br></div>
+
+<ul>
+<li>您也可以通过将“01”写入句柄来启用通知</li>
+</ul>
+<div align="center"><br><img src="/img/182114208.png" align><br></div>
+
+<p>您可以查看我们的<a href="https://payatu.com/blog/Arun-Magesh/smartmassager_re" target="_blank" rel="external">其他博客</a>，了解如何逆向智能按摩器的蓝牙通信。</p>
+<h2 id="参考：">参考：</h2><p><a href="https://www.nordicsemi.com/eng/News/ULP-Wireless-Update/A-short-history-of-Bluetooth" target="_blank" rel="external">https://www.nordicsemi.com/eng/News/ULP-Wireless-Update/A-short-history-of-Bluetooth</a><br><a href="https://www.bluetooth.com/specifications/gatt/generic-attributes-overview" target="_blank" rel="external">https://www.bluetooth.com/specifications/gatt/generic-attributes-overview</a><br><a href="https://www.bluetooth.com/specifications" target="_blank" rel="external">https://www.bluetooth.com/specifications</a><br><a href="https://learn.adafruit.com/introduction-to-bluetooth-low-energy/gatt" target="_blank" rel="external">https://learn.adafruit.com/introduction-to-bluetooth-low-energy/gatt</a><br><a href="https://www.oreilly.com/library/view/getting-started-with/9781491900550/ch01.html" target="_blank" rel="external">https://www.oreilly.com/library/view/getting-started-with/9781491900550/ch01.html</a><br><a href="https://en.wikipedia.org/wiki/Bluetooth_Low_Energy" target="_blank" rel="external">https://en.wikipedia.org/wiki/Bluetooth_Low_Energy</a><br><a href="https://www.jaredwolff.com/blog/get-started-with-bluetooth-low-energy/" target="_blank" rel="external">https://www.jaredwolff.com/blog/get-started-with-bluetooth-low-energy/</a><br><a href="http://object-network.blogspot.com/2014/01/scanning-ble-adverts-from-linux.html" target="_blank" rel="external">http://object-network.blogspot.com/2014/01/scanning-ble-adverts-from-linux.html</a><br><a href="https://elinux.org/images/3/32/Doing_Bluetooth_Low_Energy_on_Linux.pdf" target="_blank" rel="external">https://elinux.org/images/3/32/Doing_Bluetooth_Low_Energy_on_Linux.pdf</a><br><a href="https://www.digikey.com/Web%20Export/Supplier%20Content/Laird_776/PDF/laird-wireless-bluetooth-smart-ready.pdf" target="_blank" rel="external">https://www.digikey.com/Web%20Export/Supplier%20Content/Laird_776/PDF/laird-wireless-bluetooth-smart-ready.pdf</a></p>
+<p><em>原文链接：<a href="https://payatu.com/blog/Arun-Magesh/iot-security-part-4-bluetooth-low-energy-101" target="_blank" rel="external">https://payatu.com/blog/Arun-Magesh/iot-security-part-4-bluetooth-low-energy-101</a></em></p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>如果您还没有通读我们的 IoT 安全博客系列的第 1 部分到第 3 部分，我建议您先阅读它们，除非您已经熟悉 IoT 的基础知识。上一篇博客的链接——<a href="/2021/09/22/IOT/iot-security-part-3-101-iot-top-ten-vulnerabilities/">物联网安全——第 3 部分</a>。<br>蓝牙一直是一个流行词，因为人们希望他们的所有设备都是智能的，这基本上意味着您可以跨设备控制事物而无需携带电线。蓝牙已经进入市场十多年了。如果您是千禧一代，您会使用那些带有蓝牙功能的经典诺基亚手机。蓝牙是由爱立信发明的，其他厂商也开始使用蓝牙。不久之后，所有主要供应商都创建了一个名为<a href="https://en.wikipedia.org/wiki/Bluetooth_Special_Interest_Group">蓝牙特别兴趣小组- SIG的联盟</a>，该联盟管理标准应该如何以及不同版本之间的互操作性。<br>我们不打算谈论蓝牙。蓝牙本身就是一个庞大的协议栈，它们的规范大约有2000 多页。在本博客中，我将仅介绍更为著名的 BLE 蓝牙低功耗。<br>]]>
+    
+    </summary>
+    
+      <category term="IOT安全" scheme="http://www.youngroe.com/tags/IOT%E5%AE%89%E5%85%A8/"/>
+    
+      <category term="IOT" scheme="http://www.youngroe.com/categories/IOT/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[物联网安全101-3.物联网10大安全漏洞（翻译）]]></title>
+    <link href="http://www.youngroe.com/2021/09/22/IOT/iot-security-part-3-101-iot-top-ten-vulnerabilities/"/>
+    <id>http://www.youngroe.com/2021/09/22/IOT/iot-security-part-3-101-iot-top-ten-vulnerabilities/</id>
+    <published>2021-09-22T11:50:22.000Z</published>
+    <updated>2021-11-06T09:27:15.956Z</updated>
+    <content type="html"><![CDATA[<p>如果您还没有阅读我们的 IoT 安全博客系列的第 1 部分和第 2 部分，我建议您先阅读它们，除非您已经熟悉基础知识并且只想阅读 IoT 十大漏洞。</p>
+<p>说到十大漏洞，我们首先想到的是OWASP。为什么不呢，毕竟他们是定义 Web 和移动应用 10 大漏洞的先驱。我是 OWASP 的粉丝，这仅仅是因为 OWASP 社区多年来为定义应用程序安全问题、为行业提供免费教程和开源工具以减轻风险和漏洞所做的工作。您很有可能没有听说过 OWASP 或从他们的网站上阅读过内容，但是如果您没有，我强烈建议您访问他们的网站  <a href="https://www.owasp.org" target="_blank" rel="external">https://www.owasp.org</a></p>
+<p>OWASP 还启动了物联网安全计划，社区定义了物联网攻击面和物联网前 10 大漏洞，以及Web和移动设备10大漏洞。他们的方向是正确的，很快它就会成为学习物联网安全内容的绝佳场所。</p>
+<a id="more"></a>
+<p>OWASP网站物联网安全相关内容如下：</p>
+<ul>
+<li><ol>
+<li>OWASP Web Top 10项目： – <a href="https://www.owasp.org/index.php/Category:OWASP_Top_Ten_Project" target="_blank" rel="external">https://www.owasp.org/index.php/Category:OWASP_Top_Ten_Project</a></li>
+</ol>
+</li>
+<li><ol start="2">
+<li>OWASP Mobile Top 10项目：<a href="https://www.owasp.org/index.php/OWASP_Mobile_Security_Project" target="_blank" rel="external">https://www.owasp.org/index.php/OWASP_Mobile_Security_Project</a></li>
+</ol>
+</li>
+<li><ol start="3">
+<li>OWASP物联网项目：https : //<a href="http://www.owasp.org/index.php/OWASP_Internet_of_Things_Project" target="_blank" rel="external">www.owasp.org/index.php/OWASP_Internet_of_Things_Project</a></li>
+</ol>
+</li>
+<li>a. OWASP 物联网攻击面：https : //<a href="http://www.owasp.org/index.php/OWASP_Internet_of_Things_Project#tab=IoT_Attack_Surface_Areas" target="_blank" rel="external">www.owasp.org/index.php/OWASP_Internet_of_Things_Project#tab=IoT_Attack_Surface_Areas</a></li>
+<li>b. OWASP 物联网十大漏洞：https ://<a href="http://www.owasp.org/index.php/Top_10_IoT_Vulnerabilities_" target="_blank" rel="external">www.owasp.org/index.php/Top_10_IoT_Vulnerabilities_</a>(2014 )</li>
+</ul>
+<h2 id="OWASP物联网十大漏洞">OWASP物联网十大漏洞</h2><p>OWASP 最近定义了物联网中的前 10 个漏洞。它非常全面，我建议您阅读它们并了解物联网生态系统的威胁和问题是什么。作为作业，您可以将其映射到我们在上一篇博文中定义的攻击面。OWASP IoT 十大漏洞（根据<a href="https://www.owasp.org/index.php/Top_IoT_Vulnerabilities）：" target="_blank" rel="external">https://www.owasp.org/index.php/Top_IoT_Vulnerabilities）：</a></p>
+<ul>
+<li>I1.不安全的 Web 界面</li>
+<li>I2.身份验证/授权不足</li>
+<li>I3.不安全的网络服务</li>
+<li>I4.缺乏传输加密/完整性验证</li>
+<li>I5.隐私问题</li>
+<li>I6.不安全的云接口</li>
+<li>I7.不安全的移动接口</li>
+<li>I8.安全可配置性不足</li>
+<li>I9.不安全的软件/固件</li>
+<li>I10.物理安全性差</li>
+</ul>
+<p>我们不会深入研究前十名中每个项目的详细信息。可以在 OWASP 链接（上面给出）上找到详细信息。相反，我们将根据我们发现的问题或 Internet 上发布的问题的经验来优化前十名。</p>
+<h2 id="Payatu物联网十大漏洞2018">Payatu物联网十大漏洞2018</h2><p><em>免责声明：请注意，我们的目标不是试图超越 OWASP 前十名，这些人做得很好。向 OWASP 团队致敬！这是一项基于我们经验的练习，更多地关注值得关注的硬件和新的物联网技术。</em></p>
+<p>我们将继续维护和更新 Payatu IoT Top 10 漏洞。如果您有任何建议，请随时给我们发送电子邮件（info a..t payatu DOT com）。我们将 Web 和云合二为一，原因是并非所有传感器或物联网设备都具有 Web 界面，而云是生态系统的重要组成部分，从攻击面的角度来看，它主要是基于 Web API 的。此外，一些漏洞可能适用于多个组件，例如硬编码适用于设备和移动应用程序。<br>我们将定义对物联网安全市场和产品造成影响的 10 大物联网漏洞。我们将解释以下所有物联网漏洞，以了解基本的安全问题。</p>
+<p><div align="center"><br><img src="/img/20210921payatu_iot_top_ten.png" align><br></div></p>
+<ul>
+<li>P1.硬编码敏感信息</li>
+<li>P2.启用硬件调试端口</li>
+<li>P3.不安全的固件</li>
+<li>P4.不安全的数据存储</li>
+<li>P5.认证不足</li>
+<li>P6. 不安全的通信</li>
+<li>P7. 不安全的配置</li>
+<li>P8.数据输入过滤不足</li>
+<li>P9. 不安全的移动接口</li>
+<li>P10.不安全的云/网络界面</li>
+</ul>
+<h3 id="P1-_硬编码敏感信息">P1. 硬编码敏感信息</h3><p>由于开发人员在程序中对静态数据进行硬编码，因此在开发过程中对信息进行硬编码是常见的做法。但是，当敏感信息被硬编码时就会出现问题。很可能将敏感信息硬编码在固件以及移动应用程序或胖客户端中。问题是它对于产品的所有实例保持不变，可用于攻击部署在现场的任何产品实例。硬编码的敏感信息的一些示例：</p>
+<ul>
+<li><ol>
+<li>凭证信息 - 包含设备服务、云服务的凭据信息。</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>加密密钥 - 非对称加密私钥、对称加密密钥</li>
+</ol>
+</li>
+<li><ol start="3">
+<li>证书 - 客户端证书等</li>
+</ol>
+</li>
+<li><ol start="4">
+<li>API 密钥 - 私有/付费 API</li>
+</ol>
+</li>
+<li><ol start="5">
+<li>URLs – 开发、固件相关、用户相关、后端等。</li>
+</ol>
+</li>
+<li><ol start="6">
+<li>配置信息</li>
+</ol>
+</li>
+</ul>
+<h3 id="P2-_启用硬件调试端口">P2. 启用硬件调试端口</h3><p>设备硬件可能会打开调试端口以与系统交互。简单来说，它是 PCB 上的一组引脚，它们连接到微控制器/微处理器引脚，您可以使用客户端软件连接到这些引脚，通过硬件通信协议进行通信，允许您与系统进行交互。交互和特权级别取决于协议类型及其用法。例如，可能有 UART 接口的引脚输出，它可以让您访问高级软件/应用程序，即Shell、记录器输出等。您还可以使用以下协议与微控制器进行低级交互JTAG、SWD 等，这些使您可以直接控制微控制器，以便您可以测试和分析微控制器引脚值，读/写内部闪存，读/写寄存器值，调试操作系统/基础固件代码等等。如果设备上启用了这些端口/引脚，攻击者可以劫持设备和/或从设备中提取敏感信息，包括固件和数据。这些端口通常用于对生产设备中的问题进行故障排除/调试。</p>
+<h3 id="P3-安全的固件">P3.安全的固件</h3><p>这里的术语“不安全”是指固件的管理方式，而不是具体的固件代码漏洞本身。固件包含设备的业务逻辑，基本是厂商专有，即 IP（知识产权）。如果攻击者可以访问明文固件，他/她可以对其进行逆向工程以发现安全问题或克隆逻辑并最终克隆产品本身。漏洞取决于固件在设备上的存储和更新方式。如果不注意正确加密存储或动态（更新）中的固件，攻击者可以获取它。固件的一些问题是（但不限于）：</p>
+<ul>
+<li><ol>
+<li>固件以明文形式存储在内存芯片上</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>固件未签名和/或引导加载程序在加载前未验证固件的完整性</li>
+</ol>
+</li>
+<li><ol start="3">
+<li>固件更新以明文形式从云或移动设备传输到设备。</li>
+</ol>
+</li>
+<li><ol start="4">
+<li>固件更新通过明文通信协议传输，例如 http。</li>
+</ol>
+</li>
+<li><ol start="5">
+<li>固件为所有设备实例使用单个对称密钥加密。</li>
+</ol>
+</li>
+<li><ol start="6">
+<li>固件加密密钥随设备更新一起传输。</li>
+</ol>
+</li>
+</ul>
+<p>正确实施的基于 PKI 的系统可以确保最佳安全性，但是大多数低功耗传感器缺乏有效实施 PKI 的计算能力。此外，如果更新是安全的，但可以使用其他漏洞从设备中提取到加密密钥，那么上面所有工作都是徒劳的。</p>
+<h3 id="P4-不安全的数据存储">P4.不安全的数据存储</h3><p>这个问题在物联网终端设备和移动应用程序中都很突出。这在物联网终端设备中更为明显，可能是厂商认为逆向硬件很困难。敏感数据如果没有安全存储，攻击者可以提取和利用来破坏系统。除了安全问题，如果用户的个人数据没有得到适当的保护，它也可能对隐私产生影响。一些常见问题：</p>
+<ul>
+<li><ol>
+<li>敏感数据以明文形式存储在内存芯片上</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>敏感数据加密存储但加密密钥可访问</li>
+</ol>
+</li>
+<li><ol start="3">
+<li>自定义加密用于加密数据</li>
+</ol>
+</li>
+<li><ol start="4">
+<li>没有对修改数据的访问控制</li>
+</ol>
+</li>
+<li><ol start="5">
+<li>移动数据存储不安全应用程序（请参考P9. 不安全的移动界面）</li>
+</ol>
+</li>
+</ul>
+<h3 id="P5-认证不足">P5.认证不足</h3><p>设备可能使用不正确或没有身份验证机制，这允许攻击者完全绕过身份验证机制，如果它实施不当并向设备发送未经授权的命令。这对于关键物联网设备来说是一个严重的问题，因为网络上的任何人（TCP/IP 或无线电）都可以覆盖正常操作并控制设备。设备上发生的一些身份验证问题是（但不限于）：</p>
+<ul>
+<li><ol>
+<li>没有客户端身份验证</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>通过明文通信通道进行身份验证</li>
+</ol>
+</li>
+<li><ol start="3">
+<li>用于凭据的加密不正确</li>
+</ol>
+</li>
+<li><ol start="4">
+<li>可预测凭据</li>
+</ol>
+</li>
+<li><ol start="5">
+<li>默认凭据</li>
+</ol>
+</li>
+</ul>
+<h3 id="P6-_不安全的通信">P6. 不安全的通信</h3><p>如果攻击者能够从通信中嗅探、分析、重放和提取敏感信息，则物联网生态系统内的通信可能不安全。漏洞可能是由于使用了不安全的通信协议或协议本身的缺陷。为了简单起见，供应商可能会选择使用不安全的通信方法。由于物联网是一项不断发展的新技术，因此许多物联网协议没有定义适当的安全机制或供应商实施默认的不安全模式。问题包括（但不限于）：</p>
+<ul>
+<li><ol>
+<li>共享敏感信息时未加密通信</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>使用自定义加密</li>
+</ol>
+</li>
+<li><ol start="3">
+<li>使用自定义/专有协议</li>
+</ol>
+</li>
+<li><ol start="4">
+<li>使用不当加密</li>
+</ol>
+</li>
+<li><ol start="5">
+<li>使用协议默认（弱）安全模式</li>
+</ol>
+</li>
+<li><ol start="6">
+<li>使用有已知问题的协议</li>
+</ol>
+</li>
+<li><ol start="7">
+<li>重放问题</li>
+</ol>
+</li>
+</ul>
+<h3 id="P7-不安全的配置">P7.不安全的配置</h3><p>当设备配置不安全或设备不允许用户修改配置参数时，会出现此问题。此问题也发生在移动应用程序和云配置中。为了保持简单或快速交付产品，开发人员可能会选择使用简单但不安全的配置或禁止更改。一些明显的问题是（但不限于）：</p>
+<ul>
+<li><ol>
+<li>使用默认的不安全配置</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>禁止集成商或用户修改配置</li>
+</ol>
+</li>
+<li><ol start="3">
+<li>发布产品中不安全的低级协议和硬件配置</li>
+</ol>
+</li>
+<li><ol start="4">
+<li>不安全的加密模式和设置</li>
+</ol>
+</li>
+<li><ol start="5">
+<li>共享或存储的用户个人数据的可见性很低或没有可见性</li>
+</ol>
+</li>
+</ul>
+<h3 id="P8-_数据输入过滤不足">P8. 数据输入过滤不足</h3><p>随着物联网生态系统中实施更多物联网协议，这将成为未来的一个主要问题。例如，来自设备的遥测数据可能受到云或 IoT 网关的信任，从而导致已知和未知的安全问题，例如远程代码执行、基于 Web 的攻击（如 SQL 注入）、跨站点脚本等等。我们希望在未来优先考虑这一点。虽然成熟的实现确实过滤了传统技术的数据，但新的物联网协议实现还有待提高。</p>
+<h3 id="P9-_不安全的移动界面">P9. 不安全的移动界面</h3><p>由于从安全角度来看移动技术相对于传感器技术已经成熟，因此我们将所有移动安全问题归为一类。这并不意味着它们的优先级较低，因为您可以看到一些高优先级漏洞也适用于移动设备。然而，由于技术的成熟，它已经拥有大量关于安全问题和安全实现的信息。作为 OWASP 的粉丝，我们建议从 OWASP Mobile Top 10 漏洞开始，这些漏洞将解决大多数安全问题。</p>
+<h3 id="P10。不安全的云/网络界面">P10。不安全的云/网络界面</h3><p>正如“P9. 不安全的移动接口”，同样适用于云和网络。如果设备具有 Web 界面，您仍然可以通过 Web 攻击拥有该设备，但是这些安全问题已经得到很好的定义和理解。同样，我们建议从 OWASP Web Top 10 漏洞开始，以了解和缓解 Web 安全问题，以及来自 Cloud security Alliance 的云安全文档。请注意，这不是唯一可用的知识库，您应该查看互联网上可用的工具和研究论文。值得注意的是，云构成了物联网生态系统的数据存储和通信主干。如果云被攻陷，可能会导致整个物联网生态系统受到危害，包括世界各地和宇宙中所有部署的产品。</p>
+<p>这就是这篇博文的全部内容。请密切关注本系列的下一篇博客。如果您有任何建议，请随时与我们联系。</p>
+<p><em>原文链接：<a href="https://payatu.com/iot-security-part-3-101-iot-top-ten-vulnerabilities" target="_blank" rel="external">https://payatu.com/iot-security-part-3-101-iot-top-ten-vulnerabilities</a></em></p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>如果您还没有阅读我们的 IoT 安全博客系列的第 1 部分和第 2 部分，我建议您先阅读它们，除非您已经熟悉基础知识并且只想阅读 IoT 十大漏洞。</p>
+<p>说到十大漏洞，我们首先想到的是OWASP。为什么不呢，毕竟他们是定义 Web 和移动应用 10 大漏洞的先驱。我是 OWASP 的粉丝，这仅仅是因为 OWASP 社区多年来为定义应用程序安全问题、为行业提供免费教程和开源工具以减轻风险和漏洞所做的工作。您很有可能没有听说过 OWASP 或从他们的网站上阅读过内容，但是如果您没有，我强烈建议您访问他们的网站  <a href="https://www.owasp.org">https://www.owasp.org</a></p>
+<p>OWASP 还启动了物联网安全计划，社区定义了物联网攻击面和物联网前 10 大漏洞，以及Web和移动设备10大漏洞。他们的方向是正确的，很快它就会成为学习物联网安全内容的绝佳场所。</p>]]>
+    
+    </summary>
+    
+      <category term="IOT安全" scheme="http://www.youngroe.com/tags/IOT%E5%AE%89%E5%85%A8/"/>
+    
+      <category term="IOT" scheme="http://www.youngroe.com/categories/IOT/"/>
+    
+  </entry>
+  
+  <entry>
     <title><![CDATA[物联网安全101-2.物联网攻击面（翻译）]]></title>
     <link href="http://www.youngroe.com/2021/09/21/IOT/iot-security-part-2-101-iot-attack-surface/"/>
     <id>http://www.youngroe.com/2021/09/21/IOT/iot-security-part-2-101-iot-attack-surface/</id>
@@ -1732,103 +2095,6 @@
       <category term="西安" scheme="http://www.youngroe.com/tags/%E8%A5%BF%E5%AE%89/"/>
     
       <category term="Life" scheme="http://www.youngroe.com/categories/Life/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[Windows内核重拾：DebugObject]]></title>
-    <link href="http://www.youngroe.com/2018/01/06/Kernel/WindowsKernel_DebugObject/"/>
-    <id>http://www.youngroe.com/2018/01/06/Kernel/WindowsKernel_DebugObject/</id>
-    <published>2018-01-06T04:45:15.000Z</published>
-    <updated>2020-05-17T13:04:01.372Z</updated>
-    <content type="html"><![CDATA[<h2 id="0x00_什么是DebugObject">0x00 什么是DebugObject</h2><p>在Windows系统中对调试的支持主要在三个模块中，分别为内核执行体（多核处理器一般为ntkrnlmp.exe,以Dbgk为前缀,主要负责注册和监听调试事件、管理调试对象等）、原生系统库ntdll.dll（DbgUi为前缀，负责将底层的调试对象封装起来）、子系统dll（kernelbase.dll）。而调试对象（DebugObject）是一个结构体，支持用户模式调试，由一系列的标志（决定对象的状态）、一个事件、一个调试事件双链表组成。<br><a id="more"></a><br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> _DEBUG_OBJECT &#123;</span><br><span class="line">    <span class="comment">// Event thats set when the EventList is populated.</span></span><br><span class="line">    KEVENT EventsPresent;</span><br><span class="line">    <span class="comment">// Mutex to protect the structure</span></span><br><span class="line">    FAST_MUTEX Mutex;</span><br><span class="line">    <span class="comment">// Queue of events waiting for debugger intervention</span></span><br><span class="line">    LIST_ENTRY EventList;</span><br><span class="line">    <span class="comment">// Flags for the object</span></span><br><span class="line">    ULONG Flags;</span><br><span class="line">&#125; DEBUG_OBJECT, *PDEBUG_OBJECT;</span><br></pre></td></tr></table></figure></p>
-<h2 id="0x01_DebugObject是如何产生的">0x01 DebugObject是如何产生的</h2><p>DebugObject在内核中由NtCreateDebugObject函数产生，每次启动调试都需要调用NtCreateDebugObject产生一个DebugObject，在NtCreateDebugObject函数中会调用ObInsertObject将创建的DebugObject插入到一个句柄表中，后续再利用句柄访问这个DebugObject。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">NTSTATUS</span><br><span class="line"><span class="title">NtCreateDebugObject</span> <span class="params">(</span><br><span class="line">    OUT PHANDLE DebugObjectHandle,</span><br><span class="line">    IN ACCESS_MASK DesiredAccess,</span><br><span class="line">    IN POBJECT_ATTRIBUTES ObjectAttributes,</span><br><span class="line">    IN ULONG Flags</span><br><span class="line">    )</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    NTSTATUS Status;</span><br><span class="line">    HANDLE Handle;</span><br><span class="line">    KPROCESSOR_MODE PreviousMode;</span><br><span class="line">    PDEBUG_OBJECT DebugObject;</span><br><span class="line"></span><br><span class="line">    PAGED_CODE();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Get previous processor mode and probe output arguments if necessary.</span></span><br><span class="line">    <span class="comment">// Zero the handle for error paths.</span></span><br><span class="line">    PreviousMode = KeGetPreviousMode();</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (PreviousMode != KernelMode) &#123;</span><br><span class="line">            ProbeForWriteHandle (DebugObjectHandle);</span><br><span class="line">        &#125;</span><br><span class="line">        *DebugObjectHandle = <span class="literal">NULL</span>;</span><br><span class="line">    &#125; except (ExSystemExceptionFilter ()) &#123; <span class="comment">// If previous mode is kernel then don't handle the exception</span></span><br><span class="line">        <span class="keyword">return</span> GetExceptionCode ();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (Flags &amp; ~DEBUG_KILL_ON_CLOSE) &#123;</span><br><span class="line">        <span class="keyword">return</span> STATUS_INVALID_PARAMETER;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// Create a new debug object and initialize it.</span></span><br><span class="line">    Status = ObCreateObject (PreviousMode,</span><br><span class="line">                             DbgkDebugObjectType,</span><br><span class="line">                             ObjectAttributes,</span><br><span class="line">                             PreviousMode,</span><br><span class="line">                             <span class="literal">NULL</span>,</span><br><span class="line">                             <span class="keyword">sizeof</span> (DEBUG_OBJECT),</span><br><span class="line">                             <span class="number">0</span>,</span><br><span class="line">                             <span class="number">0</span>,</span><br><span class="line">                             &amp;DebugObject);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!NT_SUCCESS (Status)) &#123;</span><br><span class="line">        <span class="keyword">return</span> Status;</span><br><span class="line">    &#125;</span><br><span class="line">    ExInitializeFastMutex (&amp;DebugObject-&gt;Mutex);</span><br><span class="line">    InitializeListHead (&amp;DebugObject-&gt;EventList);</span><br><span class="line">    KeInitializeEvent (&amp;DebugObject-&gt;EventsPresent, NotificationEvent, FALSE);</span><br><span class="line">    <span class="keyword">if</span> (Flags &amp; DEBUG_KILL_ON_CLOSE) &#123;</span><br><span class="line">        DebugObject-&gt;Flags = DEBUG_OBJECT_KILL_ON_CLOSE;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        DebugObject-&gt;Flags = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// Insert the object into the handle table</span></span><br><span class="line">    Status = ObInsertObject (DebugObject,</span><br><span class="line">                             <span class="literal">NULL</span>,</span><br><span class="line">                             DesiredAccess,</span><br><span class="line">                             <span class="number">0</span>,</span><br><span class="line">                             <span class="literal">NULL</span>,</span><br><span class="line">                             &amp;Handle);</span><br><span class="line">    <span class="keyword">if</span> (!NT_SUCCESS (Status)) &#123;</span><br><span class="line">        <span class="keyword">return</span> Status;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        *DebugObjectHandle = Handle;</span><br><span class="line">    &#125; except (ExSystemExceptionFilter ()) &#123;</span><br><span class="line">        <span class="comment">//</span></span><br><span class="line">        <span class="comment">// The caller changed the page protection or deleted the memory for the handle.</span></span><br><span class="line">        <span class="comment">// No point closing the handle as process rundown will do that and we don't know its still the same handle</span></span><br><span class="line">        <span class="comment">//</span></span><br><span class="line">        Status = GetExceptionCode();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> Status;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>NtCreateDebugObject函数主要实现在ObCreateObject函数，关键参数为DbgkDebugObjectType，DbgkDebugObjectType是一个全局变量，类型为_OBJECT_TYPE。每次调试生成的DebugObject都会依赖于DbgkDebugObjectType这个全局变量，因此我们可以通过修改DbgkDebugObjectType某些标志位做一些猥琐的事情，比如说反调试，并且由于只是内核中的一个标志位很难找到不能调试的原因。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">kd&gt; dt nt!_OBJECT_TYPE</span><br><span class="line">+<span class="number">0x000</span> TypeList         : _LIST_ENTRY</span><br><span class="line">+<span class="number">0x010</span> Name             : _UNICODE_STRING</span><br><span class="line">+<span class="number">0x020</span> DefaultObject    : Ptr64 Void</span><br><span class="line">+<span class="number">0x028</span> Index            : UChar</span><br><span class="line">+<span class="number">0x02c</span> TotalNumberOfObjects : Uint4B</span><br><span class="line">+<span class="number">0x030</span> TotalNumberOfHandles : Uint4B</span><br><span class="line">+<span class="number">0x034</span> HighWaterNumberOfObjects : Uint4B</span><br><span class="line">+<span class="number">0x038</span> HighWaterNumberOfHandles : Uint4B</span><br><span class="line">+<span class="number">0x040</span> TypeInfo         : _OBJECT_TYPE_INITIALIZER</span><br><span class="line">+<span class="number">0x0b0</span> TypeLock         : _EX_PUSH_LOCK</span><br><span class="line">+<span class="number">0x0b8</span> Key              : Uint4B</span><br><span class="line">+<span class="number">0x0c0</span> CallbackList     : _LIST_ENTRY</span><br></pre></td></tr></table></figure></p>
-<p>DbgkDebugObjectType初始化在DbgkInitialize函数中，也是被ObCreateObjectType创建，关键参数为一个_OBJECT_TYPE_INITIALIZER结构体<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">kd&gt; dt _OBJECT_TYPE_INITIALIZER</span><br><span class="line">ntdll!_OBJECT_TYPE_INITIALIZER</span><br><span class="line">   +<span class="number">0x000</span> Length           : Uint2B</span><br><span class="line">   +<span class="number">0x002</span> ObjectTypeFlags  : UChar</span><br><span class="line">   +<span class="number">0x002</span> CaseInsensitive  : Pos <span class="number">0</span>, <span class="number">1</span> Bit</span><br><span class="line">   +<span class="number">0x002</span> UnnamedObjectsOnly : Pos <span class="number">1</span>, <span class="number">1</span> Bit</span><br><span class="line">   +<span class="number">0x002</span> UseDefaultObject : Pos <span class="number">2</span>, <span class="number">1</span> Bit</span><br><span class="line">   +<span class="number">0x002</span> SecurityRequired : Pos <span class="number">3</span>, <span class="number">1</span> Bit</span><br><span class="line">   +<span class="number">0x002</span> MaintainHandleCount : Pos <span class="number">4</span>, <span class="number">1</span> Bit</span><br><span class="line">   +<span class="number">0x002</span> MaintainTypeList : Pos <span class="number">5</span>, <span class="number">1</span> Bit</span><br><span class="line">   +<span class="number">0x002</span> SupportsObjectCallbacks : Pos <span class="number">6</span>, <span class="number">1</span> Bit</span><br><span class="line">   +<span class="number">0x004</span> ObjectTypeCode   : Uint4B</span><br><span class="line">   +<span class="number">0x008</span> InvalidAttributes : Uint4B</span><br><span class="line">   +<span class="number">0x00c</span> GenericMapping   : _GENERIC_MAPPING</span><br><span class="line">   +<span class="number">0x01c</span> ValidAccessMask  : Uint4B</span><br><span class="line">   +<span class="number">0x020</span> RetainAccess     : Uint4B</span><br><span class="line">   +<span class="number">0x024</span> PoolType         : _POOL_TYPE</span><br><span class="line">   +<span class="number">0x028</span> DefaultPagedPoolCharge : Uint4B</span><br><span class="line">   +<span class="number">0x02c</span> DefaultNonPagedPoolCharge : Uint4B</span><br><span class="line">   +<span class="number">0x030</span> DumpProcedure    : Ptr64     <span class="keyword">void</span> </span><br><span class="line">   +<span class="number">0x038</span> OpenProcedure    : Ptr64     <span class="keyword">long</span> </span><br><span class="line">   +<span class="number">0x040</span> CloseProcedure   : Ptr64     <span class="keyword">void</span> </span><br><span class="line">   +<span class="number">0x048</span> DeleteProcedure  : Ptr64     <span class="keyword">void</span> </span><br><span class="line">   +<span class="number">0x050</span> ParseProcedure   : Ptr64     <span class="keyword">long</span> </span><br><span class="line">   +<span class="number">0x058</span> SecurityProcedure : Ptr64     <span class="keyword">long</span> </span><br><span class="line">   +<span class="number">0x060</span> QueryNameProcedure : Ptr64     <span class="keyword">long</span> </span><br><span class="line">   +<span class="number">0x068</span> OkayToCloseProcedure : Ptr64     <span class="keyword">unsigned</span> <span class="keyword">char</span></span><br></pre></td></tr></table></figure></p>
-<div align="center"><br><img src="/img/20180116Windbg_DbgStruct.png" alt="Win7 X64下DebugObject几个关键结构体关系" align="center"><br></div>
-
-<h2 id="0x02_DebugObject用于反调试实例">0x02 DebugObject用于反调试实例</h2><p>TenProtect反外挂开启后，调试进程会附加失败错误号为0xC0000022（不仅仅是调试游戏进程，调试任何进程都会产生这个错误），具体原因为A process has requested access to an object, but has not been granted those access rights.</p>
-<p><div align="center"><br><img src="/img/20180116Windbg_failed.png" alt="TProtect附加失败错误" align="center"><br></div><br>根据网上公布的bypass的代码，可以很容易的发现TP主要是将DbgkDebugObjectType.TypeInfo.ValidAccessMask标志位清零，ValidAccessMask从名称上就可以知道是和权限相关，而原本默认为DEBUG_ALL_ACCESS(0x1F000F)，被清零后就什么权限都没有了，创建了一个毫无用处的DebugObject，并且由于DbgkDebugObjectType是全局的与特定进程无关，导致调试任意进程都会失败。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">NTSTATUS</span><br><span class="line"><span class="title">NtDebugActiveProcess</span> <span class="params">(</span><br><span class="line">    IN HANDLE ProcessHandle,</span><br><span class="line">    IN HANDLE DebugObjectHandle</span><br><span class="line">    )</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    NTSTATUS Status;</span><br><span class="line">    KPROCESSOR_MODE PreviousMode;</span><br><span class="line">    PDEBUG_OBJECT DebugObject;</span><br><span class="line">    PEPROCESS Process;</span><br><span class="line">    PETHREAD LastThread;</span><br><span class="line">    PAGED_CODE ();</span><br><span class="line">    PreviousMode = KeGetPreviousMode();</span><br><span class="line">    Status = ObReferenceObjectByHandle (ProcessHandle,</span><br><span class="line">                                        PROCESS_SET_PORT,</span><br><span class="line">                                        PsProcessType,</span><br><span class="line">                                        PreviousMode,</span><br><span class="line">                                        &amp;Process,</span><br><span class="line">                                        <span class="literal">NULL</span>);</span><br><span class="line">    <span class="keyword">if</span> (!NT_SUCCESS (Status)) &#123;</span><br><span class="line">        <span class="keyword">return</span> Status;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// Don't let us debug ourselves or the system process.</span></span><br><span class="line">    <span class="keyword">if</span> (Process == PsGetCurrentProcess () || Process == PsInitialSystemProcess) &#123;</span><br><span class="line">        ObDereferenceObject (Process);</span><br><span class="line">        <span class="keyword">return</span> STATUS_ACCESS_DENIED;</span><br><span class="line">    &#125;</span><br><span class="line">    Status = ObReferenceObjectByHandle (DebugObjectHandle,</span><br><span class="line">                                        DEBUG_PROCESS_ASSIGN,</span><br><span class="line">                                        DbgkDebugObjectType,</span><br><span class="line">                                        PreviousMode,</span><br><span class="line">                                        &amp;DebugObject,</span><br><span class="line">                                        <span class="literal">NULL</span>);</span><br><span class="line">    <span class="keyword">if</span> (NT_SUCCESS (Status)) &#123;</span><br><span class="line">        <span class="comment">// We will be touching process address space. Block process rundown.</span></span><br><span class="line">        <span class="keyword">if</span> (ExAcquireRundownProtection (&amp;Process-&gt;RundownProtect)) &#123;</span><br><span class="line">            <span class="comment">// Post the fake process create messages etc.</span></span><br><span class="line">            Status = DbgkpPostFakeProcessCreateMessages (Process,</span><br><span class="line">                                                         DebugObject,</span><br><span class="line">                                                         &amp;LastThread);</span><br><span class="line">            <span class="comment">// Set the debug port. If this fails it will remove any faked messages.</span></span><br><span class="line">            Status = DbgkpSetProcessDebugObject (Process,</span><br><span class="line">                                                 DebugObject,</span><br><span class="line">                                                 Status,</span><br><span class="line">                                                 LastThread);</span><br><span class="line">            ExReleaseRundownProtection (&amp;Process-&gt;RundownProtect);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            Status = STATUS_PROCESS_IS_TERMINATING;</span><br><span class="line">        &#125;</span><br><span class="line">        ObDereferenceObject (DebugObject);</span><br><span class="line">    &#125;</span><br><span class="line">    ObDereferenceObject (Process);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> Status;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>通过双机调试及相关资料，可以找到ValidAccessMask被清零后调试失败的具体代码位置在NtDebugActiveProcess函数中，在NtDebugActiveProcess函数中会通过ObReferenceObjectByHandle对传入的DebugObjectHandle对象句柄的访问权限进行检查，需要DEBUG_PROCESS_ASSIGN权限，但ValidAccessMask被清零后创建的DebugObject没有DEBUG_PROCESS_ASSIGN权限，函数会返回c0000022错误。</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">kd&gt; bu nt!NtCreateDebugObject+0x86</span><br><span class="line">kd&gt; g</span><br><span class="line">Breakpoint 1 hit</span><br><span class="line">nt!NtCreateDebugObject+0x86:</span><br><span class="line">fffff800`02ebce26 e8b5bef1ff      call    nt!ObCreateObject (fffff800`02dd8ce0)</span><br><span class="line">kd&gt; .process</span><br><span class="line">Implicit process is now fffffa80`03904b30</span><br><span class="line">kd&gt; .process fffffa80`03904b30</span><br><span class="line">Implicit process is now fffffa80`03904b30</span><br><span class="line">WARNING: .cache forcedecodeuser is not enabled</span><br><span class="line">kd&gt; kv</span><br><span class="line">Child-SP          RetAddr           : Args to Child                                                           : Call Site</span><br><span class="line">fffff880`04ef9b60 fffff800`02ade8d3 : fffffa80`03782b60 00000000`001f000f 00000000`00000000 00000000`00000001 : nt!NtCreateDebugObject+0x95</span><br><span class="line">fffff880`04ef9be0 00000000`77541c4a : 00000000`73d1ebdd 00000000`0059f658 00000000`001f000f 00000000`020eec20 : nt!KiSystemServiceCopyEnd+0x13 (TrapFrame @ fffff880`04ef9be0)</span><br><span class="line">00000000`020ee368 00000000`73d1ebdd : 00000000`0059f658 00000000`001f000f 00000000`020eec20 00000000`020ee350 : ntdll!ZwCreateDebugObject+0xa</span><br><span class="line">00000000`020ee370 00000000`73d0cf87 : 00000000`00000000 00000000`00000000 00000000`020eec20 00000000`01fbf9b4 : wow64!whNtCreateDebugObject+0x6d</span><br><span class="line">00000000`020ee3c0 00000000`73c92776 : 00000000`752e60e2 00000000`00000023 00000000`00000246 00000000`01fbfab4 : wow64!Wow64SystemServiceEx+0xd7</span><br><span class="line">00000000`020eec80 00000000`73d0d07e : 00000000`00000000 00000000`73c91920 00000000`00000000 00000000`00000000 : wow64cpu!TurboDispatchJumpAddressEnd+0x2d</span><br><span class="line">00000000`020eed40 00000000`73d0c549 : 00000000`00000000 00000000`00000000 00000000`00000000 00000000`00000000 : wow64!RunCpuSimulation+0xa</span><br><span class="line">00000000`020eed90 00000000`7756e707 : 00000000`00000000 00000000`fffdf000 00000000`fffd8000 00000000`00000000 : wow64!Wow64LdrpInitialize+0x429</span><br><span class="line">00000000`020ef2e0 00000000`7751c32e : 00000000`020ef3a0 00000000`00000000 00000000`fffdf000 00000000`00000000 : ntdll! ?? ::FNODOBFM::`string'+0x29364</span><br><span class="line">00000000`020ef350 00000000`00000000 : 00000000`00000000 00000000`00000000 00000000`00000000 00000000`00000000 : ntdll!LdrInitializeThunk+0xe</span><br><span class="line">.....</span><br><span class="line">Breakpoint 4 hit</span><br><span class="line">nt!NtDebugActiveProcess+0x100:</span><br><span class="line">fffff800`02f2d2f0 e8ebc5e8ff      call    nt!ObReferenceObjectByHandle (fffff800`02db98e0)</span><br><span class="line">kd&gt; p</span><br><span class="line">nt!NtDebugActiveProcess+0x105:</span><br><span class="line">fffff800`02f2d2f5 8bf8            mov     edi,eax</span><br><span class="line">kd&gt; r rax</span><br><span class="line">rax=00000000c0000022</span><br></pre></td></tr></table></figure>
-<h2 id="0x03_简单总结">0x03 简单总结</h2><ul>
-<li>Debugobject是一个对调试很重要的一个结构体，用于支持用户模式调试。</li>
-<li>Debugobject创建过程中会依赖一个名为DbgkDebugObjectType的内核全局变量，通过修改这个全局变量可以影响调试过程的创建，并且影响是全局的，对所有进程有效。</li>
-<li>TP通过将DbgkDebugObjectType.TypeInfo.ValidAccessMask清零达到反调目的，可能也是无奈之举毕竟X64的PatchGuard让在内核中能干的事越来越少，至于为什么修改ValidAccessMask不会触发PatchGuard可能DbgkDebugObjectType现在还没纳入PatchGuard保护范围。</li>
-<li>代码可以参考<a href="https://gist.github.com/geemion/b61aa49e1b19dc8421b953ec3939fa4f" target="_blank" rel="external">https://gist.github.com/geemion/b61aa49e1b19dc8421b953ec3939fa4f</a></li>
-</ul>
-<h2 id="0x04_参考资料">0x04 参考资料</h2><ul>
-<li>[1] 深入解析Windows操作系统</li>
-<li>[2] WRK1.2</li>
-<li>[3] <a href="https://github.com/jilinxiaohuo/VaildAccessMask" target="_blank" rel="external">VaildAccessMask</a></li>
-</ul>
-]]></content>
-    <summary type="html">
-    <![CDATA[<h2 id="0x00_什么是DebugObject">0x00 什么是DebugObject</h2><p>在Windows系统中对调试的支持主要在三个模块中，分别为内核执行体（多核处理器一般为ntkrnlmp.exe,以Dbgk为前缀,主要负责注册和监听调试事件、管理调试对象等）、原生系统库ntdll.dll（DbgUi为前缀，负责将底层的调试对象封装起来）、子系统dll（kernelbase.dll）。而调试对象（DebugObject）是一个结构体，支持用户模式调试，由一系列的标志（决定对象的状态）、一个事件、一个调试事件双链表组成。<br>]]>
-    
-    </summary>
-    
-      <category term="Windows" scheme="http://www.youngroe.com/tags/Windows/"/>
-    
-      <category term="内核结构" scheme="http://www.youngroe.com/tags/%E5%86%85%E6%A0%B8%E7%BB%93%E6%9E%84/"/>
-    
-      <category term="权限" scheme="http://www.youngroe.com/tags/%E6%9D%83%E9%99%90/"/>
-    
-      <category term="Kernel" scheme="http://www.youngroe.com/categories/Kernel/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[IDA Pro ClassInformer使用指南（翻译）]]></title>
-    <link href="http://www.youngroe.com/2017/10/23/Tools/IDA-Pro-ClassInformer-Tutorial/"/>
-    <id>http://www.youngroe.com/2017/10/23/Tools/IDA-Pro-ClassInformer-Tutorial/</id>
-    <published>2017-10-23T09:55:21.000Z</published>
-    <updated>2020-05-17T13:03:16.691Z</updated>
-    <content type="html"><![CDATA[<h2 id="0x00_介绍">0x00 介绍</h2><p>本文主要针对几乎没有使用IDA Pro经验及逆向水平一般的人。IDA对初学者还是有一定的门槛的，主要是由于IMO没有详细介绍IDA使用环境设置和插件使用的指南。我的目标是展示当我在客户端（这里应该是开发外挂）开发遇到困难的时候，我是如何解决这个问题的方法和策略。在本指南中我将演示如何从SDK中的一个字符串识别出二进制文件中反汇编代码中的函数。目标是将IDA中原始的汇编代码转换为ClientMode::CreateMove函数。<br><a id="more"></a></p>
-<h2 id="0x01_例子">0x01 例子</h2><p>在开始之前，下面是一个能直观展示IDA强大功能的例子。这是两张图片但都是steamclient.dll中同一个函数反汇编后的结果，第一张图片是原始的反汇编代码，第二张是相同函数反汇编结果但是经过人工逆向解析。</p>
-<div align="center"><br><img src="/img/idaclassinformer1.png" alt align="center"><br></div>
-
-<div align="center"><br><img src="/img/idaclassinformer2.png" alt align="center"><br></div>
-
-<p>使用IDA逆向就像解决成千上万个难题一样。未命名的全局变量（dword_X）和函数（sub_Y）就像拼图碎片。在逆向过程中识别全局变量和函数会对整个逆向过程产生连锁反应。举例说明下，当你逆向一个函数时识别出了全局变量g_pGlobals,然后你将变量名从dword_Z重命名为g_PGlobals。现在模块中访问此变量的所有函数中都会使用g_pGlobals这个名称。如果你想知道一个使用g_pGlobals变量函数的作用，那么你又将需要逆向一个函数。<br>逆向出来的越多，后面逆向会更容易，这将会很有成就感，这种成就感会让你上瘾，停不下来。</p>
-<h2 id="0x02_准备工作">0x02 准备工作</h2><p>开始之前，我建议你安装下载如下工具：<br><strong>IDA</strong>:</p>
-<ul>
-<li><a href="https://www.hex-rays.com/products/ida/" target="_blank" rel="external">IDA Professional</a>:免费版本的IDA Pro</li>
-<li><a href>Class Informer</a>:由Sirmabus开发的开源一款IDA插件，通过RTTI信息解析汇编代码重构类信息。</li>
-<li><a href>Function String Associate</a>：由Sirmabus开发的开源IDA插件，将函数中引用的字符生成函数的注释。</li>
-</ul>
-<p><strong>其他</strong></p>
-<ul>
-<li><a href="https://github.com/ValveSoftware/source-sdk-2013" target="_blank" rel="external">SDK 2013</a>:库中的本地保存的副本</li>
-<li>Leaked 2007 SDK：通过论坛中搜索下载</li>
-<li><a href="http://www.mingw.org/wiki/msys" target="_blank" rel="external">Mingw MSYS</a>: 你可以从SDK库中获得<a href="http://www.mingw.org/wiki/msys" target="_blank" rel="external">http://www.mingw.org/wiki/msys</a></li>
-</ul>
-<h2 id="0x03_设置IDA环境">0x03 设置IDA环境</h2><p>每个客户端(应该是外挂程序)都需要hook CreateMove去改变用户命令，并且Hook clientMode模块的函数是最好的因为不需要像Hook CHLClient模块之后还需要修复CRC校验值，我们猜测ClientMode类是在CS:GO客户端模块中定义的。使用IDA打开CS:GO游戏模块client.dll。将该文件拖入IDA你将会看到下图所示界面：</p>
-<div align="center"><br><img src="/img/idaclassinformer3.png" alt align="center"><br></div>
-
-<p>我们需要关注“Manual load”这个选项，选中它将会有一系列的提示，提醒我是否需要反汇编/解析模块的某些部分。</p>
-<div align="center"><br><img src="/img/idaclassinformer4.png" alt align="center"><br></div><br>第一个提示是设置模块基地址，将其设置为0，以便从相对地址从0开始。<br><div align="center"><br><img src="/img/idaclassinformer5.png" alt align="center"><br></div><br>接下来一系列提示会询问我们是否分析某些模块，一直选择”Yes”直到提示是否加载.pdb文件：<br><div align="center"><br><img src="/img/idaclassinformer6.png" alt align="center"><br></div><br>因为我们没有pdb，所以选择“No”。现在IDA会花一些时间完成反汇编。当左下脚信息栏显示“AU:idle”时，说明IDA已经完成了分析：<br><div align="center"><br><img src="/img/idaclassinformer7.png" alt align="center"><br></div><br>现在看到的是IDA反汇编程序的关键部分，IDA View-A选项卡是client.dll的完整反汇编代码。IDA递归的反编译原始二进制为asm汇编文件。<br>首选我们需要设置几个默认选项以显示一些默认情况下不显示的有用信息，通过点击菜单栏“Options-&gt;General”进行设置，下面我会对我已经设置的选项进行说明。<br><div align="center"><br><img src="/img/idaclassinformer8.png" alt align="center"><br></div><br>1.这是主要的不同。设置后在左边的地址显示会被改变，改变后的地址会变成如’sub_7E0CB7+offset’的形式，而不是默认的’.text:0035235A’。<br>2.设置后会在地址显示的右侧增加一个3位数值，可以通过函数跟踪当前栈指针的值。<br>3.该选项会为所有的汇编操作指令生成简单的注释，如果你对汇编不熟悉，可能会有帮助。但当你熟悉常见的汇编指令后，你会想要禁用该选项，因为这些评论可能会扰乱IDA的反汇编显示。<br>4.该选项表示指令和左边显示栏的宽度。这纯粹是个人喜好，我喜欢小数字因为减少了死角。<br><br>## 0x04 识别ClientMode::CreateMove函数<br>现在我们准备好开始逆向了，我们从启动Class Informer开始。在目录栏选择“Edit-&gt;Plugins-&gt;Class Informer”。如果你没有发现这个选项可能是你没有安装插件到正常的目录（安装插件后记得重启IDA）。你会看到下面这个默认界面弹出，然后点击”CONTINUE“继续。<br><div align="center"><br><img src="/img/idaclassinformer9.png" alt align="center"><br></div><br>Class Informer将会解析反汇编的RTTI。如果还没有阅读<a href="http://www.openrce.org/articles/full_view/23" target="_blank" rel="external">OpenRCE关于RTTI的文章</a>，请马上去看一下。RTTI是非常重要的，这是Class Informer插件实现的基础。如果解析完成，会在IDA上弹出一个新的选项卡。<br><div align="center"><br><img src="/img/idaclassinformer10.png" alt align="center"><br></div><br>[Class Informer]选项卡（图中用黄色框勾选），Vftable:类的RTTI在反汇编中的地址。Methods:该类虚函数的个数。Flag:’M’意味这个类有多重继承。Type:类的名称，通常和SDK中定义的有相同的类名。Hierarchy:该类继承的类名称的列表。<br>点击列表中任何一个类将转到汇编窗口中该类的虚函数列表。搜索“ClientMode”,将会有很多结果，因为“ClientMode”也是其他类名称的子字符串，向下滚动直到找到“IClientMode”函数：<br><div align="center"><br><img src="/img/idaclassinformer11.png" alt align="center"><br></div><br>这里有一个问题，我们在向下滚动时会看到ClientMode的抽象类及该类的几个派生类。我们如何确定哪一个类的虚表包含我们想要hook的CreateMove函数呢？<br>在sdk中搜索！打开命令行，通过cd命令切换到2013 SDK目录。然后执行下面的命令：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">grep -lir <span class="string">"::CreateMove"</span></span><br></pre></td></tr></table></figure><br><br>-l:查询多文件时只输出包含匹配字符的文件名,-i:忽略大小写,-r:递归搜索。执行该命令后将打印类或命名空间中定义了CreateMove的文件名。<br>输出类似下面的：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">./src/game/client/cdll_client_int.cpp</span><br><span class="line">./src/game/client/clientmode_shared.cpp</span><br><span class="line">./src/game/client/c_baseplayer.cpp</span><br><span class="line">./src/game/client/hl2/c_basehlplayer.cpp</span><br><span class="line">./src/game/client/hl2/hl2_clientmode.cpp</span><br><span class="line">./src/game/client/hltvcamera.cpp</span><br><span class="line">./src/game/client/in_main.cpp</span><br><span class="line">./src/game/client/replay/replaycamera.cpp</span><br><span class="line">./src/game/server/ai_basenpc.cpp</span><br><span class="line">./src/game/shared/weapon_ifmsteadycam.cpp</span><br></pre></td></tr></table></figure><br><br>clientmode_shared.cpp很可能是我们要找的，打开这个文件，搜索”::CreateMove“定位到定义的位置：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">bool</span> ClientModeShared::CreateMove( <span class="keyword">float</span> flInputSampleTime, CUserCmd *cmd )</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// Let the player override the view.</span></span><br><span class="line">    C_BasePlayer *pPlayer = C_BasePlayer::GetLocalPlayer();</span><br><span class="line">    <span class="keyword">if</span>(!pPlayer)</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Let the player at it</span></span><br><span class="line">    <span class="keyword">return</span> pPlayer-&gt;CreateMove( flInputSampleTime, cmd );</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br><br>ClientModeShared肯定是要找的类，但是在ClassInformer选项卡中有两行都是ClientModeShared。这种情况主要是由于ClientModeShared类使用了多重继承的原因（注意M标志）。通过分析clientmode_shared.h中类的继承结构定义我们可以确定有57个函数的类是我们要找的类。双击所在的行直接转到ClientModeShared虚表：<br><div align="center"><br><img src="/img/idaclassinformer12.png" alt align="center"><br></div><br>现在的位置是一个可点击的函数指针列表，点击任何黄色字段都会跳转到该函数实现的位置。nullsub_X表示该函数没有实现，有很多原因都会造成这种情况但现在这些都不重要。我们的目标是确定哪一个函数是CreateMove.Function String Associate插件会使这个任务更加容易。和执行Class Informer插件一样在目录中执行Function String Associate插件，选择”Continue“在命令行中，IDA显示应该会像下面一样：<br><div align="center"><br><img src="/img/idaclassinformer13.png" alt align="center"><br></div><br>右边空白处的注释是该行函数引用的字符串。如你双击”sub_2694A0“你将会看到<code>LevelInit</code>, <code>game_newmap&#39;和</code>mapname`在该函数的实现中使用。 当我们对一个虚函数表进行分析的时候，需要确定一些函数，我们可以通过比较SDK进行参考。我们来看一下能不能通过这三个字符串找到这个函数。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd <span class="number">2013</span>_SDK_src</span><br><span class="line">grep -lir game_newmap .</span><br></pre></td></tr></table></figure><br><br>输出如下：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">./src/game/client/clientmode_shared.cpp</span><br><span class="line">./src/game/client/game_controls/basemodelpanel.cpp</span><br><span class="line">./src/game/client/game_controls/baseviewport.cpp</span><br><span class="line">./src/game/client/game_controls/MapOverview.cpp</span><br><span class="line">./src/game/client/hltvcamera.cpp</span><br><span class="line">./src/game/client/playerspawncache.cpp</span><br><span class="line">./src/game/client/replay/replaycamera.cpp</span><br></pre></td></tr></table></figure><br><br>我们可以根据这个结果继续进行分析。打开clientmode_shared.cpp搜索’game_newmap‘,可以找到3个结果，只有在函数ClientModeShared::LevelInit有出现使用。双击函数sub_2694A0,可以在IDA中看到这个函数的定义，你会看到如下内容，部分相关信息我已经标出来了：<br><div align="center"><br><img src="/img/idaclassinformer14.png" alt align="center"><br></div><br>- 1.IDA在函数的开头声明函数的参数和每个局部变量，IDA已经确定这个函数有一个4字节的（dword ptr 8）参数（arg_0）。8表示该变量在EBP+8(返回地址在EBP+4)。不过也需要注意IDA可能无法正确分析出函数参数数量和参数的大小。<br>- 2.这是一个字符串引用。表示该行会访问全局字符串变量”LevelInit“。除了IDA自动根据字符串内容重命名的的字符串，其他情况下字符串变量的名称为”dword_x“。<br>如果你有hexrays,将鼠标停留在函数体中然后按’F1‘(默认反编译快捷键)，你会看到一个包含C代码的新页面。你可以通过在空白处右键然后取消选中”Show Casts“来清除它。下面是你将会看到的注释：<br><div align="center"><br><img src="/img/idaclassinformer15.png" alt align="center"><br></div><br>- 1.函数定义有两个参数。IDA会将类表示为显示指针的结果，如果一个函数是类的成员函数，第一个参数是指向类实例的指针，即this指针，a2才是真正的第一个参数。<br>- 2.局部变量声明。如果IDA在模块某些部分分析出现错误，这里的结果可能是不精确的，某些变量可能是重复、错误大小或则类型等。你需要及时学会去识别和修复这些错误。<br>- 3.这是虚函数调用在反编译中的形式。你可以分解者一样代码：v4=(<em>(</em>v3+156))(v3);(<em>v3 + 156):v3是一个将要被解引的一个指针然后加上156。如果v3是一个多态对象，这个表达式就是计算第39个虚函数的地址。(</em>v3::method_39)(v3)这就是一个函数调用。解引用这个函数指针并将类的实例对象作为唯一的参数。由于IDA会显式显示C++类指针，因此此函数真实的参数是0个。v4是函数调用后返回的结果，v3::method_39函数的返回值。<br>- 4.只要你看到一个前缀是一个数据类型的变量，那么表示该变量是一个全家变量（可能是静态或则是一个声明的全局变量）。’dword‘前缀表示这个变量是一个4字节变量。在源代码中声明的形式可能是：static int g_iState;//在函数体外声明。<br>和sdk中的函数对比：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> ClientModeShared::LevelInit( <span class="keyword">const</span> <span class="keyword">char</span> *newmap )</span><br><span class="line">&#123;</span><br><span class="line">    m_pViewport-&gt;GetAnimationController()-&gt;StartAnimationSequence(<span class="string">"LevelInit"</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Tell the Chat Interface</span></span><br><span class="line">    <span class="keyword">if</span> ( m_pChatElement )</span><br><span class="line">    &#123;</span><br><span class="line">        m_pChatElement-&gt;LevelInit( newmap );</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// we have to fake this event clientside, because clients connect after that</span></span><br><span class="line">    IGameEvent *event = gameeventmanager-&gt;CreateEvent( <span class="string">"game_newmap"</span> );</span><br><span class="line">    <span class="keyword">if</span> ( event )</span><br><span class="line">    &#123;</span><br><span class="line">        event-&gt;SetString(<span class="string">"mapname"</span>, newmap );</span><br><span class="line">        gameeventmanager-&gt;FireEventClientSide( event );</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Create a vgui context for all of the in-game vgui panels...</span></span><br><span class="line">    <span class="keyword">if</span> ( s_hVGuiContext == DEFAULT_VGUI_CONTEXT )</span><br><span class="line">    &#123;</span><br><span class="line">        s_hVGuiContext = vgui::ivgui()-&gt;CreateContext();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Reset any player explosion/shock effects</span></span><br><span class="line">    CLocalPlayerFilter filter;</span><br><span class="line">    enginesound-&gt;SetPlayerDSP( filter, <span class="number">0</span>, <span class="literal">true</span> );</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br><br>函数结构几乎完全一致。这个未标记的函数肯定是ClientModeShared::LevelInit,点击’IDA View-A‘选项卡返回到汇编代码，将鼠标移动到函数”sub_2694a0“然后按键盘”N“重命名这个函数。<br><div align="center"><br><img src="/img/idaclassinformer16.png" alt align="center"><br></div><br>选择”Yes“忽略长文件名弹窗。然后返回到ClientModeShared的虚表。现在将LevelInit函数作为一个参考点，我喜欢在虚表中将函数的索引附加到函数。计算可得这个函数是虚函数表中的第25个函数（从0开始）。如果你会使用python，你可以将屏幕底部的窗口作为python解释器进行计算，如：<br><div align="center"><br><img src="/img/idaclassinformer17.png" alt align="center"><br></div><br>让我们开始使用这个参考函数。我们知道ClientModeShared继承自IClientMode抽象类和CGameEventListener类。我们正在处理的虚表代表的是IClientMode的继承。在Class Informer选项卡发现的另一个虚表是代表CGameEventListener。在iclientmode.h中CTRL+F搜索’LevelInit‘:<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">virtual</span> vgui::<span class="function">Panel *<span class="title">GetMessagePanel</span><span class="params">()</span> </span>= <span class="number">0</span>;</span><br><span class="line"><span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span>    <span class="title">OverrideMouseInput</span><span class="params">( <span class="keyword">float</span> *x, <span class="keyword">float</span> *y )</span> </span>= <span class="number">0</span>;</span><br><span class="line"><span class="function"><span class="keyword">virtual</span> <span class="keyword">bool</span>    <span class="title">CreateMove</span><span class="params">( <span class="keyword">float</span> flInputSampleTime, CUserCmd *cmd )</span> </span>= <span class="number">0</span>;</span><br><span class="line"><span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span>    <span class="title">LevelInit</span><span class="params">( <span class="keyword">const</span> <span class="keyword">char</span> *newmap )</span> </span>= <span class="number">0</span>;</span><br><span class="line"><span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span>    <span class="title">LevelShutdown</span><span class="params">( <span class="keyword">void</span> )</span> </span>= <span class="number">0</span>;</span><br><span class="line"><span class="function"><span class="keyword">virtual</span> <span class="keyword">bool</span>    <span class="title">ShouldDrawViewModel</span><span class="params">( <span class="keyword">void</span> )</span> </span>= <span class="number">0</span>;</span><br><span class="line"><span class="function"><span class="keyword">virtual</span> <span class="keyword">bool</span>    <span class="title">ShouldDrawCrosshair</span><span class="params">( <span class="keyword">void</span> )</span> </span>= <span class="number">0</span>;</span><br></pre></td></tr></table></figure><br><br>我们知道虚函数时按照源文件中声明的顺序开始排序的。我们可以得出结论，CreateMove应该是LevelInit函数之前的函数。需要注意的是SDK通常不是最新的，函数的顺序可能不完全相同。你应该使用SDK作为一个简单的指南，去找到这些函数的引用。<br>返回IDA,双击函数指针”dd offset ClientModeShared__LevelInit”。我们可以通过比较IDA反汇编中参数的数量和SDK CreateMove函数原型是否一致，证明这就是CreateMove。hex view声明了两个与CreateMove原型匹配的函数参数，这看起来是有希望的。比较下ClientModeShared::CreateMove在sdk clientmode_shared.cpp中的声明是否和反编译的中的一致。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">bool</span> ClientModeShared::CreateMove( <span class="keyword">float</span> flInputSampleTime, CUserCmd *cmd )</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// Let the player override the view.</span></span><br><span class="line">    C_BasePlayer *pPlayer = C_BasePlayer::GetLocalPlayer();</span><br><span class="line">    <span class="keyword">if</span>(!pPlayer)</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Let the player at it</span></span><br><span class="line">    <span class="keyword">return</span> pPlayer-&gt;CreateMove( flInputSampleTime, cmd );</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br><br><div align="center"><br><img src="/img/idaclassinformer18.png" alt align="center"><br></div><br>找到了，切换到hex view然后重命名这个函数。<br><div align="center"><br><img src="/img/idaclassinformer19.png" alt align="center"><br></div>
-
-<h2 id="0x05_最后致谢">0x05 最后致谢</h2><p>感谢<a href="https://www.unknowncheats.me/forum/members/171990.html" target="_blank" rel="external">@Sirmabus</a>开发了上面两个好用的插件：</p>
-<ul>
-<li>1.上面提到的方法不是找到函数CreateMove函数最简便最直观的方法</li>
-<li>2.鼓励每个人发布他们自定义的环境并指出我的文章中的任何错误。</li>
-</ul>
-<h2 id="外部参考">外部参考</h2><ul>
-<li>[1] <a href="https://www.unknowncheats.me/forum/counterstrike-global-offensive/148360-reversing-ida-walkthrough-finding-clientmode-createmove.html" target="_blank" rel="external">Original post “Reversing in IDA: a walkthrough for finding ClientMode::CreateMove” by qwerty9384</a></li>
-<li>[2] <a href="https://github.com/ValveSoftware/source-sdk-2013" target="_blank" rel="external">ValveSoftware/source-sdk-2013 - GitHub</a></li>
-<li>[3] IDA-Hex-Rays:<br>  -<a href="https://sourceforge.net/projects/classinformer/" target="_blank" rel="external">IDA ClassInformer Plugin - SourceForge</a><br>  -<a href="https://sourceforge.net/projects/idafunctionstringassociate/" target="_blank" rel="external">IDA FunctionStringAssociate PlugIn - SourceForge</a></li>
-</ul>
-]]></content>
-    <summary type="html">
-    <![CDATA[<h2 id="0x00_介绍">0x00 介绍</h2><p>本文主要针对几乎没有使用IDA Pro经验及逆向水平一般的人。IDA对初学者还是有一定的门槛的，主要是由于IMO没有详细介绍IDA使用环境设置和插件使用的指南。我的目标是展示当我在客户端（这里应该是开发外挂）开发遇到困难的时候，我是如何解决这个问题的方法和策略。在本指南中我将演示如何从SDK中的一个字符串识别出二进制文件中反汇编代码中的函数。目标是将IDA中原始的汇编代码转换为ClientMode::CreateMove函数。<br>]]>
-    
-    </summary>
-    
-      <category term="IDA Pro" scheme="http://www.youngroe.com/tags/IDA-Pro/"/>
-    
-      <category term="Tools" scheme="http://www.youngroe.com/categories/Tools/"/>
     
   </entry>
   

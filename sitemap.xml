@@ -3,6 +3,46 @@
 
     
   <url>
+    <loc>http://www.youngroe.com/2021/09/22/IOT/iot-security-part-4-bluetooth-low-energy-101/</loc>
+    <lastmod>2021-11-06T15:28:21.547Z</lastmod>
+    <data>
+        <display>
+        <title>物联网安全101-4.低功耗蓝牙BLE（翻译）</title>
+        <pubTime>2021-09-22T12:50:22.000Z</pubTime>
+        
+        <tag>IOT安全 </tag>
+         
+         
+           
+             
+              <breadCrumb title="IOT" url="http://www.youngroe.com/categories/IOT/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.youngroe.com/2021/09/22/IOT/iot-security-part-3-101-iot-top-ten-vulnerabilities/</loc>
+    <lastmod>2021-11-06T09:27:15.956Z</lastmod>
+    <data>
+        <display>
+        <title>物联网安全101-3.物联网10大安全漏洞（翻译）</title>
+        <pubTime>2021-09-22T11:50:22.000Z</pubTime>
+        
+        <tag>IOT安全 </tag>
+         
+         
+           
+             
+              <breadCrumb title="IOT" url="http://www.youngroe.com/categories/IOT/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>http://www.youngroe.com/2021/09/21/IOT/iot-security-part-2-101-iot-attack-surface/</loc>
     <lastmod>2021-11-06T08:50:55.392Z</lastmod>
     <data>
@@ -770,28 +810,6 @@
 
     
   <url>
-    <loc>http://www.youngroe.com/2019/01/12/Windows/a_crash_lead_deadlock/</loc>
-    <lastmod>2020-02-15T07:54:24.198Z</lastmod>
-    <data>
-        <display>
-        <title>Windows平台下一个崩溃而导致的死锁分析</title>
-        <pubTime>2019-01-12T12:13:53.000Z</pubTime>
-        
-        <tag>MiniDumpWriteDump </tag>
-         
-        <tag>libeay32 </tag>
-         
-         
-           
-             
-              <breadCrumb title="Windows" url="http://www.youngroe.com/categories/Windows/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
     <loc>http://www.youngroe.com/2015/08/14/Life/chongqing/</loc>
     <lastmod>2020-02-15T07:54:24.198Z</lastmod>
     <data>
@@ -814,18 +832,16 @@
 
     
   <url>
-    <loc>http://www.youngroe.com/2015/08/25/Windows/VC-BMPtoJPG/</loc>
-    <lastmod>2020-02-15T07:54:24.196Z</lastmod>
+    <loc>http://www.youngroe.com/2019/01/12/Windows/a_crash_lead_deadlock/</loc>
+    <lastmod>2020-02-15T07:54:24.198Z</lastmod>
     <data>
         <display>
-        <title>VC++直接利用api实现bmp图像转jpg图像</title>
-        <pubTime>2015-08-25T11:39:28.000Z</pubTime>
+        <title>Windows平台下一个崩溃而导致的死锁分析</title>
+        <pubTime>2019-01-12T12:13:53.000Z</pubTime>
         
-        <tag>VC </tag>
+        <tag>MiniDumpWriteDump </tag>
          
-        <tag>Windows </tag>
-         
-        <tag>转换 </tag>
+        <tag>libeay32 </tag>
          
          
            
@@ -873,6 +889,30 @@
            
              
               <breadCrumb title="Learning" url="http://www.youngroe.com/categories/Learning/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.youngroe.com/2015/08/25/Windows/VC-BMPtoJPG/</loc>
+    <lastmod>2020-02-15T07:54:24.196Z</lastmod>
+    <data>
+        <display>
+        <title>VC++直接利用api实现bmp图像转jpg图像</title>
+        <pubTime>2015-08-25T11:39:28.000Z</pubTime>
+        
+        <tag>VC </tag>
+         
+        <tag>Windows </tag>
+         
+        <tag>转换 </tag>
+         
+         
+           
+             
+              <breadCrumb title="Windows" url="http://www.youngroe.com/categories/Windows/"/>
           
         </display>
     </data>
@@ -986,6 +1026,26 @@
 
     
   <url>
+    <loc>http://www.youngroe.com/2015/10/30/Learning/Http-Protocl-learn/</loc>
+    <lastmod>2020-02-15T07:54:24.191Z</lastmod>
+    <data>
+        <display>
+        <title>Http协议初学</title>
+        <pubTime>2015-10-30T11:40:09.000Z</pubTime>
+        
+        <tag>Http </tag>
+         
+         
+           
+             
+              <breadCrumb title="Learning" url="http://www.youngroe.com/categories/Learning/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>http://www.youngroe.com/2016/04/17/Debug/How-to-debug-a-Visual-C-Runtime-Error/</loc>
     <lastmod>2020-02-15T07:54:24.191Z</lastmod>
     <data>
@@ -1008,19 +1068,21 @@
 
     
   <url>
-    <loc>http://www.youngroe.com/2015/10/30/Learning/Http-Protocl-learn/</loc>
-    <lastmod>2020-02-15T07:54:24.191Z</lastmod>
+    <loc>http://www.youngroe.com/2016/01/06/Life/Hello-2016/</loc>
+    <lastmod>2020-02-15T07:54:24.190Z</lastmod>
     <data>
         <display>
-        <title>Http协议初学</title>
-        <pubTime>2015-10-30T11:40:09.000Z</pubTime>
+        <title>Hello 2016</title>
+        <pubTime>2016-01-06T04:45:15.000Z</pubTime>
         
-        <tag>Http </tag>
+        <tag>生活 </tag>
+         
+        <tag>计划 </tag>
          
          
            
              
-              <breadCrumb title="Learning" url="http://www.youngroe.com/categories/Learning/"/>
+              <breadCrumb title="Life" url="http://www.youngroe.com/categories/Life/"/>
           
         </display>
     </data>
@@ -1043,28 +1105,6 @@
            
              
               <breadCrumb title="Tools" url="http://www.youngroe.com/categories/Tools/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://www.youngroe.com/2016/01/06/Life/Hello-2016/</loc>
-    <lastmod>2020-02-15T07:54:24.190Z</lastmod>
-    <data>
-        <display>
-        <title>Hello 2016</title>
-        <pubTime>2016-01-06T04:45:15.000Z</pubTime>
-        
-        <tag>生活 </tag>
-         
-        <tag>计划 </tag>
-         
-         
-           
-             
-              <breadCrumb title="Life" url="http://www.youngroe.com/categories/Life/"/>
           
         </display>
     </data>

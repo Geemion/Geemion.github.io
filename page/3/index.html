@@ -102,6 +102,129 @@ var _hmt = _hmt || [];
   <div class="post-content">
     <header>
       
+        <time datetime="2016-10-02T07:27:11.000Z"><a href="/2016/10/02/Debug/the-reasons-of-Dll-hijiacking-msimg32-fail/">2016-10-02</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2016/10/02/Debug/the-reasons-of-Dll-hijiacking-msimg32-fail/">msimg32.dll劫持失败原因分析</a></h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+
+	
+    <div class="entry">
+      
+        <h2 id="问题描述">问题描述</h2><p>前一段事件做一个题的时候，需要修改主程序执行逻辑，当时想想应该很简单，直接做dll劫持然后在该DllMain中去修改主程序Exe的执行逻辑（因为之前看到飘云阁的 Visual Assist X劫持用的msimg32）。很顺利的在调试系统(win xp)做完了，达到了预期目的。但是拿到win7和win10上运行顿时就不行了。<br>主要问题有两个：</p>
+<ul>
+<li>win7上直接不加载劫持dll,msimg32.dll了</li>
+<li>win10上会加载msimg32.dll，但是加载时间靠后，在主程序逻辑执行后才被加载，这会修改逻辑也没用了</li>
+</ul>
+<p>当时时间紧急，也比较慌。没有分析，改了方案直接修改主程序二进制，文件补丁方式做的<br>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/2016/10/02/Debug/the-reasons-of-Dll-hijiacking-msimg32-fail/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+  <div id="container"></div>
+</span>
+</article>
+
+
+
+
+  <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <time datetime="2016-08-25T04:05:26.000Z"><a href="/2016/08/25/Learning/Linux-malware-billgates-XORDDOS-analyze-first-time/">2016-08-25</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2016/08/25/Learning/Linux-malware-billgates-XORDDOS-analyze-first-time/">Linux木马分析初体验（BillGates及XORDDOS查杀）</a></h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+
+	
+    <div class="entry">
+      
+        <div align="center"><br><img src="/img/20160826billgates_XORDDOSsumary.png" align="center"/><br></div>
+
+<p>分析工具：</p>
+<ul>
+<li>ida pro</li>
+<li>edb</li>
+<li>strace</li>
+</ul>
+<p>事情是这样的，某一天发现某一台服务器数据流量异常，怀疑中了木马而且是一台Windows机器，想着就能一展我手动杀毒的技能了，但是开了机才发下这台机器上通过Hyper-V装了另外5台虚拟机，比我想象中复杂多了而且在机房狭小的环境中。在几台Windows机器上找了良久也未发现木马的踪迹，难道是什么高级木马？好在师兄经验丰富一想肯定是剩下的那台centos有问题，果然一找一大堆，billgates附送个xorddos，不是说linux很安全么，怎么会中马呢？ linux是很安全但是耐不住用的人没安全意识啊，直接暴露在公网的主机被设置了ssh弱密码。好了故事编完了，进入正题，这篇博客主要是这两天的linux系统下的木马分析与查杀的一个简单记录。</p>
+<h2 id="BillGates">BillGates</h2><p>BillGates就是上面那个比重最大的Linux.BackDoor.Gates.5，2014年就被drweb曝光过，网上很多分析的很多了，但是还是自己跟着走一遍还是能学到很多东西的，特别是第一次分析Linux木马的我。</p>
+<h3 id="静态分析">静态分析</h3><p>基本信息<br>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/2016/08/25/Learning/Linux-malware-billgates-XORDDOS-analyze-first-time/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+  <div id="container"></div>
+</span>
+</article>
+
+
+
+
+  <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
         <time datetime="2016-07-27T10:57:32.000Z"><a href="/2016/07/27/Debug/debug-vulner-UAF-2011-0065/">2016-07-27</a></time>
       
       
@@ -659,115 +782,6 @@ var _hmt = _hmt || [];
 
 
 
-  <article class="post">
-  
-    <div class="gallery">
-  <div class="photoset">
-    
-      <img src="">
-    
-  </div>
-  <div class="control">
-    <div class="prev"></div>
-    <div class="next"></div>
-  </div>
-</div>
-  
-  <div class="post-content">
-    <header>
-      
-        <time datetime="2015-10-22T09:38:16.000Z"><a href="/2015/10/22/Windows/Different-From-several-Ways-Create-Process/">2015-10-22</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2015/10/22/Windows/Different-From-several-Ways-Create-Process/">几种创建进程函数的不同</a></h1>
-  
-
-    </header>
-	
-<!-- Table of Contents -->
-
-
-	
-    <div class="entry">
-      
-        <p>参考资料:<br>1.<a href="http://blog.csdn.net/jinru2560/article/details/5328487">ShellExecute，ShellExecuteEx， WinExec ，CreateProcess区别</a><br>2.<a href="http://www.cnblogs.com/xubin0523/archive/2012/11/01/2749729.html">ShellExecute, WinExec, CreateProcess区别</a><br>3.MSDN</p>
-<p>Windows系统提供了好几种创建进程的方式，对于普通的打开一个exe创建进程这几种方式都可以胜任。那这几种创建进程的方式究竟有什么不同呢？<br>大体上的东西和使用方式可以查看参考资料1、2<br>
-      
-    </div>
-    <footer>
-      
-        
-          <div class="alignleft">
-            <a href="/2015/10/22/Windows/Different-From-several-Ways-Create-Process/#more" class="more-link">Read More</a>
-          </div>
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-  <div id="container"></div>
-</span>
-</article>
-
-
-
-
-  <article class="post">
-  
-    <div class="gallery">
-  <div class="photoset">
-    
-      <img src="">
-    
-  </div>
-  <div class="control">
-    <div class="prev"></div>
-    <div class="next"></div>
-  </div>
-</div>
-  
-  <div class="post-content">
-    <header>
-      
-        <time datetime="2015-10-11T11:35:44.000Z"><a href="/2015/10/11/Life/Scheduled-Tasks-About-Reading/">2015-10-11</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2015/10/11/Life/Scheduled-Tasks-About-Reading/">读书计划</a></h1>
-  
-
-    </header>
-	
-<!-- Table of Contents -->
-
-
-	
-    <div class="entry">
-      
-        <p>这几天总是有种莫名的恐慌，各种担心加上bug解决不了项目也进展缓慢。想想可能是每天太过得太杂碎了。。。东一下西一下，毫无方向可言，这种感觉就和大一、二相似。<br>“读书能让心灵平静下来，远离浮躁“貌似是这个意思，同时也为了让自己之前一空虚就买下的书体现价值，把平时凌乱的知识点整理出来，遂想着订个读书计划，也监督自己学习。<br>
-      
-    </div>
-    <footer>
-      
-        
-          <div class="alignleft">
-            <a href="/2015/10/11/Life/Scheduled-Tasks-About-Reading/#more" class="more-link">Read More</a>
-          </div>
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-  <div id="container"></div>
-</span>
-</article>
-
-
-
-
 
 <ul class="page-direction" id="page-direction">
     <li><a class="page-prev icon-chevron-sign-left" href="javascript:;" title="上一页"></a></li>
@@ -795,7 +809,7 @@ var _hmt = _hmt || [];
   
     <li><a href="/categories/Debug/">Debug</a><small>7</small></li>
   
-    <li><a href="/categories/IOT/">IOT</a><small>4</small></li>
+    <li><a href="/categories/IOT/">IOT</a><small>6</small></li>
   
     <li><a href="/categories/Kernel/">Kernel</a><small>4</small></li>
   
@@ -824,6 +838,14 @@ var _hmt = _hmt || [];
     
       <li>
         <a href="/2021/10/20/IOT/using-rasberrypi-as-poor-mans-hardware-hacking-tool/">树莓派-穷人的硬件黑客工具（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2021/09/22/IOT/iot-security-part-4-bluetooth-low-energy-101/">物联网安全101-4.低功耗蓝牙BLE（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2021/09/22/IOT/iot-security-part-3-101-iot-top-ten-vulnerabilities/">物联网安全101-3.物联网10大安全漏洞（翻译）</a>
       </li>
     
       <li>
@@ -862,14 +884,6 @@ var _hmt = _hmt || [];
         <a href="/2020/08/02/Life/dns_hijacking/">记录一次被DNS劫持及解决方案(非改hosts方式)</a>
       </li>
     
-      <li>
-        <a href="/2019/07/01/Windows/delphi_reverse_summary/">Delphi程序逆向反汇编技巧小记</a>
-      </li>
-    
-      <li>
-        <a href="/2019/06/25/Kernel/kernel_enum_wfp_callout_function/">Windows内核重拾：如何枚举系统中Windows Filtering Platform (WFP)驱动中的callout函数</a>
-      </li>
-    
   </ul>
 </div>
 
@@ -878,7 +892,7 @@ var _hmt = _hmt || [];
 <div class="widget tagcloud">
   <h3 class="title">标签云</h3>
   <div class="entry">
-    <a href="/tags/Boost/" style="font-size: 10px;">Boost</a> <a href="/tags/DDoS/" style="font-size: 10px;">DDoS</a> <a href="/tags/DNS-over-HTTPS/" style="font-size: 10px;">DNS-over-HTTPS</a> <a href="/tags/DNS劫持/" style="font-size: 10px;">DNS劫持</a> <a href="/tags/Delphi/" style="font-size: 10px;">Delphi</a> <a href="/tags/Dll劫持/" style="font-size: 10px;">Dll劫持</a> <a href="/tags/GetVersionEx/" style="font-size: 10px;">GetVersionEx</a> <a href="/tags/Http/" style="font-size: 10px;">Http</a> <a href="/tags/IDA-Pro/" style="font-size: 12.5px;">IDA Pro</a> <a href="/tags/IOT安全/" style="font-size: 17.5px;">IOT安全</a> <a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/MSDN/" style="font-size: 12.5px;">MSDN</a> <a href="/tags/Malware/" style="font-size: 12.5px;">Malware</a> <a href="/tags/MiniDumpWriteDump/" style="font-size: 10px;">MiniDumpWriteDump</a> <a href="/tags/PEB/" style="font-size: 10px;">PEB</a> <a href="/tags/Procmon/" style="font-size: 10px;">Procmon</a> <a href="/tags/Runtime-Error/" style="font-size: 10px;">Runtime Error</a> <a href="/tags/SEH/" style="font-size: 10px;">SEH</a> <a href="/tags/SysinternalsSuite/" style="font-size: 10px;">SysinternalsSuite</a> <a href="/tags/Tips/" style="font-size: 10px;">Tips</a> <a href="/tags/UAC/" style="font-size: 10px;">UAC</a> <a href="/tags/UAF漏洞/" style="font-size: 10px;">UAF漏洞</a> <a href="/tags/VC/" style="font-size: 10px;">VC</a> <a href="/tags/Visual-Studio/" style="font-size: 12.5px;">Visual Studio</a> <a href="/tags/Windbg/" style="font-size: 10px;">Windbg</a> <a href="/tags/Windows/" style="font-size: 20px;">Windows</a> <a href="/tags/getaddrinfo/" style="font-size: 10px;">getaddrinfo</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/libeay32/" style="font-size: 10px;">libeay32</a> <a href="/tags/x64/" style="font-size: 10px;">x64</a> <a href="/tags/内核/" style="font-size: 12.5px;">内核</a> <a href="/tags/内核结构/" style="font-size: 15px;">内核结构</a> <a href="/tags/反病毒/" style="font-size: 17.5px;">反病毒</a> <a href="/tags/安全机制/" style="font-size: 10px;">安全机制</a> <a href="/tags/异常处理/" style="font-size: 10px;">异常处理</a> <a href="/tags/提权/" style="font-size: 12.5px;">提权</a> <a href="/tags/服务/" style="font-size: 10px;">服务</a> <a href="/tags/权限/" style="font-size: 12.5px;">权限</a> <a href="/tags/栈溢出漏洞/" style="font-size: 10px;">栈溢出漏洞</a> <a href="/tags/测试/" style="font-size: 10px;">测试</a> <a href="/tags/漏洞调试/" style="font-size: 12.5px;">漏洞调试</a> <a href="/tags/生活/" style="font-size: 15px;">生活</a> <a href="/tags/脱壳/" style="font-size: 10px;">脱壳</a> <a href="/tags/西安/" style="font-size: 10px;">西安</a> <a href="/tags/计划/" style="font-size: 10px;">计划</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a> <a href="/tags/调试/" style="font-size: 15px;">调试</a> <a href="/tags/转换/" style="font-size: 10px;">转换</a> <a href="/tags/进程/" style="font-size: 10px;">进程</a> <a href="/tags/逆向/" style="font-size: 10px;">逆向</a> <a href="/tags/重庆/" style="font-size: 10px;">重庆</a> <a href="/tags/驱动/" style="font-size: 15px;">驱动</a>
+    <a href="/tags/Boost/" style="font-size: 10px;">Boost</a> <a href="/tags/DDoS/" style="font-size: 10px;">DDoS</a> <a href="/tags/DNS-over-HTTPS/" style="font-size: 10px;">DNS-over-HTTPS</a> <a href="/tags/DNS劫持/" style="font-size: 10px;">DNS劫持</a> <a href="/tags/Delphi/" style="font-size: 10px;">Delphi</a> <a href="/tags/Dll劫持/" style="font-size: 10px;">Dll劫持</a> <a href="/tags/GetVersionEx/" style="font-size: 10px;">GetVersionEx</a> <a href="/tags/Http/" style="font-size: 10px;">Http</a> <a href="/tags/IDA-Pro/" style="font-size: 12px;">IDA Pro</a> <a href="/tags/IOT安全/" style="font-size: 18px;">IOT安全</a> <a href="/tags/Linux/" style="font-size: 14px;">Linux</a> <a href="/tags/MSDN/" style="font-size: 12px;">MSDN</a> <a href="/tags/Malware/" style="font-size: 12px;">Malware</a> <a href="/tags/MiniDumpWriteDump/" style="font-size: 10px;">MiniDumpWriteDump</a> <a href="/tags/PEB/" style="font-size: 10px;">PEB</a> <a href="/tags/Procmon/" style="font-size: 10px;">Procmon</a> <a href="/tags/Runtime-Error/" style="font-size: 10px;">Runtime Error</a> <a href="/tags/SEH/" style="font-size: 10px;">SEH</a> <a href="/tags/SysinternalsSuite/" style="font-size: 10px;">SysinternalsSuite</a> <a href="/tags/Tips/" style="font-size: 10px;">Tips</a> <a href="/tags/UAC/" style="font-size: 10px;">UAC</a> <a href="/tags/UAF漏洞/" style="font-size: 10px;">UAF漏洞</a> <a href="/tags/VC/" style="font-size: 10px;">VC</a> <a href="/tags/Visual-Studio/" style="font-size: 12px;">Visual Studio</a> <a href="/tags/Windbg/" style="font-size: 10px;">Windbg</a> <a href="/tags/Windows/" style="font-size: 20px;">Windows</a> <a href="/tags/getaddrinfo/" style="font-size: 10px;">getaddrinfo</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/libeay32/" style="font-size: 10px;">libeay32</a> <a href="/tags/x64/" style="font-size: 10px;">x64</a> <a href="/tags/内核/" style="font-size: 12px;">内核</a> <a href="/tags/内核结构/" style="font-size: 14px;">内核结构</a> <a href="/tags/反病毒/" style="font-size: 16px;">反病毒</a> <a href="/tags/安全机制/" style="font-size: 10px;">安全机制</a> <a href="/tags/异常处理/" style="font-size: 10px;">异常处理</a> <a href="/tags/提权/" style="font-size: 12px;">提权</a> <a href="/tags/服务/" style="font-size: 10px;">服务</a> <a href="/tags/权限/" style="font-size: 12px;">权限</a> <a href="/tags/栈溢出漏洞/" style="font-size: 10px;">栈溢出漏洞</a> <a href="/tags/测试/" style="font-size: 10px;">测试</a> <a href="/tags/漏洞调试/" style="font-size: 12px;">漏洞调试</a> <a href="/tags/生活/" style="font-size: 14px;">生活</a> <a href="/tags/脱壳/" style="font-size: 10px;">脱壳</a> <a href="/tags/西安/" style="font-size: 10px;">西安</a> <a href="/tags/计划/" style="font-size: 10px;">计划</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a> <a href="/tags/调试/" style="font-size: 14px;">调试</a> <a href="/tags/转换/" style="font-size: 10px;">转换</a> <a href="/tags/进程/" style="font-size: 10px;">进程</a> <a href="/tags/逆向/" style="font-size: 10px;">逆向</a> <a href="/tags/重庆/" style="font-size: 10px;">重庆</a> <a href="/tags/驱动/" style="font-size: 14px;">驱动</a>
   </div>
 </div>
 

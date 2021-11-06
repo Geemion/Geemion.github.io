@@ -102,6 +102,115 @@ var _hmt = _hmt || [];
   <div class="post-content">
     <header>
       
+        <time datetime="2015-10-22T09:38:16.000Z"><a href="/2015/10/22/Windows/Different-From-several-Ways-Create-Process/">2015-10-22</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2015/10/22/Windows/Different-From-several-Ways-Create-Process/">几种创建进程函数的不同</a></h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+
+	
+    <div class="entry">
+      
+        <p>参考资料:<br>1.<a href="http://blog.csdn.net/jinru2560/article/details/5328487">ShellExecute，ShellExecuteEx， WinExec ，CreateProcess区别</a><br>2.<a href="http://www.cnblogs.com/xubin0523/archive/2012/11/01/2749729.html">ShellExecute, WinExec, CreateProcess区别</a><br>3.MSDN</p>
+<p>Windows系统提供了好几种创建进程的方式，对于普通的打开一个exe创建进程这几种方式都可以胜任。那这几种创建进程的方式究竟有什么不同呢？<br>大体上的东西和使用方式可以查看参考资料1、2<br>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/2015/10/22/Windows/Different-From-several-Ways-Create-Process/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+  <div id="container"></div>
+</span>
+</article>
+
+
+
+
+  <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <time datetime="2015-10-11T11:35:44.000Z"><a href="/2015/10/11/Life/Scheduled-Tasks-About-Reading/">2015-10-11</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2015/10/11/Life/Scheduled-Tasks-About-Reading/">读书计划</a></h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+
+	
+    <div class="entry">
+      
+        <p>这几天总是有种莫名的恐慌，各种担心加上bug解决不了项目也进展缓慢。想想可能是每天太过得太杂碎了。。。东一下西一下，毫无方向可言，这种感觉就和大一、二相似。<br>“读书能让心灵平静下来，远离浮躁“貌似是这个意思，同时也为了让自己之前一空虚就买下的书体现价值，把平时凌乱的知识点整理出来，遂想着订个读书计划，也监督自己学习。<br>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/2015/10/11/Life/Scheduled-Tasks-About-Reading/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+  <div id="container"></div>
+</span>
+</article>
+
+
+
+
+  <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
         <time datetime="2015-10-10T02:46:32.000Z"><a href="/2015/10/10/Debug/A-Tips-about-DbgBreakPoint/">2015-10-10</a></time>
       
       
@@ -677,125 +786,6 @@ var _hmt = _hmt || [];
 
 
 
-  <article class="post">
-  
-    <div class="gallery">
-  <div class="photoset">
-    
-      
-        <img src="http://www.youngroe.com/img/pebhedad.png">
-      
-    
-  </div>
-  <div class="control">
-    <div class="prev"></div>
-    <div class="next"></div>
-  </div>
-</div>
-  
-  <div class="post-content">
-    <header>
-      
-        <time datetime="2015-08-01T13:38:01.000Z"><a href="/2015/08/01/Debug/peb-analysis/">2015-08-01</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2015/08/01/Debug/peb-analysis/">Peb(Process Environment Block)简单学习及分析</a></h1>
-  
-
-    </header>
-	
-<!-- Table of Contents -->
-
-
-	
-    <div class="entry">
-      
-        <p>参考资料：<br><a href="https://www.google.com.hk/webhp?hl=zh-CN&amp;sourceid=cnhp&amp;gws_rd=ssl#newwindow=1&amp;safe=strict&amp;hl=zh-CN&amp;q=peb+site:pediy.com">Google peb site:pediy.com</a><br><a href="http://bbs.pediy.com/showthread.php?t=52398">PEB结构—-枚举用户模块列表</a><br><a href="http://bbs.pediy.com/showthread.php?t=69730">修改已加载DLL的模块名和路径</a></p>
-<h2 id="PEB结构初探">PEB结构初探</h2><p>windows系统中通过各种结构来管理各个对象，关于进程线程的PEB、TEB、EPROCESS等，这几个结构的关系如下图</p>
-<div align="center"><br><img src="/img/关系.png" width="400" height="400" alt="PEB、TEB、EPROCESS结构在系统结构中关系" align="center"/><br></div><br>而PEB(Process Environment Block)——进程环境块使用较多，并且我们可以找到很多关于PEB的资料并且用处也很大，它包含了映像加载器、堆管理器和其他的windows系统DLL所需要的信息，因为它们需要在用户模式下修改PEB中的信息，所以必须位于用户空间。PEB存放进程信息，每个进程都有自己的 PEB 信息。准确的 PEB 地址应从系统的 EPROCESS 结构的 1b0H 偏移处获得，但由于 EPROCESS在进程的核心内存区，所以程序不能直接访问。但是由上面的关系图可以发现TEB也指向PEB结构同时位于用户空间并且可以很方便的获得，可以通过CPU的FS寄存器来访问TEB，一般存储在[FS:0]，在TEB结构偏移30H处可以获得PEB位置<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">__asm</span><br><span class="line">&#123;</span><br><span class="line">mov eax,fs:[<span class="number">0x30</span>]</span><br><span class="line">mov PEB,eax</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br><br>除此之外还可以通过以下方式获得PEB结构<br><br>- 在内核中我们可以先PsGetCurrentProcess得到当前进程的EPROCESS，然后通过它的成员域PEB访问到当前进程<br>- 在内核中，我们可以通过KPRCB获得当前线程的ETHREAD，然后通过它的成员域来访问当TEB，然后再通过TEB的成员域来访问PEB<br>
-      
-    </div>
-    <footer>
-      
-        
-          <div class="alignleft">
-            <a href="/2015/08/01/Debug/peb-analysis/#more" class="more-link">Read More</a>
-          </div>
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-  <div id="container"></div>
-</span>
-</article>
-
-
-
-
-  <article class="post">
-  
-    <div class="gallery">
-  <div class="photoset">
-    
-      
-        <img src="http://7xkam4.com1.z0.glb.clouddn.com/autoevlate.jpg">
-      
-    
-  </div>
-  <div class="control">
-    <div class="prev"></div>
-    <div class="next"></div>
-  </div>
-</div>
-  
-  <div class="post-content">
-    <header>
-      
-        <time datetime="2015-07-15T12:23:41.000Z"><a href="/2015/07/15/Windows/windows-auto-elevated-binaries/">2015-07-15</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2015/07/15/Windows/windows-auto-elevated-binaries/">关于Windows自动提权autoElevate</a></h1>
-  
-
-    </header>
-	
-<!-- Table of Contents -->
-
-
-	
-    <div class="entry">
-      
-        <p><strong>参考资料：</strong><br><a href="https://technet.microsoft.com/zh-cn/magazine/2009.07.uac.aspx">深入了解 Windows 7 用户帐户控制</a><br><a href="http://withinwindows.com/blog/2009/02/05/list-of-windows-7-beta-build-7000-auto-elevated-binaries">List of Windows 7 (beta build 7000) auto-elevated binaries</a><br><strong>工具：</strong><br>Strings.exe<br>Sigcheck.exe<br>Procexp.exe<br>Procmon.exe<br><strong>知识点：</strong><br>Manifest文件<br>UAC</p>
-<p>一直想怎么才能找到类似sysprep.exe这样可以有UAC权限但是运行的时候不会触发UAC弹框（即我们常说的Windows白名单程序），在网络上搜寻良久也未成发现有什么可用的信息。最后只有重头看看UAC相关信息，终于在MSDN上发现相关信息即参考资料1。<em>(其实之前微软是一直公布这份名单的，而且连rundll32都是)</em><br>从参考资料1中我们可以获得很多信息，由于vista在启用uac时貌似平等对待不管是Windows系统的还是第三方应用获得uac权限都要弹框获得用户许可，所以在win7上微软启用了白名单机制，对于某些系统应用可以直接获得uac权限。<br>条件就是：</p>
-<ul>
-<li>1.该可执行文件必须经过 Windows Publisher 的数字签名，Windows Publisher 是用于对 Windows 附带的所有代码进行签名的证书（仅由 Microsoft 进行签名是不够的，因此 Windows 未附带的 Microsoft 软件不包括在内）；</li>
-<li>2.该可执行文件必须位于其中一个为数不多的“安全”目录中。安全目录是指标准用户无法修改的目录，并且它们包括 %SystemRoot%\System32（例如，\Windows\System32）及其大多数子目录、%SystemRoot%\Ehome，以及 %ProgramFiles% 下的少许目录（其中包括 Windows Defender 和 Windows 日记本）。<br>而要能够autoElevate还必须满足的一点就是要在程序的manifest文件中申明成类似这个样子的<autoElevate>true</autoElevate>，而且参考资料1还提供了两个工具来获得这个manifest文件搜寻满足条件的exe。<br><strong>strings.exe  -s *.exe | findstr /i “autoElevate”&gt;”D:\Program Files (x86)\SysinternalsSuite\autoevate.txt”</strong></li>
-</ul>
-      
-    </div>
-    <footer>
-      
-        
-          <div class="alignleft">
-            <a href="/2015/07/15/Windows/windows-auto-elevated-binaries/#more" class="more-link">Read More</a>
-          </div>
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-  <div id="container"></div>
-</span>
-</article>
-
-
-
-
 
 <ul class="page-direction" id="page-direction">
     <li><a class="page-prev icon-chevron-sign-left" href="javascript:;" title="上一页"></a></li>
@@ -823,7 +813,7 @@ var _hmt = _hmt || [];
   
     <li><a href="/categories/Debug/">Debug</a><small>7</small></li>
   
-    <li><a href="/categories/IOT/">IOT</a><small>4</small></li>
+    <li><a href="/categories/IOT/">IOT</a><small>6</small></li>
   
     <li><a href="/categories/Kernel/">Kernel</a><small>4</small></li>
   
@@ -852,6 +842,14 @@ var _hmt = _hmt || [];
     
       <li>
         <a href="/2021/10/20/IOT/using-rasberrypi-as-poor-mans-hardware-hacking-tool/">树莓派-穷人的硬件黑客工具（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2021/09/22/IOT/iot-security-part-4-bluetooth-low-energy-101/">物联网安全101-4.低功耗蓝牙BLE（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2021/09/22/IOT/iot-security-part-3-101-iot-top-ten-vulnerabilities/">物联网安全101-3.物联网10大安全漏洞（翻译）</a>
       </li>
     
       <li>
@@ -890,14 +888,6 @@ var _hmt = _hmt || [];
         <a href="/2020/08/02/Life/dns_hijacking/">记录一次被DNS劫持及解决方案(非改hosts方式)</a>
       </li>
     
-      <li>
-        <a href="/2019/07/01/Windows/delphi_reverse_summary/">Delphi程序逆向反汇编技巧小记</a>
-      </li>
-    
-      <li>
-        <a href="/2019/06/25/Kernel/kernel_enum_wfp_callout_function/">Windows内核重拾：如何枚举系统中Windows Filtering Platform (WFP)驱动中的callout函数</a>
-      </li>
-    
   </ul>
 </div>
 
@@ -906,7 +896,7 @@ var _hmt = _hmt || [];
 <div class="widget tagcloud">
   <h3 class="title">标签云</h3>
   <div class="entry">
-    <a href="/tags/Boost/" style="font-size: 10px;">Boost</a> <a href="/tags/DDoS/" style="font-size: 10px;">DDoS</a> <a href="/tags/DNS-over-HTTPS/" style="font-size: 10px;">DNS-over-HTTPS</a> <a href="/tags/DNS劫持/" style="font-size: 10px;">DNS劫持</a> <a href="/tags/Delphi/" style="font-size: 10px;">Delphi</a> <a href="/tags/Dll劫持/" style="font-size: 10px;">Dll劫持</a> <a href="/tags/GetVersionEx/" style="font-size: 10px;">GetVersionEx</a> <a href="/tags/Http/" style="font-size: 10px;">Http</a> <a href="/tags/IDA-Pro/" style="font-size: 12.5px;">IDA Pro</a> <a href="/tags/IOT安全/" style="font-size: 17.5px;">IOT安全</a> <a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/MSDN/" style="font-size: 12.5px;">MSDN</a> <a href="/tags/Malware/" style="font-size: 12.5px;">Malware</a> <a href="/tags/MiniDumpWriteDump/" style="font-size: 10px;">MiniDumpWriteDump</a> <a href="/tags/PEB/" style="font-size: 10px;">PEB</a> <a href="/tags/Procmon/" style="font-size: 10px;">Procmon</a> <a href="/tags/Runtime-Error/" style="font-size: 10px;">Runtime Error</a> <a href="/tags/SEH/" style="font-size: 10px;">SEH</a> <a href="/tags/SysinternalsSuite/" style="font-size: 10px;">SysinternalsSuite</a> <a href="/tags/Tips/" style="font-size: 10px;">Tips</a> <a href="/tags/UAC/" style="font-size: 10px;">UAC</a> <a href="/tags/UAF漏洞/" style="font-size: 10px;">UAF漏洞</a> <a href="/tags/VC/" style="font-size: 10px;">VC</a> <a href="/tags/Visual-Studio/" style="font-size: 12.5px;">Visual Studio</a> <a href="/tags/Windbg/" style="font-size: 10px;">Windbg</a> <a href="/tags/Windows/" style="font-size: 20px;">Windows</a> <a href="/tags/getaddrinfo/" style="font-size: 10px;">getaddrinfo</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/libeay32/" style="font-size: 10px;">libeay32</a> <a href="/tags/x64/" style="font-size: 10px;">x64</a> <a href="/tags/内核/" style="font-size: 12.5px;">内核</a> <a href="/tags/内核结构/" style="font-size: 15px;">内核结构</a> <a href="/tags/反病毒/" style="font-size: 17.5px;">反病毒</a> <a href="/tags/安全机制/" style="font-size: 10px;">安全机制</a> <a href="/tags/异常处理/" style="font-size: 10px;">异常处理</a> <a href="/tags/提权/" style="font-size: 12.5px;">提权</a> <a href="/tags/服务/" style="font-size: 10px;">服务</a> <a href="/tags/权限/" style="font-size: 12.5px;">权限</a> <a href="/tags/栈溢出漏洞/" style="font-size: 10px;">栈溢出漏洞</a> <a href="/tags/测试/" style="font-size: 10px;">测试</a> <a href="/tags/漏洞调试/" style="font-size: 12.5px;">漏洞调试</a> <a href="/tags/生活/" style="font-size: 15px;">生活</a> <a href="/tags/脱壳/" style="font-size: 10px;">脱壳</a> <a href="/tags/西安/" style="font-size: 10px;">西安</a> <a href="/tags/计划/" style="font-size: 10px;">计划</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a> <a href="/tags/调试/" style="font-size: 15px;">调试</a> <a href="/tags/转换/" style="font-size: 10px;">转换</a> <a href="/tags/进程/" style="font-size: 10px;">进程</a> <a href="/tags/逆向/" style="font-size: 10px;">逆向</a> <a href="/tags/重庆/" style="font-size: 10px;">重庆</a> <a href="/tags/驱动/" style="font-size: 15px;">驱动</a>
+    <a href="/tags/Boost/" style="font-size: 10px;">Boost</a> <a href="/tags/DDoS/" style="font-size: 10px;">DDoS</a> <a href="/tags/DNS-over-HTTPS/" style="font-size: 10px;">DNS-over-HTTPS</a> <a href="/tags/DNS劫持/" style="font-size: 10px;">DNS劫持</a> <a href="/tags/Delphi/" style="font-size: 10px;">Delphi</a> <a href="/tags/Dll劫持/" style="font-size: 10px;">Dll劫持</a> <a href="/tags/GetVersionEx/" style="font-size: 10px;">GetVersionEx</a> <a href="/tags/Http/" style="font-size: 10px;">Http</a> <a href="/tags/IDA-Pro/" style="font-size: 12px;">IDA Pro</a> <a href="/tags/IOT安全/" style="font-size: 18px;">IOT安全</a> <a href="/tags/Linux/" style="font-size: 14px;">Linux</a> <a href="/tags/MSDN/" style="font-size: 12px;">MSDN</a> <a href="/tags/Malware/" style="font-size: 12px;">Malware</a> <a href="/tags/MiniDumpWriteDump/" style="font-size: 10px;">MiniDumpWriteDump</a> <a href="/tags/PEB/" style="font-size: 10px;">PEB</a> <a href="/tags/Procmon/" style="font-size: 10px;">Procmon</a> <a href="/tags/Runtime-Error/" style="font-size: 10px;">Runtime Error</a> <a href="/tags/SEH/" style="font-size: 10px;">SEH</a> <a href="/tags/SysinternalsSuite/" style="font-size: 10px;">SysinternalsSuite</a> <a href="/tags/Tips/" style="font-size: 10px;">Tips</a> <a href="/tags/UAC/" style="font-size: 10px;">UAC</a> <a href="/tags/UAF漏洞/" style="font-size: 10px;">UAF漏洞</a> <a href="/tags/VC/" style="font-size: 10px;">VC</a> <a href="/tags/Visual-Studio/" style="font-size: 12px;">Visual Studio</a> <a href="/tags/Windbg/" style="font-size: 10px;">Windbg</a> <a href="/tags/Windows/" style="font-size: 20px;">Windows</a> <a href="/tags/getaddrinfo/" style="font-size: 10px;">getaddrinfo</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/libeay32/" style="font-size: 10px;">libeay32</a> <a href="/tags/x64/" style="font-size: 10px;">x64</a> <a href="/tags/内核/" style="font-size: 12px;">内核</a> <a href="/tags/内核结构/" style="font-size: 14px;">内核结构</a> <a href="/tags/反病毒/" style="font-size: 16px;">反病毒</a> <a href="/tags/安全机制/" style="font-size: 10px;">安全机制</a> <a href="/tags/异常处理/" style="font-size: 10px;">异常处理</a> <a href="/tags/提权/" style="font-size: 12px;">提权</a> <a href="/tags/服务/" style="font-size: 10px;">服务</a> <a href="/tags/权限/" style="font-size: 12px;">权限</a> <a href="/tags/栈溢出漏洞/" style="font-size: 10px;">栈溢出漏洞</a> <a href="/tags/测试/" style="font-size: 10px;">测试</a> <a href="/tags/漏洞调试/" style="font-size: 12px;">漏洞调试</a> <a href="/tags/生活/" style="font-size: 14px;">生活</a> <a href="/tags/脱壳/" style="font-size: 10px;">脱壳</a> <a href="/tags/西安/" style="font-size: 10px;">西安</a> <a href="/tags/计划/" style="font-size: 10px;">计划</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a> <a href="/tags/调试/" style="font-size: 14px;">调试</a> <a href="/tags/转换/" style="font-size: 10px;">转换</a> <a href="/tags/进程/" style="font-size: 10px;">进程</a> <a href="/tags/逆向/" style="font-size: 10px;">逆向</a> <a href="/tags/重庆/" style="font-size: 10px;">重庆</a> <a href="/tags/驱动/" style="font-size: 14px;">驱动</a>
   </div>
 </div>
 

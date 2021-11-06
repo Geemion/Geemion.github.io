@@ -1,0 +1,579 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>物联网安全101-3.物联网10大安全漏洞（翻译） | Lyon&#39;s blog</title>
+  <meta name="author" content="Lyon">
+  
+  <meta name="description" content="Walk steps step by step">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="物联网安全101-3.物联网10大安全漏洞（翻译）"/>
+  <meta property="og:site_name" content="Lyon&#39;s blog"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  #<link href="/favicon.ico" rel="icon">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="alternate" href="/atom.xml" title="Lyon&#39;s blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  <script src="/js/jquery.min.js"></script>
+  <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?1d807422614f63c8de98cdc3b546860c";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+  <script>
+    (function(){
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        }
+        else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+    
+  <script data-ad-client="ca-pub-6317609007693835" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-66542057-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-66542057-1');
+</script>
+
+</head>
+
+
+<body>
+  <!--[if lte IE 8]> <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'> <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0027_Simplified Chinese.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." style='margin-left:auto;margin-right:auto;display: block;'/></a></div> <![endif]-->
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">Lyon&#39;s blog</a></h1>
+  <h2><a href="/">I hear and I forget.I see and I remember.I do and I understand.</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">首页</a></li>
+    
+      <li><a href="/archives">归档</a></li>
+    
+      <li><a href="/about">关于</a></li>
+    
+	<li> <a href="/atom.xml">RSS</a> </li>
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <time datetime="2021-09-22T11:50:22.000Z"><a href="/2021/09/22/IOT/iot-security-part-3-101-iot-top-ten-vulnerabilities/">2021-09-22</a></time>
+      
+      
+  
+    <h1 class="title">物联网安全101-3.物联网10大安全漏洞（翻译）</h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+  <div id="toc" class="toc-article">
+  <strong class="toc-title">文章目录</strong>
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#OWASP物联网十大漏洞"><span class="toc-number">1.</span> <span class="toc-text">OWASP物联网十大漏洞</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Payatu物联网十大漏洞2018"><span class="toc-number">2.</span> <span class="toc-text">Payatu物联网十大漏洞2018</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#P1-_硬编码敏感信息"><span class="toc-number">2.1.</span> <span class="toc-text">P1. 硬编码敏感信息</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#P2-_启用硬件调试端口"><span class="toc-number">2.2.</span> <span class="toc-text">P2. 启用硬件调试端口</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#P3-安全的固件"><span class="toc-number">2.3.</span> <span class="toc-text">P3.安全的固件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#P4-不安全的数据存储"><span class="toc-number">2.4.</span> <span class="toc-text">P4.不安全的数据存储</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#P5-认证不足"><span class="toc-number">2.5.</span> <span class="toc-text">P5.认证不足</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#P6-_不安全的通信"><span class="toc-number">2.6.</span> <span class="toc-text">P6. 不安全的通信</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#P7-不安全的配置"><span class="toc-number">2.7.</span> <span class="toc-text">P7.不安全的配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#P8-_数据输入过滤不足"><span class="toc-number">2.8.</span> <span class="toc-text">P8. 数据输入过滤不足</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#P9-_不安全的移动界面"><span class="toc-number">2.9.</span> <span class="toc-text">P9. 不安全的移动界面</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#P10。不安全的云/网络界面"><span class="toc-number">2.10.</span> <span class="toc-text">P10。不安全的云/网络界面</span></a></li></ol></li></ol>
+  </div>
+
+
+	
+    <div class="entry">
+      
+        <p>如果您还没有阅读我们的 IoT 安全博客系列的第 1 部分和第 2 部分，我建议您先阅读它们，除非您已经熟悉基础知识并且只想阅读 IoT 十大漏洞。</p>
+<p>说到十大漏洞，我们首先想到的是OWASP。为什么不呢，毕竟他们是定义 Web 和移动应用 10 大漏洞的先驱。我是 OWASP 的粉丝，这仅仅是因为 OWASP 社区多年来为定义应用程序安全问题、为行业提供免费教程和开源工具以减轻风险和漏洞所做的工作。您很有可能没有听说过 OWASP 或从他们的网站上阅读过内容，但是如果您没有，我强烈建议您访问他们的网站  <a href="https://www.owasp.org" target="_blank" rel="external">https://www.owasp.org</a></p>
+<p>OWASP 还启动了物联网安全计划，社区定义了物联网攻击面和物联网前 10 大漏洞，以及Web和移动设备10大漏洞。他们的方向是正确的，很快它就会成为学习物联网安全内容的绝佳场所。</p>
+<a id="more"></a>
+<p>OWASP网站物联网安全相关内容如下：</p>
+<ul>
+<li><ol>
+<li>OWASP Web Top 10项目： – <a href="https://www.owasp.org/index.php/Category:OWASP_Top_Ten_Project" target="_blank" rel="external">https://www.owasp.org/index.php/Category:OWASP_Top_Ten_Project</a></li>
+</ol>
+</li>
+<li><ol start="2">
+<li>OWASP Mobile Top 10项目：<a href="https://www.owasp.org/index.php/OWASP_Mobile_Security_Project" target="_blank" rel="external">https://www.owasp.org/index.php/OWASP_Mobile_Security_Project</a></li>
+</ol>
+</li>
+<li><ol start="3">
+<li>OWASP物联网项目：https : //<a href="http://www.owasp.org/index.php/OWASP_Internet_of_Things_Project" target="_blank" rel="external">www.owasp.org/index.php/OWASP_Internet_of_Things_Project</a></li>
+</ol>
+</li>
+<li>a. OWASP 物联网攻击面：https : //<a href="http://www.owasp.org/index.php/OWASP_Internet_of_Things_Project#tab=IoT_Attack_Surface_Areas" target="_blank" rel="external">www.owasp.org/index.php/OWASP_Internet_of_Things_Project#tab=IoT_Attack_Surface_Areas</a></li>
+<li>b. OWASP 物联网十大漏洞：https ://<a href="http://www.owasp.org/index.php/Top_10_IoT_Vulnerabilities_" target="_blank" rel="external">www.owasp.org/index.php/Top_10_IoT_Vulnerabilities_</a>(2014 )</li>
+</ul>
+<h2 id="OWASP物联网十大漏洞">OWASP物联网十大漏洞</h2><p>OWASP 最近定义了物联网中的前 10 个漏洞。它非常全面，我建议您阅读它们并了解物联网生态系统的威胁和问题是什么。作为作业，您可以将其映射到我们在上一篇博文中定义的攻击面。OWASP IoT 十大漏洞（根据<a href="https://www.owasp.org/index.php/Top_IoT_Vulnerabilities）：" target="_blank" rel="external">https://www.owasp.org/index.php/Top_IoT_Vulnerabilities）：</a></p>
+<ul>
+<li>I1.不安全的 Web 界面</li>
+<li>I2.身份验证/授权不足</li>
+<li>I3.不安全的网络服务</li>
+<li>I4.缺乏传输加密/完整性验证</li>
+<li>I5.隐私问题</li>
+<li>I6.不安全的云接口</li>
+<li>I7.不安全的移动接口</li>
+<li>I8.安全可配置性不足</li>
+<li>I9.不安全的软件/固件</li>
+<li>I10.物理安全性差</li>
+</ul>
+<p>我们不会深入研究前十名中每个项目的详细信息。可以在 OWASP 链接（上面给出）上找到详细信息。相反，我们将根据我们发现的问题或 Internet 上发布的问题的经验来优化前十名。</p>
+<h2 id="Payatu物联网十大漏洞2018">Payatu物联网十大漏洞2018</h2><p><em>免责声明：请注意，我们的目标不是试图超越 OWASP 前十名，这些人做得很好。向 OWASP 团队致敬！这是一项基于我们经验的练习，更多地关注值得关注的硬件和新的物联网技术。</em></p>
+<p>我们将继续维护和更新 Payatu IoT Top 10 漏洞。如果您有任何建议，请随时给我们发送电子邮件（info a..t payatu DOT com）。我们将 Web 和云合二为一，原因是并非所有传感器或物联网设备都具有 Web 界面，而云是生态系统的重要组成部分，从攻击面的角度来看，它主要是基于 Web API 的。此外，一些漏洞可能适用于多个组件，例如硬编码适用于设备和移动应用程序。<br>我们将定义对物联网安全市场和产品造成影响的 10 大物联网漏洞。我们将解释以下所有物联网漏洞，以了解基本的安全问题。</p>
+<p><div align="center"><br><img src="/img/20210921payatu_iot_top_ten.png" align><br></div></p>
+<ul>
+<li>P1.硬编码敏感信息</li>
+<li>P2.启用硬件调试端口</li>
+<li>P3.不安全的固件</li>
+<li>P4.不安全的数据存储</li>
+<li>P5.认证不足</li>
+<li>P6. 不安全的通信</li>
+<li>P7. 不安全的配置</li>
+<li>P8.数据输入过滤不足</li>
+<li>P9. 不安全的移动接口</li>
+<li>P10.不安全的云/网络界面</li>
+</ul>
+<h3 id="P1-_硬编码敏感信息">P1. 硬编码敏感信息</h3><p>由于开发人员在程序中对静态数据进行硬编码，因此在开发过程中对信息进行硬编码是常见的做法。但是，当敏感信息被硬编码时就会出现问题。很可能将敏感信息硬编码在固件以及移动应用程序或胖客户端中。问题是它对于产品的所有实例保持不变，可用于攻击部署在现场的任何产品实例。硬编码的敏感信息的一些示例：</p>
+<ul>
+<li><ol>
+<li>凭证信息 - 包含设备服务、云服务的凭据信息。</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>加密密钥 - 非对称加密私钥、对称加密密钥</li>
+</ol>
+</li>
+<li><ol start="3">
+<li>证书 - 客户端证书等</li>
+</ol>
+</li>
+<li><ol start="4">
+<li>API 密钥 - 私有/付费 API</li>
+</ol>
+</li>
+<li><ol start="5">
+<li>URLs – 开发、固件相关、用户相关、后端等。</li>
+</ol>
+</li>
+<li><ol start="6">
+<li>配置信息</li>
+</ol>
+</li>
+</ul>
+<h3 id="P2-_启用硬件调试端口">P2. 启用硬件调试端口</h3><p>设备硬件可能会打开调试端口以与系统交互。简单来说，它是 PCB 上的一组引脚，它们连接到微控制器/微处理器引脚，您可以使用客户端软件连接到这些引脚，通过硬件通信协议进行通信，允许您与系统进行交互。交互和特权级别取决于协议类型及其用法。例如，可能有 UART 接口的引脚输出，它可以让您访问高级软件/应用程序，即Shell、记录器输出等。您还可以使用以下协议与微控制器进行低级交互JTAG、SWD 等，这些使您可以直接控制微控制器，以便您可以测试和分析微控制器引脚值，读/写内部闪存，读/写寄存器值，调试操作系统/基础固件代码等等。如果设备上启用了这些端口/引脚，攻击者可以劫持设备和/或从设备中提取敏感信息，包括固件和数据。这些端口通常用于对生产设备中的问题进行故障排除/调试。</p>
+<h3 id="P3-安全的固件">P3.安全的固件</h3><p>这里的术语“不安全”是指固件的管理方式，而不是具体的固件代码漏洞本身。固件包含设备的业务逻辑，基本是厂商专有，即 IP（知识产权）。如果攻击者可以访问明文固件，他/她可以对其进行逆向工程以发现安全问题或克隆逻辑并最终克隆产品本身。漏洞取决于固件在设备上的存储和更新方式。如果不注意正确加密存储或动态（更新）中的固件，攻击者可以获取它。固件的一些问题是（但不限于）：</p>
+<ul>
+<li><ol>
+<li>固件以明文形式存储在内存芯片上</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>固件未签名和/或引导加载程序在加载前未验证固件的完整性</li>
+</ol>
+</li>
+<li><ol start="3">
+<li>固件更新以明文形式从云或移动设备传输到设备。</li>
+</ol>
+</li>
+<li><ol start="4">
+<li>固件更新通过明文通信协议传输，例如 http。</li>
+</ol>
+</li>
+<li><ol start="5">
+<li>固件为所有设备实例使用单个对称密钥加密。</li>
+</ol>
+</li>
+<li><ol start="6">
+<li>固件加密密钥随设备更新一起传输。</li>
+</ol>
+</li>
+</ul>
+<p>正确实施的基于 PKI 的系统可以确保最佳安全性，但是大多数低功耗传感器缺乏有效实施 PKI 的计算能力。此外，如果更新是安全的，但可以使用其他漏洞从设备中提取到加密密钥，那么上面所有工作都是徒劳的。</p>
+<h3 id="P4-不安全的数据存储">P4.不安全的数据存储</h3><p>这个问题在物联网终端设备和移动应用程序中都很突出。这在物联网终端设备中更为明显，可能是厂商认为逆向硬件很困难。敏感数据如果没有安全存储，攻击者可以提取和利用来破坏系统。除了安全问题，如果用户的个人数据没有得到适当的保护，它也可能对隐私产生影响。一些常见问题：</p>
+<ul>
+<li><ol>
+<li>敏感数据以明文形式存储在内存芯片上</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>敏感数据加密存储但加密密钥可访问</li>
+</ol>
+</li>
+<li><ol start="3">
+<li>自定义加密用于加密数据</li>
+</ol>
+</li>
+<li><ol start="4">
+<li>没有对修改数据的访问控制</li>
+</ol>
+</li>
+<li><ol start="5">
+<li>移动数据存储不安全应用程序（请参考P9. 不安全的移动界面）</li>
+</ol>
+</li>
+</ul>
+<h3 id="P5-认证不足">P5.认证不足</h3><p>设备可能使用不正确或没有身份验证机制，这允许攻击者完全绕过身份验证机制，如果它实施不当并向设备发送未经授权的命令。这对于关键物联网设备来说是一个严重的问题，因为网络上的任何人（TCP/IP 或无线电）都可以覆盖正常操作并控制设备。设备上发生的一些身份验证问题是（但不限于）：</p>
+<ul>
+<li><ol>
+<li>没有客户端身份验证</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>通过明文通信通道进行身份验证</li>
+</ol>
+</li>
+<li><ol start="3">
+<li>用于凭据的加密不正确</li>
+</ol>
+</li>
+<li><ol start="4">
+<li>可预测凭据</li>
+</ol>
+</li>
+<li><ol start="5">
+<li>默认凭据</li>
+</ol>
+</li>
+</ul>
+<h3 id="P6-_不安全的通信">P6. 不安全的通信</h3><p>如果攻击者能够从通信中嗅探、分析、重放和提取敏感信息，则物联网生态系统内的通信可能不安全。漏洞可能是由于使用了不安全的通信协议或协议本身的缺陷。为了简单起见，供应商可能会选择使用不安全的通信方法。由于物联网是一项不断发展的新技术，因此许多物联网协议没有定义适当的安全机制或供应商实施默认的不安全模式。问题包括（但不限于）：</p>
+<ul>
+<li><ol>
+<li>共享敏感信息时未加密通信</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>使用自定义加密</li>
+</ol>
+</li>
+<li><ol start="3">
+<li>使用自定义/专有协议</li>
+</ol>
+</li>
+<li><ol start="4">
+<li>使用不当加密</li>
+</ol>
+</li>
+<li><ol start="5">
+<li>使用协议默认（弱）安全模式</li>
+</ol>
+</li>
+<li><ol start="6">
+<li>使用有已知问题的协议</li>
+</ol>
+</li>
+<li><ol start="7">
+<li>重放问题</li>
+</ol>
+</li>
+</ul>
+<h3 id="P7-不安全的配置">P7.不安全的配置</h3><p>当设备配置不安全或设备不允许用户修改配置参数时，会出现此问题。此问题也发生在移动应用程序和云配置中。为了保持简单或快速交付产品，开发人员可能会选择使用简单但不安全的配置或禁止更改。一些明显的问题是（但不限于）：</p>
+<ul>
+<li><ol>
+<li>使用默认的不安全配置</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>禁止集成商或用户修改配置</li>
+</ol>
+</li>
+<li><ol start="3">
+<li>发布产品中不安全的低级协议和硬件配置</li>
+</ol>
+</li>
+<li><ol start="4">
+<li>不安全的加密模式和设置</li>
+</ol>
+</li>
+<li><ol start="5">
+<li>共享或存储的用户个人数据的可见性很低或没有可见性</li>
+</ol>
+</li>
+</ul>
+<h3 id="P8-_数据输入过滤不足">P8. 数据输入过滤不足</h3><p>随着物联网生态系统中实施更多物联网协议，这将成为未来的一个主要问题。例如，来自设备的遥测数据可能受到云或 IoT 网关的信任，从而导致已知和未知的安全问题，例如远程代码执行、基于 Web 的攻击（如 SQL 注入）、跨站点脚本等等。我们希望在未来优先考虑这一点。虽然成熟的实现确实过滤了传统技术的数据，但新的物联网协议实现还有待提高。</p>
+<h3 id="P9-_不安全的移动界面">P9. 不安全的移动界面</h3><p>由于从安全角度来看移动技术相对于传感器技术已经成熟，因此我们将所有移动安全问题归为一类。这并不意味着它们的优先级较低，因为您可以看到一些高优先级漏洞也适用于移动设备。然而，由于技术的成熟，它已经拥有大量关于安全问题和安全实现的信息。作为 OWASP 的粉丝，我们建议从 OWASP Mobile Top 10 漏洞开始，这些漏洞将解决大多数安全问题。</p>
+<h3 id="P10。不安全的云/网络界面">P10。不安全的云/网络界面</h3><p>正如“P9. 不安全的移动接口”，同样适用于云和网络。如果设备具有 Web 界面，您仍然可以通过 Web 攻击拥有该设备，但是这些安全问题已经得到很好的定义和理解。同样，我们建议从 OWASP Web Top 10 漏洞开始，以了解和缓解 Web 安全问题，以及来自 Cloud security Alliance 的云安全文档。请注意，这不是唯一可用的知识库，您应该查看互联网上可用的工具和研究论文。值得注意的是，云构成了物联网生态系统的数据存储和通信主干。如果云被攻陷，可能会导致整个物联网生态系统受到危害，包括世界各地和宇宙中所有部署的产品。</p>
+<p>这就是这篇博文的全部内容。请密切关注本系列的下一篇博客。如果您有任何建议，请随时与我们联系。</p>
+<p><em>原文链接：<a href="https://payatu.com/iot-security-part-3-101-iot-top-ten-vulnerabilities" target="_blank" rel="external">https://payatu.com/iot-security-part-3-101-iot-top-ten-vulnerabilities</a></em></p>
+
+      
+    </div>
+    <footer>
+      
+
+        
+          <div class="alignleft post-nav">
+            <em>上一篇: </em><a href="/2021/09/22/IOT/iot-security-part-4-bluetooth-low-energy-101/">物联网安全101-4.低功耗蓝牙BLE（翻译）</a>
+          </div>
+        
+        
+          <div class="alignright post-nav">
+            <em>下一篇: </em><a href="/2021/09/21/IOT/iot-security-part-2-101-iot-attack-surface/">物联网安全101-2.物联网攻击面（翻译）</a>
+          </div>
+          <div class="clearfix"></div>
+        
+
+        
+          <div class="copyright">
+            
+              <span class="claim">转载请注明youngroe.com</span>
+            
+            
+              <span class="from-link">
+                <em>本文链接地址:</em>
+                <a href="/2021/09/22/IOT/iot-security-part-3-101-iot-top-ten-vulnerabilities/">
+                  http://www.youngroe.com/2021/09/22/IOT/iot-security-part-3-101-iot-top-ten-vulnerabilities/
+                </a>
+              </span>
+            
+          </div>
+        
+        
+  
+  <div class="categories">
+    <a href="/categories/IOT/">IOT</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/IOT安全/">IOT安全</a>
+  </div>
+
+        
+          <! -- 添加捐赠图标 -->
+<div class ="post-donate">
+    <div id="donate_board" class="donate_bar center">
+        <a id="btn_donate" class="btn_donate" href="javascript:;" title="打赏"></a>
+        <span class="donate_txt">
+           ↑<br>
+           欣赏此文？求鼓励，求支持！
+        </span>
+        <br>
+      </div>  
+    <div id="donate_guide" class="donate_bar center hidden" >
+        <!-- 方式一： 
+            ![](/img/Alipay.jpg)
+            ![](/img/WeChatpay.jpg)
+        -->
+        <!-- 方式二；
+            step1：在_config.yml中添加配置
+                Alipay: /img/Alipay.jpg
+                WeChatpay: /img/WeChatpay.jpg
+            step2：此处两张图片的路径分别设置为如下
+                <img src="undefined"
+                <img src="undefined"
+        -->
+        <!-- 支付宝打赏图案 -->
+        <img src="/img/Alipay.png" alt="支付宝打赏">
+        <!-- 微信打赏图案 -->
+        <img src="/img/WeChatpay.png" alt="微信打赏">
+    </div>
+    <script type="text/javascript">
+        document.getElementById('btn_donate').onclick = function(){
+            $('#donate_board').addClass('hidden');
+            $('#donate_guide').removeClass('hidden');
+        }
+    </script>
+</div>
+<! -- 添加捐赠图标 -->
+        
+        <div id="gitalk-container"></div>
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+<script src="https://cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.js"></script>
+<script type="text/javascript">
+    var gitalk = new Gitalk({
+  clientID: '503c39aa3fb2b8c1b734',
+  clientSecret: '65d784ff7a95a9dbf4a4208c9e32166ca29654f2',
+  repo: 'geemion.github.io',
+  owner: 'geemion',
+  admin: 'geemion',
+  pagerDirection:'first',
+  id: md5(window.location.pathname)
+})
+
+gitalk.render('gitalk-container')
+</script>
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+  <div id="container"></div>
+</span>
+</article>
+
+
+<section id="comment">
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+<div class="widget tag">
+  <h3 class="title">分类</h3>
+  <ul class="entry">
+  
+    <li><a href="/categories/Cybersecurity/">Cybersecurity</a><small>6</small></li>
+  
+    <li><a href="/categories/Debug/">Debug</a><small>7</small></li>
+  
+    <li><a href="/categories/IOT/">IOT</a><small>6</small></li>
+  
+    <li><a href="/categories/Kernel/">Kernel</a><small>4</small></li>
+  
+    <li><a href="/categories/Learning/">Learning</a><small>5</small></li>
+  
+    <li><a href="/categories/Life/">Life</a><small>5</small></li>
+  
+    <li><a href="/categories/Others/">Others</a><small>1</small></li>
+  
+    <li><a href="/categories/Tools/">Tools</a><small>5</small></li>
+  
+    <li><a href="/categories/Vulnerabilities/">Vulnerabilities</a><small>0</small></li>
+  
+    <li><a href="/categories/Windows/">Windows</a><small>13</small></li>
+  
+    <li><a href="/categories/life/">life</a><small>0</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2021/10/20/IOT/using-rasberrypi-as-poor-mans-hardware-hacking-tool/">树莓派-穷人的硬件黑客工具（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2021/09/22/IOT/iot-security-part-4-bluetooth-low-energy-101/">物联网安全101-4.低功耗蓝牙BLE（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2021/09/22/IOT/iot-security-part-3-101-iot-top-ten-vulnerabilities/">物联网安全101-3.物联网10大安全漏洞（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2021/09/21/IOT/iot-security-part-2-101-iot-attack-surface/">物联网安全101-2.物联网攻击面（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2021/09/21/IOT/iot-security-part-1-101-iot-introduction-architecture/">物联网安全101-1.物联网介绍及其架构（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2021/08/20/Cybersecurity/guide-linux-privilege-escalation/">Linux权限提升指南（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2021/03/20/IOT/powerpc_binary_blob_firmware_reverse/">一次嵌入式固件逆向实践</a>
+      </li>
+    
+      <li>
+        <a href="/2020/10/02/Cybersecurity/art-of-anti-detection-4-art-of-anti-detection-4-self-defense/">反检测的艺术4-自保护（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2020/09/10/Cybersecurity/art-of-anti-detection-3-art-of-anti-detection-3-shellcode-alchemy/">反检测的艺术3-shellcode的魔力 （翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2020/09/04/Cybersecurity/art-of-anti-detection-2-pe-backdoor-manufacturing/">反检测的艺术2-如何制作PE文件后门（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2020/09/03/Cybersecurity/art-of-anti-detection-1-introduction-to-av-detection-techniques/">反检测的艺术1-反病毒软件及检测技术概述（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2020/08/02/Life/dns_hijacking/">记录一次被DNS劫持及解决方案(非改hosts方式)</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget tagcloud">
+  <h3 class="title">标签云</h3>
+  <div class="entry">
+    <a href="/tags/Boost/" style="font-size: 10px;">Boost</a> <a href="/tags/DDoS/" style="font-size: 10px;">DDoS</a> <a href="/tags/DNS-over-HTTPS/" style="font-size: 10px;">DNS-over-HTTPS</a> <a href="/tags/DNS劫持/" style="font-size: 10px;">DNS劫持</a> <a href="/tags/Delphi/" style="font-size: 10px;">Delphi</a> <a href="/tags/Dll劫持/" style="font-size: 10px;">Dll劫持</a> <a href="/tags/GetVersionEx/" style="font-size: 10px;">GetVersionEx</a> <a href="/tags/Http/" style="font-size: 10px;">Http</a> <a href="/tags/IDA-Pro/" style="font-size: 12px;">IDA Pro</a> <a href="/tags/IOT安全/" style="font-size: 18px;">IOT安全</a> <a href="/tags/Linux/" style="font-size: 14px;">Linux</a> <a href="/tags/MSDN/" style="font-size: 12px;">MSDN</a> <a href="/tags/Malware/" style="font-size: 12px;">Malware</a> <a href="/tags/MiniDumpWriteDump/" style="font-size: 10px;">MiniDumpWriteDump</a> <a href="/tags/PEB/" style="font-size: 10px;">PEB</a> <a href="/tags/Procmon/" style="font-size: 10px;">Procmon</a> <a href="/tags/Runtime-Error/" style="font-size: 10px;">Runtime Error</a> <a href="/tags/SEH/" style="font-size: 10px;">SEH</a> <a href="/tags/SysinternalsSuite/" style="font-size: 10px;">SysinternalsSuite</a> <a href="/tags/Tips/" style="font-size: 10px;">Tips</a> <a href="/tags/UAC/" style="font-size: 10px;">UAC</a> <a href="/tags/UAF漏洞/" style="font-size: 10px;">UAF漏洞</a> <a href="/tags/VC/" style="font-size: 10px;">VC</a> <a href="/tags/Visual-Studio/" style="font-size: 12px;">Visual Studio</a> <a href="/tags/Windbg/" style="font-size: 10px;">Windbg</a> <a href="/tags/Windows/" style="font-size: 20px;">Windows</a> <a href="/tags/getaddrinfo/" style="font-size: 10px;">getaddrinfo</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/libeay32/" style="font-size: 10px;">libeay32</a> <a href="/tags/x64/" style="font-size: 10px;">x64</a> <a href="/tags/内核/" style="font-size: 12px;">内核</a> <a href="/tags/内核结构/" style="font-size: 14px;">内核结构</a> <a href="/tags/反病毒/" style="font-size: 16px;">反病毒</a> <a href="/tags/安全机制/" style="font-size: 10px;">安全机制</a> <a href="/tags/异常处理/" style="font-size: 10px;">异常处理</a> <a href="/tags/提权/" style="font-size: 12px;">提权</a> <a href="/tags/服务/" style="font-size: 10px;">服务</a> <a href="/tags/权限/" style="font-size: 12px;">权限</a> <a href="/tags/栈溢出漏洞/" style="font-size: 10px;">栈溢出漏洞</a> <a href="/tags/测试/" style="font-size: 10px;">测试</a> <a href="/tags/漏洞调试/" style="font-size: 12px;">漏洞调试</a> <a href="/tags/生活/" style="font-size: 14px;">生活</a> <a href="/tags/脱壳/" style="font-size: 10px;">脱壳</a> <a href="/tags/西安/" style="font-size: 10px;">西安</a> <a href="/tags/计划/" style="font-size: 10px;">计划</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a> <a href="/tags/调试/" style="font-size: 14px;">调试</a> <a href="/tags/转换/" style="font-size: 10px;">转换</a> <a href="/tags/进程/" style="font-size: 10px;">进程</a> <a href="/tags/逆向/" style="font-size: 10px;">逆向</a> <a href="/tags/重庆/" style="font-size: 10px;">重庆</a> <a href="/tags/驱动/" style="font-size: 14px;">驱动</a>
+  </div>
+</div>
+
+
+  <div class="widget tag">
+<h3 class="title">Links</h3>
+<ul class="entry">
+<li><a href="http://blog.ourren.com/" title="Ourren">Ourren</a></li>
+<li><a href="http://www.hyjal.net/" title="Hyjal">Hyjal</a></li>
+<li><a href="http://www.jianshu.com/users/fa15f4e416ae/latest_articles" title="Daemonceltics">Daemonceltics</a></li>
+<li><a href="http://papap.info/" title="isee">isee</a></li>
+</ul>
+</div>
+
+  <script type="text/javascript" id="clustrmaps" src="//cdn.clustrmaps.com/map_v2.js?u=putG&d=yoFnN6V-ovhL-H4e9_69LvkTiX4uX7rEYJ15yL3G1Wg"></script>
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <div id="go-pg-top"><i class="icon-arrow-up"></i></div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2021 Lyon
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript" charset="utf-8" src="/js/page.js"></script>
+
+</body>
+
+</html>
