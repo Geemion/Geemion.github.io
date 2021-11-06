@@ -157,6 +157,149 @@ var _hmt = _hmt || [];
   <div class="post-content">
     <header>
       
+        <time datetime="2021-09-21T11:50:22.000Z"><a href="/2021/09/21/IOT/iot-security-part-2-101-iot-attack-surface/">2021-09-21</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2021/09/21/IOT/iot-security-part-2-101-iot-attack-surface/">物联网安全101-2.物联网攻击面（翻译）</a></h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+
+	
+    <div class="entry">
+      
+        <h2 id="物联网攻击面">物联网攻击面</h2><p>欢迎！我希望您已经阅读了之前的博客文章<a href="/2021/09/21/IOT/iot-security-part-1-101-iot-introduction-architecture/">物联网安全 - 第 1 部分</a>，如果没有，希望你阅读它以了解物联网和物联网架构的含义。现在我们将开始进入安全领域，并尝试定义一种方法来理解和创建结构化流程来执行物联网的安全研究或渗透测试。<br>如果我们查看上一篇文章中定义的架构，现在我们可以轻松的对物联网进行拆分并尝试为每个组件单独定义攻击面，然后将它们组合起来以创建整个物联网生态系统攻击面。我称其为 IoT 生态系统而不是 IoT 产品，因为它确实是一个由不同组件相互通信并解决特定现实世界问题的生态系统。下面将继续定义物联网生态系统的攻击面，并详细讨论每个组件的攻击面。按组件的攻击面可以将物联网组件攻击面分为三个或四个（如果我们将通信作为攻击面），主要攻击面如下：</p>
+<ul>
+<li><ol>
+<li>移动应用</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>云</li>
+</ol>
+</li>
+<li><ol start="3">
+<li>通信</li>
+</ol>
+</li>
+<li><ol start="4">
+<li>物联网终端设备<div align="center"><br><img src="/img/20210921device_attack_surface-768x456.png" align=""/><br></div>
+
+</li>
+</ol>
+</li>
+</ul>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/2021/09/21/IOT/iot-security-part-2-101-iot-attack-surface/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+  <div id="container"></div>
+</span>
+</article>
+
+
+
+
+  <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <time datetime="2021-09-21T11:39:22.000Z"><a href="/2021/09/21/IOT/iot-security-part-1-101-iot-introduction-architecture/">2021-09-21</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2021/09/21/IOT/iot-security-part-1-101-iot-introduction-architecture/">物联网安全101-1.物联网介绍及其架构（翻译）</a></h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+
+	
+    <div class="entry">
+      
+        <p>最近，我收到了一些对物联网安全感兴趣的人的问题，询问从哪里开始物联网安全研究，因此，我决定做一组有关物联网安全的文章，以帮助想要进入物联网安全、物联网渗透测试和漏洞利用领域的研究人员。<br>对于安全研究人员而言，每项新技术和复杂技术的问题都可能是不知道从哪里开始以及如何、从哪里进行攻击。这是一个非常常见的问题，并且有一个通用的解决方案，即对技术进行分解为多个部分并单独学习每个部分。这个过程可以让你掌握了每个部分的知识，并引导你专注于其中的最有趣的部分。如果你都读到这里，我会假设你会坚持继续学习。所以，不要拖延，让我们开始吧:)。</p>
+<p><strong>注意：</strong></p>
+<ul>
+<li><ol>
+<li>本系列中文章中的知识的是通用的，可以应用于任何领域的物联网产品的安全研究，无论其用途如何，包括家庭自动化、工业控制系统、医疗保健、交通等。</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>我将使用这些词除非在解释中特别提及，否则设备、硬件和传感器可互换地表示相同的事物。</li>
+</ol>
+</li>
+<li><ol start="3">
+<li>我提到物联网生态系统是指物联网产品或解决方案，因为物联网技术的性质包含很多不同的技术。</li>
+</ol>
+</li>
+</ul>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/2021/09/21/IOT/iot-security-part-1-101-iot-introduction-architecture/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+  <div id="container"></div>
+</span>
+</article>
+
+
+
+
+  <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
         <time datetime="2021-08-20T11:39:22.000Z"><a href="/2021/08/20/Cybersecurity/guide-linux-privilege-escalation/">2021-08-20</a></time>
       
       
@@ -629,121 +772,13 @@ var _hmt = _hmt || [];
 
 
 
-  <article class="post">
-  
-    <div class="gallery">
-  <div class="photoset">
-    
-      <img src="">
-    
-  </div>
-  <div class="control">
-    <div class="prev"></div>
-    <div class="next"></div>
-  </div>
-</div>
-  
-  <div class="post-content">
-    <header>
-      
-        <time datetime="2019-05-06T04:45:15.000Z"><a href="/2019/05/06/Kernel/windows-driver-testing-basics/">2019-05-06</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2019/05/06/Kernel/windows-driver-testing-basics/">Windows内核重拾：Windows驱动测试基础：工具、功能和示例（翻译/转载）</a></h1>
-  
-
-    </header>
-	
-<!-- Table of Contents -->
-
-
-	
-    <div class="entry">
-      
-        <h2 id="0x00_前言">0x00 前言</h2><p>本文旨在帮助你测试Windows驱动程序。因为有很多种不同的驱动程序，因此我们将介绍关于每种类型驱动程序的细节及各种驱动程序测试过程的不同点。我们也将涉及到一些驱动测试辅助工具和另一个重要的主题驱动数字签名。<br>
-      
-    </div>
-    <footer>
-      
-        
-          <div class="alignleft">
-            <a href="/2019/05/06/Kernel/windows-driver-testing-basics/#more" class="more-link">Read More</a>
-          </div>
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-  <div id="container"></div>
-</span>
-</article>
-
-
-
-
-  <article class="post">
-  
-    <div class="gallery">
-  <div class="photoset">
-    
-      <img src="">
-    
-  </div>
-  <div class="control">
-    <div class="prev"></div>
-    <div class="next"></div>
-  </div>
-</div>
-  
-  <div class="post-content">
-    <header>
-      
-        <time datetime="2019-04-06T04:45:15.000Z"><a href="/2019/04/06/Windows/how-to-reverse-engineer-software-windows-in-a-right-way/">2019-04-06</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2019/04/06/Windows/how-to-reverse-engineer-software-windows-in-a-right-way/">如何正确的对Windows软件进行逆向工程（翻译/转载）</a></h1>
-  
-
-    </header>
-	
-<!-- Table of Contents -->
-
-
-	
-    <div class="entry">
-      
-        <h2 id="0x00_前言">0x00 前言</h2><p>你有没有想过要拆开某个机械装置了解它的工作原理呢？嗯，谁没有呢。这种欲望也是是逆向工程的主导力量，逆向对于分析产品安全性、在不运行可疑的.exe文件的情况下查明其用途、恢复丢失的文档、开发基于旧软件的新解决方案等非常有用。<br>
-      
-    </div>
-    <footer>
-      
-        
-          <div class="alignleft">
-            <a href="/2019/04/06/Windows/how-to-reverse-engineer-software-windows-in-a-right-way/#more" class="more-link">Read More</a>
-          </div>
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-  <div id="container"></div>
-</span>
-</article>
-
-
-
-
 
 <ul class="page-direction" id="page-direction">
     <li><a class="page-prev icon-chevron-sign-left" href="javascript:;" title="上一页"></a></li>
     <li><a class="page-next icon-chevron-sign-right" href="javascript:;" title="下一页"></a></li>
 </ul>
 
-    <nav id="page-list" class="page-list"><span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/2/">Next</a></nav>
+    <nav id="page-list" class="page-list"><span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" href="/page/2/">Next</a></nav>
 
 <nav id="pagination">
   
@@ -762,7 +797,7 @@ var _hmt = _hmt || [];
   
     <li><a href="/categories/Debug/">Debug</a><small>7</small></li>
   
-    <li><a href="/categories/IOT/">IOT</a><small>2</small></li>
+    <li><a href="/categories/IOT/">IOT</a><small>4</small></li>
   
     <li><a href="/categories/Kernel/">Kernel</a><small>4</small></li>
   
@@ -791,6 +826,14 @@ var _hmt = _hmt || [];
     
       <li>
         <a href="/2021/10/20/IOT/using-rasberrypi-as-poor-mans-hardware-hacking-tool/">树莓派-穷人的硬件黑客工具（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2021/09/21/IOT/iot-security-part-2-101-iot-attack-surface/">物联网安全101-2.物联网攻击面（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2021/09/21/IOT/iot-security-part-1-101-iot-introduction-architecture/">物联网安全101-1.物联网介绍及其架构（翻译）</a>
       </li>
     
       <li>
@@ -829,14 +872,6 @@ var _hmt = _hmt || [];
         <a href="/2019/06/25/Kernel/kernel_enum_wfp_callout_function/">Windows内核重拾：如何枚举系统中Windows Filtering Platform (WFP)驱动中的callout函数</a>
       </li>
     
-      <li>
-        <a href="/2019/05/06/Kernel/windows-driver-testing-basics/">Windows内核重拾：Windows驱动测试基础：工具、功能和示例（翻译/转载）</a>
-      </li>
-    
-      <li>
-        <a href="/2019/04/06/Windows/how-to-reverse-engineer-software-windows-in-a-right-way/">如何正确的对Windows软件进行逆向工程（翻译/转载）</a>
-      </li>
-    
   </ul>
 </div>
 
@@ -845,7 +880,7 @@ var _hmt = _hmt || [];
 <div class="widget tagcloud">
   <h3 class="title">标签云</h3>
   <div class="entry">
-    <a href="/tags/Boost/" style="font-size: 10px;">Boost</a> <a href="/tags/DDoS/" style="font-size: 10px;">DDoS</a> <a href="/tags/DNS-over-HTTPS/" style="font-size: 10px;">DNS-over-HTTPS</a> <a href="/tags/DNS劫持/" style="font-size: 10px;">DNS劫持</a> <a href="/tags/Delphi/" style="font-size: 10px;">Delphi</a> <a href="/tags/Dll劫持/" style="font-size: 10px;">Dll劫持</a> <a href="/tags/GetVersionEx/" style="font-size: 10px;">GetVersionEx</a> <a href="/tags/Http/" style="font-size: 10px;">Http</a> <a href="/tags/IDA-Pro/" style="font-size: 12.5px;">IDA Pro</a> <a href="/tags/IOT安全/" style="font-size: 12.5px;">IOT安全</a> <a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/MSDN/" style="font-size: 12.5px;">MSDN</a> <a href="/tags/Malware/" style="font-size: 12.5px;">Malware</a> <a href="/tags/MiniDumpWriteDump/" style="font-size: 10px;">MiniDumpWriteDump</a> <a href="/tags/PEB/" style="font-size: 10px;">PEB</a> <a href="/tags/Procmon/" style="font-size: 10px;">Procmon</a> <a href="/tags/Runtime-Error/" style="font-size: 10px;">Runtime Error</a> <a href="/tags/SEH/" style="font-size: 10px;">SEH</a> <a href="/tags/SysinternalsSuite/" style="font-size: 10px;">SysinternalsSuite</a> <a href="/tags/Tips/" style="font-size: 10px;">Tips</a> <a href="/tags/UAC/" style="font-size: 10px;">UAC</a> <a href="/tags/UAF漏洞/" style="font-size: 10px;">UAF漏洞</a> <a href="/tags/VC/" style="font-size: 10px;">VC</a> <a href="/tags/Visual-Studio/" style="font-size: 12.5px;">Visual Studio</a> <a href="/tags/Windbg/" style="font-size: 10px;">Windbg</a> <a href="/tags/Windows/" style="font-size: 20px;">Windows</a> <a href="/tags/getaddrinfo/" style="font-size: 10px;">getaddrinfo</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/libeay32/" style="font-size: 10px;">libeay32</a> <a href="/tags/x64/" style="font-size: 10px;">x64</a> <a href="/tags/内核/" style="font-size: 12.5px;">内核</a> <a href="/tags/内核结构/" style="font-size: 15px;">内核结构</a> <a href="/tags/反病毒/" style="font-size: 17.5px;">反病毒</a> <a href="/tags/安全机制/" style="font-size: 10px;">安全机制</a> <a href="/tags/异常处理/" style="font-size: 10px;">异常处理</a> <a href="/tags/提权/" style="font-size: 12.5px;">提权</a> <a href="/tags/服务/" style="font-size: 10px;">服务</a> <a href="/tags/权限/" style="font-size: 12.5px;">权限</a> <a href="/tags/栈溢出漏洞/" style="font-size: 10px;">栈溢出漏洞</a> <a href="/tags/测试/" style="font-size: 10px;">测试</a> <a href="/tags/漏洞调试/" style="font-size: 12.5px;">漏洞调试</a> <a href="/tags/生活/" style="font-size: 15px;">生活</a> <a href="/tags/脱壳/" style="font-size: 10px;">脱壳</a> <a href="/tags/西安/" style="font-size: 10px;">西安</a> <a href="/tags/计划/" style="font-size: 10px;">计划</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a> <a href="/tags/调试/" style="font-size: 15px;">调试</a> <a href="/tags/转换/" style="font-size: 10px;">转换</a> <a href="/tags/进程/" style="font-size: 10px;">进程</a> <a href="/tags/逆向/" style="font-size: 10px;">逆向</a> <a href="/tags/重庆/" style="font-size: 10px;">重庆</a> <a href="/tags/驱动/" style="font-size: 15px;">驱动</a>
+    <a href="/tags/Boost/" style="font-size: 10px;">Boost</a> <a href="/tags/DDoS/" style="font-size: 10px;">DDoS</a> <a href="/tags/DNS-over-HTTPS/" style="font-size: 10px;">DNS-over-HTTPS</a> <a href="/tags/DNS劫持/" style="font-size: 10px;">DNS劫持</a> <a href="/tags/Delphi/" style="font-size: 10px;">Delphi</a> <a href="/tags/Dll劫持/" style="font-size: 10px;">Dll劫持</a> <a href="/tags/GetVersionEx/" style="font-size: 10px;">GetVersionEx</a> <a href="/tags/Http/" style="font-size: 10px;">Http</a> <a href="/tags/IDA-Pro/" style="font-size: 12.5px;">IDA Pro</a> <a href="/tags/IOT安全/" style="font-size: 17.5px;">IOT安全</a> <a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/MSDN/" style="font-size: 12.5px;">MSDN</a> <a href="/tags/Malware/" style="font-size: 12.5px;">Malware</a> <a href="/tags/MiniDumpWriteDump/" style="font-size: 10px;">MiniDumpWriteDump</a> <a href="/tags/PEB/" style="font-size: 10px;">PEB</a> <a href="/tags/Procmon/" style="font-size: 10px;">Procmon</a> <a href="/tags/Runtime-Error/" style="font-size: 10px;">Runtime Error</a> <a href="/tags/SEH/" style="font-size: 10px;">SEH</a> <a href="/tags/SysinternalsSuite/" style="font-size: 10px;">SysinternalsSuite</a> <a href="/tags/Tips/" style="font-size: 10px;">Tips</a> <a href="/tags/UAC/" style="font-size: 10px;">UAC</a> <a href="/tags/UAF漏洞/" style="font-size: 10px;">UAF漏洞</a> <a href="/tags/VC/" style="font-size: 10px;">VC</a> <a href="/tags/Visual-Studio/" style="font-size: 12.5px;">Visual Studio</a> <a href="/tags/Windbg/" style="font-size: 10px;">Windbg</a> <a href="/tags/Windows/" style="font-size: 20px;">Windows</a> <a href="/tags/getaddrinfo/" style="font-size: 10px;">getaddrinfo</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/libeay32/" style="font-size: 10px;">libeay32</a> <a href="/tags/x64/" style="font-size: 10px;">x64</a> <a href="/tags/内核/" style="font-size: 12.5px;">内核</a> <a href="/tags/内核结构/" style="font-size: 15px;">内核结构</a> <a href="/tags/反病毒/" style="font-size: 17.5px;">反病毒</a> <a href="/tags/安全机制/" style="font-size: 10px;">安全机制</a> <a href="/tags/异常处理/" style="font-size: 10px;">异常处理</a> <a href="/tags/提权/" style="font-size: 12.5px;">提权</a> <a href="/tags/服务/" style="font-size: 10px;">服务</a> <a href="/tags/权限/" style="font-size: 12.5px;">权限</a> <a href="/tags/栈溢出漏洞/" style="font-size: 10px;">栈溢出漏洞</a> <a href="/tags/测试/" style="font-size: 10px;">测试</a> <a href="/tags/漏洞调试/" style="font-size: 12.5px;">漏洞调试</a> <a href="/tags/生活/" style="font-size: 15px;">生活</a> <a href="/tags/脱壳/" style="font-size: 10px;">脱壳</a> <a href="/tags/西安/" style="font-size: 10px;">西安</a> <a href="/tags/计划/" style="font-size: 10px;">计划</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a> <a href="/tags/调试/" style="font-size: 15px;">调试</a> <a href="/tags/转换/" style="font-size: 10px;">转换</a> <a href="/tags/进程/" style="font-size: 10px;">进程</a> <a href="/tags/逆向/" style="font-size: 10px;">逆向</a> <a href="/tags/重庆/" style="font-size: 10px;">重庆</a> <a href="/tags/驱动/" style="font-size: 15px;">驱动</a>
   </div>
 </div>
 

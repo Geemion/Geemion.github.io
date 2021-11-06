@@ -1,0 +1,771 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>物联网安全101-2.物联网攻击面（翻译） | Lyon&#39;s blog</title>
+  <meta name="author" content="Lyon">
+  
+  <meta name="description" content="Walk steps step by step">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="物联网安全101-2.物联网攻击面（翻译）"/>
+  <meta property="og:site_name" content="Lyon&#39;s blog"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  #<link href="/favicon.ico" rel="icon">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="alternate" href="/atom.xml" title="Lyon&#39;s blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  <script src="/js/jquery.min.js"></script>
+  <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?1d807422614f63c8de98cdc3b546860c";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+  <script>
+    (function(){
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        }
+        else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+    
+  <script data-ad-client="ca-pub-6317609007693835" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-66542057-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-66542057-1');
+</script>
+
+</head>
+
+
+<body>
+  <!--[if lte IE 8]> <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'> <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0027_Simplified Chinese.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." style='margin-left:auto;margin-right:auto;display: block;'/></a></div> <![endif]-->
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">Lyon&#39;s blog</a></h1>
+  <h2><a href="/">I hear and I forget.I see and I remember.I do and I understand.</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">首页</a></li>
+    
+      <li><a href="/archives">归档</a></li>
+    
+      <li><a href="/about">关于</a></li>
+    
+	<li> <a href="/atom.xml">RSS</a> </li>
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <time datetime="2021-09-21T11:50:22.000Z"><a href="/2021/09/21/IOT/iot-security-part-2-101-iot-attack-surface/">2021-09-21</a></time>
+      
+      
+  
+    <h1 class="title">物联网安全101-2.物联网攻击面（翻译）</h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+  <div id="toc" class="toc-article">
+  <strong class="toc-title">文章目录</strong>
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#物联网攻击面"><span class="toc-number">1.</span> <span class="toc-text">物联网攻击面</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#移动应用"><span class="toc-number">1.1.</span> <span class="toc-text">移动应用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#云"><span class="toc-number">1.2.</span> <span class="toc-text">云</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#终端设备"><span class="toc-number">1.3.</span> <span class="toc-text">终端设备</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#通信"><span class="toc-number">1.4.</span> <span class="toc-text">通信</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-_Web"><span class="toc-number">1.4.1.</span> <span class="toc-text">1. Web</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-_其他"><span class="toc-number">1.4.2.</span> <span class="toc-text">2. 其他</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#物联网设备攻击面"><span class="toc-number">2.</span> <span class="toc-text">物联网设备攻击面</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-_数据存储"><span class="toc-number">2.1.</span> <span class="toc-text">1. 数据存储</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-1_SD_卡"><span class="toc-number">2.1.1.</span> <span class="toc-text">1.1 SD 卡</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-2_USB"><span class="toc-number">2.1.2.</span> <span class="toc-text">1.2 USB</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-3_非易失性存储器"><span class="toc-number">2.1.3.</span> <span class="toc-text">1.3 非易失性存储器</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-4_易失性内存"><span class="toc-number">2.1.4.</span> <span class="toc-text">1.4 易失性内存</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-5_微控制器内部存储器"><span class="toc-number">2.1.5.</span> <span class="toc-text">1.5 微控制器内部存储器</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-_硬件通讯接口"><span class="toc-number">2.2.</span> <span class="toc-text">2. 硬件通讯接口</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1_UART串口"><span class="toc-number">2.2.1.</span> <span class="toc-text">2.1 UART串口</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2_微控制器调试口"><span class="toc-number">2.2.2.</span> <span class="toc-text">2.2 微控制器调试口</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-3_I2C"><span class="toc-number">2.2.3.</span> <span class="toc-text">2.3 I2C</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-4_SPI"><span class="toc-number">2.2.4.</span> <span class="toc-text">2.4 SPI</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-5_USB"><span class="toc-number">2.2.5.</span> <span class="toc-text">2.5 USB</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-6_传感器"><span class="toc-number">2.2.6.</span> <span class="toc-text">2.6 传感器</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-7_人机界面"><span class="toc-number">2.2.7.</span> <span class="toc-text">2.7 人机界面</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-8_其他硬件接口"><span class="toc-number">2.2.8.</span> <span class="toc-text">2.8 其他硬件接口</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-_网络通讯接口"><span class="toc-number">2.3.</span> <span class="toc-text">3. 网络通讯接口</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#3-1_WIFI无线网络"><span class="toc-number">2.3.1.</span> <span class="toc-text">3.1 WIFI无线网络</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-2_以太网"><span class="toc-number">2.3.2.</span> <span class="toc-text">3.2 以太网</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-3_无线电"><span class="toc-number">2.3.3.</span> <span class="toc-text">3.3 无线电</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考"><span class="toc-number">3.</span> <span class="toc-text">参考</span></a></li></ol>
+  </div>
+
+
+	
+    <div class="entry">
+      
+        <h2 id="物联网攻击面">物联网攻击面</h2><p>欢迎！我希望您已经阅读了之前的博客文章<a href="/2021/09/21/IOT/iot-security-part-1-101-iot-introduction-architecture/">物联网安全 - 第 1 部分</a>，如果没有，希望你阅读它以了解物联网和物联网架构的含义。现在我们将开始进入安全领域，并尝试定义一种方法来理解和创建结构化流程来执行物联网的安全研究或渗透测试。<br>如果我们查看上一篇文章中定义的架构，现在我们可以轻松的对物联网进行拆分并尝试为每个组件单独定义攻击面，然后将它们组合起来以创建整个物联网生态系统攻击面。我称其为 IoT 生态系统而不是 IoT 产品，因为它确实是一个由不同组件相互通信并解决特定现实世界问题的生态系统。下面将继续定义物联网生态系统的攻击面，并详细讨论每个组件的攻击面。按组件的攻击面可以将物联网组件攻击面分为三个或四个（如果我们将通信作为攻击面），主要攻击面如下：</p>
+<ul>
+<li><ol>
+<li>移动应用</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>云</li>
+</ol>
+</li>
+<li><ol start="3">
+<li>通信</li>
+</ol>
+</li>
+<li><ol start="4">
+<li>物联网终端设备<div align="center"><br><img src="/img/20210921device_attack_surface-768x456.png" align><br></div>
+
+</li>
+</ol>
+</li>
+</ul>
+<a id="more"></a>
+<p>OWASP 现在也在物联网安全方面做了很多工作，他们也定义了攻击面。我希望你也去看看OWASP定义的物联网攻击面，通过了解不同的观点和想法有助于让你对物联网攻击面的学习更加全面。</p>
+<p><strong>注意：</strong></p>
+<ul>
+<li><ol>
+<li>微控制器一词以通用形式使用，表示微控制器、微处理器或 SoC（片上系统），除非另有说明。</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>以下攻击面由我们定义，可能与其他定义有所不同。</li>
+</ol>
+</li>
+</ul>
+<h3 id="移动应用">移动应用</h3><p>移动应用是物联网的重要用户界面之一，用户可以通过它感知物理世界的状态。由于移动应用程序与物联网生态系统以发送命令和读取数据形式进行通信，因此它成为进入物联网生态系统的切入点之一。我们将尝试从物联网的角度列举移动设备的攻击面。</p>
+<ul>
+<li><ol>
+<li>数据存储</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>授权认证</li>
+</ol>
+</li>
+<li><ol start="3">
+<li>数据加密</li>
+</ol>
+</li>
+<li><ol start="4">
+<li>通信</li>
+</ol>
+</li>
+<li><ol start="5">
+<li>移动应用通用漏洞 – OWASP Mobile Top 10 浮现在脑海</li>
+</ol>
+</li>
+</ul>
+<h3 id="云">云</h3><p>云是物联网中非常重要的部分之一，通常来自物联网产品线所有实例的数据都汇聚在这里。这使它成为一个非常有趣的攻击点。请记住，我在上一篇文章中提到物联网不仅与硬件有关。原因是云将保存所有部署的物联网实例的数据，并有权向所有实例发送命令。通常命令是由用户发起的，但是如果受到攻击，攻击者将获得对部署在全球范围内的设备（及其数据）的控制权，这很危险。总体而言，攻击面侧重于它提供的接口，其中包括</p>
+<ul>
+<li><ol>
+<li>数据存储</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>授权认证</li>
+</ol>
+</li>
+<li><ol start="3">
+<li>数据加密</li>
+</ol>
+</li>
+<li><ol start="4">
+<li>通信</li>
+</ol>
+</li>
+<li><ol start="5">
+<li>应用接口</li>
+</ol>
+</li>
+<li><ol start="6">
+<li>通用 Web/云漏洞 – OWASP Web Top 10 浮现在脑海</li>
+</ol>
+</li>
+</ul>
+<h3 id="终端设备">终端设备</h3><p>接下来是设备，它是物联网技术的游戏规则改变者 :)。它与物理世界交互，也与虚拟世界通信。它是物理世界数据的第一站。鉴于其存储的用户的敏感数据（例如家庭数据、身体统计数据、个人信息），围绕用户隐私展开了一场全面的竞争。未来设备可能会直接通过钱包或单独的临时钱包使用用户的加密货币来购买物品、进行维修等。 攻击面如下所示</p>
+<ul>
+<li><ol>
+<li>数据存储</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>授权认证</li>
+</ol>
+</li>
+<li><ol start="3">
+<li>数据加密</li>
+</ol>
+</li>
+<li><ol start="4">
+<li>通信</li>
+</ol>
+</li>
+<li><ol start="5">
+<li>传感器接口</li>
+</ol>
+</li>
+<li><ol start="6">
+<li>外围接口</li>
+</ol>
+</li>
+<li><ol start="7">
+<li>硬件接口</li>
+</ol>
+</li>
+<li><ol start="8">
+<li>人机接口</li>
+</ol>
+</li>
+</ul>
+<h3 id="通信">通信</h3><p>尽管这不是一个有形的攻击面，因为理想情况下有形的攻击面是通信接口和负责通信的相应驱动程序、固件。然而，通信却需要单独列出来，因为物联网生态系统可以在有线和无线介质上使用的各种各样的通信协议。下面是部分通信攻击面。</p>
+<ul>
+<li><ol>
+<li>授权认证</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>数据加密</li>
+</ol>
+</li>
+<li><ol start="3">
+<li>使用非标准通信协议</li>
+</ol>
+</li>
+<li><ol start="4">
+<li>通信协议实现错误</li>
+</ol>
+</li>
+</ul>
+<p>硬件接口承载实际通信。然而，实际的通信数据/数据包是由在软件中实现的定义的。因此，在这个攻击面（通信）中，我们将只讨论协议。尽管协议中的缺陷可能实际发生在移动应用、设备或云上的协议端点的攻击，但为了清楚起见，我们将其保留为单独的攻击面。此处的列表中有太多协议标准无法提及。但是，我们将列出各种 IoT 产品中使用的一些常见协议。</p>
+<h4 id="1-_Web">1. Web</h4><p>Web或技术术语 HTTP(S) 是最常用的通信协议，无处不在。我们将其单独列出来，因为 Web 上的攻击面是巨大的。然而，好消息是攻击面、漏洞和缓解技术大多已经标准化，因为它已经被研究了二十多年。网上有大量资源详细描述了攻击和保护。对于初学者来说，OWASP 在他们的 Web Top 10、测试指南和各种开源工具（<a href="http://www.owasp.org）方面做得很好" target="_blank" rel="external">www.owasp.org）方面做得很好</a></p>
+<h4 id="2-_其他">2. 其他</h4><p>除了 Web 之外，还有许多协议，一些是特定领域的，一些是通用的，还有一些是出于性能原因。此处列出的协议太多，为简洁起见，我们将列出一些常见的协议标准，让您对所使用的协议种类有一个大致的了解。历史告诉我们，所有协议都会有实现缺陷、协议设计缺陷和配置缺陷。这些需要在渗透测试期间进行分析。</p>
+<ul>
+<li><ol>
+<li>CoAP – <a href="https://en.wikipedia.org/wiki/Constrained_Application_Protocol" target="_blank" rel="external">https://en.wikipedia.org/wiki/Constrained_Application_Protocol</a></li>
+</ol>
+</li>
+<li><ol start="2">
+<li>MQTT - <a href="https://en.wikipedia.org/wiki/MQTT" target="_blank" rel="external">https://en.wikipedia.org/wiki/MQTT</a></li>
+</ol>
+</li>
+<li><ol start="3">
+<li>AMQP – <a href="https://en.wikipedia.org/wiki/Advanced_Message_Queuing_Protocol" target="_blank" rel="external">https://en.wikipedia.org/wiki/Advanced_Message_Queuing_Protocol</a></li>
+</ol>
+</li>
+<li><ol start="4">
+<li>WebSocket – <a href="https://en.wikipedia.org/wiki/WebSocket" target="_blank" rel="external">https://en.wikipedia.org/wiki/WebSocket</a></li>
+</ol>
+</li>
+<li><ol start="5">
+<li>CANbus - <a href="https://en.wikipedia.org/wiki/CAN_bus" target="_blank" rel="external">https://en.wikipedia.org/wiki/CAN_bus</a></li>
+</ol>
+</li>
+<li><ol start="6">
+<li>Modbus – <a href="https://en.wikipedia.org/wiki/Modbus" target="_blank" rel="external">https://en.wikipedia.org/wiki/Modbus</a></li>
+</ol>
+</li>
+<li><ol start="7">
+<li>Profibus – <a href="https://en.wikipedia.org/wiki/Profibus" target="_blank" rel="external">https://en.wikipedia.org/wiki/Profibus</a></li>
+</ol>
+</li>
+<li><ol start="8">
+<li>DNP3 – <a href="https://en.wikipedia.org/wiki/DNP3" target="_blank" rel="external">https://en.wikipedia.org/wiki/DNP3</a></li>
+</ol>
+</li>
+<li><ol start="9">
+<li>BACNet – <a href="https://en.wikipedia.org/wiki/BACnet" target="_blank" rel="external">https://en.wikipedia.org/wiki/BACnet</a></li>
+</ol>
+</li>
+<li><ol start="10">
+<li>HL7 – <a href="https://en.wikipedia.org/wiki/Health_Level_7" target="_blank" rel="external">https://en.wikipedia.org/wiki/Health_Level_7</a></li>
+</ol>
+</li>
+<li><ol start="11">
+<li>XMPP – <a href="https://en.wikipedia.org/wiki/XMPP" target="_blank" rel="external">https://en.wikipedia.org/wiki/XMPP</a></li>
+</ol>
+</li>
+<li><ol start="12">
+<li>UPnP – <a href="https://en.wikipedia.org/wiki/Universal_Plug_and_Play" target="_blank" rel="external">https://en.wikipedia.org/wiki/Universal_Plug_and_Play</a></li>
+</ol>
+</li>
+<li><ol start="13">
+<li>DNS</li>
+</ol>
+</li>
+<li><ol start="14">
+<li>SSH</li>
+</ol>
+</li>
+<li><ol start="15">
+<li>&lt;其他&gt;🙂</li>
+</ol>
+</li>
+</ul>
+<p>以上应该为您提供物联网生态系统攻击面的概述。现在我们对它有了一个清晰的认识，让我们为物联网终端设备定义一个详细的攻击面，以便我们知道在标准物联网渗透测试中我们究竟需要攻击什么。这也有助于物联网安全架构师为物联网产品创建威胁模型。<br>请注意，我们不会（重新）定义移动应用和云的攻击面，因为您可以在 Internet 上找到大量描述相同内容的资源。本博客系列的想法是为安全研究人员搭建一座进入物联网安全领域的桥梁，因此，我们将专注于当前较少提及和未标准化的部分。我们仍然会从我们的角度讨论与物联网生态系统相关的移动应用和云安全。</p>
+<h2 id="物联网设备攻击面">物联网设备攻击面</h2><p>好的，让我们这样做:)。以下是物联网攻击面的独立和结构化定义。请注意，这是根据我们的理解，并未直接参考其他定义。</p>
+<h3 id="1-_数据存储">1. 数据存储</h3><p>设备使用的存储。这可以进一步分为内部和外部、持久性和易失性。</p>
+<h4 id="1-1_SD_卡">1.1 SD 卡</h4><p>SD 卡通常用于存储配置和产品数据。它们也可用于存储固件更新。这是一个非常有趣的攻击面，我们将在后面的博客文章中讨论某些可能通过 SD 卡进行的攻击。</p>
+<h4 id="1-2_USB">1.2 USB</h4><p>某些产品可能使用 USB 驱动器来存储与 SD 卡中类似的数据，以及读取下载或存储在 USB 驱动器上的数据。与 SD 卡类似的攻击适用于 USB 存储设备。</p>
+<h4 id="1-3_非易失性存储器">1.3 非易失性存储器</h4><p>非易失性存储器功能很多，包括读/写传感器数据、引导加载程序、固件、凭据、密钥等。在测试硬件板时，查看存储在芯片上的数据至关重要。我们还可以对存储器和微控制器之间的通信进行运行时分析，以分析在不同操作期间存储/读取的数据类型，可以通过让逻辑分析仪嗅探总线通信来实现的。您可以在触发设备上的特定操作时发现正在读取/写入的有趣数据。有以下不同类型的内存芯片：</p>
+<ul>
+<li><ol>
+<li>只读存储器EPROM</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>电可擦可编程只读存储器EEPROM</li>
+</ol>
+</li>
+<li><ol start="3">
+<li>FLASH – 由于其速度和效率而更常用</li>
+</ol>
+</li>
+</ul>
+<div align="center"><br><img src="/img/20210921i2c_serial_eeprom.png" align title="I2C 串行 EEPROM"><br></div>
+
+<h4 id="1-4_易失性内存">1.4 易失性内存</h4><p>说到易失性存储器，我们脑海中立刻就会浮现出 RAM 这个词。它们广泛用于 PC 和嵌入式系统，并在运行时保存代码和数据。设备断电时数据丢失。一些常见的RAM类型如下</p>
+<ul>
+<li><ol>
+<li>SRAM（Static Random Access Memory 静态随机存取存储器）——一种 RAM，用于保存芯片断电时丢失的数据。</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>DRAM（Dynamic Random Access Memory 动态随机存取存储器）——数据会保留一段时间，之后数据会丢失，除非在运行时刷新。这意味着与 SRAM 相比，即使在芯片通电期间，数据的寿命也很短。芯片断电时数据也会丢失。</li>
+</ol>
+</li>
+</ul>
+<h4 id="1-5_微控制器内部存储器">1.5 微控制器内部存储器</h4><p>微控制器也有自己的内部存储器，通常用于存储代码。在调试微控制器时通常可以访问这些存储器，例如通过 JTAG 进行调试。微控制器中使用的各种存储器是：</p>
+<ul>
+<li><ol>
+<li>SRAM</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>EEPROM</li>
+</ol>
+</li>
+<li><ol start="3">
+<li>FLASH</li>
+</ol>
+</li>
+</ul>
+<h3 id="2-_硬件通讯接口">2. 硬件通讯接口</h3><p>同一块板上的不同硬件组件需要相互通信并与外界通信。所有这些通信都是使用定义明确的标准硬件通信协议完成的。从攻击者的角度来看，它通过嗅探或注入恶意数据让他们深入了解实际通信。分析下面提到的一些最常见的接口以查找安全问题。</p>
+<h4 id="2-1_UART串口">2.1 UART串口</h4><p>UART (Universal Asynchronous Receiver Transmitter) 是一个硬件组件，允许两个硬件外设之间进行异步串行通信。它们可以在同一块板上（例如微控制器与电机或 LED 屏幕通信）或两个不同设备之间（例如设备微控制器与 PC 通信）。这是一个有趣的攻击面，因为它可能允许通过串行方式对设备进行读/写访问。在许多设备中，板上的 UART 端口保持打开状态，任何人都可以通过串行连接和访问以获取某种类型的控制台，即简单的 shell、自定义命令行控制台、日志输出等。一个设备通常会有一组引脚 -输出连接到微控制器 UART RX 和 TX 引脚，用于发送和接收串行数据。</p>
+<div align="center"><br><img src="/img/20210921uart.jpg" align title="典型的 4 引脚 UART 接口"><br></div>
+
+<h4 id="2-2_微控制器调试口">2.2 微控制器调试口</h4><p>微控制器可以在运行时使用连接到板上引脚输出的指定引脚进行调试。开发人员和设计人员使用这些引脚输出（端口）来调试、读/写固件和微控制器内部存储器、控制/测试微控制器引脚后期生产。考虑到它为攻击者提供的能力和访问权限，这使得调试端口成为最关键的攻击面之一。有一些用于此目的的标准接口如下：</p>
+<p><strong>1. JTAG（Joint Test Action Group）：</strong> 随着微控制器和 PCB 变得越来越小，生产后很难对其进行测试。因此，为了在生产后有效地测试电路板，电子行业创建了一个同名协会，并定义了一种在生产后测试电路板的方法。它后来被改编为 IEEE 标准 1149.1。JTAG 协议定义了可用于测试和调试微控制器的标准接口和命令。JTAG 定义了四个引脚接口（和一个额外的可选引脚 TRST）：</p>
+<ul>
+<li><ol>
+<li>TMS – 测试模式选择</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>TCK——测试时钟</li>
+</ol>
+</li>
+<li><ol start="3">
+<li>TDI – 测试数据输入</li>
+</ol>
+</li>
+<li><ol start="4">
+<li>TDO – 测试数据输出</li>
+</ol>
+</li>
+<li><ol start="5">
+<li>TRST – 测试复位（可选引脚）</li>
+</ol>
+</li>
+</ul>
+<p>除了测试芯片外，调试器还使用这些引脚与微控制器上实现的 TAP（测试访问端口）进行通信。从安全角度来看，识别 JTAG 端口并与其连接允许攻击者提取固件、对逻辑进行逆向工程并在设备上写入恶意固件。在以后的文章中会详细介绍。</p>
+<p><strong>2. cJTAG（Compact JTAG）：</strong> 这是IEEE 1149.7标准中定义的新JTAG协议。它不会取代 1149.1 标准，而是进一步扩展了它，并且向后兼容 JTAG。它定义了一个双引脚接口（TCK 和 TMS）和一个实现新功能的新 TAP。</p>
+<p><strong>3. SWD（串行线调试）：</strong> SWD 是另一种用于调试微控制器的接口/协议。它是一个两针接口：a．SWDIO（双向）b．SWCLK (clock) 它是一个针对 ARM 处理器的特定的协议，它使用 ARM CPU 标准的双向线协议，在 ARM Debug Interface v5 中定义。SWD 的好处是它声称比 JTAG 更高效。</p>
+<div align="center"><br><img src="/img/20210921jtag-768x704.jpg" align title="PCB 板上的JTAG接口"><br></div>
+
+<p>请注意，JTAG 端口不一定像上图中那样位于一组 10 引脚排列中。</p>
+<h4 id="2-3_I2C">2.3 I2C</h4><p>Inter-Integrated Circuit 是一种短距离通信协议，用于同一板上芯片之间的通信。它是由飞利浦（现在的恩智浦）发明的。它具有主从（多）架构并使用两线总线</p>
+<ul>
+<li><ol>
+<li>SDA——串行数据</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>SCL——串行时钟</li>
+</ol>
+</li>
+</ul>
+<p>I2C 的用例之一是EEPROM 芯片上连接到微控制器 I2C 引脚存储数据或代码。典型的攻击包括篡改数据、提取敏感信息、破坏数据等。我们应该分析 EEPROM 芯片上的静态数据，并通过嗅探 I2C 通信来执行运行时分析，以了解行为和安全隐患。如前所述，我们将在该系列中专门写一篇博文来理解和分析 I2C 通信。</p>
+<h4 id="2-4_SPI">2.4 SPI</h4><p>Serial Peripheral Interface 也是一种短距离通信协议，用于同一板上芯片之间的通信。它是由摩托罗拉开发的。它是全双工的，采用主从架构（单主）。与 I2C 相比，它还具有更高的吞吐量。它使用四线串行总线：</p>
+<ul>
+<li><ol>
+<li>SCLK——串行时钟。其他名称包括 SCK</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>MOSI – 主出从入。其他名称包括 SIMO、SDI、DI、DIN、SI、MTSR。</li>
+</ol>
+</li>
+<li><ol start="3">
+<li>MISO – 主进从出。其他名称包括 SOMI、SDO、DO、DOUT、SO、MRST。</li>
+</ol>
+</li>
+<li><ol start="4">
+<li>SS – 从选择。其他名称包括 S̅S̅、SSEL、CS、C̅S̅、CE、nSS、/SS、SS#</li>
+</ol>
+</li>
+</ul>
+<p>它用于与各种外围设备通话。Flash 和 EEPROM 芯片也使用 SPI。测试和分析的方法类似于 I2C，只是我们有不同的总线接口。我们将在后面的博客文章中详细讨论 SPI。</p>
+<h4 id="2-5_USB">2.5 USB</h4><p>该设备可以具有用于充电或通信的 USB（mini/micro等）接口。对于后者，有必要测试接口是否存在已知或未知问题。我们应该嗅探通信以进行运行时分析以及Fuzzing USB 接口以查找未知错误。</p>
+<h4 id="2-6_传感器">2.6 传感器</h4><p>这是一个相当宽泛的名称，我们用来表示物理世界的接口。不一定限于感测型接口。例如，温度传感器将是一个完美的例子，但门锁也是一个没有感知任何东西但通过“锁定/解锁”动作控制物理世界的门锁。这些可以根据其操作分为三种类型：</p>
+<ul>
+<li><ol>
+<li>监视器 Monitor：这与传感器的字面意义更密切相关，即感知或监视物理世界的任何变化。前任。温度、运动、脉搏、血压、胎压等。</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>控制器 Control：这些类型的设备以某种方式控制物理世界。如锁、调度器等</li>
+</ol>
+</li>
+<li><ol start="3">
+<li>混合 Hybrid：这些是上述两种类型的组合，即温度控制、基于一天中的时间的灯等。这是关键接口之一，因为来自物理世界的所有值和数据都将传输到云中。如果攻击者可以使用格式错误（错误）的数据控制设备，那么整个生态系统都会受到影响，因为所有决策和统计数据都基于这些数据。换句话说，这是物联网生态系统的症结所在。此处错误的值可能会对生态系统做出的决策产生灾难性影响。</li>
+</ol>
+</li>
+</ul>
+<h4 id="2-7_人机界面">2.7 人机界面</h4><p>与传感器接口一样，我们使用 HMI 作为通用术语来定义用户和设备之间的接口，但不限于工业控制系统中使用的术语。这是用户可以用来与设备通信并直接对其进行操作的界面。一些常见的例子是触摸屏、按钮、触摸板等。 测试这个界面以找出任何绕过机制、安全漏洞等很重要。</p>
+<h4 id="2-8_其他硬件接口">2.8 其他硬件接口</h4><p>还有许多其他硬件接口用于与设备进行通信。作为渗透测试者，分析和发现所有接口中的缺陷和绕过机制很重要。一些众所周知的接口包括（但不限于）：</p>
+<ul>
+<li><ol>
+<li>D-Subminiature – <a href="https://en.wikipedia.org/wiki/D-subminiature" target="_blank" rel="external">https://en.wikipedia.org/wiki/D-subminiature</a></li>
+</ol>
+</li>
+<li><ol start="2">
+<li>推荐标准（RS232、RS485 等）– 有关 RS 协议的更多详细信息，请访问 <a href="https://en.wikipedia.org/wiki/EIA_standards" target="_blank" rel="external">https://en.wikipedia.org/wiki/EIA_standards</a></li>
+</ol>
+</li>
+<li><ol start="3">
+<li>车载诊断 (OBD) – <a href="https://en.wikipedia.org/wiki/On-board_diagnostics" target="_blank" rel="external">https://en.wikipedia.org/wiki/On-board_diagnostics</a></li>
+</ol>
+</li>
+</ul>
+<h3 id="3-_网络通讯接口">3. 网络通讯接口</h3><p>该接口允许设备与虚拟世界的其余部分通信，包括传感器网络、云和移动设备。负责网络通信的硬件接口可能有自己独立的微控制器/固件来提供通信功能。这种情况下的攻击面是实现低级通信的固件或驱动程序代码。</p>
+<h4 id="3-1_WIFI无线网络">3.1 WIFI无线网络</h4><p>wifi 接口有一些已知问题。从攻击面的角度来看，攻击 wifi 芯片方法包括损坏它、DOS、绕过安全限制或代码执行会很有趣。</p>
+<h4 id="3-2_以太网">3.2 以太网</h4><p>以太网接口与 wifi 接口一样，也存在低级 TCP/IP 堆栈漏洞以及硬件实现漏洞和类似的攻击向量。</p>
+<h4 id="3-3_无线电">3.3 无线电</h4><p>考虑到许多物联网产品已转向/正在使用无线电通信构建，无线电接口已成为最重要的攻击面之一。这种偏好源于这样一个事实，即在许多情况下使用无线电更有效比通过 Wifi/有线网络连接。我将 Wifi 单独分类而不是在本节中的原因主要是为了明确区分可以直接连接到互联网的设备（Wifi/有线）和需要网关（例如智能集线器）的设备，该网关同时实现Radio以及Wifi/Wired接口，分别与传感器和互联网进行通信。 从实际通信的角度来看，可以将其视为两种不同的通信方式：</p>
+<p><strong>1. 简单/非结构化：</strong> 这种类型通常用于简单的产品，如百叶窗、锁、门铃等。简单和非结构化是指它使用简单（主要是专有）数据（流）并通过无线电接口发送它。作为渗透测试人员，您需要对通信进行逆向工程以找出实现上的缺陷。使用无线电嗅探硬件工具（如 SDR（软件定义无线电）等）很容易嗅探无线电通信。</p>
+<p><strong>2. 复杂/结构化：</strong> 复杂和结构化通信意味着它使用结构化数据包进行无线电通信，这些数据包很复杂，因为除了数据之外，它们还携带有关协议的附加和元信息。由于高效、标准化、经济的芯片、实施的便利性，这些协议在物联网世界中非常有名。同样，有多种工具可用于嗅探和解析协议以提取所发送的应用程序特定数据。一些常见的协议包括：</p>
+<ul>
+<li>a．蓝牙（和 BLE）</li>
+<li>b. ZigBee</li>
+<li>C. Z波</li>
+<li>D. NFC</li>
+<li>E. RFID</li>
+<li>F. LORA</li>
+<li>g. Wireless HART</li>
+</ul>
+<h2 id="参考">参考</h2><ul>
+<li><ol>
+<li>UART – <a href="https://en.wikipedia.org/wiki/Universal_asynchronous_receiver/transmitter" target="_blank" rel="external">https://en.wikipedia.org/wiki/Universal_asynchronous_receiver/transmitter</a></li>
+</ol>
+</li>
+<li><ol start="2">
+<li>Types of memory – <a href="https://en.wikipedia.org/wiki/Semiconductor_memory" target="_blank" rel="external">https://en.wikipedia.org/wiki/Semiconductor_memory</a></li>
+</ol>
+</li>
+<li><ol start="3">
+<li>JTAG – <a href="https://en.wikipedia.org/wiki/JTAG" target="_blank" rel="external">https://en.wikipedia.org/wiki/JTAG</a></li>
+</ol>
+</li>
+<li><ol start="4">
+<li>SWD – <a href="https://www.arm.com/files/pdf/Serial_Wire_Debug.pdf" target="_blank" rel="external">https://www.arm.com/files/pdf/Serial_Wire_Debug.pdf</a></li>
+</ol>
+</li>
+<li><ol start="5">
+<li>JTAG Vs. SWD – <a href="https://electronics.stackexchange.com/questions/53571/jtag-vs-swd-debugging" target="_blank" rel="external">https://electronics.stackexchange.com/questions/53571/jtag-vs-swd-debugging</a></li>
+</ol>
+</li>
+<li><ol start="6">
+<li>I2C – <a href="https://en.wikipedia.org/wiki/I%C2%B2C" target="_blank" rel="external">https://en.wikipedia.org/wiki/I%C2%B2C</a></li>
+</ol>
+</li>
+<li><ol start="7">
+<li>IoT Protocols – <a href="https://www.postscapes.com/internet-of-things-protocols/" target="_blank" rel="external">https://www.postscapes.com/internet-of-things-protocols/</a></li>
+</ol>
+</li>
+<li><ol start="8">
+<li>I2C Serial EEPROM image source – <a href="https://upload.wikimedia.org/wikipedia/commons/thumb/7/71/AT24C02_EEPROM_1480355_6_7_HDR_Enhancer.jpg/180px-AT24C02_EEPROM_1480355_6_7_HDR_Enhancer.jpg" target="_blank" rel="external">https://upload.wikimedia.org/wikipedia/commons/thumb/7/71/AT24C02_EEPROM_1480355_6_7_HDR_Enhancer.jpg/180px-AT24C02_EEPROM_1480355_6_7_HDR_Enhancer.jpg</a></li>
+</ol>
+</li>
+<li><ol start="9">
+<li>JTAG port image source – <a href="https://i.stack.imgur.com/IiUqm.jpg" target="_blank" rel="external">https://i.stack.imgur.com/IiUqm.jpg</a></li>
+</ol>
+</li>
+</ul>
+<p><em>原文链接：<a href="https://payatu.com/iot-security-part-2-101-iot-attack-surface" target="_blank" rel="external">https://payatu.com/iot-security-part-2-101-iot-attack-surface</a></em></p>
+
+      
+    </div>
+    <footer>
+      
+
+        
+          <div class="alignleft post-nav">
+            <em>上一篇: </em><a href="/2021/10/20/IOT/using-rasberrypi-as-poor-mans-hardware-hacking-tool/">树莓派-穷人的硬件黑客工具（翻译）</a>
+          </div>
+        
+        
+          <div class="alignright post-nav">
+            <em>下一篇: </em><a href="/2021/09/21/IOT/iot-security-part-1-101-iot-introduction-architecture/">物联网安全101-1.物联网介绍及其架构（翻译）</a>
+          </div>
+          <div class="clearfix"></div>
+        
+
+        
+          <div class="copyright">
+            
+              <span class="claim">转载请注明youngroe.com</span>
+            
+            
+              <span class="from-link">
+                <em>本文链接地址:</em>
+                <a href="/2021/09/21/IOT/iot-security-part-2-101-iot-attack-surface/">
+                  http://www.youngroe.com/2021/09/21/IOT/iot-security-part-2-101-iot-attack-surface/
+                </a>
+              </span>
+            
+          </div>
+        
+        
+  
+  <div class="categories">
+    <a href="/categories/IOT/">IOT</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/IOT安全/">IOT安全</a>
+  </div>
+
+        
+          <! -- 添加捐赠图标 -->
+<div class ="post-donate">
+    <div id="donate_board" class="donate_bar center">
+        <a id="btn_donate" class="btn_donate" href="javascript:;" title="打赏"></a>
+        <span class="donate_txt">
+           ↑<br>
+           欣赏此文？求鼓励，求支持！
+        </span>
+        <br>
+      </div>  
+    <div id="donate_guide" class="donate_bar center hidden" >
+        <!-- 方式一： 
+            ![](/img/Alipay.jpg)
+            ![](/img/WeChatpay.jpg)
+        -->
+        <!-- 方式二；
+            step1：在_config.yml中添加配置
+                Alipay: /img/Alipay.jpg
+                WeChatpay: /img/WeChatpay.jpg
+            step2：此处两张图片的路径分别设置为如下
+                <img src="undefined"
+                <img src="undefined"
+        -->
+        <!-- 支付宝打赏图案 -->
+        <img src="/img/Alipay.png" alt="支付宝打赏">
+        <!-- 微信打赏图案 -->
+        <img src="/img/WeChatpay.png" alt="微信打赏">
+    </div>
+    <script type="text/javascript">
+        document.getElementById('btn_donate').onclick = function(){
+            $('#donate_board').addClass('hidden');
+            $('#donate_guide').removeClass('hidden');
+        }
+    </script>
+</div>
+<! -- 添加捐赠图标 -->
+        
+        <div id="gitalk-container"></div>
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+<script src="https://cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.js"></script>
+<script type="text/javascript">
+    var gitalk = new Gitalk({
+  clientID: '503c39aa3fb2b8c1b734',
+  clientSecret: '65d784ff7a95a9dbf4a4208c9e32166ca29654f2',
+  repo: 'geemion.github.io',
+  owner: 'geemion',
+  admin: 'geemion',
+  pagerDirection:'first',
+  id: md5(window.location.pathname)
+})
+
+gitalk.render('gitalk-container')
+</script>
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+  <div id="container"></div>
+</span>
+</article>
+
+
+<section id="comment">
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+<div class="widget tag">
+  <h3 class="title">分类</h3>
+  <ul class="entry">
+  
+    <li><a href="/categories/Cybersecurity/">Cybersecurity</a><small>6</small></li>
+  
+    <li><a href="/categories/Debug/">Debug</a><small>7</small></li>
+  
+    <li><a href="/categories/IOT/">IOT</a><small>4</small></li>
+  
+    <li><a href="/categories/Kernel/">Kernel</a><small>4</small></li>
+  
+    <li><a href="/categories/Learning/">Learning</a><small>5</small></li>
+  
+    <li><a href="/categories/Life/">Life</a><small>5</small></li>
+  
+    <li><a href="/categories/Others/">Others</a><small>1</small></li>
+  
+    <li><a href="/categories/Tools/">Tools</a><small>5</small></li>
+  
+    <li><a href="/categories/Vulnerabilities/">Vulnerabilities</a><small>0</small></li>
+  
+    <li><a href="/categories/Windows/">Windows</a><small>13</small></li>
+  
+    <li><a href="/categories/life/">life</a><small>0</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2021/10/20/IOT/using-rasberrypi-as-poor-mans-hardware-hacking-tool/">树莓派-穷人的硬件黑客工具（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2021/09/21/IOT/iot-security-part-2-101-iot-attack-surface/">物联网安全101-2.物联网攻击面（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2021/09/21/IOT/iot-security-part-1-101-iot-introduction-architecture/">物联网安全101-1.物联网介绍及其架构（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2021/08/20/Cybersecurity/guide-linux-privilege-escalation/">Linux权限提升指南（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2021/03/20/IOT/powerpc_binary_blob_firmware_reverse/">一次嵌入式固件逆向实践</a>
+      </li>
+    
+      <li>
+        <a href="/2020/10/02/Cybersecurity/art-of-anti-detection-4-art-of-anti-detection-4-self-defense/">反检测的艺术4-自保护（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2020/09/10/Cybersecurity/art-of-anti-detection-3-art-of-anti-detection-3-shellcode-alchemy/">反检测的艺术3-shellcode的魔力 （翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2020/09/04/Cybersecurity/art-of-anti-detection-2-pe-backdoor-manufacturing/">反检测的艺术2-如何制作PE文件后门（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2020/09/03/Cybersecurity/art-of-anti-detection-1-introduction-to-av-detection-techniques/">反检测的艺术1-反病毒软件及检测技术概述（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2020/08/02/Life/dns_hijacking/">记录一次被DNS劫持及解决方案(非改hosts方式)</a>
+      </li>
+    
+      <li>
+        <a href="/2019/07/01/Windows/delphi_reverse_summary/">Delphi程序逆向反汇编技巧小记</a>
+      </li>
+    
+      <li>
+        <a href="/2019/06/25/Kernel/kernel_enum_wfp_callout_function/">Windows内核重拾：如何枚举系统中Windows Filtering Platform (WFP)驱动中的callout函数</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget tagcloud">
+  <h3 class="title">标签云</h3>
+  <div class="entry">
+    <a href="/tags/Boost/" style="font-size: 10px;">Boost</a> <a href="/tags/DDoS/" style="font-size: 10px;">DDoS</a> <a href="/tags/DNS-over-HTTPS/" style="font-size: 10px;">DNS-over-HTTPS</a> <a href="/tags/DNS劫持/" style="font-size: 10px;">DNS劫持</a> <a href="/tags/Delphi/" style="font-size: 10px;">Delphi</a> <a href="/tags/Dll劫持/" style="font-size: 10px;">Dll劫持</a> <a href="/tags/GetVersionEx/" style="font-size: 10px;">GetVersionEx</a> <a href="/tags/Http/" style="font-size: 10px;">Http</a> <a href="/tags/IDA-Pro/" style="font-size: 12.5px;">IDA Pro</a> <a href="/tags/IOT安全/" style="font-size: 17.5px;">IOT安全</a> <a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/MSDN/" style="font-size: 12.5px;">MSDN</a> <a href="/tags/Malware/" style="font-size: 12.5px;">Malware</a> <a href="/tags/MiniDumpWriteDump/" style="font-size: 10px;">MiniDumpWriteDump</a> <a href="/tags/PEB/" style="font-size: 10px;">PEB</a> <a href="/tags/Procmon/" style="font-size: 10px;">Procmon</a> <a href="/tags/Runtime-Error/" style="font-size: 10px;">Runtime Error</a> <a href="/tags/SEH/" style="font-size: 10px;">SEH</a> <a href="/tags/SysinternalsSuite/" style="font-size: 10px;">SysinternalsSuite</a> <a href="/tags/Tips/" style="font-size: 10px;">Tips</a> <a href="/tags/UAC/" style="font-size: 10px;">UAC</a> <a href="/tags/UAF漏洞/" style="font-size: 10px;">UAF漏洞</a> <a href="/tags/VC/" style="font-size: 10px;">VC</a> <a href="/tags/Visual-Studio/" style="font-size: 12.5px;">Visual Studio</a> <a href="/tags/Windbg/" style="font-size: 10px;">Windbg</a> <a href="/tags/Windows/" style="font-size: 20px;">Windows</a> <a href="/tags/getaddrinfo/" style="font-size: 10px;">getaddrinfo</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/libeay32/" style="font-size: 10px;">libeay32</a> <a href="/tags/x64/" style="font-size: 10px;">x64</a> <a href="/tags/内核/" style="font-size: 12.5px;">内核</a> <a href="/tags/内核结构/" style="font-size: 15px;">内核结构</a> <a href="/tags/反病毒/" style="font-size: 17.5px;">反病毒</a> <a href="/tags/安全机制/" style="font-size: 10px;">安全机制</a> <a href="/tags/异常处理/" style="font-size: 10px;">异常处理</a> <a href="/tags/提权/" style="font-size: 12.5px;">提权</a> <a href="/tags/服务/" style="font-size: 10px;">服务</a> <a href="/tags/权限/" style="font-size: 12.5px;">权限</a> <a href="/tags/栈溢出漏洞/" style="font-size: 10px;">栈溢出漏洞</a> <a href="/tags/测试/" style="font-size: 10px;">测试</a> <a href="/tags/漏洞调试/" style="font-size: 12.5px;">漏洞调试</a> <a href="/tags/生活/" style="font-size: 15px;">生活</a> <a href="/tags/脱壳/" style="font-size: 10px;">脱壳</a> <a href="/tags/西安/" style="font-size: 10px;">西安</a> <a href="/tags/计划/" style="font-size: 10px;">计划</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a> <a href="/tags/调试/" style="font-size: 15px;">调试</a> <a href="/tags/转换/" style="font-size: 10px;">转换</a> <a href="/tags/进程/" style="font-size: 10px;">进程</a> <a href="/tags/逆向/" style="font-size: 10px;">逆向</a> <a href="/tags/重庆/" style="font-size: 10px;">重庆</a> <a href="/tags/驱动/" style="font-size: 15px;">驱动</a>
+  </div>
+</div>
+
+
+  <div class="widget tag">
+<h3 class="title">Links</h3>
+<ul class="entry">
+<li><a href="http://blog.ourren.com/" title="Ourren">Ourren</a></li>
+<li><a href="http://www.hyjal.net/" title="Hyjal">Hyjal</a></li>
+<li><a href="http://www.jianshu.com/users/fa15f4e416ae/latest_articles" title="Daemonceltics">Daemonceltics</a></li>
+<li><a href="http://papap.info/" title="isee">isee</a></li>
+</ul>
+</div>
+
+  <script type="text/javascript" id="clustrmaps" src="//cdn.clustrmaps.com/map_v2.js?u=putG&d=yoFnN6V-ovhL-H4e9_69LvkTiX4uX7rEYJ15yL3G1Wg"></script>
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <div id="go-pg-top"><i class="icon-arrow-up"></i></div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2021 Lyon
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript" charset="utf-8" src="/js/page.js"></script>
+
+</body>
+
+</html>

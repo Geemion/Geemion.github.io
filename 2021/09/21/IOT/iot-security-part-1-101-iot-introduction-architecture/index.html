@@ -1,0 +1,473 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>物联网安全101-1.物联网介绍及其架构（翻译） | Lyon&#39;s blog</title>
+  <meta name="author" content="Lyon">
+  
+  <meta name="description" content="Walk steps step by step">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="物联网安全101-1.物联网介绍及其架构（翻译）"/>
+  <meta property="og:site_name" content="Lyon&#39;s blog"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  #<link href="/favicon.ico" rel="icon">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="alternate" href="/atom.xml" title="Lyon&#39;s blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  <script src="/js/jquery.min.js"></script>
+  <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?1d807422614f63c8de98cdc3b546860c";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+  <script>
+    (function(){
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        }
+        else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+    
+  <script data-ad-client="ca-pub-6317609007693835" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-66542057-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-66542057-1');
+</script>
+
+</head>
+
+
+<body>
+  <!--[if lte IE 8]> <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'> <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0027_Simplified Chinese.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." style='margin-left:auto;margin-right:auto;display: block;'/></a></div> <![endif]-->
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">Lyon&#39;s blog</a></h1>
+  <h2><a href="/">I hear and I forget.I see and I remember.I do and I understand.</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">首页</a></li>
+    
+      <li><a href="/archives">归档</a></li>
+    
+      <li><a href="/about">关于</a></li>
+    
+	<li> <a href="/atom.xml">RSS</a> </li>
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <time datetime="2021-09-21T11:39:22.000Z"><a href="/2021/09/21/IOT/iot-security-part-1-101-iot-introduction-architecture/">2021-09-21</a></time>
+      
+      
+  
+    <h1 class="title">物联网安全101-1.物联网介绍及其架构（翻译）</h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+  <div id="toc" class="toc-article">
+  <strong class="toc-title">文章目录</strong>
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#物联网_!=_硬件"><span class="toc-number">1.</span> <span class="toc-text">物联网 != 硬件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#介绍"><span class="toc-number">2.</span> <span class="toc-text">介绍</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#什么是物联网？"><span class="toc-number">2.1.</span> <span class="toc-text">什么是物联网？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#哪里使用了物联网？"><span class="toc-number">2.2.</span> <span class="toc-text">哪里使用了物联网？</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#物联网架构"><span class="toc-number">3.</span> <span class="toc-text">物联网架构</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#高级视图"><span class="toc-number">3.1.</span> <span class="toc-text">高级视图</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#功能架构"><span class="toc-number">3.2.</span> <span class="toc-text">功能架构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#分层模型"><span class="toc-number">3.3.</span> <span class="toc-text">分层模型</span></a></li></ol></li></ol>
+  </div>
+
+
+	
+    <div class="entry">
+      
+        <p>最近，我收到了一些对物联网安全感兴趣的人的问题，询问从哪里开始物联网安全研究，因此，我决定做一组有关物联网安全的文章，以帮助想要进入物联网安全、物联网渗透测试和漏洞利用领域的研究人员。<br>对于安全研究人员而言，每项新技术和复杂技术的问题都可能是不知道从哪里开始以及如何、从哪里进行攻击。这是一个非常常见的问题，并且有一个通用的解决方案，即对技术进行分解为多个部分并单独学习每个部分。这个过程可以让你掌握了每个部分的知识，并引导你专注于其中的最有趣的部分。如果你都读到这里，我会假设你会坚持继续学习。所以，不要拖延，让我们开始吧:)。</p>
+<p><strong>注意：</strong></p>
+<ul>
+<li><ol>
+<li>本系列中文章中的知识的是通用的，可以应用于任何领域的物联网产品的安全研究，无论其用途如何，包括家庭自动化、工业控制系统、医疗保健、交通等。</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>我将使用这些词除非在解释中特别提及，否则设备、硬件和传感器可互换地表示相同的事物。</li>
+</ol>
+</li>
+<li><ol start="3">
+<li>我提到物联网生态系统是指物联网产品或解决方案，因为物联网技术的性质包含很多不同的技术。</li>
+</ol>
+</li>
+</ul>
+<a id="more"></a>
+<h2 id="物联网_!=_硬件">物联网 != 硬件</h2><p>这是人们普遍存在的一种误解，即物联网仅意味着硬件，这会造成一个的障碍，并阻止大多数安全研究人员进入物联网安全领域。是的，即使涉及硬件，也可以学习分析它所需的技能。学习硬件知识可以降低学习物联网安全技术的难度，并且学习硬件相关的技术需要一定的恒心和毅力。当您阅读完本文时，您会意识到硬件仅占 IoT 生态系统的 1/3 部分。更重要的是如果您可以攻击其他组件（例如云），可能会造成比入侵设备更多的损害。几年前，当我开始研究物联网安全时，我也有同样的顾虑，所以我把问题分解，各个击破，在此过程中学到了一些很酷的技巧。相信我，我这样的普通人都可以做到。</p>
+<h2 id="介绍">介绍</h2><h3 id="什么是物联网？">什么是物联网？</h3><p>网上有很多关于物联网的定义，掌握一项技术的关键是了解它背后的基本意识形态，这有助于你了解它并根据之前的经验学习它。每个人都可以有自己的定义，对我来说，物联网是关于三件重要的事情<br><strong>1. 自动化：</strong> 坦率地说人都是懒惰的，未来就是让我们变得更懒惰并自动化我们目前手动完成的任何事情。<br><strong>2. 虚拟世界与物理世界之间的接口</strong>：在物理世界和虚拟世界之间架起一座桥梁。简单来说，允许虚拟世界从/向物理世界读取和写入。当我说读取时，我的意思是感知物理环境并将状态转换为数据并将其发送到虚拟数据存储以进行进一步分析，例如温度传感器、医疗传感器、相机等。 写入是指通过动作来控制物理世界的方法，即将数据转换为物理世界上的动作，例如门锁、控制车辆操作、喷水、医疗泵等。<br><strong>3. 信息收集和决策制定：</strong> 可以实时分析从设备收集的数据，以更好地了解环境、对某些事件采取行动、找出任何物理世界问题的根本原因等。</p>
+<p>因此，物联网技术为用户和厂商提供了实时信息和任务的自动化。<br>基于上述定义，如果我们要创造一种技术来解决这个问题，我们需要</p>
+<ul>
+<li><ol>
+<li>提供虚拟与现实之间接口的硬件设备</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>用于存储数据的后端存储和对数据进行统计分析的计算能力.</li>
+</ol>
+</li>
+<li><ol start="3">
+<li>用户查看分析数据以及向物理世界发送命令的虚拟界面。</li>
+</ol>
+</li>
+</ul>
+<p>第一个是通过嵌入相应传感器、控制器的经济硬件设备来解决，第二个是通过云方便地解决，最后第三个是通过移动应用程序和/或网络应用程序轻松解决。</p>
+<h3 id="哪里使用了物联网？">哪里使用了物联网？</h3><p>正如我上面提到的，物联网就是让我们变胖和变懒。人类善于创新，无论出于何种原因，我们都可以在近乎完美的系统中找出可以改进的地方。在当今世界，物联网技术的使用是无限的。我敢打赌，只要你往周围看一下，你就可能会有一个物联网应用的想法。目前物联网在各个领域都出现了大量创新，主要目标都是是物理世界的自动化和实时数据分析，包含以下领域：</p>
+<ul>
+<li><ol>
+<li>家庭自动化</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>智能基础设施</li>
+</ol>
+</li>
+<li><ol start="3">
+<li>医疗保健</li>
+</ol>
+</li>
+<li><ol start="4">
+<li>工业控制系统</li>
+</ol>
+</li>
+<li><ol start="5">
+<li>交通运输</li>
+</ol>
+</li>
+<li><ol start="6">
+<li>实用工具</li>
+</ol>
+</li>
+<li><ol start="7">
+<li>以及更多</li>
+</ol>
+</li>
+</ul>
+<h2 id="物联网架构">物联网架构</h2><h3 id="高级视图">高级视图</h3><p>最简单的物联网架构包括三个组件，如下图所示。</p>
+<ol>
+<li>移动应用</li>
+<li>云</li>
+<li>物联网终端</li>
+</ol>
+<div align="center"><br><img src="/img/20210921iot_components-768x454.png" align><br></div>
+
+<p>组件之间使用哪种通信方式取决于物联网产品的用途和类型。以下是一些例子，说明哪些组件之间会通信以及如何通信。</p>
+<ul>
+<li><ol>
+<li>物联网终端仅与移动应用 – 例如基于蓝牙 BLE 的设备</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>物联网终端仅与物联网网关对话 - 例如ZigBee、无线 HART 设备等。</li>
+</ol>
+</li>
+<li><ol start="3">
+<li>移动设备仅与云通话——在用户无法近距离访问设备且只能通过云进行控制的情况下。</li>
+</ol>
+</li>
+</ul>
+<h3 id="功能架构">功能架构</h3><p>对物联网从功能架构上可以进一步定义为一个通过移动网络或者互联网进行连接的传感器网络。传感器可能拥有自己的基于传统 TCP/IP 的技术或基于无线电的网络，以防传统电信网络或者无线电通信无法实现的情况。在后一种情况下，需要有一个网关（我们所谓的物联网网关/集线器/路由器）作为无线电通信和传统 TCP/IP 通信之间的接口。从现在开始，我将把 TCP/IP 称为传统的网络通信。</p>
+<div align="center"><br><img src="/img/20210921cloud_iot_1-768x415.png" align><br></div>
+
+<p>我们还可以在不同地方多个传感器网络，这些网络可以通过物联网网关通过传统网络相互通信和连接，如下所示。</p>
+<div align="center"><br><img src="/img/20210921cloud_iot_2-768x335.png" align><br></div>
+
+<h3 id="分层模型">分层模型</h3><p>如果我们从分层的角度来看物联网技术，我们可以将物联网技术核心划分为3层。</p>
+<ol>
+<li>传感层——由硬件传感器和传感器网络组成。</li>
+<li>通信层——这包括允许传感层与管理层进行通信的通信网络，例如——Wifi、3G、LTE、以太网等。</li>
+<li>管理层——这是最顶层，负责理解原始数据并为用户提供可视化视图。它包括云、存储、应用程序等。<div align="center"><br><img src="/img/20210921iot_layered-768x519.png" align><br></div>
+
+</li>
+</ol>
+<p>如果您正在阅读本文，那么您对物联网安全非常感兴趣:)。这篇博文的目的是让您了解物联网技术。后续，我们将开始谈论物联网安全。下一篇博文将讲述物联网生态系统的攻击面。我希望你喜欢阅读这篇文章，就像我喜欢写它一样:)。</p>
+<p><em>原文链接：<a href="https://payatu.com/iot-security-part-1-101-iot-introduction-architecture" target="_blank" rel="external">https://payatu.com/iot-security-part-1-101-iot-introduction-architecture</a></em></p>
+
+      
+    </div>
+    <footer>
+      
+
+        
+          <div class="alignleft post-nav">
+            <em>上一篇: </em><a href="/2021/09/21/IOT/iot-security-part-2-101-iot-attack-surface/">物联网安全101-2.物联网攻击面（翻译）</a>
+          </div>
+        
+        
+          <div class="alignright post-nav">
+            <em>下一篇: </em><a href="/2021/08/20/Cybersecurity/guide-linux-privilege-escalation/">Linux权限提升指南（翻译）</a>
+          </div>
+          <div class="clearfix"></div>
+        
+
+        
+          <div class="copyright">
+            
+              <span class="claim">转载请注明youngroe.com</span>
+            
+            
+              <span class="from-link">
+                <em>本文链接地址:</em>
+                <a href="/2021/09/21/IOT/iot-security-part-1-101-iot-introduction-architecture/">
+                  http://www.youngroe.com/2021/09/21/IOT/iot-security-part-1-101-iot-introduction-architecture/
+                </a>
+              </span>
+            
+          </div>
+        
+        
+  
+  <div class="categories">
+    <a href="/categories/IOT/">IOT</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/IOT安全/">IOT安全</a>
+  </div>
+
+        
+          <! -- 添加捐赠图标 -->
+<div class ="post-donate">
+    <div id="donate_board" class="donate_bar center">
+        <a id="btn_donate" class="btn_donate" href="javascript:;" title="打赏"></a>
+        <span class="donate_txt">
+           ↑<br>
+           欣赏此文？求鼓励，求支持！
+        </span>
+        <br>
+      </div>  
+    <div id="donate_guide" class="donate_bar center hidden" >
+        <!-- 方式一： 
+            ![](/img/Alipay.jpg)
+            ![](/img/WeChatpay.jpg)
+        -->
+        <!-- 方式二；
+            step1：在_config.yml中添加配置
+                Alipay: /img/Alipay.jpg
+                WeChatpay: /img/WeChatpay.jpg
+            step2：此处两张图片的路径分别设置为如下
+                <img src="undefined"
+                <img src="undefined"
+        -->
+        <!-- 支付宝打赏图案 -->
+        <img src="/img/Alipay.png" alt="支付宝打赏">
+        <!-- 微信打赏图案 -->
+        <img src="/img/WeChatpay.png" alt="微信打赏">
+    </div>
+    <script type="text/javascript">
+        document.getElementById('btn_donate').onclick = function(){
+            $('#donate_board').addClass('hidden');
+            $('#donate_guide').removeClass('hidden');
+        }
+    </script>
+</div>
+<! -- 添加捐赠图标 -->
+        
+        <div id="gitalk-container"></div>
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+<script src="https://cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.js"></script>
+<script type="text/javascript">
+    var gitalk = new Gitalk({
+  clientID: '503c39aa3fb2b8c1b734',
+  clientSecret: '65d784ff7a95a9dbf4a4208c9e32166ca29654f2',
+  repo: 'geemion.github.io',
+  owner: 'geemion',
+  admin: 'geemion',
+  pagerDirection:'first',
+  id: md5(window.location.pathname)
+})
+
+gitalk.render('gitalk-container')
+</script>
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+  <div id="container"></div>
+</span>
+</article>
+
+
+<section id="comment">
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+<div class="widget tag">
+  <h3 class="title">分类</h3>
+  <ul class="entry">
+  
+    <li><a href="/categories/Cybersecurity/">Cybersecurity</a><small>6</small></li>
+  
+    <li><a href="/categories/Debug/">Debug</a><small>7</small></li>
+  
+    <li><a href="/categories/IOT/">IOT</a><small>4</small></li>
+  
+    <li><a href="/categories/Kernel/">Kernel</a><small>4</small></li>
+  
+    <li><a href="/categories/Learning/">Learning</a><small>5</small></li>
+  
+    <li><a href="/categories/Life/">Life</a><small>5</small></li>
+  
+    <li><a href="/categories/Others/">Others</a><small>1</small></li>
+  
+    <li><a href="/categories/Tools/">Tools</a><small>5</small></li>
+  
+    <li><a href="/categories/Vulnerabilities/">Vulnerabilities</a><small>0</small></li>
+  
+    <li><a href="/categories/Windows/">Windows</a><small>13</small></li>
+  
+    <li><a href="/categories/life/">life</a><small>0</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2021/10/20/IOT/using-rasberrypi-as-poor-mans-hardware-hacking-tool/">树莓派-穷人的硬件黑客工具（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2021/09/21/IOT/iot-security-part-2-101-iot-attack-surface/">物联网安全101-2.物联网攻击面（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2021/09/21/IOT/iot-security-part-1-101-iot-introduction-architecture/">物联网安全101-1.物联网介绍及其架构（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2021/08/20/Cybersecurity/guide-linux-privilege-escalation/">Linux权限提升指南（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2021/03/20/IOT/powerpc_binary_blob_firmware_reverse/">一次嵌入式固件逆向实践</a>
+      </li>
+    
+      <li>
+        <a href="/2020/10/02/Cybersecurity/art-of-anti-detection-4-art-of-anti-detection-4-self-defense/">反检测的艺术4-自保护（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2020/09/10/Cybersecurity/art-of-anti-detection-3-art-of-anti-detection-3-shellcode-alchemy/">反检测的艺术3-shellcode的魔力 （翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2020/09/04/Cybersecurity/art-of-anti-detection-2-pe-backdoor-manufacturing/">反检测的艺术2-如何制作PE文件后门（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2020/09/03/Cybersecurity/art-of-anti-detection-1-introduction-to-av-detection-techniques/">反检测的艺术1-反病毒软件及检测技术概述（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2020/08/02/Life/dns_hijacking/">记录一次被DNS劫持及解决方案(非改hosts方式)</a>
+      </li>
+    
+      <li>
+        <a href="/2019/07/01/Windows/delphi_reverse_summary/">Delphi程序逆向反汇编技巧小记</a>
+      </li>
+    
+      <li>
+        <a href="/2019/06/25/Kernel/kernel_enum_wfp_callout_function/">Windows内核重拾：如何枚举系统中Windows Filtering Platform (WFP)驱动中的callout函数</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget tagcloud">
+  <h3 class="title">标签云</h3>
+  <div class="entry">
+    <a href="/tags/Boost/" style="font-size: 10px;">Boost</a> <a href="/tags/DDoS/" style="font-size: 10px;">DDoS</a> <a href="/tags/DNS-over-HTTPS/" style="font-size: 10px;">DNS-over-HTTPS</a> <a href="/tags/DNS劫持/" style="font-size: 10px;">DNS劫持</a> <a href="/tags/Delphi/" style="font-size: 10px;">Delphi</a> <a href="/tags/Dll劫持/" style="font-size: 10px;">Dll劫持</a> <a href="/tags/GetVersionEx/" style="font-size: 10px;">GetVersionEx</a> <a href="/tags/Http/" style="font-size: 10px;">Http</a> <a href="/tags/IDA-Pro/" style="font-size: 12.5px;">IDA Pro</a> <a href="/tags/IOT安全/" style="font-size: 17.5px;">IOT安全</a> <a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/MSDN/" style="font-size: 12.5px;">MSDN</a> <a href="/tags/Malware/" style="font-size: 12.5px;">Malware</a> <a href="/tags/MiniDumpWriteDump/" style="font-size: 10px;">MiniDumpWriteDump</a> <a href="/tags/PEB/" style="font-size: 10px;">PEB</a> <a href="/tags/Procmon/" style="font-size: 10px;">Procmon</a> <a href="/tags/Runtime-Error/" style="font-size: 10px;">Runtime Error</a> <a href="/tags/SEH/" style="font-size: 10px;">SEH</a> <a href="/tags/SysinternalsSuite/" style="font-size: 10px;">SysinternalsSuite</a> <a href="/tags/Tips/" style="font-size: 10px;">Tips</a> <a href="/tags/UAC/" style="font-size: 10px;">UAC</a> <a href="/tags/UAF漏洞/" style="font-size: 10px;">UAF漏洞</a> <a href="/tags/VC/" style="font-size: 10px;">VC</a> <a href="/tags/Visual-Studio/" style="font-size: 12.5px;">Visual Studio</a> <a href="/tags/Windbg/" style="font-size: 10px;">Windbg</a> <a href="/tags/Windows/" style="font-size: 20px;">Windows</a> <a href="/tags/getaddrinfo/" style="font-size: 10px;">getaddrinfo</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/libeay32/" style="font-size: 10px;">libeay32</a> <a href="/tags/x64/" style="font-size: 10px;">x64</a> <a href="/tags/内核/" style="font-size: 12.5px;">内核</a> <a href="/tags/内核结构/" style="font-size: 15px;">内核结构</a> <a href="/tags/反病毒/" style="font-size: 17.5px;">反病毒</a> <a href="/tags/安全机制/" style="font-size: 10px;">安全机制</a> <a href="/tags/异常处理/" style="font-size: 10px;">异常处理</a> <a href="/tags/提权/" style="font-size: 12.5px;">提权</a> <a href="/tags/服务/" style="font-size: 10px;">服务</a> <a href="/tags/权限/" style="font-size: 12.5px;">权限</a> <a href="/tags/栈溢出漏洞/" style="font-size: 10px;">栈溢出漏洞</a> <a href="/tags/测试/" style="font-size: 10px;">测试</a> <a href="/tags/漏洞调试/" style="font-size: 12.5px;">漏洞调试</a> <a href="/tags/生活/" style="font-size: 15px;">生活</a> <a href="/tags/脱壳/" style="font-size: 10px;">脱壳</a> <a href="/tags/西安/" style="font-size: 10px;">西安</a> <a href="/tags/计划/" style="font-size: 10px;">计划</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a> <a href="/tags/调试/" style="font-size: 15px;">调试</a> <a href="/tags/转换/" style="font-size: 10px;">转换</a> <a href="/tags/进程/" style="font-size: 10px;">进程</a> <a href="/tags/逆向/" style="font-size: 10px;">逆向</a> <a href="/tags/重庆/" style="font-size: 10px;">重庆</a> <a href="/tags/驱动/" style="font-size: 15px;">驱动</a>
+  </div>
+</div>
+
+
+  <div class="widget tag">
+<h3 class="title">Links</h3>
+<ul class="entry">
+<li><a href="http://blog.ourren.com/" title="Ourren">Ourren</a></li>
+<li><a href="http://www.hyjal.net/" title="Hyjal">Hyjal</a></li>
+<li><a href="http://www.jianshu.com/users/fa15f4e416ae/latest_articles" title="Daemonceltics">Daemonceltics</a></li>
+<li><a href="http://papap.info/" title="isee">isee</a></li>
+</ul>
+</div>
+
+  <script type="text/javascript" id="clustrmaps" src="//cdn.clustrmaps.com/map_v2.js?u=putG&d=yoFnN6V-ovhL-H4e9_69LvkTiX4uX7rEYJ15yL3G1Wg"></script>
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <div id="go-pg-top"><i class="icon-arrow-up"></i></div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2021 Lyon
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript" charset="utf-8" src="/js/page.js"></script>
+
+</body>
+
+</html>

@@ -102,6 +102,118 @@ var _hmt = _hmt || [];
   <div class="post-content">
     <header>
       
+        <time datetime="2016-07-27T10:57:32.000Z"><a href="/2016/07/27/Debug/debug-vulner-UAF-2011-0065/">2016-07-27</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2016/07/27/Debug/debug-vulner-UAF-2011-0065/">漏洞调试-释放重引用UAF-cve-2011-0065</a></h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+
+	
+    <div class="entry">
+      
+        <p>##实验环境<br>操作系统：Windows xp、<br>辅助环境: MetaSploit、Windbg</p>
+<p>##准备<br>继续漏洞分析学习，上次分析了0158之后就买了泉哥的漏洞战争，很详细很nice，不用到处去找了就跟着书上流程走就可以了。</p>
+<p>###样本生成<br>虽然书的配套资料有样本，但是还是按照之前的流程用MetaSploit生成了漏洞利用样本，然后用python写了个小脚本把样本存下来了（主要是ruby写的利用代码，不怎么看得懂用浏览器访问也不好存）。python脚本和漏洞样本如下<br>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/2016/07/27/Debug/debug-vulner-UAF-2011-0065/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+  <div id="container"></div>
+</span>
+</article>
+
+
+
+
+  <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <time datetime="2016-05-23T09:55:21.000Z"><a href="/2016/05/23/Debug/debug-vulner-stackoverflows-2012-0158/">2016-05-23</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2016/05/23/Debug/debug-vulner-stackoverflows-2012-0158/">漏洞调试-栈溢出漏洞-cve-2012-0158</a></h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+
+	
+    <div class="entry">
+      
+        <h2 id="实验环境">实验环境</h2><p>操作系统：Windows 7（7600）、office 2007（12.0.4518.1014）<br>辅助环境: MetaSploit、Windbg、ida pro</p>
+<h2 id="前言">前言</h2><p>这个漏洞很老，但是很好用，经常看到有利用的文章，之前也没有认真分析过系统漏洞相关的东西（ps 主要是找工作的时候被问漏洞相关的时候自己基本答不上来），所以花上2天时间分析研究下。<br>网上关于这个漏洞分析的文章比较多，主要看了<a href="http://bbs.pediy.com/showthread.php?t=149957">看雪</a>的那篇分析文章，发现就是一个由于程序员疏忽小于写成大于造成的栈溢出漏洞，比较经典典型。</p>
+<h2 id="漏洞调试">漏洞调试</h2>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/2016/05/23/Debug/debug-vulner-stackoverflows-2012-0158/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+  <div id="container"></div>
+</span>
+</article>
+
+
+
+
+  <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
         <time datetime="2016-04-17T10:20:32.000Z"><a href="/2016/04/17/Debug/How-to-debug-a-Visual-C-Runtime-Error/">2016-04-17</a></time>
       
       
@@ -656,121 +768,13 @@ var _hmt = _hmt || [];
 
 
 
-  <article class="post">
-  
-    <div class="gallery">
-  <div class="photoset">
-    
-      <img src="">
-    
-  </div>
-  <div class="control">
-    <div class="prev"></div>
-    <div class="next"></div>
-  </div>
-</div>
-  
-  <div class="post-content">
-    <header>
-      
-        <time datetime="2015-10-10T02:46:32.000Z"><a href="/2015/10/10/Debug/A-Tips-about-DbgBreakPoint/">2015-10-10</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2015/10/10/Debug/A-Tips-about-DbgBreakPoint/">一种让Ring 3程序断下来的方法</a></h1>
-  
-
-    </header>
-	
-<!-- Table of Contents -->
-
-
-	
-    <div class="entry">
-      
-        <h2 id="背景">背景</h2><p>解决一个<a href="https://social.msdn.microsoft.com/Forums/en-US/7728257d-3889-48cc-877c-5dc8c2d492b0/winsock-differences-in-store-apps?forum=winappswithnativecode">bug</a>**的过程中使用windbg但是断不下来，因为每次符号信息没来得及加载系统就蹦了。so想到之前驱动调试的 int 3但程序是64位的不好嵌入汇编想到DbgBreakPoint()，遂有下面的方法<br>在应用层中直接调用ntdll的DbgBreakPoint。<br>大概就像下面这个样子：<br>
-      
-    </div>
-    <footer>
-      
-        
-          <div class="alignleft">
-            <a href="/2015/10/10/Debug/A-Tips-about-DbgBreakPoint/#more" class="more-link">Read More</a>
-          </div>
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-  <div id="container"></div>
-</span>
-</article>
-
-
-
-
-  <article class="post">
-  
-    <div class="gallery">
-  <div class="photoset">
-    
-      <img src="">
-    
-  </div>
-  <div class="control">
-    <div class="prev"></div>
-    <div class="next"></div>
-  </div>
-</div>
-  
-  <div class="post-content">
-    <header>
-      
-        <time datetime="2015-09-26T03:03:03.000Z"><a href="/2015/09/26/Windows/Process32First-error-of-command-length/">2015-09-26</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2015/09/26/Windows/Process32First-error-of-command-length/">关于&quot;Process32First&quot;返回false的问题</a></h1>
-  
-
-    </header>
-	
-<!-- Table of Contents -->
-
-
-	
-    <div class="entry">
-      
-        <h2 id="问题描述">问题描述</h2><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">http://blog.csdn.net/hbu_dcf/article/details/3491276</span><br><span class="line">现象：Process32First"返回值为0，GetLastError()取到的错误是：〖24〗-程序发出命令，但命令长度</span><br><span class="line">不正确。</span><br><span class="line">分析：在调用这个函数前，需要：pe32.dwSize = sizeof(PROCESSENTRY32);，</span><br><span class="line">不设的话，就会一直返回0，而虽然我设定了大小，但是出错原因是命令长度不正确，所以肯定还是这句</span><br><span class="line">代码出了问题。</span><br><span class="line">参考：</span><br><span class="line">有因为使用了"unicode模式"而且没有初始化PROCESSENTRY32对象里面的dwsize对象,可以使用sizeof</span><br><span class="line">(PROCESSENTRY32)来初始化.有时候在release模式下不能通过但debug可以通过也可能是这个原因</span><br><span class="line">解决方案：最后实在没了办法，把工程属性-配置属性-常规-字符集-未设定，原来是unicode字符集。</span><br><span class="line">问题解决，不过还是很晕。</span><br></pre></td></tr></table></figure>
-      
-    </div>
-    <footer>
-      
-        
-          <div class="alignleft">
-            <a href="/2015/09/26/Windows/Process32First-error-of-command-length/#more" class="more-link">Read More</a>
-          </div>
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-  <div id="container"></div>
-</span>
-</article>
-
-
-
-
 
 <ul class="page-direction" id="page-direction">
     <li><a class="page-prev icon-chevron-sign-left" href="javascript:;" title="上一页"></a></li>
     <li><a class="page-next icon-chevron-sign-right" href="javascript:;" title="下一页"></a></li>
 </ul>
 
-    <nav id="page-list" class="page-list"><a class="extend prev" rel="prev" href="/page/2/">Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/4/">Next</a></nav>
+    <nav id="page-list" class="page-list"><a class="extend prev" rel="prev" href="/page/2/">Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" href="/page/4/">Next</a></nav>
 
 <nav id="pagination">
   
@@ -791,7 +795,7 @@ var _hmt = _hmt || [];
   
     <li><a href="/categories/Debug/">Debug</a><small>7</small></li>
   
-    <li><a href="/categories/IOT/">IOT</a><small>2</small></li>
+    <li><a href="/categories/IOT/">IOT</a><small>4</small></li>
   
     <li><a href="/categories/Kernel/">Kernel</a><small>4</small></li>
   
@@ -820,6 +824,14 @@ var _hmt = _hmt || [];
     
       <li>
         <a href="/2021/10/20/IOT/using-rasberrypi-as-poor-mans-hardware-hacking-tool/">树莓派-穷人的硬件黑客工具（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2021/09/21/IOT/iot-security-part-2-101-iot-attack-surface/">物联网安全101-2.物联网攻击面（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2021/09/21/IOT/iot-security-part-1-101-iot-introduction-architecture/">物联网安全101-1.物联网介绍及其架构（翻译）</a>
       </li>
     
       <li>
@@ -858,14 +870,6 @@ var _hmt = _hmt || [];
         <a href="/2019/06/25/Kernel/kernel_enum_wfp_callout_function/">Windows内核重拾：如何枚举系统中Windows Filtering Platform (WFP)驱动中的callout函数</a>
       </li>
     
-      <li>
-        <a href="/2019/05/06/Kernel/windows-driver-testing-basics/">Windows内核重拾：Windows驱动测试基础：工具、功能和示例（翻译/转载）</a>
-      </li>
-    
-      <li>
-        <a href="/2019/04/06/Windows/how-to-reverse-engineer-software-windows-in-a-right-way/">如何正确的对Windows软件进行逆向工程（翻译/转载）</a>
-      </li>
-    
   </ul>
 </div>
 
@@ -874,7 +878,7 @@ var _hmt = _hmt || [];
 <div class="widget tagcloud">
   <h3 class="title">标签云</h3>
   <div class="entry">
-    <a href="/tags/Boost/" style="font-size: 10px;">Boost</a> <a href="/tags/DDoS/" style="font-size: 10px;">DDoS</a> <a href="/tags/DNS-over-HTTPS/" style="font-size: 10px;">DNS-over-HTTPS</a> <a href="/tags/DNS劫持/" style="font-size: 10px;">DNS劫持</a> <a href="/tags/Delphi/" style="font-size: 10px;">Delphi</a> <a href="/tags/Dll劫持/" style="font-size: 10px;">Dll劫持</a> <a href="/tags/GetVersionEx/" style="font-size: 10px;">GetVersionEx</a> <a href="/tags/Http/" style="font-size: 10px;">Http</a> <a href="/tags/IDA-Pro/" style="font-size: 12.5px;">IDA Pro</a> <a href="/tags/IOT安全/" style="font-size: 12.5px;">IOT安全</a> <a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/MSDN/" style="font-size: 12.5px;">MSDN</a> <a href="/tags/Malware/" style="font-size: 12.5px;">Malware</a> <a href="/tags/MiniDumpWriteDump/" style="font-size: 10px;">MiniDumpWriteDump</a> <a href="/tags/PEB/" style="font-size: 10px;">PEB</a> <a href="/tags/Procmon/" style="font-size: 10px;">Procmon</a> <a href="/tags/Runtime-Error/" style="font-size: 10px;">Runtime Error</a> <a href="/tags/SEH/" style="font-size: 10px;">SEH</a> <a href="/tags/SysinternalsSuite/" style="font-size: 10px;">SysinternalsSuite</a> <a href="/tags/Tips/" style="font-size: 10px;">Tips</a> <a href="/tags/UAC/" style="font-size: 10px;">UAC</a> <a href="/tags/UAF漏洞/" style="font-size: 10px;">UAF漏洞</a> <a href="/tags/VC/" style="font-size: 10px;">VC</a> <a href="/tags/Visual-Studio/" style="font-size: 12.5px;">Visual Studio</a> <a href="/tags/Windbg/" style="font-size: 10px;">Windbg</a> <a href="/tags/Windows/" style="font-size: 20px;">Windows</a> <a href="/tags/getaddrinfo/" style="font-size: 10px;">getaddrinfo</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/libeay32/" style="font-size: 10px;">libeay32</a> <a href="/tags/x64/" style="font-size: 10px;">x64</a> <a href="/tags/内核/" style="font-size: 12.5px;">内核</a> <a href="/tags/内核结构/" style="font-size: 15px;">内核结构</a> <a href="/tags/反病毒/" style="font-size: 17.5px;">反病毒</a> <a href="/tags/安全机制/" style="font-size: 10px;">安全机制</a> <a href="/tags/异常处理/" style="font-size: 10px;">异常处理</a> <a href="/tags/提权/" style="font-size: 12.5px;">提权</a> <a href="/tags/服务/" style="font-size: 10px;">服务</a> <a href="/tags/权限/" style="font-size: 12.5px;">权限</a> <a href="/tags/栈溢出漏洞/" style="font-size: 10px;">栈溢出漏洞</a> <a href="/tags/测试/" style="font-size: 10px;">测试</a> <a href="/tags/漏洞调试/" style="font-size: 12.5px;">漏洞调试</a> <a href="/tags/生活/" style="font-size: 15px;">生活</a> <a href="/tags/脱壳/" style="font-size: 10px;">脱壳</a> <a href="/tags/西安/" style="font-size: 10px;">西安</a> <a href="/tags/计划/" style="font-size: 10px;">计划</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a> <a href="/tags/调试/" style="font-size: 15px;">调试</a> <a href="/tags/转换/" style="font-size: 10px;">转换</a> <a href="/tags/进程/" style="font-size: 10px;">进程</a> <a href="/tags/逆向/" style="font-size: 10px;">逆向</a> <a href="/tags/重庆/" style="font-size: 10px;">重庆</a> <a href="/tags/驱动/" style="font-size: 15px;">驱动</a>
+    <a href="/tags/Boost/" style="font-size: 10px;">Boost</a> <a href="/tags/DDoS/" style="font-size: 10px;">DDoS</a> <a href="/tags/DNS-over-HTTPS/" style="font-size: 10px;">DNS-over-HTTPS</a> <a href="/tags/DNS劫持/" style="font-size: 10px;">DNS劫持</a> <a href="/tags/Delphi/" style="font-size: 10px;">Delphi</a> <a href="/tags/Dll劫持/" style="font-size: 10px;">Dll劫持</a> <a href="/tags/GetVersionEx/" style="font-size: 10px;">GetVersionEx</a> <a href="/tags/Http/" style="font-size: 10px;">Http</a> <a href="/tags/IDA-Pro/" style="font-size: 12.5px;">IDA Pro</a> <a href="/tags/IOT安全/" style="font-size: 17.5px;">IOT安全</a> <a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/MSDN/" style="font-size: 12.5px;">MSDN</a> <a href="/tags/Malware/" style="font-size: 12.5px;">Malware</a> <a href="/tags/MiniDumpWriteDump/" style="font-size: 10px;">MiniDumpWriteDump</a> <a href="/tags/PEB/" style="font-size: 10px;">PEB</a> <a href="/tags/Procmon/" style="font-size: 10px;">Procmon</a> <a href="/tags/Runtime-Error/" style="font-size: 10px;">Runtime Error</a> <a href="/tags/SEH/" style="font-size: 10px;">SEH</a> <a href="/tags/SysinternalsSuite/" style="font-size: 10px;">SysinternalsSuite</a> <a href="/tags/Tips/" style="font-size: 10px;">Tips</a> <a href="/tags/UAC/" style="font-size: 10px;">UAC</a> <a href="/tags/UAF漏洞/" style="font-size: 10px;">UAF漏洞</a> <a href="/tags/VC/" style="font-size: 10px;">VC</a> <a href="/tags/Visual-Studio/" style="font-size: 12.5px;">Visual Studio</a> <a href="/tags/Windbg/" style="font-size: 10px;">Windbg</a> <a href="/tags/Windows/" style="font-size: 20px;">Windows</a> <a href="/tags/getaddrinfo/" style="font-size: 10px;">getaddrinfo</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/libeay32/" style="font-size: 10px;">libeay32</a> <a href="/tags/x64/" style="font-size: 10px;">x64</a> <a href="/tags/内核/" style="font-size: 12.5px;">内核</a> <a href="/tags/内核结构/" style="font-size: 15px;">内核结构</a> <a href="/tags/反病毒/" style="font-size: 17.5px;">反病毒</a> <a href="/tags/安全机制/" style="font-size: 10px;">安全机制</a> <a href="/tags/异常处理/" style="font-size: 10px;">异常处理</a> <a href="/tags/提权/" style="font-size: 12.5px;">提权</a> <a href="/tags/服务/" style="font-size: 10px;">服务</a> <a href="/tags/权限/" style="font-size: 12.5px;">权限</a> <a href="/tags/栈溢出漏洞/" style="font-size: 10px;">栈溢出漏洞</a> <a href="/tags/测试/" style="font-size: 10px;">测试</a> <a href="/tags/漏洞调试/" style="font-size: 12.5px;">漏洞调试</a> <a href="/tags/生活/" style="font-size: 15px;">生活</a> <a href="/tags/脱壳/" style="font-size: 10px;">脱壳</a> <a href="/tags/西安/" style="font-size: 10px;">西安</a> <a href="/tags/计划/" style="font-size: 10px;">计划</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a> <a href="/tags/调试/" style="font-size: 15px;">调试</a> <a href="/tags/转换/" style="font-size: 10px;">转换</a> <a href="/tags/进程/" style="font-size: 10px;">进程</a> <a href="/tags/逆向/" style="font-size: 10px;">逆向</a> <a href="/tags/重庆/" style="font-size: 10px;">重庆</a> <a href="/tags/驱动/" style="font-size: 15px;">驱动</a>
   </div>
 </div>
 
