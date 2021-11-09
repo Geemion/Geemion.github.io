@@ -102,6 +102,239 @@ var _hmt = _hmt || [];
   <div class="post-content">
     <header>
       
+        <time datetime="2015-12-23T09:25:11.000Z"><a href="/2015/12/23/Tools/Malware-Regulary-Api/">2015-12-23</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2015/12/23/Tools/Malware-Regulary-Api/">病毒木马常用api</a></h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+
+	
+    <div class="entry">
+      
+        <p><em>提取自MyMonitor TraceDllReport.dll</em><br><strong>发现了个更好的东西<a href="https://www.bnxnet.com/top-maliciously-used-apis/">top-maliciously-used-apis</a></strong></p>
+<p>Sleep<br>WSAConnect<br>connect<br>bind<br>send<br>SetFileAttributesW<br>ExitProcess<br>MessageBoxW<br>MessageBoxA<br>TerminateProcess<br>WriteProcessMemory<br>ReadProcessMemory<br>AdjustTokenPrivileges<br>OpenProcessToken<br>IsDebuggerPresent<br>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/2015/12/23/Tools/Malware-Regulary-Api/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+  <div id="container"></div>
+</span>
+</article>
+
+
+
+
+  <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <time datetime="2015-12-17T10:04:32.000Z"><a href="/2015/12/17/Tools/FLARE-IDA-Pro-msdn/">2015-12-17</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2015/12/17/Tools/FLARE-IDA-Pro-msdn/">火眼（FireEye）实验室FLARE IDA Pro脚本系列：MSDN注释插件----实践</a></h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+
+	
+    <div class="entry">
+      
+        <p>主要实践了这篇文章<a href="http://www.freebuf.com/tools/43334.html">火眼（FireEye）实验室FLARE IDA Pro脚本系列：MSDN注释插件</a>,主要是有几个坑需要注意，然后就能实现功能了。</p>
+<p>##原始步骤</p>
+<ul>
+<li><ol>
+<li>下载并安装离线MSDN文档，下载链接：<a href="http://www.microsoft.com/en-us/download/details.aspx?id=18950.尽管不是最新的SDK版本，但是它包含了所需的全部信息，‍‍‍‍‍‍‍‍而且数据可以直接被提取。如图6所示，你可以只选择安装帮助文档，默认的安装目录是C:\ProgramFiles\Microsoft">http://www.microsoft.com/en-us/download/details.aspx?id=18950.尽管不是最新的SDK版本，但是它包含了所需的全部信息，‍‍‍‍‍‍‍‍而且数据可以直接被提取。如图6所示，你可以只选择安装帮助文档，默认的安装目录是C:\ProgramFiles\Microsoft</a> SDKs\Windows\v7.0\Help\1033.‍‍‍‍‍‍‍‍</li>
+</ol>
+</li>
+<li>2.利用解压软件（如7-zip）解压MSDN文档到指定目录。</li>
+<li>3.从Hex-Rays网站上下载tilib.exe，链接如下： <a href="https://www.hex-rays.com/products/ida/support/download.shtml">https://www.hex-rays.com/products/ida/support/download.shtml</a> </li>
+<li>4.运行MSDN_crawler/msdn_crawler.py &lt;已解压的MSDN文件的目录 &gt; &lt; tilib.exe所在的目录&gt; &lt; til文件所在的目录&gt;<br>如果提前条件都满足，你就可以运行位于MSDN_crawler目录中的MSDN_crawler.py脚本。脚本需要TIL文件的目录（通常为%IDADIR%/til/pc/）和已解压的MSDN文档的目录。当脚本运行完之后，最终的XML数据库文件就位于MSDN_data 目录中。‍‍‍‍</li>
+</ul>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/2015/12/17/Tools/FLARE-IDA-Pro-msdn/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+  <div id="container"></div>
+</span>
+</article>
+
+
+
+
+  <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <time datetime="2015-11-20T08:12:00.000Z"><a href="/2015/11/20/Learning/windowservices/">2015-11-20</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2015/11/20/Learning/windowservices/">Window服务学习笔记</a></h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+
+	
+    <div class="entry">
+      
+        <p>参考资料:<br><a href="http://www.vckbase.com/index.php/wv/1193">用 C 语言编写 Windows 服务程序的五个步骤</a><br><a href="http://blog.csdn.net/zhangpeng_linux/article/details/7001084">如何编写windows服务程序</a><br><a href="https://joway.wang/blog/2015/04/22/WindowsService.html">用C创建并调用Windows服务（守护进程）</a><br><a href="http://www.xfocus.net/articles/200308/601.html">创建SvcHost.exe调用的服务原理与实践</a><br>黑客防线201301</p>
+<div align="center"><br><img src="/img/windows%20Service.png" align="center"/><br></div>
+
+<h2 id="关于Windows服务">关于Windows服务</h2><p>Windows系统中的服务几乎是都是默默无闻的存在的，大部分是一些系统进程，负责电源管理、网络及安全方面等与用户无交互的工作,在客户服务模型中主要是作为服务端存在。</p>
+<div align="center"><br><img src="/img/scm_scp_exe.png" align="center"/><br></div><br>Windows服务主要由3个部分组成，包括服务应用、服务控制程序（scp）及服务控制管理器（scm）。<br>服务应用即运行的服务程序，与普通的Windows可执行程序类似，只是有一些与scm的接口函数，负责与scm通信。<br>服务控制程序（scp）即负责控制服务应用的程序，Windows系统内置了一些scm的功能，比如我们可以sc命令控制服务应用的启动、停止等，有一些服务也自带了scp提供一些自定义的共计功能。服务控制程序就是普通的Windows用户程序。<br>服务控制管理器（scm）就是系统中负责在系统中管理全部服务的应用的，包括安装服务、负责服务自启动。容易和服务控制程序（scp）混淆，scp只是一个工具而scm是一个系统，scp就好比一种方法，scm是一个机构[好吧。。。这个比方不好]。<br>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/2015/11/20/Learning/windowservices/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+  <div id="container"></div>
+</span>
+</article>
+
+
+
+
+  <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <time datetime="2015-10-30T11:40:09.000Z"><a href="/2015/10/30/Learning/Http-Protocl-learn/">2015-10-30</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2015/10/30/Learning/Http-Protocl-learn/">Http协议初学</a></h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+
+	
+    <div class="entry">
+      
+        <p>参考资料：<br><a href="http://www.cnblogs.com/it-cen/p/4899692.html?utm_source=tuicool&amp;utm_medium=referral">IP、TCP和DNS与HTTP的密切关系</a><br><a href="http://blog.csdn.net/breaksoftware/article/details/45874191">实现HTTP协议Get、Post和文件上传功能——设计和模块</a><br><a href="http://www.cnblogs.com/starstone/p/4890409.html?utm_source=tuicool&amp;utm_medium=referral">HTTP必知必会</a><br><a href="http://www.cnblogs.com/mengdd/archive/2013/05/25/3099240.html">HTTP协议 通信过程介绍</a><br><a href="http://www.cnblogs.com/zhuqil/archive/2012/07/23/2604572.html">图解HTTPS</a><br>&lt;&lt;图解HTTP&gt;&gt; 上野宣<br><em>全抄袭，仅当监督学习。。。。。。。</em></p>
+<p>##Http协议和TCP、IP协议的关系<br>我们都知道http协议是一种应用层协议，应用层协议又是什么意思呢？就是要利用下层协议的然后通过自定义一种格式的方式生成了一坨数据然后丢给下一层协议拿去发送（反正我是这么理解的，应该还是对的）。这里的自定义的一种格式就是HTTP协议格式，这里的下一层协议就是TCP协议。且Http协议是一种无连接、无状态的协议，即没有tcp的长连接请求然后响应后理解断开，对事务无记忆能力。</p>
+<p><div align="center"><br><img src="/img/http_tcp.jpg" alt="Http协议和其他协议关系"  align="center"/><br></div><br>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/2015/10/30/Learning/Http-Protocl-learn/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+  <div id="container"></div>
+</span>
+</article>
+
+
+
+
+  <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
         <time datetime="2015-10-22T09:38:16.000Z"><a href="/2015/10/22/Windows/Different-From-several-Ways-Create-Process/">2015-10-22</a></time>
       
       
@@ -539,253 +772,6 @@ var _hmt = _hmt || [];
 
 
 
-  <article class="post">
-  
-    <div class="gallery">
-  <div class="photoset">
-    
-      <img src="">
-    
-  </div>
-  <div class="control">
-    <div class="prev"></div>
-    <div class="next"></div>
-  </div>
-</div>
-  
-  <div class="post-content">
-    <header>
-      
-        <time datetime="2015-08-25T11:39:28.000Z"><a href="/2015/08/25/Windows/VC-BMPtoJPG/">2015-08-25</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2015/08/25/Windows/VC-BMPtoJPG/">VC++直接利用api实现bmp图像转jpg图像</a></h1>
-  
-
-    </header>
-	
-<!-- Table of Contents -->
-
-
-	
-    <div class="entry">
-      
-        <p>网上找了很久寻找直接bmp格式转jpg，大部分都是利用libjpeg/libjpeg-turbo实现的。libjpeg实现有很多有点支持多平台Windows/linux/嵌入式,但是使用较为麻烦，需要自己编译lib可能还需要自己懂一点make语法之类的。so 能不能直接在Windows找个api实现呢？遂打开msdn输入”bmp converting to jpg”，还不错找到两个相关问题<a href="https://social.msdn.microsoft.com/Forums/vstudio/en-US/e30af0cb-de22-4c95-9b0f-eacb00181387/convert-bmp-image-to-jpg?forum=vcgeneral">链接1</a>、<a href="https://social.msdn.microsoft.com/Forums/en-US/0a4126bb-2e5b-4972-ac2f-a6055fe692c2/converting-jpg-file-into-bmp-file?forum=vcmfcatl">链接2</a> 。使用<a href="https://msdn.microsoft.com/en-us/library/ms534077(VS.85">GDI+</a>.aspx)、<a href="https://msdn.microsoft.com/en-us/library/d06f3fhw(VS.80">CImage</a>.aspx)，而且使用这些几乎可以实现任何图片格式之间的转换GDI+库封装了很多图像处理相关的函数还有很多待学习。例子只是一个很简单的bmp转jpg</p>
-      
-    </div>
-    <footer>
-      
-        
-          <div class="alignleft">
-            <a href="/2015/08/25/Windows/VC-BMPtoJPG/#more" class="more-link">Read More</a>
-          </div>
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-  <div id="container"></div>
-</span>
-</article>
-
-
-
-
-  <article class="post">
-  
-    <div class="gallery">
-  <div class="photoset">
-    
-      
-        <img src="/img/session.png">
-      
-    
-  </div>
-  <div class="control">
-    <div class="prev"></div>
-    <div class="next"></div>
-  </div>
-</div>
-  
-  <div class="post-content">
-    <header>
-      
-        <time datetime="2015-08-20T09:00:40.000Z"><a href="/2015/08/20/Windows/windows-Security-Mechanism/">2015-08-20</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2015/08/20/Windows/windows-Security-Mechanism/">Windows安全机制学习笔记</a></h1>
-  
-
-    </header>
-	
-<!-- Table of Contents -->
-
-
-	
-    <div class="entry">
-      
-        <p>参考资料:<br><a href="http://blog.csdn.net/chengyun_chu/article/details/1583601">Windows Vista操作系统最新安全特性分析：改进和局限</a><br><a href="https://technet.microsoft.com/zh-cn/library/bb629420">Windows Vista 安全指南</a><br><a href="http://blogs.itecn.net/blogs/winvista/archive/2006/07/21/2920.aspx">您必须知道的Windows Vista安全功能</a><br><a href="http://wenku.baidu.com/link?url=_monxlxC5ENx9JHByP4s-CgwF44TqyaZfZ0VwaR8pYPWN_etqFnc9anToWzxFyQG1tzL8FNPEeefOVQU-9x46e5pjl-kxI7QOtjOJeAlKxS">Win8的安全特性</a><br><a href="https://technet.microsoft.com/zh-cn/windows/jj983723.aspx">Windows 8 安全性改进</a><br><a href="http://windowsitpro.com/systems-management/understanding-windows-service-hardening">Understanding Windows Service Hardening</a><br><a href="http://hitcon.org/2012/download/0720A5_360.MJ0011_Reversing%20Windows8-Interesting%20Features%20of%20Kernel%20Security_Englisht.pdf">逆向Windows 8:内核安全特性拾趣</a></p>
-<h2 id="系统安全">系统安全</h2><h3 id="代码完整性：">代码完整性：</h3><p>代码完整性(CI：Code Integrity)可以有效地防范木马、rootkit等对系统文件的恶意修改，防范不安全的第三方驱动对系统的危害。CI会检查代码的hash值(内嵌于代码中的x.509证书，或者位于%windir%\system32\catroot里的编录文件)，一旦发现hash值不符，就会停止加载代码。<br>CI主要检查以下的代码：</p>
-<ul>
-<li>(1) 系统启动时，检查内核、HAL和驱动的完整性</li>
-<li>(2) 检查所有加载到内核内存空间的代码完整性</li>
-<li>(3) 对加载到受保护进程空间里的代码进行完整性检查</li>
-</ul>
-<h3 id="服务加固">服务加固</h3><div align="center"><br><img src="http://windowsitpro.com/site-files/windowsitpro.com/files/archive/windowsitpro.com/content/content/99346/figure1.jpg"  alt="Windows Xp和Vista Session的不同" align="center"/><br></div>
-
-<ul>
-<li>session 0隔离</li>
-<li>最小特权账户（把更多服务的启动帐户，从LocalSystem迁移到LocalService或者NetworkService）</li>
-<li>独立SID(每个服务都有一个独立的SID，这样服务就可以利用该SID来控制其专属资源的ACL)、</li>
-<li>服务的SID标记为Write-Restricted(写限制)、</li>
-<li>减少不必要的特权</li>
-<li>限制网络访问</li>
-</ul>
-<h3 id="完整性级别校验">完整性级别校验</h3><p>Windows中各种对象都有完整性级别，例如进程主要级别从低到高为Untrust、Low、Medium、Hight和System。Windows 2000/XP安全体系里，安全子系统把进程的访问令牌和资源的访问控制列表进行匹配比较，以确认该进程是否具有访问该资源的权限。而在WindowsVista下，除了遵守传统的安全控制机制外，还必须检查进程和资源对象的完整性级别，完整性级别低的进程，不能写入完整性级别高的资源对象【通过这种完整性级别可以防止一些恶意行为如dll注入、代码注入或则修改pe文件】。<br>
-      
-    </div>
-    <footer>
-      
-        
-          <div class="alignleft">
-            <a href="/2015/08/20/Windows/windows-Security-Mechanism/#more" class="more-link">Read More</a>
-          </div>
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-  <div id="container"></div>
-</span>
-</article>
-
-
-
-
-  <article class="post">
-  
-    <div class="gallery">
-  <div class="photoset">
-    
-      
-        <img src="/img/Privilege.jpg">
-      
-    
-  </div>
-  <div class="control">
-    <div class="prev"></div>
-    <div class="next"></div>
-  </div>
-</div>
-  
-  <div class="post-content">
-    <header>
-      
-        <time datetime="2015-08-14T08:05:45.000Z"><a href="/2015/08/14/Windows/Windows-Permissions-Privilege/">2015-08-14</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2015/08/14/Windows/Windows-Permissions-Privilege/">Windows权限机制学习</a></h1>
-  
-
-    </header>
-	
-<!-- Table of Contents -->
-
-
-	
-    <div class="entry">
-      
-        <p>参考资料：<br><a href="http://bbs.pediy.com/showthread.php?t=173381">【原创】白话windows之 访问控制模型(Access Control Model)</a><br><a href="http://www.cppblog.com/weiym/archive/2013/08/25/202751.html?opt=admin">浅析Windows安全相关的一些概念</a><br><a href="http://blog.csdn.net/gwzz1228/article/details/9031835">CreateEvent 和OpenEvent时事件全局名称问题 Global</a></p>
-<h2 id="对windows权限机制最直观的认识">对windows权限机制最直观的认识</h2><h3 id="Windows用户权限">Windows用户权限</h3><p>在之前的学习中对于windows权限机制有过零散的学习，但是对于整个windows权限管理机制没有一个全面的认识所以在这总结学习哈，虽然现在也没有搞清楚完。</p>
-<p>Windows权限管理我觉得最常用的就是UAC权限（管理员权限）。每个进程都有自己的用户最常用的有标准用户、管理员（UAC）【注：这两个就是平常用户启用的进程的用户】，SYSTEM、LOCAL SERVICE、NETWORK SERVICE【注：这三个一般是系统进程及服务启动的且Windows启动后system用户已经登录到系统 】。而每个用户又有不同的特权Privilege，我们可以通过whoami -all查看当前用户所拥有的Privilege。</p>
-<p><strong>Standard用户拥有的特权</strong><br>
-      
-    </div>
-    <footer>
-      
-        
-          <div class="alignleft">
-            <a href="/2015/08/14/Windows/Windows-Permissions-Privilege/#more" class="more-link">Read More</a>
-          </div>
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-  <div id="container"></div>
-</span>
-</article>
-
-
-
-
-  <article class="post">
-  
-    <div class="gallery">
-  <div class="photoset">
-    
-      
-        <img src="/img/chongqing.jpg">
-      
-    
-  </div>
-  <div class="control">
-    <div class="prev"></div>
-    <div class="next"></div>
-  </div>
-</div>
-  
-  <div class="post-content">
-    <header>
-      
-        <time datetime="2015-08-14T04:11:15.000Z"><a href="/2015/08/14/Life/chongqing/">2015-08-14</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2015/08/14/Life/chongqing/">重庆印象</a></h1>
-  
-
-    </header>
-	
-<!-- Table of Contents -->
-
-
-	
-    <div class="entry">
-      
-        <p>迎来了难得的暑假，8月11日从成都出发到重庆，买好的动车票，早上8点10分的票。结果又起晚了只有喊个uber了，运气比较好还在学校里面就有辆2分钟就坐上了车，安心了，师傅比较健谈看出了我是出去玩的，当我说我是去重庆的时候师傅给分享了点经验不要期望太高。嗯，我满口答应，不过我觉得出去玩最重要的是和谁去，地点不是很重要，哈哈。<br>10点多一点正常到达重庆北站，打电话问问刘哈儿这货居然没赶上车，哈哈也好我到菜园坝还要段时间，直接轻轨3号线过去开始了我的重庆印象。<br>三天行程：</p>
-<ul>
-<li>第一天半天时间，下午朝天门试了下长江游船晚上解放碑逛逛看看电影</li>
-<li>第二天报了个团，武隆县，嗯天坑地缝游</li>
-<li>第三天要走了，观光解放碑的八一小吃街（好吃街）</li>
-</ul>
-      
-    </div>
-    <footer>
-      
-        
-          <div class="alignleft">
-            <a href="/2015/08/14/Life/chongqing/#more" class="more-link">Read More</a>
-          </div>
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-  <div id="container"></div>
-</span>
-</article>
-
-
-
-
 
 <ul class="page-direction" id="page-direction">
     <li><a class="page-prev icon-chevron-sign-left" href="javascript:;" title="上一页"></a></li>
@@ -813,7 +799,7 @@ var _hmt = _hmt || [];
   
     <li><a href="/categories/Debug/">Debug</a><small>7</small></li>
   
-    <li><a href="/categories/IOT/">IOT</a><small>6</small></li>
+    <li><a href="/categories/IOT/">IOT</a><small>10</small></li>
   
     <li><a href="/categories/Kernel/">Kernel</a><small>4</small></li>
   
@@ -845,7 +831,23 @@ var _hmt = _hmt || [];
       </li>
     
       <li>
-        <a href="/2021/09/22/IOT/iot-security-part-4-bluetooth-low-energy-101/">物联网安全101-4.低功耗蓝牙BLE（翻译）</a>
+        <a href="/2021/09/23/IOT/iot-security-part-8-introduction-to-software-defined-radio-sdr/">物联网安全101-8.软件无线电（Software Defined Radio，SDR）简介（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2021/09/23/IOT/iot-security-part-7-reverse-engineering-an-iot-firmware/">物联网安全101-7.物联网固件逆向（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2021/09/22/IOT/iot-security-part-6-101-zigbee-security-101/">物联网安全101-6.ZigBee安全（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2021/09/22/IOT/iot-security-part-5-101-zigbee-protocol-101/">物联网安全101-5.ZigBee协议（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2021/09/22/IOT/iot-security-part-4-101-bluetooth-low-energy-101/">物联网安全101-4.低功耗蓝牙BLE（翻译）</a>
       </li>
     
       <li>
@@ -870,22 +872,6 @@ var _hmt = _hmt || [];
     
       <li>
         <a href="/2020/10/02/Cybersecurity/art-of-anti-detection-4-art-of-anti-detection-4-self-defense/">反检测的艺术4-自保护（翻译）</a>
-      </li>
-    
-      <li>
-        <a href="/2020/09/10/Cybersecurity/art-of-anti-detection-3-art-of-anti-detection-3-shellcode-alchemy/">反检测的艺术3-shellcode的魔力 （翻译）</a>
-      </li>
-    
-      <li>
-        <a href="/2020/09/04/Cybersecurity/art-of-anti-detection-2-pe-backdoor-manufacturing/">反检测的艺术2-如何制作PE文件后门（翻译）</a>
-      </li>
-    
-      <li>
-        <a href="/2020/09/03/Cybersecurity/art-of-anti-detection-1-introduction-to-av-detection-techniques/">反检测的艺术1-反病毒软件及检测技术概述（翻译）</a>
-      </li>
-    
-      <li>
-        <a href="/2020/08/02/Life/dns_hijacking/">记录一次被DNS劫持及解决方案(非改hosts方式)</a>
       </li>
     
   </ul>

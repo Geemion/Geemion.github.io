@@ -157,11 +157,11 @@ var _hmt = _hmt || [];
   <div class="post-content">
     <header>
       
-        <time datetime="2021-09-22T12:50:22.000Z"><a href="/2021/09/22/IOT/iot-security-part-4-bluetooth-low-energy-101/">2021-09-22</a></time>
+        <time datetime="2021-09-23T13:50:22.000Z"><a href="/2021/09/23/IOT/iot-security-part-8-introduction-to-software-defined-radio-sdr/">2021-09-23</a></time>
       
       
   
-    <h1 class="title"><a href="/2021/09/22/IOT/iot-security-part-4-bluetooth-low-energy-101/">物联网安全101-4.低功耗蓝牙BLE（翻译）</a></h1>
+    <h1 class="title"><a href="/2021/09/23/IOT/iot-security-part-8-introduction-to-software-defined-radio-sdr/">物联网安全101-8.软件无线电（Software Defined Radio，SDR）简介（翻译）</a></h1>
   
 
     </header>
@@ -172,14 +172,237 @@ var _hmt = _hmt || [];
 	
     <div class="entry">
       
-        <p>如果您还没有通读我们的 IoT 安全博客系列的第 1 部分到第 3 部分，我建议您先阅读它们，除非您已经熟悉 IoT 的基础知识。上一篇博客的链接——<a href="/2021/09/22/IOT/iot-security-part-3-101-iot-top-ten-vulnerabilities/">物联网安全——第 3 部分</a>。<br>蓝牙一直是一个流行词，因为人们希望他们的所有设备都是智能的，这基本上意味着您可以跨设备控制事物而无需携带电线。蓝牙已经进入市场十多年了。如果您是千禧一代，您会使用那些带有蓝牙功能的经典诺基亚手机。蓝牙是由爱立信发明的，其他厂商也开始使用蓝牙。不久之后，所有主要供应商都创建了一个名为<a href="https://en.wikipedia.org/wiki/Bluetooth_Special_Interest_Group">蓝牙特别兴趣小组- SIG的联盟</a>，该联盟管理标准应该如何以及不同版本之间的互操作性。<br>我们不打算谈论蓝牙。蓝牙本身就是一个庞大的协议栈，它们的规范大约有2000 多页。在本博客中，我将仅介绍更为著名的 BLE 蓝牙低功耗。<br>
+        <div align="center"><br><img src="/img/sdr.png" align=""/><br></div>
+
+<h2 id="介绍">介绍</h2><p>本文是“物联网安全”系列的一部分。如果您还没有阅读本系列之前的博客（第 1 - 7 部分），我建议您先阅读它们，除非您已经熟悉这些概念并且只想阅读当前主题。<br><a href="/2021/09/21/IOT/iot-security-part-1-101-iot-introduction-architecture/">物联网安全 - 第 1 部分（101 - 物联网介绍和架构）</a><br><a href="/2021/09/23/IOT/iot-security-part-7-reverse-engineering-an-iot-firmware/">物联网安全 - 第 7 部分（对 IoT 固件进行逆向工程）</a>本系列的前一篇博客。</p>
       
     </div>
     <footer>
       
         
           <div class="alignleft">
-            <a href="/2021/09/22/IOT/iot-security-part-4-bluetooth-low-energy-101/#more" class="more-link">Read More</a>
+            <a href="/2021/09/23/IOT/iot-security-part-8-introduction-to-software-defined-radio-sdr/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+  <div id="container"></div>
+</span>
+</article>
+
+
+
+
+  <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <time datetime="2021-09-23T12:50:22.000Z"><a href="/2021/09/23/IOT/iot-security-part-7-reverse-engineering-an-iot-firmware/">2021-09-23</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2021/09/23/IOT/iot-security-part-7-reverse-engineering-an-iot-firmware/">物联网安全101-7.物联网固件逆向（翻译）</a></h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+
+	
+    <div class="entry">
+      
+        <div align="center"><br><img src="/img/motherboard.jpg" align=""/><br></div>
+
+<h2 id="固件逆向工程：简介">固件逆向工程：简介</h2><p>本文是“物联网安全”系列的一部分。如果您还没有阅读本系列之前的文章（第 1 部分到第 6 部分），我强烈建议您先阅读它们，除非您已经熟悉这些概念并且只想阅读当前主题。<br><a href="/2021/09/21/IOT/iot-security-part-1-101-iot-introduction-architecture/">物联网安全 - 第 1 部分（101 - 物联网介绍和架构）</a><br><a href="/2021/09/22/IOT/iot-security-part-6-101-zigbee-security-101/">物联网安全 - 第 6 部分 (ZigBee 安全 - 101)</a>本系列上一篇博客。</p>
+<p>固件是物联网设备的软件部分。构建功能性物联网固件涉及许多技术，有许多厂商为这些技术的开发做出贡献，如 Cisco、Linux、Wind River 等。在这篇文章中，当我说固件时，我将主要是指设备的软件组件。固件具有不同的复杂性，从驱动功能较弱的微型微控制器的裸机固件到基于微处理器的成熟操作系统，如 Linux。后者用于更复杂的设备，如路由器、电视等。</p>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/2021/09/23/IOT/iot-security-part-7-reverse-engineering-an-iot-firmware/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+  <div id="container"></div>
+</span>
+</article>
+
+
+
+
+  <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <time datetime="2021-09-22T14:50:22.000Z"><a href="/2021/09/22/IOT/iot-security-part-6-101-zigbee-security-101/">2021-09-22</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2021/09/22/IOT/iot-security-part-6-101-zigbee-security-101/">物联网安全101-6.ZigBee安全（翻译）</a></h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+
+	
+    <div class="entry">
+      
+        <div align="center"><br><img src="/img/icons8-zigbee-480.png" align=""/><br></div>
+
+<h2 id="ZigBee_安全_101">ZigBee 安全 101</h2><p>该博客是“物联网安全”系列的一部分。如果您还没有阅读本系列之前的博客（第 1 部分到第 5 部分），我强烈建议您先阅读它们，除非您已经熟悉这些概念并且只想阅读当前主题。<br><a href="/2021/09/21/IOT/iot-security-part-1-101-iot-introduction-architecture/">物联网安全 - 第 1 部分（101 - 物联网介绍和架构）</a><br><a href="/2021/09/22/IOT/iot-security-part-5-101-zigbee-protocol-101/">物联网安全 – 第 5 部分（ZigBee 协议 - 101）</a><br>在本文中，我们将讨论 ZigBee 协议的安全架构以及 ZigBee 设备和网络中存在的安全问题。</p>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/2021/09/22/IOT/iot-security-part-6-101-zigbee-security-101/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+  <div id="container"></div>
+</span>
+</article>
+
+
+
+
+  <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <time datetime="2021-09-22T14:50:22.000Z"><a href="/2021/09/22/IOT/iot-security-part-5-101-zigbee-protocol-101/">2021-09-22</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2021/09/22/IOT/iot-security-part-5-101-zigbee-protocol-101/">物联网安全101-5.ZigBee协议（翻译）</a></h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+
+	
+    <div class="entry">
+      
+        <h2 id="ZigBee_协议_101">ZigBee 协议 101</h2><p>该博客是“物联网安全”系列的一部分。如果您还没有阅读本系列之前的博客（第 1-4 部分），我建议您先阅读它们，除非您已经熟悉这些概念并且只想阅读当前主题。<br><a href="/2021/09/21/IOT/iot-security-part-1-101-iot-introduction-architecture/">物联网安全 - 第 1 部分（101 - 物联网介绍和架构）</a><br><a href="/2021/09/22/IOT/iot-security-part-4-bluetooth-low-energy-101/">物联网安全 - 第 4 部分（蓝牙低能耗）</a><br>在这篇博客中，我们将详细讨论 ZigBee 规范和 ZigBee 协议架构。下一篇博客将介绍 ZigBee 协议的安全架构以及 ZigBee 设备和网络中存在的安全问题。<br>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/2021/09/22/IOT/iot-security-part-5-101-zigbee-protocol-101/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+  <div id="container"></div>
+</span>
+</article>
+
+
+
+
+  <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <time datetime="2021-09-22T12:50:22.000Z"><a href="/2021/09/22/IOT/iot-security-part-4-101-bluetooth-low-energy-101/">2021-09-22</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2021/09/22/IOT/iot-security-part-4-101-bluetooth-low-energy-101/">物联网安全101-4.低功耗蓝牙BLE（翻译）</a></h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+
+	
+    <div class="entry">
+      
+        <p>如果您还没有看我们的物联网安全系列的第 1 部分到第 3 部分，我建议您先阅读它们，除非您已经熟悉 IoT 的基础知识。上一篇博客的链接——<a href="/2021/09/22/IOT/iot-security-part-3-101-iot-top-ten-vulnerabilities/">物联网安全——第 3 部分</a>。<br>蓝牙一直是一个流行词，因为人们希望他们的所有设备都是智能的，这意味着您可以不需要线缆就可以跨设备控制其他设备。蓝牙已经进入市场十多年了。如果您是千禧一代，您可能会使用过那些带有蓝牙功能的经典诺基亚手机。蓝牙是由爱立信发明的，随后其他厂商也开始使用蓝牙。不久之后，主要终端厂商一起都创建了一个名为<a href="https://en.wikipedia.org/wiki/Bluetooth_Special_Interest_Group">蓝牙特别兴趣小组- SIG的联盟</a>，该联盟管理制定蓝牙标准以及不同版本之间的互操作性。<br>我们不打算谈论蓝牙。蓝牙本身就是一个庞大的协议栈，它们的规范大约有2000 多页。在本博客中，我将仅介绍更为著名的 BLE 蓝牙低功耗。<br>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/2021/09/22/IOT/iot-security-part-4-101-bluetooth-low-energy-101/#more" class="more-link">Read More</a>
           </div>
         
         
@@ -557,223 +780,6 @@ var _hmt = _hmt || [];
 
 
 
-  <article class="post">
-  
-    <div class="gallery">
-  <div class="photoset">
-    
-      <img src="">
-    
-  </div>
-  <div class="control">
-    <div class="prev"></div>
-    <div class="next"></div>
-  </div>
-</div>
-  
-  <div class="post-content">
-    <header>
-      
-        <time datetime="2020-09-10T11:39:22.000Z"><a href="/2020/09/10/Cybersecurity/art-of-anti-detection-3-art-of-anti-detection-3-shellcode-alchemy/">2020-09-10</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2020/09/10/Cybersecurity/art-of-anti-detection-3-art-of-anti-detection-3-shellcode-alchemy/">反检测的艺术3-shellcode的魔力 （翻译）</a></h1>
-  
-
-    </header>
-	
-<!-- Table of Contents -->
-
-
-	
-    <div class="entry">
-      
-        <p> 本文将讨论编写shellcode的基础知识和相关改变，包含汇编级别的编码器/解码器设计以及几种绕过漏洞缓解方案的方法，如微软的增强缓解应急工具包（Microsoft’s Enhanced Mitigation Experience Toolkit，EMET）。为了理解本文的内容，读者需要至少具有一定的x86汇编方面的基础，并对COFF和PE等基本文件格式有相当的了解，也可以读之前的文章<a href="http://www.youngroe.com/2020/09/03/Cybersecurity/art-of-anti-detection-1-introduction-to-av-detection-techniques/">反检测的艺术1-反病毒软件及检测技术概述</a>、<a href="http://www.youngroe.com/2020/09/04/Cybersecurity/art-of-anti-detection-2-pe-backdoor-manufacturing/">反检测的艺术2-如何制作PE文件后门</a>理解反病毒软件使用的基本检测技术的内部工作原理和相关术语。<br>
-      
-    </div>
-    <footer>
-      
-        
-          <div class="alignleft">
-            <a href="/2020/09/10/Cybersecurity/art-of-anti-detection-3-art-of-anti-detection-3-shellcode-alchemy/#more" class="more-link">Read More</a>
-          </div>
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-  <div id="container"></div>
-</span>
-</article>
-
-
-
-
-  <article class="post">
-  
-    <div class="gallery">
-  <div class="photoset">
-    
-      <img src="">
-    
-  </div>
-  <div class="control">
-    <div class="prev"></div>
-    <div class="next"></div>
-  </div>
-</div>
-  
-  <div class="post-content">
-    <header>
-      
-        <time datetime="2020-09-04T11:39:22.000Z"><a href="/2020/09/04/Cybersecurity/art-of-anti-detection-2-pe-backdoor-manufacturing/">2020-09-04</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2020/09/04/Cybersecurity/art-of-anti-detection-2-pe-backdoor-manufacturing/">反检测的艺术2-如何制作PE文件后门（翻译）</a></h1>
-  
-
-    </header>
-	
-<!-- Table of Contents -->
-
-
-	
-    <div class="entry">
-      
-        <p>本文将会介绍用于安全测试红队目的几种制作PE（Portable Executable）文件后门的方法，如果需要完全理解本文，读者至少需要对x86汇编有一定的了解，同时需要熟悉调试器并且对PE文件格式有较高的理解。<br>
-      
-    </div>
-    <footer>
-      
-        
-          <div class="alignleft">
-            <a href="/2020/09/04/Cybersecurity/art-of-anti-detection-2-pe-backdoor-manufacturing/#more" class="more-link">Read More</a>
-          </div>
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-  <div id="container"></div>
-</span>
-</article>
-
-
-
-
-  <article class="post">
-  
-    <div class="gallery">
-  <div class="photoset">
-    
-      <img src="">
-    
-  </div>
-  <div class="control">
-    <div class="prev"></div>
-    <div class="next"></div>
-  </div>
-</div>
-  
-  <div class="post-content">
-    <header>
-      
-        <time datetime="2020-09-03T11:39:22.000Z"><a href="/2020/09/03/Cybersecurity/art-of-anti-detection-1-introduction-to-av-detection-techniques/">2020-09-03</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2020/09/03/Cybersecurity/art-of-anti-detection-1-introduction-to-av-detection-techniques/">反检测的艺术1-反病毒软件及检测技术概述（翻译）</a></h1>
-  
-
-    </header>
-	
-<!-- Table of Contents -->
-
-
-	
-    <div class="entry">
-      
-        <p>本篇文章将介绍对抗最新反病毒软件静态检测、动态检测及启发式分析最有效的方法。其中一些已经是公开并被大众所熟知的方法，但是仍然有一些方法和绕过技巧是实现完全不可被检测（FUD,Fully Undetectable）恶意代码的关键，同时恶意代码的大小与其反检测能力同等重要，因此在实现这些反检测方法的时候我会努力让恶意代码的文件大小尽可能的小。本文也将介绍反病毒软件及Windows操作系统的内部原理，因此读者最好具备一定的C/C++及汇编语言基础同时对PE文件结构有一定的了解<br>
-      
-    </div>
-    <footer>
-      
-        
-          <div class="alignleft">
-            <a href="/2020/09/03/Cybersecurity/art-of-anti-detection-1-introduction-to-av-detection-techniques/#more" class="more-link">Read More</a>
-          </div>
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-  <div id="container"></div>
-</span>
-</article>
-
-
-
-
-  <article class="post">
-  
-    <div class="gallery">
-  <div class="photoset">
-    
-      <img src="">
-    
-  </div>
-  <div class="control">
-    <div class="prev"></div>
-    <div class="next"></div>
-  </div>
-</div>
-  
-  <div class="post-content">
-    <header>
-      
-        <time datetime="2020-08-02T04:45:15.000Z"><a href="/2020/08/02/Life/dns_hijacking/">2020-08-02</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2020/08/02/Life/dns_hijacking/">记录一次被DNS劫持及解决方案(非改hosts方式)</a></h1>
-  
-
-    </header>
-	
-<!-- Table of Contents -->
-
-
-	
-    <div class="entry">
-      
-        <h2 id="0x00_现象">0x00 现象</h2><p>现象是访问Github Pages服务浏览器打不开，域名都是*.github.io类似的，即使走代理也不行，Chrome报错NET::ERR_CERT_AUTHORITY_INVALID，查看https证书居然是Vmware的</p>
-<div align="center"><br><img src="/img/20200802_dns_vmware.png" align="https证书错误，为Vmware"/><br></div>
-      
-    </div>
-    <footer>
-      
-        
-          <div class="alignleft">
-            <a href="/2020/08/02/Life/dns_hijacking/#more" class="more-link">Read More</a>
-          </div>
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-  <div id="container"></div>
-</span>
-</article>
-
-
-
-
 
 <ul class="page-direction" id="page-direction">
     <li><a class="page-prev icon-chevron-sign-left" href="javascript:;" title="上一页"></a></li>
@@ -799,7 +805,7 @@ var _hmt = _hmt || [];
   
     <li><a href="/categories/Debug/">Debug</a><small>7</small></li>
   
-    <li><a href="/categories/IOT/">IOT</a><small>6</small></li>
+    <li><a href="/categories/IOT/">IOT</a><small>10</small></li>
   
     <li><a href="/categories/Kernel/">Kernel</a><small>4</small></li>
   
@@ -831,7 +837,23 @@ var _hmt = _hmt || [];
       </li>
     
       <li>
-        <a href="/2021/09/22/IOT/iot-security-part-4-bluetooth-low-energy-101/">物联网安全101-4.低功耗蓝牙BLE（翻译）</a>
+        <a href="/2021/09/23/IOT/iot-security-part-8-introduction-to-software-defined-radio-sdr/">物联网安全101-8.软件无线电（Software Defined Radio，SDR）简介（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2021/09/23/IOT/iot-security-part-7-reverse-engineering-an-iot-firmware/">物联网安全101-7.物联网固件逆向（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2021/09/22/IOT/iot-security-part-6-101-zigbee-security-101/">物联网安全101-6.ZigBee安全（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2021/09/22/IOT/iot-security-part-5-101-zigbee-protocol-101/">物联网安全101-5.ZigBee协议（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2021/09/22/IOT/iot-security-part-4-101-bluetooth-low-energy-101/">物联网安全101-4.低功耗蓝牙BLE（翻译）</a>
       </li>
     
       <li>
@@ -856,22 +878,6 @@ var _hmt = _hmt || [];
     
       <li>
         <a href="/2020/10/02/Cybersecurity/art-of-anti-detection-4-art-of-anti-detection-4-self-defense/">反检测的艺术4-自保护（翻译）</a>
-      </li>
-    
-      <li>
-        <a href="/2020/09/10/Cybersecurity/art-of-anti-detection-3-art-of-anti-detection-3-shellcode-alchemy/">反检测的艺术3-shellcode的魔力 （翻译）</a>
-      </li>
-    
-      <li>
-        <a href="/2020/09/04/Cybersecurity/art-of-anti-detection-2-pe-backdoor-manufacturing/">反检测的艺术2-如何制作PE文件后门（翻译）</a>
-      </li>
-    
-      <li>
-        <a href="/2020/09/03/Cybersecurity/art-of-anti-detection-1-introduction-to-av-detection-techniques/">反检测的艺术1-反病毒软件及检测技术概述（翻译）</a>
-      </li>
-    
-      <li>
-        <a href="/2020/08/02/Life/dns_hijacking/">记录一次被DNS劫持及解决方案(非改hosts方式)</a>
       </li>
     
   </ul>

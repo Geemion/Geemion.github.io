@@ -74,17 +74,749 @@
   </entry>
   
   <entry>
+    <title><![CDATA[物联网安全101-8.软件无线电（Software Defined Radio，SDR）简介（翻译）]]></title>
+    <link href="http://www.youngroe.com/2021/09/23/IOT/iot-security-part-8-introduction-to-software-defined-radio-sdr/"/>
+    <id>http://www.youngroe.com/2021/09/23/IOT/iot-security-part-8-introduction-to-software-defined-radio-sdr/</id>
+    <published>2021-09-23T13:50:22.000Z</published>
+    <updated>2021-11-09T15:09:27.703Z</updated>
+    <content type="html"><![CDATA[<div align="center"><br><img src="/img/sdr.png" align><br></div>
+
+<h2 id="介绍">介绍</h2><p>本文是“物联网安全”系列的一部分。如果您还没有阅读本系列之前的博客（第 1 - 7 部分），我建议您先阅读它们，除非您已经熟悉这些概念并且只想阅读当前主题。<br><a href="/2021/09/21/IOT/iot-security-part-1-101-iot-introduction-architecture/">物联网安全 - 第 1 部分（101 - 物联网介绍和架构）</a><br><a href="/2021/09/23/IOT/iot-security-part-7-reverse-engineering-an-iot-firmware/">物联网安全 - 第 7 部分（对 IoT 固件进行逆向工程）</a>本系列的前一篇博客。</p>
+<a id="more"></a>
+<p>通俗地说，软件无线电SDR是指信号处理主要在软件组件实现，即调制器/解调器、编码器/解码器、放大器、混频器（通常以硬件实现）。这些软件平台非常通用，支持所有类型的频率以及对它们的不同分析。尽管硬件仍然是非常重要（收发器和天线），但软件无线电SDR的引入无疑在物联网以及其他使用无线通信的领域掀起了一股浪潮，并使信号处理比过去更容易获得以前。</p>
+<p>无线通信是物联网环境中的主要攻击面之一。SDR 是构建这些无线产品、分析其通信、最重要的是攻击的这些产品的一种技术。SDR 不仅涵盖物联网中使用的所有主要无线通信协议，即蓝牙、Zigbee、Wifi、NFC，而且还提供了大量其他可能的攻击，可用于破坏终端设备或基础设施的安全性。下面列出了其中的一些功能：</p>
+<ul>
+<li>密码分析攻击</li>
+<li>侧信道攻击，如Tempest</li>
+<li>蜂窝或移动网络攻击</li>
+<li>SAT-通信分析<br>我们将在接下来的文章中介绍更多内容。</li>
+</ul>
+<h2 id="前置知识">前置知识</h2><p><code>“在进行信号处理时，你无法绕过数学和基础理论。”</code></p>
+<p>好吧，:P 其实您不必是数学极客也可以开始使用软件定义无线电，但了解一些基本概念和术语将有助于你更好的评估你的物联网，并有助于你长期发展：</p>
+<ul>
+<li>模拟和数字信号的基础</li>
+<li>数字信号处理的概念</li>
+<li>通讯系统</li>
+<li>复数</li>
+<li>信号和系统</li>
+<li>调制类型</li>
+<li>编码类型<br>我们认为以下主题足以帮助您开始使用 RF 通信并帮助您了解 SDR。我们在文章末尾提供了一些有用的资源，可以帮助您更好地理解这些主题。</li>
+</ul>
+<h2 id="专用工具">专用工具</h2><p><code>“工具不过是人手的延伸……”——HW Beecher</code><br>尽管大部分信号处理是通过软件完成的，但也需要硬件工具来传输和接收信号。下面列出了 SDR 所需的一些硬件和软件工具（我们将在后续专题分析时详细说明下面提到的一些工具）：</p>
+<h3 id="硬件">硬件</h3><p>基本上，当我们选择 SDR 外围设备时，主要参考以下参数：</p>
+<ul>
+<li><p>工作频率范围<br>这定义了外围设备能够对其执行操作（Tx 和 Rx）的频率范围。有一个更宽的工作频率范围供您使用总是很好的。</p>
+</li>
+<li><p>接收带宽<br>RF 前端带宽（Rx 带宽）越大，我们的 SDR 外设就越能围绕操作中心频率收集数据。请记住，使用更宽的 RF 带宽，我们总是会收集更多的噪声。</p>
+</li>
+<li><p>ADC 分辨率（以位为单位）<br>通常，首选具有更高分辨率的 ADC，但请记住，使用更高的 ADC 分辨率，我们需要降低信号处理开销，以便我们可以实时处理样本。因此，选择合适的 ADC 分辨率很重要。</p>
+</li>
+<li><p>发射和接收能力<br>虽然大多数外围设备可以接收（Rx）但并非所有外围设备都可以发送（Tx）。因此可以肯定地说收发器（Tx-Rx 都存在）是首选，因为许多攻击也需要传输（Tx）信号。此外，根据要求，收发器可分为半双工、全双工等。</p>
+</li>
+<li><p>成本<br>这可能是主要因素，因为大多数这些外围设备都需要花费很多钱。我们需要根据评估类型​​仔细选择一个满足我们所有要求的方法。</p>
+</li>
+</ul>
+<p>现在让我们介绍一些常用的 SDR 设备：</p>
+<p><strong>1) Realtek SDR Dongle (RTL820T2)</strong><br>向任何 SDR 爱好者或专业人士询问他们的第一个工具是什么，它可能是一个 Realtek SDR Dongle。虽然成本如此之低，但它提供了 24-1766MHz 的范围，这是非常令人印象深刻的。一些其他变体可以达到 2.2GHz。唯一的缺点是它是一个 SDR 接收器，没有任何 TX 功能（不考虑其内部本地振荡器的泄漏）。其他流行的变体是 NooElec R820T、R820T 和 Terratec R820T。</p>
+<div align="center"><br><img src="/img/Rtl-sdr.jpg" align title="RTL-SDR R820T2 Dongle"><br></div><br>图片来源：<a href="https://commons.wikimedia.org/wiki/File:Rtl-sdr.jpg" target="_blank" rel="external">https://commons.wikimedia.org/wiki/File:Rtl-sdr.jpg</a><br><br><br><strong>2) HackRF One</strong><br>由于其相对合理的成本和 10MHz 至 6GHz（实用范围）的特殊频率范围，它是爱好者广泛使用和推荐的工具。它是一个 SDR 收发器，即它同时具有发送 (Tx) 和接收 (Rx) 功能。因此，对于正在寻找大频率范围、宽带宽和传输能力的人来说，它是完美的匹配。<br><br><div align="center"><br><img src="/img/Hackrf-one-img_0005.jpg" align title="HackRF One by Great Scott Gadgets"><br></div>
+
+<p>图片来源：<a href="https://commons.wikimedia.org/wiki/File:Hackrf-one-img_0005.jpg" target="_blank" rel="external">https://commons.wikimedia.org/wiki/File:Hackrf-one-img_0005.jpg</a></p>
+<p><strong>3) BladeRF 2.0 micro</strong><br>谈到强大的 SDR 外设，您不能错过 Blade RF。尽管它的工作频率范围从 47MHz 到 6GHz，带宽为 56MHz，但它的与众不同之处在于它配备了强大的 FPGA 处理器，这意味着它可以轻松地自行在板上进行一些信号处理。使其成为理想的独立设备。原因是有很多基于 BladeRF 的有趣项目，其中包括：<br><a href="https://github.com/Nuand/bladeRF/wiki/Setting-up-Yate-and-YateBTS-with-the-bladeRF" target="_blank" rel="external">YateBTS</a><br><a href="https://github.com/Nuand/bladeRF/wiki/ATSC-Transmitter" target="_blank" rel="external">ATSC Transmitter</a><br><a href="https://github.com/fyquah95/ramear" target="_blank" rel="external">RAMEAR</a><br>仅举几例。</p>
+<p><strong>4) USRP B210</strong><br>Ettus 产品因其强大的功能而被专业人士和工业界广泛使用。使其成为与其他设备相比最昂贵的外围设备。它具有非常高的采样率和广泛的调谐率。说到 B210，它工作在 70Mhz 到 6Ghz 的频率上，是全双工的，并且在上面列出的 61.44MS/s 中具有最大的采样率。</p>
+<p><div align="center"><br><img src="/img/800px-Usrp.jpg" align title="USRP by Ettus"><br></div><br>图片来源：<a href="https://commons.wikimedia.org/wiki/File:Usrp.jpg" target="_blank" rel="external">https://commons.wikimedia.org/wiki/File:Usrp.jpg</a></p>
+<p>以下是一些流行的 SDR 外围设备的简要比较：</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Frequency Range</th>
+<th>Bandwidth</th>
+<th>ADC Resolution</th>
+<th>Tx capability</th>
+<th>Price</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>RTL-SDR R820T2/RTL2838U</td>
+<td>0.5 – 1766 MHz</td>
+<td>Matches sampling rate, but with filter roll-off</td>
+<td>8</td>
+<td>NO</td>
+<td>USD 24</td>
+</tr>
+<tr>
+<td>HackRF One</td>
+<td>1 MHz – 6 GHz</td>
+<td>20 MHz</td>
+<td>8</td>
+<td>YES</td>
+<td>USD 299</td>
+</tr>
+<tr>
+<td>bladeRF</td>
+<td>47 MHz – 6 GHz</td>
+<td>56 MHz</td>
+<td>12</td>
+<td>YES</td>
+<td>USD 480</td>
+</tr>
+<tr>
+<td>USRP B210</td>
+<td>70 MHz – 6 GHz</td>
+<td>56 MHz</td>
+<td>12</td>
+<td>YES</td>
+<td>USD 1,100</td>
+</tr>
+<tr>
+<td>LimeSDR</td>
+<td>100 kHz – 3.8 GHz</td>
+<td>61.44 MHz</td>
+<td>12</td>
+<td>YES</td>
+<td>USD 299</td>
+</tr>
+<tr>
+<td>YARD Stick One</td>
+<td>300 MHz – 1GHz</td>
+<td>-</td>
+<td>8</td>
+<td>YES</td>
+<td>USD 100</td>
+</tr>
+</tbody>
+</table>
+<h3 id="天线">天线</h3><p>在选择天线时，请牢记以下几点：</p>
+<ul>
+<li><p>天线增益<br>由于天线数据表中的大部分增益都涉及各向同性天线，因此有必要查看 3dB 增益和带宽的位置，并进行一些基本的数学计算以确定天线是否适合我们的操作。</p>
+</li>
+<li><p>孔径<br>这里的主要目标是我们可以收集多少信号或我们可以收集多大的信号。因此，建议选择处于适当中心频率的天线，并且其正面直径足以一次容纳所有传入信号。</p>
+</li>
+<li><p>方向性和带宽<br>对于天线的主波束方向图，我们需要了解它在主瓣上有多少增益以及在旁瓣上提供了多少抑制。如果天线有一个很好的主瓣，在主瓣中截断了 3dB 并完全抑制了旁瓣，那么选择这样的天线是完全没问题的</p>
+</li>
+<li><p>有效长度<br>对于一些特殊的天线，如八木天线和对数周期天线，非常有必要选择合适的长度，这样天线才能在其中心频率以最大效率运行，并在其他频率下以最佳效率运行。</p>
+</li>
+</ul>
+<p>根据要求和评估类型选择天线类型。下面是一些常用的 SDR 天线</p>
+<ul>
+<li>Telescopic (Stock antenna with most of the SDR transceivers)</li>
+<li>Discone (Outdoor antenna)</li>
+<li>Vertical (Outdoor antenna)</li>
+<li>Yagi-Uda</li>
+</ul>
+<h2 id="结论">结论</h2><p>我们希望这能让您了解 RF 和 SDR 的世界。在这一部分中，我们涵盖了 SDR 评估所需的所有基础知识和硬件工具。在下一篇博客中，我们将介绍可用的软件工具，并了解实现目标的经典方法。</p>
+<p><a href>继续下一部分 - 物联网安全 - 第 9 部分（软件无线电简介:软件部分）</a></p>
+<h2 id="资源：">资源：</h2><p><a href="https://payatu.com/blog/Nitesh-Malviya/getting-started-with-radio-waves-hacking" target="_blank" rel="external">Getting started with Radio Hacking – Part 1 – Radio Frequency basics and theory</a><br><a href="https://payatu.com/blog/Nitesh-Malviya/getting-started-radio-hacking-part-2-listening-fm-using-rtl-sdr-gqrx" target="_blank" rel="external">Getting Started with Radio Hacking – Part 2 – Listening to FM using RTL-SDR and GQRX</a><br><a href="https://greatscottgadgets.com/sdr/" target="_blank" rel="external">SDR with HackRF by Michael ossmann</a><br><a href="https://www.youtube.com/user/IllinoisDSP/videos" target="_blank" rel="external">University of Illinois Digital signal processing series</a></p>
+<p><em>原文链接：<a href="https://payatu.com/blog/appar/iot-security-%E2%80%93-part-8-introduction-to-software-defined-radio-sdr" target="_blank" rel="external">https://payatu.com/blog/appar/iot-security-%E2%80%93-part-8-introduction-to-software-defined-radio-sdr</a></em></p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<div align="center"><br><img src="/img/sdr.png" align=""/><br></div>
+
+<h2 id="介绍">介绍</h2><p>本文是“物联网安全”系列的一部分。如果您还没有阅读本系列之前的博客（第 1 - 7 部分），我建议您先阅读它们，除非您已经熟悉这些概念并且只想阅读当前主题。<br><a href="/2021/09/21/IOT/iot-security-part-1-101-iot-introduction-architecture/">物联网安全 - 第 1 部分（101 - 物联网介绍和架构）</a><br><a href="/2021/09/23/IOT/iot-security-part-7-reverse-engineering-an-iot-firmware/">物联网安全 - 第 7 部分（对 IoT 固件进行逆向工程）</a>本系列的前一篇博客。</p>]]>
+    
+    </summary>
+    
+      <category term="IOT安全" scheme="http://www.youngroe.com/tags/IOT%E5%AE%89%E5%85%A8/"/>
+    
+      <category term="IOT" scheme="http://www.youngroe.com/categories/IOT/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[物联网安全101-7.物联网固件逆向（翻译）]]></title>
+    <link href="http://www.youngroe.com/2021/09/23/IOT/iot-security-part-7-reverse-engineering-an-iot-firmware/"/>
+    <id>http://www.youngroe.com/2021/09/23/IOT/iot-security-part-7-reverse-engineering-an-iot-firmware/</id>
+    <published>2021-09-23T12:50:22.000Z</published>
+    <updated>2021-11-09T15:10:00.452Z</updated>
+    <content type="html"><![CDATA[<div align="center"><br><img src="/img/motherboard.jpg" align><br></div>
+
+<h2 id="固件逆向工程：简介">固件逆向工程：简介</h2><p>本文是“物联网安全”系列的一部分。如果您还没有阅读本系列之前的文章（第 1 部分到第 6 部分），我强烈建议您先阅读它们，除非您已经熟悉这些概念并且只想阅读当前主题。<br><a href="/2021/09/21/IOT/iot-security-part-1-101-iot-introduction-architecture/">物联网安全 - 第 1 部分（101 - 物联网介绍和架构）</a><br><a href="/2021/09/22/IOT/iot-security-part-6-101-zigbee-security-101/">物联网安全 - 第 6 部分 (ZigBee 安全 - 101)</a>本系列上一篇博客。</p>
+<p>固件是物联网设备的软件部分。构建功能性物联网固件涉及许多技术，有许多厂商为这些技术的开发做出贡献，如 Cisco、Linux、Wind River 等。在这篇文章中，当我说固件时，我将主要是指设备的软件组件。固件具有不同的复杂性，从驱动功能较弱的微型微控制器的裸机固件到基于微处理器的成熟操作系统，如 Linux。后者用于更复杂的设备，如路由器、电视等。</p>
+<a id="more"></a>
+<p>在这篇文章中，我们将研究组成固件所涉及的不同组件，然后我们将讨论如何使用各种开源工具对固件进行逆向工程。逆向是一个重要的步骤，它将帮助您对设备和固件进行进一步的分析。那么让我们开始看看裸机固件是什么？</p>
+<h2 id="裸机固件（Bare_Metal_Firmware）">裸机固件（Bare Metal Firmware）</h2><p>根据设备的需要使用的应用程序，决定设备使用的技术栈。如果一个设备的任务是读取和报告周围温度和湿度，那么它不需要非常复杂的软件，比如 Linux。对于这些情况，就可以使用裸机固件。现在，您可能会问什么是裸机固件？简单来说，这类固件直接与硬件接口直接进行交互，不涉及驱动程序或内核。</p>
+<p>裸机固件不会做太多复杂的事情，它们通常被分配不超过 3 或 4 个任务，这些任务被放入循环中，因为它们被安排在特定的顺序/条件下运行。厂商会为这些设备提供的 SDK 提供了生命周期方法，程序员编写的这些函数在循环中运行。这些 SDK 的一些复杂功能变体是 FreeRTOS、mbed-os，它们是实时操作系统，允许您进行任务调度并对某些中断请求做出非常快速的响应。</p>
+<p>裸机固件是用 C 编写的，因此所有针对C语言的攻击（如缓冲区溢出相关漏洞）也对这些固件有效。这些设备通常收集数据并将其发送到中央服务器或与通过 UART/SPI 总线（其外围设备）与其他设备进行通信。有机会发现通信协议中的漏洞、错误处理数据包、密钥交换、缓冲区溢出等。</p>
+<p>基于裸机固件的微控制器设备不仅用于传感器网络；它们无处不在，从冰箱、微波炉、安全警报系统，您的汽车上有几十个，您的笔记本电脑/电脑也是如此。通常，当您没有此固件的源代码时，您会采用逆向工程的方法。</p>
+<p>逆向这些二进制文件与逆向 Windows EXE 和 Linux ELF 文件有点不同。那么它们就没有预定义的结构。对于裸机二进制文件，您需要芯片组的数据表（data-sheet ）并在您的反汇编工具（如 IDA、Ghidra 等）中创建内存映射，以进行正确的反汇编。另一个非常关键的问题 memory-map 也可以帮助用户回答是什么 GPIO，设备与其他外设进行交互？此信息将有助于了解设备的功能。关于这一点还有很多可以说的，我会在另一篇文章中说明，因此有关更多详细信息，请访问此<a href="https://payatu.com/blog/asmita-jha/--stack-smashing--protection-in-hardware-attack" target="_blank" rel="external">链接</a>。现在让我们看看什么是成熟的基于操作系统的固件。</p>
+<h2 id="成熟操作系统固件">成熟操作系统固件</h2><p>当您看到更复杂的系统（如路由器、智能家居仪表板、无人机和医疗保健设备）时，它们的作用与裸机系统无异。举个例子；典型的无线路由器具有通过局域网和WIFI连接等功能；他们可以将指定的 MAC 地址列入黑名单/白名单，并且一些现代路由器具有防病毒软件和其他保护功能。要实现所有这些功能，您需要一个成熟的操作系统来支持所有这些复杂的功能。</p>
+<p>嵌入式系统有许多不同的操作系统选项，如 Linux、Windows CE、Cisco IOS、Symbian、Android、VxWorks 等。其中一些是专用的，如用于路由器的 Cisco，而大多数是更通用的。一般统计数据表明，嵌入式系统产品中最受欢迎的操作系统选择是 Linux。造成这种情况的原因有很多，其中一些原因是它的开源特性、灵活性，最重要的是，它是免费的。您可以在周围找到 Linux 驱动的设备，例如路由器、信息娱乐系统等。</p>
+<p>这种固件通常至少包含三个组件，引导加载程序 Bootloader、内核 Kernel 和文件系统 file-system。引导加载程序是帮助加载操作系统内核并传递各种信息需求的软件。一旦引导加载程序完成加载，内核就将接管执行。一旦内核开始执行，它就会启动其他用户应用程序以使最终用户可以使用操作系统。这通常涉及在后台启动各种应用程序和服务。完成所有这些后，用户就可以与系统进行交互。所有用户应用程序和应用程序数据都存储在文件系统上。</p>
+<p>这些设备的安全评估通常从审核这些设备上运行的应用程序开始；最有趣的目标是远程应用服务程序。在这些服务程序中发现的漏洞对设备的安全性有很大影响，因为攻击者不需要靠近它就可以破坏它。如果互联网上的任何人可以利用该漏洞，他们都可以控制它。这些服务通常是用于配置和控制设备功能或其他服务（如 UPnP）的 Web 服务器，这些服务有助于其他设备发现该设备。</p>
+<h2 id="固件分析安全工具">固件分析安全工具</h2><p>既然我们对固件的整体有了一个高层次的概述，那么您想到的下一个问题是如何开始剖析固件并开始分析固件。分析大致可以分为静态分析和动态分析。在静态分析中，您阅读代码并查找错误，如果您没有源代码，请开始对二进制文件进行逆向工程并阅读汇编说明以了解其功能。另一方面，动态分析涉及运行应用程序并观察其行为。<br>在分析固件时，我通常结合使用这两种分析技术来实现我的目标。以下是我经常使用的一些工具的列表：</p>
+<ul>
+<li>Binwalk - 这可能是最流行的固件解包工具之一。它是一个固件提取工具，它试图在任何二进制 blob 中提取二进制文件。它通过搜索许多常见二进制文件格式（如 zip、tar、exe、ELF 等）的签名来实现这一点。 Binwalk 拥有二进制文件头签名数据库，可以根据该数据库完成签名匹配。使用此工具的共同目标是提取嵌入在固件二进制文件中的文件系统，如 Squashfs、yaffs2、Cramfs、ext*fs、jffs2 等。文件系统包含将在设备上运行的所有应用程序代码。此工具还有许多参数，您可以调整这些参数以更好地进行提取。您可以访问此<a href="https://github.com/ReFirmLabs/binwalk/wiki/Usage" target="_blank" rel="external">链接</a>以阅读有关什么是不同参数以及如何使用它们的更多详细信息。</li>
+<li>Qemu - 对于在跨架构（如 ARM、MIPS 等）环境中工作的人来说，这是一个有价值的工具，嵌入式开发人员通常就是这种情况。该工具提供了一种在主机系统上模拟不同架构（如 ARM、MIPS 等）的二进制固件的方法，主机系统具有不同的架构，如 x86、amd64。当您想审核固件但没有设备或为该系统设置调试器非常困难时，这种工具非常方便。Qemu 可以帮助您对 Linux 系统和许多不同平台进行全系统仿真或 ELF 文件的单个二进制仿真。您可以查看此<a href="https://www.qemu.org/" target="_blank" rel="external">链接</a>以获取有关该项目的更多详细信息。</li>
+<li>gdb-multiarch - GDB 是一种动态调试工具，用于中断正在运行的进程并检查其内存和寄存器。但是，gdb 只支持编译它的体系结构。但是当你要调试不同架构的应用程序进行跨架构支持时，你会需要它的姊妹项目gdb-multiarch，它可以帮助你进行跨架构调试。</li>
+<li>Firmware ModKit - 此工具可帮助您Patch固件并重新打包。它使用 Binwalk 提取固件，并为您提供一个包含固件文件系统布局的目录。然后，您可以根据需要Patch任何内容，添加/删除文件或修补现有文件，ModKit 可以将其打包备份，以便您可以在设备存储上刷新新固件并启动新修补的固件。您可以从此<a href="https://code.google.com/archive/p/firmware-mod-kit/" target="_blank" rel="external">链接</a>下载此工具的代码。</li>
+</ul>
+<p>我分析固件时的工作流程涉及所有这些工具。第一步通常从使用 Binwalk 解压固件开始。接下来，尝试使用 Qemu 模拟固件中感兴趣的应用程序。如果我无法模拟二进制文件，那么我会通过 gdb 调试并发现问题然后修复，以便 Qemu 可以运行它并查找安全问题。通过这个步骤还帮助我对服务进行模糊测试。</p>
+<h2 id="结论">结论</h2><p>本文阐述了固件是什么，以及在评估 IoT 设备时您会遇到哪些不同类型的 IoT 固件。我向您概述了如何处理不同类型的固件，我们还研究了不同的工具如何帮助我们对固件进行安全分析。</p>
+<p>继续下一部分 -<a href="/2021/09/23/IOT/iot-security-part-8-introduction-to-software-defined-radio-sdr/">物联网安全 - 第 8 部分 软件无线电（Software Defined Radio，SDR）简介</a></p>
+<p><em>原文链接：<a href="https://payatu.com/blog/munawwar/iot-security---part-7-reverse-engineering-an-iot-firmware" target="_blank" rel="external">https://payatu.com/blog/munawwar/iot-security---part-7-reverse-engineering-an-iot-firmware</a></em></p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<div align="center"><br><img src="/img/motherboard.jpg" align=""/><br></div>
+
+<h2 id="固件逆向工程：简介">固件逆向工程：简介</h2><p>本文是“物联网安全”系列的一部分。如果您还没有阅读本系列之前的文章（第 1 部分到第 6 部分），我强烈建议您先阅读它们，除非您已经熟悉这些概念并且只想阅读当前主题。<br><a href="/2021/09/21/IOT/iot-security-part-1-101-iot-introduction-architecture/">物联网安全 - 第 1 部分（101 - 物联网介绍和架构）</a><br><a href="/2021/09/22/IOT/iot-security-part-6-101-zigbee-security-101/">物联网安全 - 第 6 部分 (ZigBee 安全 - 101)</a>本系列上一篇博客。</p>
+<p>固件是物联网设备的软件部分。构建功能性物联网固件涉及许多技术，有许多厂商为这些技术的开发做出贡献，如 Cisco、Linux、Wind River 等。在这篇文章中，当我说固件时，我将主要是指设备的软件组件。固件具有不同的复杂性，从驱动功能较弱的微型微控制器的裸机固件到基于微处理器的成熟操作系统，如 Linux。后者用于更复杂的设备，如路由器、电视等。</p>]]>
+    
+    </summary>
+    
+      <category term="IOT安全" scheme="http://www.youngroe.com/tags/IOT%E5%AE%89%E5%85%A8/"/>
+    
+      <category term="IOT" scheme="http://www.youngroe.com/categories/IOT/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[物联网安全101-6.ZigBee安全（翻译）]]></title>
+    <link href="http://www.youngroe.com/2021/09/22/IOT/iot-security-part-6-101-zigbee-security-101/"/>
+    <id>http://www.youngroe.com/2021/09/22/IOT/iot-security-part-6-101-zigbee-security-101/</id>
+    <published>2021-09-22T14:50:22.000Z</published>
+    <updated>2021-11-07T13:42:09.814Z</updated>
+    <content type="html"><![CDATA[<div align="center"><br><img src="/img/icons8-zigbee-480.png" align><br></div>
+
+<h2 id="ZigBee_安全_101">ZigBee 安全 101</h2><p>该博客是“物联网安全”系列的一部分。如果您还没有阅读本系列之前的博客（第 1 部分到第 5 部分），我强烈建议您先阅读它们，除非您已经熟悉这些概念并且只想阅读当前主题。<br><a href="/2021/09/21/IOT/iot-security-part-1-101-iot-introduction-architecture/">物联网安全 - 第 1 部分（101 - 物联网介绍和架构）</a><br><a href="/2021/09/22/IOT/iot-security-part-5-101-zigbee-protocol-101/">物联网安全 – 第 5 部分（ZigBee 协议 - 101）</a><br>在本文中，我们将讨论 ZigBee 协议的安全架构以及 ZigBee 设备和网络中存在的安全问题。</p>
+<a id="more"></a>
+<h2 id="ZigBee_安全架构（开放信任）">ZigBee 安全架构（开放信任）</h2><p>ZigBee 中的安全架构补充或增强了 IEEE 802.15.4 层的安全服务。它是一种基于某些假设的“开放信任”模型，如下所述：</p>
+<ul>
+<li>在单个设备上运行的不同层和应用程序相互信任。</li>
+<li>同一设备上不同堆栈层之间的通信不加密。</li>
+<li>除非受到保护，否则设备不会有意或无意地将密钥传输到其他设备，例如在密钥传输期间。</li>
+<li>两个设备之间的通信采用密码加密和安全保护。</li>
+<li>随机数生成器按加密引擎的预期工作</li>
+<li>硬件防篡改</li>
+</ul>
+<p><strong>ZigBee安全架构设计原则：</strong></p>
+<ul>
+<li>产生帧的层负责最初保护它。</li>
+<li>只有具有活动网络密钥的设备才能与网络上的多跳通信。</li>
+<li>APS 层和 NWK 层都可以使用相同的活动网络密钥来保护帧。重用密钥有助于减少存储开销。</li>
+<li>端到端消息安全，即只有源设备和目的设备才能解密共享密钥保护的消息，路由机制是出于信任考虑。</li>
+<li>组成网络的设备负责网络中节点的基本安全级别、安全策略和身份验证。如果需要，应用层可以在两个设备之间提供额外的应用级安全性。</li>
+</ul>
+<h3 id="信任中心">信任中心</h3><p>信任中心是在 ZigBee 网络内其他设备信任的设备上运行的应用程序，用于分发网络密钥和潜在的端到端应用程序配置管理。每个网络只能存在一个信任中心，它可以是协调器或协调器指定的设备，所有成员节点都将此设备视为信任中心。信任中心负责 <em> 配置和维护网络安全策略 </em> 建立端到端的应用密钥。* 通过使用一些密钥建立协议来生成密钥</p>
+<h2 id="ZigBee_中的安全模式">ZigBee 中的安全模式</h2><ul>
+<li><p>分布式安全模式<br>网络中不需要分布式安全模式，唯一的信任中心，路由器负责终端设备认证。设备上预先配置了链接密钥，网络密钥在设备加入网络时由路由器发布。网络中所有节点的网络密钥保持不变；这使得分布式安全模式的安全性降低。</p>
+</li>
+<li><p>集中安全模式<br>应用中使用的集中安全模式，一个信任中心控制，维护网络和设备的集中安全策略。在这种模式下，信任中心负责</p>
+</li>
+<li><p>维护整个网络的安全和安全配置</p>
+</li>
+<li>验证设备并维护网络上的设备列表</li>
+<li>维护网络中所有设备的链接密钥和网络密钥</li>
+</ul>
+<h2 id="ZigBee_安全密钥">ZigBee 安全密钥</h2><p>ZigBee 标准定义了两种对称密钥，每种长度为 128 位，用于加密通信。</p>
+<ul>
+<li><p>网络密钥<br>用于广播通信和任何网络层通信的 128 位网络密钥。每个节点都需要网络密钥才能与网络上的其他设备进行安全通信。网络上的设备通过网络上的密钥传递，即key-transport，获取网络密钥。只有一种类型的网络密钥；但是，它可以用于分布式或集中式安全模型。安全模型控制网络密钥的分发方式，并可控制网络帧计数器的初始化方式。安全模型不影响消息的保护方式。</p>
+</li>
+<li><p>链接键<br>两个设备共享的 128 位唯一链接密钥，用于 APL 对等实体之间的单播通信。设备可以通过网络上的密钥传输服务或预安装获取链接密钥。信任中心链接密钥有两种不同类型：全局和唯一。本地设备使用的信任中心链接密钥的类型决定了设备如何处理各种信任中心消息（APS 命令），包括是否应用 APS 加密。每个节点还可能具有以下预配置的链接密钥，用于派生信任中心链接密钥。</p>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>号码</th>
+<th>键名</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>集中安全全球信任中心链接密钥</td>
+<td>用于加入集中式安全网络的链接密钥。集中式安全全球信任中心链接密钥的默认值是ZigBeeAlliance09，即（“5A 69 67 42 99 23 65 65 41 6C 6C 69 61 6E 63 65 30 39”），如果没有其他链接，设备会使用或支持密钥由应用程序在加入时指定</td>
+</tr>
+<tr>
+<td>2</td>
+<td>分布式安全全局链接密钥</td>
+<td>用于加入分布式安全网络的链接密钥</td>
+</tr>
+<tr>
+<td>3</td>
+<td>安装代码链接密钥</td>
+<td>从加入设备的安装代码派生的链接密钥，以创建用于加入的唯一信任中心链接密钥</td>
+</tr>
+<tr>
+<td>4</td>
+<td>应用链接键</td>
+<td>两个设备之间使用的链接密钥用于应用层加密</td>
+</tr>
+<tr>
+<td>5</td>
+<td>设备特定的信任中心链接密钥</td>
+<td>信任中心和网络中的设备之间使用的链接密钥。用于信任中心命令和应用层加密。</td>
+</tr>
+</tbody>
+</table>
+<h3 id="密钥管理">密钥管理</h3><p>ZigBee 规范提到了三种不同的密钥管理机制</p>
+<ul>
+<li>预安装 – 在带外设备上配置或安装密钥</li>
+<li>密钥传输——信任中心通过网络向设备发送安全密钥。</li>
+<li>密钥建立——信任中心和终端设备协商密钥，并且在没有实际通过网络发送任何密钥的情况下建立密钥。此密钥建立基于对称密钥建立 (SKKE) 协议。</li>
+</ul>
+<h2 id="ZigBee_协议安全">ZigBee 协议安全</h2><h3 id="辅助安全头">辅助安全头</h3><p>如果 NWK 帧控制字段中的安全控制位设置为 1，ZigBee NWK 层和 APS 层可以使用 Auxiliary Security Header 进行安全通信。 Auxiliary Security Header 具有以下字段</p>
+<table>
+<thead>
+<tr>
+<th>字节：1</th>
+<th>字节数：4</th>
+<th>八位字节：0 或 8</th>
+<th>八位字节：0 或 1</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>安全控制</td>
+<td>帧计数器</td>
+<td>源地址</td>
+<td>密钥序列号</td>
+</tr>
+</tbody>
+</table>
+<p>下面是 ZigBee 数据包的示例快照，其中 NWK 帧控制中的安全字段设置为 true (1)，安全标头设置了相应的安全控制字段，以及消息完整性代码 (MIC)</p>
+<div align="center"><br><img src="/img/ZigBee_data.png" align><br></div>
+
+<h3 id="安全控制">安全控制</h3><p>8 位安全控制字段由安全级别、密钥标识符和扩展的 nonce 子字段组成，如下所示</p>
+<table>
+<thead>
+<tr>
+<th>少量</th>
+<th>0 - 2</th>
+<th>3 - 4</th>
+<th>5</th>
+<th>6 - 7</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>描述</td>
+<td>安全级别</td>
+<td>密钥标识符</td>
+<td>扩展随机数</td>
+<td>预订的</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>安全级别<br>安全级别标识符指示如何保护传出帧，据称如何保护传入帧。它还指示有效载荷是否被加密以及提供的帧上的数据真实性的程度，如消息完整性代码 (MIC) 的长度所反映的。MIC 的位长可以取值 0、32、64 或 128，并确定 MIC 的随机猜测正确的概率。下面列出的安全级别的安全属性</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>安全级别标识符</th>
+<th>安全属性</th>
+<th>数据加密</th>
+<th>帧完整性（MIC 的长度 M，以八位字节数表示）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0x00</td>
+<td>没有任何</td>
+<td>离开</td>
+<td>否 (M=0)</td>
+</tr>
+<tr>
+<td>0x01</td>
+<td>MIC-32</td>
+<td>离开</td>
+<td>是 (M=4)</td>
+</tr>
+<tr>
+<td>0x02</td>
+<td>MIC-64</td>
+<td>离开</td>
+<td>是 (M=8)</td>
+</tr>
+<tr>
+<td>0x03</td>
+<td>MIC-128</td>
+<td>离开</td>
+<td>是 (M=16)</td>
+</tr>
+<tr>
+<td>0x04</td>
+<td>启动</td>
+<td>不</td>
+<td>(M=0)</td>
+</tr>
+<tr>
+<td>0x05</td>
+<td>ENC-MIC-32</td>
+<td>在</td>
+<td>是 (M=4)</td>
+</tr>
+<tr>
+<td>0x06</td>
+<td>ENC-MIC-64</td>
+<td>在</td>
+<td>是 (M=8)</td>
+</tr>
+<tr>
+<td>0x07</td>
+<td>ENC-MIC-128</td>
+<td>在</td>
+<td>是 (M=16)</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>密钥标识符<br>密钥标识符子字段由两个比特组成，用于标识用于加密帧的密钥。</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>密钥标识符</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0x00</td>
+<td>一个数据键</td>
+</tr>
+<tr>
+<td>0x01</td>
+<td>网络密钥</td>
+</tr>
+<tr>
+<td>0x02</td>
+<td>钥匙传输钥匙</td>
+</tr>
+<tr>
+<td>0x03</td>
+<td>钥匙加载钥匙</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>扩展随机数<br>当设置为 1 时，扩展的 nonce 子字段指示发送方地址字段存在于辅助报头中。否则，它设置为 0。</li>
+</ul>
+<h3 id="帧计数器">帧计数器</h3><p>计数器字段用于提供帧新鲜度并防止处理重复帧。</p>
+<h3 id="源地址">源地址</h3><p>安全控制中的源地址字段是源设备的扩展 64 位地址，当安全控制字段的扩展 nonce 子字段设置为 1 时出现。</p>
+<h3 id="密钥序列号">密钥序列号</h3><p>辅助安全报头中的密钥序列号表示用于保护帧的网络密钥的密钥序列号。来自安全控制字段的密钥标识符子字段，当设置为 1（即网络密钥）时，指示存在于辅助安全报头中的密钥序列号。</p>
+<h2 id="ZigBee_漏洞">ZigBee 漏洞</h2><p><code>设备之间的安全性取决于安全密钥的安全初始化和安装</code></p>
+<p>ZigBee 网络中的漏洞分为两类：协议漏洞和产品开发过程中协议执行不力。下面是一些常见的漏洞：</p>
+<h3 id="实施漏洞">实施漏洞</h3><p><strong>安全密钥存储不安全</strong><br>ZigBee 协议要求所有安全密钥（网络、链接）长期存储在设备上。如果密钥没有安全存储，密钥可以通过对固件二进制文件进行逆向工程来识别密钥的位置。</p>
+<p><strong>无线不安全的密钥传输</strong><br>在一些实现中，当节点第一次加入 ZigBee 网络时，节点通过空中获取其密钥，主要是从协调器以明文格式。因此，嗅探器设备网络狙击手或粗糙设备可以从协调器获取密钥，并可以危及整个网络。</p>
+<p><strong>能量耗尽攻击</strong><br>以下是两种非常常见的能量消耗攻击</p>
+<ul>
+<li><p>无效的安全标头<br>在此类攻击中，攻击者在帧中发送带有无效安全标头的突发数据包，目的是使设备必须花费一些能量来验证帧完整性，从而导致目标设备更快地耗尽电池电量。</p>
+</li>
+<li><p>投票率<br>在此类攻击中，攻击者将数据包发送到终端设备的速度比网络配置的轮询速率更快，从而导致目标设备更快耗尽电池电量。</p>
+</li>
+</ul>
+<h3 id="协议漏洞">协议漏洞</h3><h4 id="网络干扰漏洞">网络干扰漏洞</h4><p>IEEE802.15.4/ZigBee 标准针对无线电和网络干扰提供了一定的保护机制，但是攻击者可以利用某些技术来干扰网络<br>以下是 ZigBee 网络中可能存在的两种类型的干扰攻击：</p>
+<ul>
+<li><p>无线电干扰<br>在此类攻击中，攻击者会增加给定信道的无线电信号发射，导致无线电信道的信噪比降低。</p>
+</li>
+<li><p>链路层干扰<br>在此类攻击中，攻击者通过以随机间隔或针对特定节点的特定间隔在网络上传输带有无用数据的随机 ZigBee 帧突发来瞄准 MAC 层，从而导致网络中的丢包和 DoS 攻击。</p>
+</li>
+</ul>
+<h4 id="链接密钥漏洞">链接密钥漏洞</h4><p>ZigBee 标准具有开放信任的安全模型，低于标准的漏洞会导致链接密钥相关攻击</p>
+<ul>
+<li><p>默认链接键<br>ZigBee 标准为链接密钥提供了默认值，以确保不同制造商的 ZigBee 设备之间的互操作性；因此，攻击者可以使用流氓设备以默认网络密钥加入网络。</p>
+</li>
+<li><p>未加密的链接密钥<br>当没有预配置密钥的设备尝试加入网络时，在这种情况下，信任中心会向设备发送一个未加密的单个密钥（默认链接密钥），攻击者可以通过嗅探导致 ZigBee 网络受损的网络通信来获取。</p>
+</li>
+<li><p>重用链接键<br>ZigBee 标准允许重新使用链接密钥重新加入网络；在这种情况下，攻击者可以克隆合法设备并伪装成之前连接的设备并希望重新加入网络来欺骗信任中心的网络层。因此，信任中心然后发送使用先前使用的链接密钥加密的密钥。</p>
+</li>
+</ul>
+<h4 id="未经身份验证的_ACK_帧漏洞">未经身份验证的 ACK 帧漏洞</h4><p>确认帧是 IEEE 802.15.4/ZigBee 标准中网络层的一部分，但仅限于网络层帧传输的确认，不为确认包提供帧完整性和机密性保护。以下是 ZigBee 网络中一些常见的 ACK 攻击。两者都需要链路层干扰。</p>
+<ul>
+<li><p>ACK欺骗<br>在此类攻击中，攻击者对网络进行干扰，使合法设备收不到帧，然后攻击者向发送方发送带有正确序列号的ACK帧，从而导致网络中的数据丢失。</p>
+</li>
+<li><p>确认丢弃<br>在此类攻击中，攻击者对网络进行干扰，使得只有从接收方到发送方的 ACK 帧被阻塞，迫使发送方重新传输数据，直到达到最大重传次数，从而耗尽网络带宽和设备电池电量。</p>
+</li>
+<li><p>重放保护漏洞<br>IEEE 802.15.4 具有重放保护机制。它提到如果帧序列号等于或小于从同一源节点接收到的前一帧的序列号，则节点可以丢弃接收到的帧。在此类攻击中，攻击者可以向目标节点发送序列号较大的帧，迫使目标节点丢弃序列号较小的帧。</p>
+</li>
+</ul>
+<h2 id="结论">结论</h2><p>我们希望这篇博客能让您简要了解 ZigBee 协议的安全架构。本博客中涵盖的漏洞要么是由于缺乏安全的设计和实现，要么是由于 ZigBee 协议的固有漏洞。</p>
+<p>继续下一部分 -<a href>物联网安全 - 第 7 部分（逆向工程物联网固件）</a></p>
+<h2 id="参考">参考</h2><ul>
+<li><ol>
+<li><a href="https://standards.ieee.org/standard/802_15_4-2020.html" target="_blank" rel="external">802.15.4-2020 - IEEE 批准的低速率无线网络标准草案</a></li>
+</ol>
+</li>
+<li><ol start="2">
+<li><a href="https://zigbeealliance.org/wp-content/uploads/2019/11/docs-05-3474-21-0csg-zigbee-specification.pdf" target="_blank" rel="external">ZigBee 规范 - 05-3474-21，2015 年 8 月 5 日</a></li>
+</ol>
+</li>
+<li><ol start="3">
+<li><a href="http://www.zigbee.org/" target="_blank" rel="external">ZigBee 联盟</a></li>
+</ol>
+</li>
+<li><ol start="4">
+<li><a href="https://en.wikipedia.org/wiki/IEEE_802.15.4" target="_blank" rel="external">IEEE 802.15.4 维基百科</a></li>
+</ol>
+</li>
+<li><ol start="5">
+<li><a href="https://en.wikipedia.org/wiki/Zigbee" target="_blank" rel="external">ZigBee 维基百科</a></li>
+</ol>
+</li>
+</ul>
+<p><em>原文链接：<a href="https://payatu.com/blog/dattatray/zigbee-security-101" target="_blank" rel="external">https://payatu.com/blog/dattatray/zigbee-security-101</a></em></p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<div align="center"><br><img src="/img/icons8-zigbee-480.png" align=""/><br></div>
+
+<h2 id="ZigBee_安全_101">ZigBee 安全 101</h2><p>该博客是“物联网安全”系列的一部分。如果您还没有阅读本系列之前的博客（第 1 部分到第 5 部分），我强烈建议您先阅读它们，除非您已经熟悉这些概念并且只想阅读当前主题。<br><a href="/2021/09/21/IOT/iot-security-part-1-101-iot-introduction-architecture/">物联网安全 - 第 1 部分（101 - 物联网介绍和架构）</a><br><a href="/2021/09/22/IOT/iot-security-part-5-101-zigbee-protocol-101/">物联网安全 – 第 5 部分（ZigBee 协议 - 101）</a><br>在本文中，我们将讨论 ZigBee 协议的安全架构以及 ZigBee 设备和网络中存在的安全问题。</p>]]>
+    
+    </summary>
+    
+      <category term="IOT安全" scheme="http://www.youngroe.com/tags/IOT%E5%AE%89%E5%85%A8/"/>
+    
+      <category term="IOT" scheme="http://www.youngroe.com/categories/IOT/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[物联网安全101-5.ZigBee协议（翻译）]]></title>
+    <link href="http://www.youngroe.com/2021/09/22/IOT/iot-security-part-5-101-zigbee-protocol-101/"/>
+    <id>http://www.youngroe.com/2021/09/22/IOT/iot-security-part-5-101-zigbee-protocol-101/</id>
+    <published>2021-09-22T14:50:22.000Z</published>
+    <updated>2021-11-07T13:37:47.701Z</updated>
+    <content type="html"><![CDATA[<h2 id="ZigBee_协议_101">ZigBee 协议 101</h2><p>该博客是“物联网安全”系列的一部分。如果您还没有阅读本系列之前的博客（第 1-4 部分），我建议您先阅读它们，除非您已经熟悉这些概念并且只想阅读当前主题。<br><a href="/2021/09/21/IOT/iot-security-part-1-101-iot-introduction-architecture/">物联网安全 - 第 1 部分（101 - 物联网介绍和架构）</a><br><a href="/2021/09/22/IOT/iot-security-part-4-bluetooth-low-energy-101/">物联网安全 - 第 4 部分（蓝牙低能耗）</a><br>在这篇博客中，我们将详细讨论 ZigBee 规范和 ZigBee 协议架构。下一篇博客将介绍 ZigBee 协议的安全架构以及 ZigBee 设备和网络中存在的安全问题。<br><a id="more"></a></p>
+<h2 id="历史">历史</h2><p>ZigBee – 在 1990 年代作为临时数字无线电网络开发并替代有线网络。与 Wi-Fi 或蓝牙不同，ZigBee 更适用于工业自动化和控制系统 (IACS) 中的应用，在这些应用中，终端节点需要定期传输少量数据，并且功耗低，并且与计算机的传输距离较短，集中监控系统。如今，ZigBee 低速率无线个域网 (LR-WPAN) 广泛用于需要低数据速率、长电池寿命、自愈能力和嘈杂射频环境中安全网络的控制和监控应用。以下是一些在其产品中使用 ZigBee 标准作为网络解决方案的行业</p>
+<ul>
+<li><ol>
+<li>无线传感器网络（WSN）</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>工业自动化</li>
+</ol>
+</li>
+<li><ol start="3">
+<li>楼宇自动化</li>
+</ol>
+</li>
+<li><ol start="4">
+<li>家庭自动化</li>
+</ol>
+</li>
+<li><ol start="5">
+<li>智能电能计量</li>
+</ol>
+</li>
+<li><ol start="6">
+<li>医院和医疗保健自动化</li>
+</ol>
+</li>
+</ul>
+<h2 id="ZigBee_概述">ZigBee 概述</h2><div align="center"><br><img src="/img/zigbeeicon1.png" align><br></div>
+
+<p>2000 年，IEEE 802.15 工作组成立，致力于制定无线个域网 (WPAN) 或无线个域网 (WPAN) 的标准，其特点是短距离、高度简单、允许低成本和低功耗实施。IEEE 802.15.4标准第一版于2003年发布，即IEEE 802.15.4-2003（LR-WPAN），定义了OSI模型的物理层和数据链路层。2002 年 ZigBee 联盟成立并与 IEEE 802.15.4 工作组合作，于 2004 年 12 月宣布 ZigBee v.1.0 草案批准 ZigBee 2004 规范。 ZigBee 标准建立在 IEEE 802.15.4 标准之上，其中 IEEE 802.15.15定义了前两层，即物理（PHY）层、低速率无线个域网（LR-WPAN）的媒体访问控制（MAC）层，ZigBee标准提供了网络层（NWK），<br>以下部分将更详细地说明 ZigBee 标准的不同组件</p>
+<h3 id="IEEE_802-15-4_协议">IEEE 802.15.4 协议</h3><h3 id="物理层">物理层</h3><p>IEEE 802.15.4 物理层提供数据、传输和接收管理服务的调制解调，并在两个独立的频率范围内运行，低频868 ⁄ 915 MHz 和高频 2.4 GHz。物理层层负责无线电控制（启用/禁用）、接收数据包的链路质量指示 (LQI)、能量检测 (ED) 和空闲信道评估 (CCA)</p>
+<table>
+<thead>
+<tr>
+<th>物理层</th>
+<th>频率</th>
+<th>频道</th>
+<th>地区</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>低频物理层</td>
+<td>868.0-868.6 兆赫</td>
+<td>1</td>
+<td>欧洲</td>
+</tr>
+<tr>
+<td>低频物理层</td>
+<td>902-928 兆赫</td>
+<td>30</td>
+<td>美国和澳大利亚</td>
+</tr>
+<tr>
+<td>高频物理层</td>
+<td>2400-2483.5MHZ</td>
+<td>16</td>
+<td>全世界</td>
+</tr>
+</tbody>
+</table>
+<h3 id="MAC层">MAC层</h3><p>IEEE 802.15.4 MAC 层使用 CSMA-CA 机制控制对无线电信道的访问。MAC层负责Beacon传输（当设备为协调器时），实现载波侦听多路访问与冲突避免（CSMA-CA），使用保证时隙（GTS）机制进行同步，为上层提供可靠的传输机制.</p>
+<h3 id="IEEE_802-15-4_网络模型">IEEE 802.15.4 网络模型</h3><h4 id="节点类型">节点类型</h4><p>IEEE 802.15.4 标准定义了两种类型的网络节点</p>
+<ul>
+<li><p>全功能设备 (FFD)<br>FFD 设备能够在 PAN 网络内创建网络、配置和消息路由。FFD 设备能够在 PAN 网络中配置安全模型。FFD 设备可以在三种操作模式下运行，即：PAN 协调器、协调器和终端设备。FFD 设备可以与网络中的任何 RFD 或 FFD 设备进行通信。</p>
+</li>
+<li><p>缩减功能器件 (RFD)<br>RFD 通常是一种电池供电的简单设备，资源和通信要求非常适中。由于缺乏路由能力，RFD 设备只能作为 PAN 网络中的终端设备，并且只能与网络中的 FFD 设备进行通信。</p>
+</li>
+</ul>
+<h4 id="拓扑">拓扑</h4><p>IEEE 802.15.4 标准为 LR-WPAN 设备定义了两种星型或点对点网络拓扑。但是，每个网络都需要至少一个 FFD 作为网络的协调器。</p>
+<div align="center"><br><img src="/img/ieee-topology.png" align><br></div>
+
+<ul>
+<li><p>星型网络<br>星型网络是一种更加结构化的网络，网络中至少有一个 FFD 设备充当整个网络的协调器。任何 FFD 设备都会选择其唯一的 PAN 标识符来创建自己的 PAN 并将自己声明为 PAN 协调器。一旦 PAN 协调器在网络中处于活动状态，其他终端设备就可以加入网络。终端设备只能与中央节点或协调器通信。它主要用于家庭自动化、个人健康监测、玩具和游戏控制。</p>
+</li>
+<li><p>点对点<br>对等网络也需要一个 PAN 协调器，但与星型网络不同，任何设备都可以与网络范围内的任何其他设备进行通信。对等网络可以是能够自组织和自管理的自组织网络。它主要用于工业控制和监控系统、无线传感器网络、库存管理系统。</p>
+</li>
+</ul>
+<h3 id="节点寻址模式">节点寻址模式</h3><p>每个 IEEE 802.15.4 都有两种寻址模式，短（16 位）和扩展（64 位）寻址。符合 IEEE 802.15.4 的设备从制造商处获取其 64 位扩展地址，而当设备与 WPAN 关联时，协调器会分配一个唯一的 16 位 PAN 地址。</p>
+<h2 id="ZigBee_协议">ZigBee 协议</h2><div align="center"><br><img src="/img/zigbee-stack.png" align><br></div>
+
+<p>来源：<a href="https://zigbeealliance.org/wp-content/uploads/2019/11/docs-05-3474-21-0csg-zigbee-specification.pdf" target="_blank" rel="external">ZigBee 规范文档 05-3474-21（docs-05-3474-21-0csg-zigbee-specification）</a></p>
+<h3 id="应用层">应用层</h3><p>如上图所示，APL 层由几个子层组成，即：APS 子层、服务接入点（SAP）和 ZigBee 设备对象（ZDO）以及 ZDO 管理平面，以及制造商定义的应用程序对象。</p>
+<h3 id="应用支持子层_(APS)">应用支持子层 (APS)</h3><p>APS 子层通过 ZDO 和制造商定义的应用程序对象使用的一组通用服务提供 NWK 和 APL 之间的接口。APS 数据实体 (APS-DE) 和 APS 管理实体 (APS-ME) 是两个 APS 实体，提供以下服务：</p>
+<ul>
+<li><strong>APS 数据实体 (APS-DE)</strong></li>
+<li>应用支持子层协议数据单元（APDU）的生成</li>
+<li>设备绑定</li>
+<li>组地址过滤</li>
+<li>可靠的运输</li>
+<li>重复拒绝</li>
+<li><p>碎片化</p>
+</li>
+<li><p><strong>APS 管理实体 (APM-SE)</strong></p>
+</li>
+<li>绑定管理</li>
+<li>应用支持层信息库（AIB）管理</li>
+<li>安全</li>
+<li>集团管理</li>
+</ul>
+<h3 id="应用框架">应用框架</h3><p>应用程序框架提供了一个执行环境，其中托管应用程序对象并可以发送或接收数据，最多可以定义 254 个不同的应用程序对象，每个应用程序对象由一个从 1 到 254 的端点地址标识。端点 0 和端点 255 用作 ZigBee 设备对象（ZDO）地址和广播地址分别由应用支持子层数据实体-服务接入点（APSDE-SAP）端点241至254由ZigBee联盟保留，未经批准不得使用。</p>
+<ul>
+<li><p>应用配置文件<br>应用程序配置文件是消息、消息格式和处理操作的协议，使开发人员能够使用驻留在不同设备上的应用程序实体来创建可互操作的分布式应用程序。ZigBee 联盟已经为家庭自动化、工业自动化等应用发布了大量公共应用配置文件。设备制造商还可以定义适合其最终应用的自定义配置文件。</p>
+</li>
+<li><p>集群<br>集群表示为属性和应用程序消息的集合。簇分为两种类型，即输入簇和输出簇。群集标识符是在特定应用程序配置文件范围内唯一的 16 位数字。</p>
+</li>
+</ul>
+<h3 id="ZigBee_设备对象_(ZDO)">ZigBee 设备对象 (ZDO)</h3><p>位于应用程序框架和 APS 之间的 ZigBee 设备对象 (ZDO) 表示功能的基类，它提供应用程序对象、设备配置文件和 APS 之间的接口。ZDO 负责以下事项：</p>
+<ul>
+<li>初始化应用程序支持子层 (APS)、网络层 (NWK) 和安全服务。</li>
+<li>收集来自终端应用程序的配置信息以确定和实施发现、安全管理（密钥加载、密钥建立、密钥传输和身份验证）、网络管理（网络发现、离开/加入网络、重置网络连接和创建网络） 、绑定、节点和组管理。</li>
+</ul>
+<h3 id="网络层">网络层</h3><p>网络层在 802.15.4 MAC 层和应用层之间提供服务接口。网络层数据实体 (NLDE) 和网络层管理实体 (NLME) 是两个网络层实体，提供以下服务：</p>
+<ul>
+<li><strong>网络层数据实体 (NLDE)</strong></li>
+<li>网络级 PDU (NPDU) 的生成</li>
+<li>特定于拓扑的路由</li>
+<li><p>安全</p>
+</li>
+<li><p><strong>网络层管理实体 (NLME)</strong></p>
+</li>
+<li>配置新设备</li>
+<li>启动网络</li>
+<li>加入、重新加入和离开网络</li>
+<li>寻址：</li>
+<li>邻居发现</li>
+<li>路由发现</li>
+<li>接收控制</li>
+<li>路由</li>
+</ul>
+<h2 id="ZigBee_设备类型">ZigBee 设备类型</h2><p>ZigBee 设备可以在三种不同的模式或节点类型下工作。</p>
+<ul>
+<li><p>ZigBee 协调器 (ZC)<br>ZigBee 协调器是一种 FFD 设备，充当网络中其他节点的中央节点或父节点。每个网络只有一个负责 ZigBee 网络的创建、配置和管理。它维护一个关联设备列表，支持关联、解除关联和孤儿扫描、重新加入等服务。没有 ZC，ZigBee 网络就无法存在；ZC 在网络上始终处于活动状态，不能进入睡眠模式。</p>
+</li>
+<li><p>ZigBee 路由器 (ZR)<br>ZigBee 路由器是一个中间 FFD 设备，负责在终端设备之间或终端设备与协调器之间中继数据包。终端设备也可以通过路由器加入网络，ZR 充当该网络段的父节点。</p>
+</li>
+<li><p>ZigBee 终端设备 (ZED)<br>任何 FFD 或 RFD 设备都可以成为 ZigBee 网络上的终端设备，ZigBee 终端设备是一个简单的设备，如传感器，负责监控和收集数据，或根据用户的特定操作执行命令。没有任何消息路由能力的 ZED 只能从父节点发送和接收数据。通常，ZED 是低功率电池供电设备，可以将其置于睡眠状态以节省功耗。</p>
+</li>
+</ul>
+<h2 id="网络拓扑结构">网络拓扑结构</h2><p>ZigBee 网络层 (NWK) 支持星形、树形和网状拓扑。</p>
+<div align="center"><br><img src="/img/zigbee-topology.png" align><br></div>
+
+<ul>
+<li><p>星形<br>每个网络的单个 ZigBee 协调器设备，控制网络，并负责启动和维护 ZigBee 网络。所有其他设备，称为终端设备，通过 ZigBee 协调器直接与 ZigBee 协调器或其他终端设备通信。在星型网络中，协调器成为消息路由的瓶颈，协调器故障导致网络关闭。</p>
+</li>
+<li><p>树形<br>在树形拓扑结构中，ZigBee 协调器负责启动网络并选择特定的关键网络参数，但网络可以通过 ZigBee 路由器进行扩展。在树形网络中，路由器使用树形路由策略通过网络路由数据和控制消息。在 Tree 网络中，路由器故障会导致受影响路由器下的网段关闭。</p>
+</li>
+<li><p>网状拓扑<br>在网状拓扑中，ZigBee 协调器负责创建和配置，但网络可以使用 ZigBee 路由器进行扩展。网状网络允许完全对等通信。网状网络，也称为自愈网络，即协调器故障不会导致网络故障，因为终端设备相互通信以及与路由器通信。<br>网状网络很复杂，并且会在网络中产生消息传递开销。</p>
+</li>
+</ul>
+<h2 id="ZigBee_中的寻址">ZigBee 中的寻址</h2><h3 id="设备寻址">设备寻址</h3><p>ZigBee 网络中的每个 ZigBee 设备都有两种类型的地址 - IEEE 地址和网络地址。</p>
+<ul>
+<li><p>IEEE 地址<br>全球唯一的 64 位地址，由设备制造商在生产期间分配。作为 IEEE 802.15.4 标准的一部分，该地址也被称为“扩展地址”，被 IEEE 802.15.4 层用于低级数据包传递，除了绑定映射需要在两者之间创建绑定外，ZigBee 层很少使用IEEE 地址和网络地址。</p>
+</li>
+<li><p>网络地址<br>ZigBee 网络中唯一的 16 位网络地址是 ZigBee 层的一部分，也称为“短地址”。网络地址分配给终端设备，并由网络层用于在设备之间路由消息。</p>
+</li>
+</ul>
+<h3 id="ZigBee_网络身份">ZigBee 网络身份</h3><p>ZigBee 网络中的每个 ZigBee 设备都获得两种类型的标识符 (ID) - 个人区域网络标识符 (PAN ID) 和扩展 PAN ID (EPID)。</p>
+<ul>
+<li><p>PAN 标识符（PAN ID）<br>作为 IEEE 802.15.4 标准的一部分，PAN 标识符 (PAN ID) 是一个 16 位标识符，由 PAN 协调器在设置网络并与终端设备通信时选择。MAC 层过滤掉来自其他网络的数据包，这些网络不是由特定 PANID 标识的同一网络的一部分。</p>
+</li>
+<li><p>扩展 PAN ID (EPID)<br>ZigBee 网络的全球唯一 64 位标识符，EPID 标识符在给定区域内重叠的 PAN 中应该是唯一的，用于避免不同网络之间的 PAN ID 冲突。有关 PAN ID、EPAN 和短地址的更多信息，请参阅下面的 ZigBee 数据包快照</p>
+</li>
+</ul>
+<div align="center"><br><img src="/img/zigbee-node-addressing.png" align><br></div>
+
+<h3 id="应用级寻址">应用级寻址</h3><ul>
+<li><p>端点地址<br>每个 ZigBee 节点可以支持一个或多个应用程序或端点。要将直接消息发送到特定应用程序，使用编号为 1 到 240 的端点 - 还有一个广播端点 255，它允许将消息发送到给定节点上的所有应用程序。</p>
+</li>
+<li><p>集群标识符（集群 ID）<br>集群标识符是在每个应用程序配置文件范围内唯一的 16 位数字，用于标识特定的集群。请参阅下面的 ZigBee 数据包快照，以进一步了解端点地址和集群 ID</p>
+<div align="center"><br><img src="/img/zb-application-addressing.png" align><br></div>
+
+</li>
+</ul>
+<h2 id="ZigBee_中的消息传递">ZigBee 中的消息传递</h2><p>ZigBee 支持广播、单播、组多播和跨 PAN 消息传递。</p>
+<ul>
+<li><p>广播<br>由 PAN 协调器发起的消息，用于 PAN 网络中的所有设备和路由器设备，路由器将其转发给属于同一 PAN 网络的终端节点。</p>
+</li>
+<li><p>单播<br>消息指向网络中的单个终端节点，通常通过多个节点路由到达目的地节点。单播消息需要从最终目标设备到源设备的网络级确认，而如果消息路由通过不同的节点，则在 MAC 层之间发送 MAC 级确认。</p>
+</li>
+<li><p>组播<br>用于特定 PAN 网络中的每个设备的消息，属于以跳数为单位的给定传输半径内动态定义的多播组。</p>
+</li>
+</ul>
+<h3 id="PAN_间通信">PAN 间通信</h3><p>此消息适用于来自具有不同 PANID 的不同 PAN 网络的设备。ZigBee 规范将跨泛通信定义为一种机制，通过这种机制，ZigBee 设备可以与本地区域内的设备进行信息交换，而无需形成或加入相同的 ZigBee 网络。</p>
+<h2 id="结论…">结论…</h2><p>我们希望这能让您对 ZigBee 协议进行介绍和简要了解。在下一篇博客中，我们将介绍 ZigBee 协议和设备的安全性。<br>继续阅读本系列的下一部分 -<a href="/2021/09/22/IOT/iot-security-part-6-101-zigbee-security-101/">物联网安全第 6 部分（ZigBee 安全 - 101）</a></p>
+<h2 id="参考">参考</h2><ul>
+<li><ol>
+<li><a href="https://standards.ieee.org/standard/802_15_4-2020.html" target="_blank" rel="external">802.15.4-2020 - IEEE 批准的低速率无线网络标准草案</a></li>
+</ol>
+</li>
+<li><ol start="2">
+<li><a href="https://zigbeealliance.org/wp-content/uploads/2019/11/docs-05-3474-21-0csg-zigbee-specification.pdf" target="_blank" rel="external">ZigBee 规范 - 05-3474-21，2015 年 8 月 5 日</a></li>
+</ol>
+</li>
+<li><ol start="3">
+<li><a href="http://www.zigbee.org/" target="_blank" rel="external">ZigBee 联盟</a></li>
+</ol>
+</li>
+<li><ol start="4">
+<li><a href="https://en.wikipedia.org/wiki/IEEE_802.15.4" target="_blank" rel="external">IEEE 802.15.4 维基百科</a></li>
+</ol>
+</li>
+<li><ol start="5">
+<li><a href="https://en.wikipedia.org/wiki/Zigbee" target="_blank" rel="external">ZigBee 维基百科</a></li>
+</ol>
+</li>
+</ul>
+<p><em>原文链接：<a href="https://payatu.com/blog/dattatray/zigbee-protocol-101" target="_blank" rel="external">https://payatu.com/blog/dattatray/zigbee-protocol-101</a></em></p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<h2 id="ZigBee_协议_101">ZigBee 协议 101</h2><p>该博客是“物联网安全”系列的一部分。如果您还没有阅读本系列之前的博客（第 1-4 部分），我建议您先阅读它们，除非您已经熟悉这些概念并且只想阅读当前主题。<br><a href="/2021/09/21/IOT/iot-security-part-1-101-iot-introduction-architecture/">物联网安全 - 第 1 部分（101 - 物联网介绍和架构）</a><br><a href="/2021/09/22/IOT/iot-security-part-4-bluetooth-low-energy-101/">物联网安全 - 第 4 部分（蓝牙低能耗）</a><br>在这篇博客中，我们将详细讨论 ZigBee 规范和 ZigBee 协议架构。下一篇博客将介绍 ZigBee 协议的安全架构以及 ZigBee 设备和网络中存在的安全问题。<br>]]>
+    
+    </summary>
+    
+      <category term="IOT安全" scheme="http://www.youngroe.com/tags/IOT%E5%AE%89%E5%85%A8/"/>
+    
+      <category term="IOT" scheme="http://www.youngroe.com/categories/IOT/"/>
+    
+  </entry>
+  
+  <entry>
     <title><![CDATA[物联网安全101-4.低功耗蓝牙BLE（翻译）]]></title>
-    <link href="http://www.youngroe.com/2021/09/22/IOT/iot-security-part-4-bluetooth-low-energy-101/"/>
-    <id>http://www.youngroe.com/2021/09/22/IOT/iot-security-part-4-bluetooth-low-energy-101/</id>
+    <link href="http://www.youngroe.com/2021/09/22/IOT/iot-security-part-4-101-bluetooth-low-energy-101/"/>
+    <id>http://www.youngroe.com/2021/09/22/IOT/iot-security-part-4-101-bluetooth-low-energy-101/</id>
     <published>2021-09-22T12:50:22.000Z</published>
-    <updated>2021-11-06T15:28:21.547Z</updated>
-    <content type="html"><![CDATA[<p>如果您还没有通读我们的 IoT 安全博客系列的第 1 部分到第 3 部分，我建议您先阅读它们，除非您已经熟悉 IoT 的基础知识。上一篇博客的链接——<a href="/2021/09/22/IOT/iot-security-part-3-101-iot-top-ten-vulnerabilities/">物联网安全——第 3 部分</a>。<br>蓝牙一直是一个流行词，因为人们希望他们的所有设备都是智能的，这基本上意味着您可以跨设备控制事物而无需携带电线。蓝牙已经进入市场十多年了。如果您是千禧一代，您会使用那些带有蓝牙功能的经典诺基亚手机。蓝牙是由爱立信发明的，其他厂商也开始使用蓝牙。不久之后，所有主要供应商都创建了一个名为<a href="https://en.wikipedia.org/wiki/Bluetooth_Special_Interest_Group" target="_blank" rel="external">蓝牙特别兴趣小组- SIG的联盟</a>，该联盟管理标准应该如何以及不同版本之间的互操作性。<br>我们不打算谈论蓝牙。蓝牙本身就是一个庞大的协议栈，它们的规范大约有2000 多页。在本博客中，我将仅介绍更为著名的 BLE 蓝牙低功耗。<br><a id="more"></a></p>
-<p>随着万物互联时代的到来，随之而来的是能量和资源的问题。正如我之前提到的，蓝牙是一个巨大的协议栈。在像健身手环这样的终端设备中实施它需要更多的能量和资源。因此，在蓝牙 4.0 标准中，他们引入了一种称为 Low energy 的技术，专门针对在内存和功率受限的设备上运行的物联网和智能设备。</p>
+    <updated>2021-11-07T06:00:37.883Z</updated>
+    <content type="html"><![CDATA[<p>如果您还没有看我们的物联网安全系列的第 1 部分到第 3 部分，我建议您先阅读它们，除非您已经熟悉 IoT 的基础知识。上一篇博客的链接——<a href="/2021/09/22/IOT/iot-security-part-3-101-iot-top-ten-vulnerabilities/">物联网安全——第 3 部分</a>。<br>蓝牙一直是一个流行词，因为人们希望他们的所有设备都是智能的，这意味着您可以不需要线缆就可以跨设备控制其他设备。蓝牙已经进入市场十多年了。如果您是千禧一代，您可能会使用过那些带有蓝牙功能的经典诺基亚手机。蓝牙是由爱立信发明的，随后其他厂商也开始使用蓝牙。不久之后，主要终端厂商一起都创建了一个名为<a href="https://en.wikipedia.org/wiki/Bluetooth_Special_Interest_Group" target="_blank" rel="external">蓝牙特别兴趣小组- SIG的联盟</a>，该联盟管理制定蓝牙标准以及不同版本之间的互操作性。<br>我们不打算谈论蓝牙。蓝牙本身就是一个庞大的协议栈，它们的规范大约有2000 多页。在本博客中，我将仅介绍更为著名的 BLE 蓝牙低功耗。<br><a id="more"></a></p>
+<p>随着万物互联时代的到来，随之而来的是能量和资源的问题。正如我上面提到的，蓝牙是一个巨大的协议栈。在像健身手环这样的终端设备中实现它需要耗费很多的能量和资源。因此，在蓝牙 4.0 标准中，他们引入了一种称为 Low energy 的技术，专门针对在内存和功率受限的设备上运行的物联网和智能设备。</p>
 <div align="center"><br><img src="/img/2021092150941367.jpg" align><br></div>
 
 <p>Bluetooth SIG 开始将该标准作为 <a href="https://www.laptopmag.com/articles/just-what-is-bluetooth-4-0-anyway" target="_blank" rel="external">Bluetooth Smart</a>进行销售。它有两个组件，Bluetooth Smart设备是只有蓝牙低功耗组件的终端设备，Bluetooth Ready是能够同时执行Bluetooth LE 和 EDR-Bluetooth经典组件的设备，这可能是您的中心设备，如手机或笔记本电脑。<br>现在让我们来看看蓝牙规范的技术细节</p>
-<div align="center"><br><img src="/img/202109212961815527.gif" align><br></div><br>来源：<a href="https://archive.eetindia.co.in/www.eetindia.co.in/STATIC/ARTICLE_IMAGES/201312/EEIOL_2013DEC13_RFD_NET_TA_01Tab1.gif" target="_blank" rel="external">https://archive.eetindia.co.in/www.eetindia.co.in/STATIC/ARTICLE_IMAGES/201312/EEIOL_2013DEC13_RFD_NET_TA_01Tab1.gif</a><br><br>该表本身将使您更好地了解规格、范围和带宽已减少以承受低功耗和低资源。<br>正如我之前提到的，LE 有两种不同类型的设备。<br><br><a href="https://www.digikey.com/Web%20Export/Supplier%20Content/Laird_776/PDF/laird-wireless-bluetooth-smart-ready.pdf" target="_blank" rel="external">Bluetooth Smart Ready</a>- 这是电池供电和高资源的中央设备，能够运行所有蓝牙协议。它们是您的笔记本电脑和手机。<br><br><div align="center"><br><img src="/img/3391617601.jpg" align><br></div>
+<div align="center"><br><img src="/img/202109212961815527.gif" align><br></div>
+
+<p>来源：<a href="https://archive.eetindia.co.in/www.eetindia.co.in/STATIC/ARTICLE_IMAGES/201312/EEIOL_2013DEC13_RFD_NET_TA_01Tab1.gif" target="_blank" rel="external">https://archive.eetindia.co.in/www.eetindia.co.in/STATIC/ARTICLE_IMAGES/201312/EEIOL_2013DEC13_RFD_NET_TA_01Tab1.gif</a></p>
+<p>该表本身将使您更好地了解规格、范围和带宽已减少以承受低功耗和低资源。<br>正如我之前提到的，LE 有两种不同类型的设备。</p>
+<p><a href="https://www.digikey.com/Web%20Export/Supplier%20Content/Laird_776/PDF/laird-wireless-bluetooth-smart-ready.pdf" target="_blank" rel="external">Bluetooth Smart Ready</a>- 这是电池供电和高资源的中央设备，能够运行所有蓝牙协议。它们是您的笔记本电脑和手机。</p>
+<div align="center"><br><img src="/img/3391617601.jpg" align><br></div>
 
 <p><a href="https://www.digikey.com/Web%20Export/Supplier%20Content/Laird_776/PDF/laird-wireless-bluetooth-smart-ready.pdf" target="_blank" rel="external">Bluetooth Smart</a>– 它们是您的终端设备，如健身追踪器、行李追踪器或智能假阳具。他们不必运行整个堆栈，他们需要节省电力和资源。它们仅运行 Bluetooth LE 服务器。它们是中央设备可以连接的外围设备。</p>
 <div align="center"><br><img src="/img/170392843.jpg" align><br></div>
@@ -195,7 +927,7 @@
 <p><em>原文链接：<a href="https://payatu.com/blog/Arun-Magesh/iot-security-part-4-bluetooth-low-energy-101" target="_blank" rel="external">https://payatu.com/blog/Arun-Magesh/iot-security-part-4-bluetooth-low-energy-101</a></em></p>
 ]]></content>
     <summary type="html">
-    <![CDATA[<p>如果您还没有通读我们的 IoT 安全博客系列的第 1 部分到第 3 部分，我建议您先阅读它们，除非您已经熟悉 IoT 的基础知识。上一篇博客的链接——<a href="/2021/09/22/IOT/iot-security-part-3-101-iot-top-ten-vulnerabilities/">物联网安全——第 3 部分</a>。<br>蓝牙一直是一个流行词，因为人们希望他们的所有设备都是智能的，这基本上意味着您可以跨设备控制事物而无需携带电线。蓝牙已经进入市场十多年了。如果您是千禧一代，您会使用那些带有蓝牙功能的经典诺基亚手机。蓝牙是由爱立信发明的，其他厂商也开始使用蓝牙。不久之后，所有主要供应商都创建了一个名为<a href="https://en.wikipedia.org/wiki/Bluetooth_Special_Interest_Group">蓝牙特别兴趣小组- SIG的联盟</a>，该联盟管理标准应该如何以及不同版本之间的互操作性。<br>我们不打算谈论蓝牙。蓝牙本身就是一个庞大的协议栈，它们的规范大约有2000 多页。在本博客中，我将仅介绍更为著名的 BLE 蓝牙低功耗。<br>]]>
+    <![CDATA[<p>如果您还没有看我们的物联网安全系列的第 1 部分到第 3 部分，我建议您先阅读它们，除非您已经熟悉 IoT 的基础知识。上一篇博客的链接——<a href="/2021/09/22/IOT/iot-security-part-3-101-iot-top-ten-vulnerabilities/">物联网安全——第 3 部分</a>。<br>蓝牙一直是一个流行词，因为人们希望他们的所有设备都是智能的，这意味着您可以不需要线缆就可以跨设备控制其他设备。蓝牙已经进入市场十多年了。如果您是千禧一代，您可能会使用过那些带有蓝牙功能的经典诺基亚手机。蓝牙是由爱立信发明的，随后其他厂商也开始使用蓝牙。不久之后，主要终端厂商一起都创建了一个名为<a href="https://en.wikipedia.org/wiki/Bluetooth_Special_Interest_Group">蓝牙特别兴趣小组- SIG的联盟</a>，该联盟管理制定蓝牙标准以及不同版本之间的互操作性。<br>我们不打算谈论蓝牙。蓝牙本身就是一个庞大的协议栈，它们的规范大约有2000 多页。在本博客中，我将仅介绍更为著名的 BLE 蓝牙低功耗。<br>]]>
     
     </summary>
     
@@ -1886,215 +2618,6 @@
       <category term="逆向" scheme="http://www.youngroe.com/tags/%E9%80%86%E5%90%91/"/>
     
       <category term="Windows" scheme="http://www.youngroe.com/categories/Windows/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[Windows平台下一个崩溃而导致的死锁分析]]></title>
-    <link href="http://www.youngroe.com/2019/01/12/Windows/a_crash_lead_deadlock/"/>
-    <id>http://www.youngroe.com/2019/01/12/Windows/a_crash_lead_deadlock/</id>
-    <published>2019-01-12T12:13:53.000Z</published>
-    <updated>2020-02-15T07:54:24.198Z</updated>
-    <content type="html"><![CDATA[<h2 id="0x00_问题介绍">0x00 问题介绍</h2><p>测试反馈测试过程中发现程序进程存在但是界面没加载出来，看现场很快发现是因为版本不匹配而导致程序崩溃，在写dmp的过程中死锁而导致进程卡死，由于程序是卡死而非退出守护进程也未重启程序，最终导致界面一直没加载出来。<br>现象就如上面所说，但是为什么写dmp为什么会导致程序死锁呢？<br><a id="more"></a></p>
-<h2 id="0x01_初探死锁原因">0x01 初探死锁原因</h2><p>首先我们来看下程序死锁时线程状态，分析下死锁原因：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">0</span>:<span class="number">065</span>&gt; ~<span class="number">0</span>kv</span><br><span class="line">ChildEBP RetAddr  Args to Child              </span><br><span class="line"><span class="number">0061</span>c8cc <span class="number">751</span>a15bf <span class="number">00000138</span> <span class="number">00000000</span> <span class="number">00000000</span> ntdll!NtWaitForSingleObject+<span class="number">0x15</span> (FPO: [<span class="number">3</span>,<span class="number">0</span>,<span class="number">0</span>])</span><br><span class="line"><span class="number">0061</span>c938 <span class="number">770e1194</span> <span class="number">00000138</span> ffffffff <span class="number">00000000</span> KERNELBASE!WaitForSingleObjectEx+<span class="number">0x98</span> (FPO: [Non-Fpo])</span><br><span class="line"><span class="number">0061</span>c950 <span class="number">770e1148</span> <span class="number">00000138</span> ffffffff <span class="number">00000000</span> kernel32!WaitForSingleObjectExImplementation+<span class="number">0x75</span> (FPO: [Non-Fpo])</span><br><span class="line"><span class="number">0061</span>c964 <span class="number">6</span>c710cbb <span class="number">00000138</span> ffffffff <span class="number">6</span>c71092f kernel32!WaitForSingleObject+<span class="number">0x12</span> (FPO: [Non-Fpo])</span><br><span class="line"><span class="number">0061</span>c978 <span class="number">6</span>c710983 <span class="number">0061</span>ca54 <span class="number">00000000</span> <span class="number">6</span>c71092f xxx!google_breakpad::ExceptionHandler::WriteMinidumpOnHandlerThread+<span class="number">0x64</span> (FPO: [<span class="number">2</span>,<span class="number">0</span>,<span class="number">0</span>]) (CONV: thiscall) </span><br><span class="line"><span class="number">0061</span>c994 <span class="number">7712030</span>d <span class="number">0061</span>ca24 <span class="number">7712031f</span> <span class="number">0061</span>ca54 xxx!google_breakpad::ExceptionHandler::HandleException+<span class="number">0x54</span> (FPO: [Non-Fpo]) (CONV: thiscall) </span><br><span class="line"><span class="number">0061</span>ca24 <span class="number">77686637</span> <span class="number">0061</span>ca54 <span class="number">77686514</span> <span class="number">00000000</span> kernel32!UnhandledExceptionFilter+<span class="number">0x119</span> (FPO: [Non-Fpo])</span><br><span class="line"><span class="number">0061</span>ca2c <span class="number">77686514</span> <span class="number">00000000</span> <span class="number">0061f</span>a04 <span class="number">7763</span>c6b0 ntdll!__RtlUserThreadStart+<span class="number">0x62</span> (FPO: [SEH])</span><br><span class="line"><span class="number">0061</span>ca40 <span class="number">776863</span>b1 <span class="number">00000000</span> <span class="number">00000000</span> <span class="number">00000000</span> ntdll!_EH4_CallFilterFunc+<span class="number">0x12</span> (FPO: [Uses EBP] [<span class="number">0</span>,<span class="number">0</span>,<span class="number">4</span>])</span><br><span class="line"><span class="number">0061</span>ca68 <span class="number">7766</span>b81d fffffffe <span class="number">0061f</span>9f4 <span class="number">0061</span>cba4 ntdll!_except_handler4+<span class="number">0x8e</span> (FPO: [Non-Fpo])</span><br><span class="line"><span class="number">0061</span>ca8c <span class="number">7766</span>b7ef <span class="number">0061</span>cb54 <span class="number">0061f</span>9f4 <span class="number">0061</span>cba4 ntdll!ExecuteHandler2+<span class="number">0x26</span> (FPO: [Uses EBP] [<span class="number">5</span>,<span class="number">3</span>,<span class="number">1</span>])</span><br><span class="line"><span class="number">0061</span>cab0 <span class="number">7766</span>b790 <span class="number">0061</span>cb54 <span class="number">0061f</span>9f4 <span class="number">0061</span>cba4 ntdll!ExecuteHandler+<span class="number">0x24</span> (FPO: [<span class="number">5</span>,<span class="number">0</span>,<span class="number">3</span>])</span><br><span class="line"><span class="number">0061</span>cb3c <span class="number">77620163</span> <span class="number">0061</span>cb54 <span class="number">0061</span>cba4 <span class="number">0061</span>cb54 ntdll!RtlDispatchException+<span class="number">0x127</span> (FPO: [Non-Fpo])</span><br><span class="line"><span class="number">0061</span>cb3c <span class="number">00000000</span> <span class="number">0061</span>cb54 <span class="number">0061</span>cba4 <span class="number">0061</span>cb54 ntdll!KiUserExceptionDispatcher+<span class="number">0xf</span> (FPO: [<span class="number">2</span>,<span class="number">0</span>,<span class="number">0</span>]) (CONTEXT @ <span class="number">00000008</span>)</span><br><span class="line"><span class="number">0</span>:<span class="number">065</span>&gt; .exr <span class="number">0061</span>cb54 </span><br><span class="line">ExceptionAddress: <span class="number">7519</span>c52f (KERNELBASE!RaiseException+<span class="number">0x00000058</span>)</span><br><span class="line">   ExceptionCode: e06d7363 (C++ EH exception)</span><br><span class="line">  ExceptionFlags: <span class="number">00000001</span></span><br><span class="line">NumberParameters: <span class="number">3</span></span><br><span class="line">   Parameter[<span class="number">0</span>]: <span class="number">19930520</span></span><br><span class="line">   Parameter[<span class="number">1</span>]: <span class="number">0061</span>d0a0</span><br><span class="line">   Parameter[<span class="number">2</span>]: <span class="number">6</span>d376990</span><br><span class="line">  pExceptionObject: <span class="number">0061</span>d0a0</span><br><span class="line">  _s_ThrowInfo    : <span class="number">6</span>d376990</span><br><span class="line">  Type            : <span class="keyword">class</span> <span class="built_in">std</span>::bad_alloc</span><br><span class="line">  Type            : <span class="keyword">class</span> <span class="built_in">std</span>::exception</span><br><span class="line"><span class="number">0</span>:<span class="number">065</span>&gt; .cxr <span class="number">0061</span>cba4 </span><br><span class="line">eax=<span class="number">0061</span>d008 ebx=<span class="number">0061</span>d0e4 ecx=<span class="number">00000003</span> edx=<span class="number">00000000</span> esi=<span class="number">3f</span>ffffef edi=<span class="number">00000000</span></span><br><span class="line">eip=<span class="number">7519</span>c52f esp=<span class="number">0061</span>d008 ebp=<span class="number">0061</span>d058 iopl=<span class="number">0</span>         nv up ei pl nz ac po nc</span><br><span class="line">cs=<span class="number">0023</span>  ss=<span class="number">002</span>b  ds=<span class="number">002</span>b  es=<span class="number">002</span>b  fs=<span class="number">0053</span>  gs=<span class="number">002</span>b             efl=<span class="number">00000212</span></span><br><span class="line">KERNELBASE!RaiseException+<span class="number">0x58</span>:</span><br><span class="line"><span class="number">7519</span>c52f c9              leave</span><br><span class="line">*** ERROR: Symbol file could not be found.  Defaulted to <span class="keyword">export</span> symbols <span class="keyword">for</span> Qt5Core.dll - </span><br><span class="line">*** ERROR: Symbol file could not be found.  Defaulted to <span class="keyword">export</span> symbols <span class="keyword">for</span> Desktop.exe - </span><br><span class="line">*** ERROR: Symbol file could not be found.  Defaulted to <span class="keyword">export</span> symbols <span class="keyword">for</span> Qt5Widgets.dll - </span><br><span class="line"><span class="number">0</span>:<span class="number">065</span>&gt; kv</span><br><span class="line">  *** Stack trace <span class="keyword">for</span> last <span class="built_in">set</span> context - .thread/.cxr resets it</span><br><span class="line">ChildEBP RetAddr  Args to Child              </span><br><span class="line"><span class="number">0061</span>d058 <span class="number">6f</span>e4872d e06d7363 <span class="number">00000001</span> <span class="number">00000003</span> KERNELBASE!RaiseException+<span class="number">0x58</span> (FPO: [Non-Fpo])</span><br><span class="line"><span class="number">0061</span>d090 <span class="number">6</span>d0a6956 <span class="number">0061</span>d0a0 <span class="number">6</span>d376990 <span class="number">6</span>d2516d4 msvcr100!_CxxThrowException+<span class="number">0x48</span> (FPO: [Non-Fpo])</span><br><span class="line">WARNING: Stack unwind information not available. Following frames may be wrong.</span><br><span class="line"><span class="number">0061</span>d0ac <span class="number">6</span>d0b888b <span class="number">07</span>cb37f8 <span class="number">07</span>cb37f8 <span class="number">00000000</span> Qt5Core!qBadAlloc+<span class="number">0x1c</span></span><br><span class="line"><span class="number">0061</span>d0f4 <span class="number">00285f</span>be <span class="number">0061</span>d11c <span class="number">3f</span>ffffef <span class="number">00000000</span> Qt5Core!QByteArray::resize+<span class="number">0x96</span></span><br><span class="line"><span class="number">0</span>:<span class="number">065</span>&gt; !handle <span class="number">0x138</span> <span class="number">0xf</span></span><br><span class="line">Handle <span class="number">00000138</span></span><br><span class="line">  Type         	Semaphore</span><br><span class="line">  Attributes   	<span class="number">0</span></span><br><span class="line">  GrantedAccess	<span class="number">0x1f0003</span>:</span><br><span class="line">         Delete,ReadControl,WriteDac,WriteOwner,Synch</span><br><span class="line">         QueryState,ModifyState</span><br><span class="line">  HandleCount  	<span class="number">2</span></span><br><span class="line">  PointerCount 	<span class="number">4</span></span><br><span class="line">  Name         	&lt;none&gt;</span><br><span class="line">  No object specific information available</span><br></pre></td></tr></table></figure></p>
-<p>首先看下主线程，主线程因为bad_alloc主动触发异常被breakpad捕获到在创建dmp文件，并通过WaitForsingleObject等待句柄值为0x138的信号量释放。这里可以回到breakpad的源码，可以发现breakpad中是通过信号量控制ExceptionHandlerThreadMain线程生成dmp，此刻是通过WaitForSingleObject等待ExceptionHandlerThreadMain线程完成dmp生成。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// This causes the handler thread to call WriteMinidumpWithException.</span></span><br><span class="line">ReleaseSemaphore(handler_start_semaphore_, <span class="number">1</span>, <span class="literal">NULL</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Wait until WriteMinidumpWithException is done and collect its return value.</span></span><br><span class="line">WaitForSingleObject(handler_finish_semaphore_, INFINITE);</span><br><span class="line"><span class="keyword">bool</span> status = handler_return_value_;</span><br></pre></td></tr></table></figure></p>
-<p>那我们再看下线程ExceptionHandlerThreadMain在干嘛，怎么一直没有完成dmp文件生成，释放信号量？<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">0</span>:<span class="number">065</span>&gt; ~<span class="number">4</span>kv</span><br><span class="line">ChildEBP RetAddr  Args to Child              </span><br><span class="line"><span class="number">02f</span>3f1fc <span class="number">7764</span>db13 <span class="number">00000730</span> <span class="number">00000000</span> <span class="number">00000000</span> ntdll!NtWaitForSingleObject+<span class="number">0x15</span> (FPO: [<span class="number">3</span>,<span class="number">0</span>,<span class="number">0</span>])</span><br><span class="line"><span class="number">02f</span>3f260 <span class="number">7764</span>d9f7 <span class="number">00000000</span> <span class="number">00000000</span> <span class="number">03</span>d20000 ntdll!RtlpWaitOnCriticalSection+<span class="number">0x13e</span> (FPO: [Non-Fpo])</span><br><span class="line"><span class="number">02f</span>3f288 <span class="number">7764</span>dc78 <span class="number">03</span>d20138 <span class="number">759</span>b9beb <span class="number">00078000</span> ntdll!RtlEnterCriticalSection+<span class="number">0x150</span> (FPO: [Non-Fpo])</span><br><span class="line"><span class="number">02f</span>3f364 <span class="number">77643541</span> <span class="number">00001f</span>f8 <span class="number">00002000</span> <span class="number">00000000</span> ntdll!RtlpAllocateHeap+<span class="number">0x159</span> (FPO: [Non-Fpo])</span><br><span class="line"><span class="number">02f</span>3f3e8 <span class="number">77647</span>d7b <span class="number">03</span>d20000 <span class="number">00800000</span> <span class="number">00001f</span>f8 ntdll!RtlAllocateHeap+<span class="number">0x23a</span> (FPO: [Non-Fpo])</span><br><span class="line"><span class="number">02f</span>3f434 <span class="number">77647271</span> <span class="number">00000388</span> <span class="number">759</span>b9c4b <span class="number">0767</span>d8e0 ntdll!RtlpAllocateUserBlock+<span class="number">0xae</span> (FPO: [Non-Fpo])</span><br><span class="line"><span class="number">02f</span>3f4c4 <span class="number">7763e262</span> <span class="number">0767</span>d8e0 <span class="number">02f</span>3faac <span class="number">02f</span>3faac ntdll!RtlpLowFragHeapAllocFromContext+<span class="number">0x802</span> (FPO: [Non-Fpo])</span><br><span class="line"><span class="number">02f</span>3f538 <span class="number">73e1</span>bad5 <span class="number">03</span>d20000 <span class="number">00000008</span> <span class="number">00000374</span> ntdll!RtlAllocateHeap+<span class="number">0x206</span> (FPO: [Non-Fpo])</span><br><span class="line"><span class="number">02f</span>3f54c <span class="number">73e16</span>d52 <span class="number">00000374</span> <span class="number">0767</span>d8e0 <span class="number">02f</span>3faac dbghelp!Win32LiveAllocationProvider::Alloc+<span class="number">0x13</span> (FPO: [Non-Fpo])</span><br><span class="line"><span class="number">02f</span>3f560 <span class="number">73e16</span>e96 <span class="number">02f</span>3faac <span class="number">00000374</span> <span class="number">0767</span>d8e0 dbghelp!AllocMemory+<span class="number">0x15</span> (FPO: [Non-Fpo])</span><br><span class="line"><span class="number">02f</span>3f598 <span class="number">73e1</span>a261 <span class="number">02f</span>3faac <span class="number">0767</span>d8e0 <span class="number">000018</span>b4 dbghelp!GenAllocateThreadObject+<span class="number">0x2d</span> (FPO: [Non-Fpo])</span><br><span class="line"><span class="number">02f</span>3f9c0 <span class="number">73e15</span>b81 <span class="number">02f</span>3faac <span class="number">02f</span>3fb60 <span class="number">02f</span>3fb78 dbghelp!GenGetProcessInfo+<span class="number">0xf2</span> (FPO: [Non-Fpo])</span><br><span class="line"><span class="number">02f</span>3fb40 <span class="number">73e15</span>e2a ffffffff <span class="number">00001</span>bd0 <span class="number">03</span>d207e8 dbghelp!MiniDumpProvideDump+<span class="number">0x16b</span> (FPO: [Non-Fpo])</span><br><span class="line"><span class="number">02f</span>3fba8 <span class="number">6</span>c71101a ffffffff <span class="number">00001</span>bd0 <span class="number">00000728</span> dbghelp!MiniDumpWriteDump+<span class="number">0xf2</span> (FPO: [Non-Fpo])</span><br><span class="line"><span class="number">02f</span>3fc70 <span class="number">6</span>c710db2 <span class="number">00000720</span> <span class="number">00000000</span> ffffffff xxx!google_breakpad::ExceptionHandler::WriteMinidumpWithExceptionForProcess+<span class="number">0x1e3</span> (FPO: [Non-Fpo]) </span><br><span class="line"><span class="number">02f</span>3fc8c <span class="number">6</span>c710875 <span class="number">00000720</span> <span class="number">0061</span>ca54 <span class="number">00000000</span> xxx!google_breakpad::ExceptionHandler::WriteMinidumpWithException+<span class="number">0x43</span> (FPO: [Non-Fpo]) </span><br><span class="line"><span class="number">02f</span>3fca0 <span class="number">770e338</span>a <span class="number">02811098</span> <span class="number">02f</span>3fcec <span class="number">77649</span>a02 xxx!google_breakpad::ExceptionHandler::ExceptionHandlerThreadMain+<span class="number">0x39</span> (FPO: [<span class="number">1</span>,<span class="number">0</span>,<span class="number">0</span>]) </span><br><span class="line"><span class="number">02f</span>3fcac <span class="number">77649</span>a02 <span class="number">02811098</span> <span class="number">759</span>b9463 <span class="number">00000000</span> kernel32!BaseThreadInitThunk+<span class="number">0xe</span> (FPO: [Non-Fpo])</span><br><span class="line"><span class="number">02f</span>3fcec <span class="number">776499</span>d5 <span class="number">6</span>c71083c <span class="number">02811098</span> <span class="number">00000000</span> ntdll!__RtlUserThreadStart+<span class="number">0x70</span> (FPO: [Non-Fpo])</span><br><span class="line"><span class="number">02f</span>3fd04 <span class="number">00000000</span> <span class="number">6</span>c71083c <span class="number">02811098</span> <span class="number">00000000</span> ntdll!_RtlUserThreadStart+<span class="number">0x1b</span> (FPO: [Non-Fpo])</span><br></pre></td></tr></table></figure></p>
-<p>我们可以看到ExceptionHandlerThreadMain线程果然正在写dmp，但是为什么一直没有完成了？原来是在等待获取一个临界区0x3d20138啊，看下这个临界区被谁占用了呢<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">0</span>:<span class="number">065</span>&gt; !cs <span class="number">03</span>d20138 </span><br><span class="line">-----------------------------------------</span><br><span class="line">Critical section   = <span class="number">0x03d20138</span> (+<span class="number">0x3D20138</span>)</span><br><span class="line">DebugInfo          = <span class="number">0x00810238</span></span><br><span class="line">LOCKED</span><br><span class="line">LockCount          = <span class="number">0x1</span></span><br><span class="line">WaiterWoken        = No</span><br><span class="line">OwningThread       = <span class="number">0x00001770</span></span><br><span class="line">RecursionCount     = <span class="number">0x1</span></span><br><span class="line">LockSemaphore      = <span class="number">0x730</span></span><br><span class="line">SpinCount          = <span class="number">0x00000fa0</span></span><br><span class="line"><span class="number">0</span>:<span class="number">065</span>&gt; ~~[<span class="number">0x1770</span>]</span><br><span class="line">  <span class="number">12</span>  Id: <span class="number">1</span>bd0<span class="number">.1770</span> Suspend: <span class="number">2</span> Teb: <span class="number">7</span>ef93000 Unfrozen</span><br><span class="line">      Priority: <span class="number">0</span>  Priority <span class="keyword">class</span>: <span class="number">32</span></span><br><span class="line"><span class="number">0</span>:<span class="number">065</span>&gt; ~<span class="number">12</span>kv</span><br><span class="line">ChildEBP RetAddr  Args to Child              </span><br><span class="line"><span class="number">03f</span>cf388 <span class="number">776</span>cfbc7 <span class="number">00720000</span> <span class="number">00000005</span> <span class="number">776</span>b4acb ntdll!RtlpQueryExtendedInformationHeap+<span class="number">0x4ec</span> (FPO: [Non-Fpo])</span><br><span class="line"><span class="number">03f</span>cf408 <span class="number">776</span>d079f <span class="number">00000005</span> <span class="number">776</span>b4acb <span class="number">03f</span>cf590 ntdll!RtlpQueryExtendedInformationAllHeaps+<span class="number">0xe5</span> (FPO: [Non-Fpo])</span><br><span class="line"><span class="number">03f</span>cf4f8 <span class="number">7769e2</span>b6 <span class="number">03f</span>cf564 <span class="number">776</span>b4acb <span class="number">00000000</span> ntdll!RtlpQueryExtendedHeapInformation+<span class="number">0xe7</span> (FPO: [Non-Fpo])</span><br><span class="line"><span class="number">03f</span>cf538 <span class="number">776</span>b5163 <span class="number">00000000</span> <span class="number">00000002</span> <span class="number">03f</span>cf564 ntdll!RtlQueryHeapInformation+<span class="number">0x4a</span> (FPO: [Non-Fpo])</span><br><span class="line"><span class="number">03f</span>cf5dc <span class="number">7769374</span>a <span class="number">0</span>a0a0000 <span class="number">770</span>d0000 <span class="number">03f</span>cf6a4 ntdll!RtlQueryProcessHeapInformation+<span class="number">0x288</span> (FPO: [Non-Fpo])</span><br><span class="line"><span class="number">03f</span>cf658 <span class="number">77166093</span> <span class="number">00001</span>bd0 <span class="number">00000014</span> <span class="number">0</span>a0a0000 ntdll!RtlQueryProcessDebugInformation+<span class="number">0x28a</span> (FPO: [Non-Fpo])</span><br><span class="line">*** WARNING: Unable to verify checksum <span class="keyword">for</span> libeay32.dll</span><br><span class="line">*** ERROR: Symbol file could not be found.  Defaulted to <span class="keyword">export</span> symbols <span class="keyword">for</span> libeay32.dll - </span><br><span class="line"><span class="number">03f</span>cf688 <span class="number">6</span>c38a953 <span class="number">0</span>a0a0000 <span class="number">5205</span>b472 <span class="number">00000001</span> kernel32!Heap32Next+<span class="number">0x4d</span> (FPO: [Non-Fpo])</span><br><span class="line">WARNING: Stack unwind information not available. Following frames may be wrong.</span><br><span class="line"><span class="number">03f</span>cf730 <span class="number">7764</span>b83d <span class="number">03f</span>cf7cc <span class="number">00000001</span> <span class="number">751</span>d11e4 libeay32!RAND_poll+<span class="number">0x583</span></span><br><span class="line"><span class="number">03f</span>cf7dc <span class="number">6</span>c331cef <span class="number">0000000</span>a <span class="number">00000001</span> <span class="number">6</span>c408268 ntdll!SbpTraceSbImpl+<span class="number">0x4e</span> (FPO: [Non-Fpo])</span><br><span class="line"><span class="number">03f</span>cf7f4 <span class="number">6</span>c331d3b <span class="number">0000000</span>a <span class="number">00000001</span> <span class="number">6</span>c408268 libeay32!CRYPTO_lock+<span class="number">0x6f</span></span><br><span class="line"><span class="number">00000000</span> <span class="number">00000000</span> <span class="number">00000000</span> <span class="number">00000000</span> <span class="number">00000000</span> libeay32!CRYPTO_add_lock+<span class="number">0x3b</span></span><br></pre></td></tr></table></figure></p>
-<p>原来临界区03d20138还在被12号线程线程占用着啊，那为什么一直不释放呢？12号线程也没有获取什么资源啊，通过栈看只是在查询堆信息啊，百思不得其解。看看线程状态呢，Suspend 2表示线程该线程被挂起了2次（不清楚可以看下SuspendThread的MSDN），其中一次是挂调试器引起的，那另外一次呢？ 猜测可能是breakpad或则系统函数在写dmp的过程中执行的，因为通过挂起线程便于保存当前进程线程的上下文到dmp文件中。<br>最终发现是在执行系统函数MiniDumpWriteDump时执行的挂起线程操作。在GenAllocateThreadObject函数中执行SuspendThread挂起线程，在GenFreeProcessObject中执行ResumeThread恢复线程执行。</p>
-<p><div align="center"><br><img src="/img/dbghelp_suspend.png" align="center"><br></div><br>到这里死锁的原因已经很清晰了，整个过程如下：<br>1.主线程即0号线程触发异常被breakpad捕获，0号线程通过信号量控制4号线程生成dmp并等待4号线程执行完MiniDumpWriteDump释放信号量。<br>2.4号线程执行MiniDumpWriteDump，在执行过程中会挂起其他线程，挂起其他线程后会执行堆分配操作，这时会获取临界区0x03d20138。<br>3.此刻临界区0x03d20138正被12号线程占有，但是12号线程被4号线程不能释放临界区0x03d20138。</p>
-<h2 id="0x02_再探死锁原因">0x02 再探死锁原因</h2><p>这就是一个经典的死锁问题，4号线程和12号线程相互等待，陷入死循环。本以为这时候分析完毕了，但是突然想到12号线程是libeay32的线程为什么会执行堆查询操作呢？直接Google搜一下，第一篇就是libeay32引发的死锁问题(请看第一个参考链接)。<br>帖子中说将openssl版本从原先的0.9.8g升到了目前最新的1.0.0e，问题就可以得到解决，看下我们的版本呢<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">0:065&gt; lmvm libeay32</span><br><span class="line">start    end        module name</span><br><span class="line">6c330000 6c45e000   libeay32 C (export symbols)       libeay32.dll</span><br><span class="line">    Loaded symbol image file: libeay32.dll</span><br><span class="line">    Image name: libeay32.dll</span><br><span class="line">    Timestamp:        Fri Jul 24 12:42:20 2015 (55B1C22C)</span><br><span class="line">    CheckSum:         00000000</span><br><span class="line">    ImageSize:        0012E000</span><br><span class="line">    File version:     1.0.2.4</span><br><span class="line">    Product version:  1.0.2.4</span><br><span class="line">    File flags:       0 (Mask 3F)</span><br><span class="line">    File OS:          4 Unknown Win32</span><br><span class="line">    File type:        2.0 Dll</span><br><span class="line">    File date:        00000000.00000000</span><br><span class="line">    Translations:     0409.04b0</span><br><span class="line">    CompanyName:      The OpenSSL Project, http://www.openssl.org/</span><br><span class="line">    ProductName:      The OpenSSL Toolkit</span><br><span class="line">    InternalName:     libeay32</span><br><span class="line">    OriginalFilename: libeay32.dll</span><br><span class="line">    ProductVersion:   1.0.2d</span><br><span class="line">    FileVersion:      1.0.2d</span><br><span class="line">    FileDescription:  OpenSSL Shared Library</span><br><span class="line">    LegalCopyright:   Copyright  ?1998-2005 The OpenSSL Project. Copyright ?1995-1998 Eric A. Young, Tim J. Hudson. All rights reserved.</span><br></pre></td></tr></table></figure></p>
-<p>版本已经是1.0.2d了，比帖子中说的版本还新，不行下份源码来看看，在openssl-1.0.2d\crypto\rand\rand_win.c int RAND_poll(void)函数中可以找到相关代码，从相关注释可以看出遍历堆的作用是生成随机数因子，同时RAND_poll中也包含其他几种方式生成随机数因子，如CryptoAPI相关接口，生成成功后通过RAND_add加入到随机数池中。<br>那是不是利用堆遍历生成随机数的方式可以直接删除掉呢？ 本身堆遍历性能就不好，还会增加死锁风险。<br>openssl被应用非常广泛，我们看下行业大厂是怎么用的呢，看线Tim中使用的libeay32.dll，果然利用堆遍历生成随机数的方式被删除掉了，不过删除的不彻底，白Loadlibrary/FreeLibrary kernal32.dll一次。</p>
-<h2 id="0x03_解决方案">0x03 解决方案</h2><p>1.彻底解决方案：微软本身就不建议在进程内生成dmp，并说明了进程内生成dmp最大的潜在风险就是死锁。因此使用进程外生成dump方式是最彻底的解决方案，breadpad本身就支持c/s方式生成dmp。<br>2.缓解方案：删除libeay32!RAND_poll堆遍历生成随机数的方案，这样可以减小死锁的风险，该方案本身性能就不好。<br>3.终极解决方案：提高代码质量，我不异常不崩溃就不会写dmp，也就不死锁了，当然这是理想状态，是不可能的。</p>
-<h2 id="0x04_参考链接">0x04 参考链接</h2><p>[1] <a href="https://blog.csdn.net/xxin_w/article/details/8805050" target="_blank" rel="external">openssl中libeay32!RAND_poll引发的死锁</a><br>[2] <a href="https://ftp.openssl.org/source/old/1.0.2/" target="_blank" rel="external">openssl 1.02 sourcecode</a><br>[3] <a href="https://docs.microsoft.com/en-us/windows/desktop/api/minidumpapiset/nf-minidumpapiset-minidumpwritedump" target="_blank" rel="external">MiniDumpWriteDump MSDN</a></p>
-]]></content>
-    <summary type="html">
-    <![CDATA[<h2 id="0x00_问题介绍">0x00 问题介绍</h2><p>测试反馈测试过程中发现程序进程存在但是界面没加载出来，看现场很快发现是因为版本不匹配而导致程序崩溃，在写dmp的过程中死锁而导致进程卡死，由于程序是卡死而非退出守护进程也未重启程序，最终导致界面一直没加载出来。<br>现象就如上面所说，但是为什么写dmp为什么会导致程序死锁呢？<br>]]>
-    
-    </summary>
-    
-      <category term="MiniDumpWriteDump" scheme="http://www.youngroe.com/tags/MiniDumpWriteDump/"/>
-    
-      <category term="libeay32" scheme="http://www.youngroe.com/tags/libeay32/"/>
-    
-      <category term="Windows" scheme="http://www.youngroe.com/categories/Windows/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[Windows客户端如何透明使用DNS-over-HTTPS]]></title>
-    <link href="http://www.youngroe.com/2018/12/01/Windows/windows_client_dns_over_https/"/>
-    <id>http://www.youngroe.com/2018/12/01/Windows/windows_client_dns_over_https/</id>
-    <published>2018-12-01T12:13:53.000Z</published>
-    <updated>2020-03-21T04:24:23.569Z</updated>
-    <content type="html"><![CDATA[<h2 id="0x00_现有Windows客户端程序dns查询流程">0x00 现有Windows客户端程序dns查询流程</h2><ul>
-<li>1.client通过系统api（gethostbyname/getaddrinfo/getaddrinfoex）发起查询dns请求</li>
-<li>2.系统api会通过rpc查询本地服务dnscache是否有该host的缓存，如果缓存存在则直接返回返回host对应的ip地址，dns查询完成，如果没有则进入下一步</li>
-<li>3.如果不存在该host的缓存，则首先会通过解析本地hosts文件看是否有该host对应的ip，如果存在，则直接返回该ip，否则进入下一步</li>
-<li>4.如果本地hosts文件中没有该host的记录，则系统会通过发送dns udp包向本地dns服务器发起请求查询该host对应的ip，后面的dns查询过程如下图所示。<a id="more"></a>
-</li>
-</ul>
-<div align="center"><br><img src="/img/localdns_query.jpg" alt="本地dns解析过程" align="center"><br></div>
-
-<p>简单总结：<br>系统首先会通过本地缓存和hosts文件查询dns，如果缓存和hosts都没有对应的记录，会通过明文udp包向dns服务器查询。具体返回的结果受系统hosts文件及dns服务器影响较大。</p>
-<h2 id="0x01_现有dns查询的缺点">0x01 现有dns查询的缺点</h2><p>通过第0x0部分对现有Windows客户端程序dns查询流程的介绍，可以分析出目前dns查询的一些缺陷和风险点。</p>
-<p><strong>对使用客户端的用户：</strong><br>跟踪：由于现有dns数据包为端口固定的明文udp包，可以很容易在网络流量中区分dns流量，并解析其中查询的域名信息。这样一些别有用心的人就可以很容易通过解析dns流量分析一个人的浏览习惯，收集敏感信息，特别是大数据火热的今天。<br>欺骗攻击：从开始查询到最终获取到解析结果，现有的dns查询机制需要经历较多过程，由于是明文信息，攻击者可以在任意一个环节修改解析的结果，给一个错误的解析结果，可以阻止用户访问正确的网站或则引入到攻击者想让用户访问的仍以网站。</p>
-<p><strong>对于开发客户端的厂商：</strong><br>网络劫持：对于一些页面广告或则其他有收益业务，可能会存在通过业务被dns劫持攻击风险，使业务不可访问或则被替换成其他页面。</p>
-<h2 id="0x02_DNS_over_HTTPS是什么？">0x02 DNS over HTTPS是什么？</h2><p> 正式因为目前基于udp查询dns有各种安全缺陷，一些厂商提出了一种安全的dns查询方案DNS over Https，并且已经获得IETF支持，以RFC 8484名义发布。顾名思义DNS over HTTPS是一种通过https协议的Get请求获取域名解析的方案，简称DoH。由于基于http且与普通https请求共用443端口，如果正确部署服务器和客户端程序，理论上很难通过分析https包分析出客户端的域名请求查询结果，也不存在被篡改的风险。</p>
-<h2 id="0x03_客户端程序如何透明切换到DoH">0x03 客户端程序如何透明切换到DoH</h2><p>既然DoH相较于基于udp包的dns查询有这么多的优势，那如何将现有的客户端程序切换到DoH呢？<br>我们很容易想到的过程是重写系统域名查询api，然后使用我们重写的api替换掉系统的api。但是这里会存在一个问题，目前的Windows客户端都会使用各种第三方网络库（libcurl、qt network等）及webview引擎（ieframe、libcef、qtwebview等），要想替换掉这些第三方库或则webview引擎中的系统api可能得花费很大的功夫，必须重写这部分代码，然后重新编译（某些库编译异常复杂如libcef）。并且还可能会存在一种情况是某些第三方库我们自己是没代码的，那这部分如何切换到DoH呢？<br>这里有一种不用重编译代码且可以对无代码的第三方库透明切换到使用DoH的简单方法，就是使用hook技术hook 系统dns查询相关系统api实现Windows客户端透明切换到DoH。可能需要hook的api如下：</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:left">需要hook的api</th>
-<th style="text-align:left">影响的其他api</th>
-<th style="text-align:left">影响的第三方库</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">GetAddrinfoW</td>
-<td style="text-align:left">GetAddrinfoA</td>
-<td style="text-align:left">libcurl、qt network、libcef</td>
-</tr>
-<tr>
-<td style="text-align:left">GetAddrinfoExW</td>
-<td style="text-align:left">GetAddrinfoExA</td>
-<td style="text-align:left">ieframe</td>
-</tr>
-</tbody>
-</table>
-<p>当然除了这两个api之外，Windows客户端程序可能还有一些使用其他api的情况（如gethostbyname/DnsQuery）,但是思路相同也是hook替换掉就可以了。<br>在hook函数的实现过程中可能还会遇到一些小问题，如GetAddrinfoW返回结果中的addrinfo内存分配问题。正常情况下返回结果中的addrinfo由GetAddrinfoW函数在其私有堆上分配，然后调用者使用完结果后使用freeaddrinfo释放，但是当我们自己实现的时候很难获取到私有堆的句柄，这样就没办法为addrinfo分配内存，如果使用new分配内存会在freeaddrinfo释放时错误产生问题。我实现的时候通过一个简单粗暴的方式是通过调用原始的GetAddrinfoW解析localhost然后直接使用结果中的addrinfo，因为是GetAddrinfoW分配，所以最后使用freeaddrinfo释放也没问题。<br>除此之外在实现过程中还需要考虑很多其他因素，如dns结果优选、dns缓存设计等软件结构问题，这些可以参考微博的HTTPDNSLib的实现。</p>
-<h2 id="0x4_扩展，如何将操作系统切换到DoH">0x4 扩展，如何将操作系统切换到DoH</h2><p>在0x3部分实现单个客户端进程切换到DoH，那怎样将整个Windows系统切换到DoH？<br>其实同样也可以借鉴0x3的思路，替换系统dns服务的查询接口，实现应该是在一个系统服务进程中，具体没研究过。。。。。<br>不过以及有一个更简单的思路，实现一个udp转https的本地接口，然后将Windows网络设置中的dns服务器地址修改为这个本地接口地址，并且已经有人实现了，具体看参考链接4。</p>
-<h2 id="0x05_参考链接">0x05 参考链接</h2><p><a href="https://mp.weixin.qq.com/s?__biz=MzA3ODgyNzcwMw==&amp;mid=201837080&amp;idx=1&amp;sn=b2a152b84df1c7dbd294ea66037cf262&amp;scene=2&amp;from=timeline&amp;isappinstalled=0#rd" target="_blank" rel="external">1.全局精确流量调度新思路-HttpDNS服务详解</a><br><a href="https://github.com/curl/curl/wiki/DNS-over-HTTPS" target="_blank" rel="external">2.DNS over HTTPS</a><br><a href="https://github.com/CNSRE/HTTPDNSLib" target="_blank" rel="external">3.HTTPDNSLib</a><br><a href="https://blog.3bro.info/archives/windows-dns-over-https/" target="_blank" rel="external">4.[教學] 如何透過 cloudflared 使用 DNS-over-HTTPS？（Windows 適用）</a></p>
-]]></content>
-    <summary type="html">
-    <![CDATA[<h2 id="0x00_现有Windows客户端程序dns查询流程">0x00 现有Windows客户端程序dns查询流程</h2><ul>
-<li>1.client通过系统api（gethostbyname/getaddrinfo/getaddrinfoex）发起查询dns请求</li>
-<li>2.系统api会通过rpc查询本地服务dnscache是否有该host的缓存，如果缓存存在则直接返回返回host对应的ip地址，dns查询完成，如果没有则进入下一步</li>
-<li>3.如果不存在该host的缓存，则首先会通过解析本地hosts文件看是否有该host对应的ip，如果存在，则直接返回该ip，否则进入下一步</li>
-<li>4.如果本地hosts文件中没有该host的记录，则系统会通过发送dns udp包向本地dns服务器发起请求查询该host对应的ip，后面的dns查询过程如下图所示。]]>
-    
-    </summary>
-    
-      <category term="DNS-over-HTTPS" scheme="http://www.youngroe.com/tags/DNS-over-HTTPS/"/>
-    
-      <category term="getaddrinfo" scheme="http://www.youngroe.com/tags/getaddrinfo/"/>
-    
-      <category term="Windows" scheme="http://www.youngroe.com/categories/Windows/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[现代DDoS对抗技术概述（翻译/转载）]]></title>
-    <link href="http://www.youngroe.com/2018/10/06/Cybersecurity/ddos-protection-techniques/"/>
-    <id>http://www.youngroe.com/2018/10/06/Cybersecurity/ddos-protection-techniques/</id>
-    <published>2018-10-06T04:45:15.000Z</published>
-    <updated>2020-02-15T08:12:42.951Z</updated>
-    <content type="html"><![CDATA[<h2 id="0x00_前言">0x00 前言</h2><p>想象一下有人不停的给你打电话，并且你没办法通过加黑名单的方式阻止他，因为他每次都使用了不同的电话号码。你可能会关掉电话，但是这样其他人也不能联系你了，常见的分布式拒绝服务攻击就和这种情况类似。<br>早在乔布斯推出第一部IPhone之前，<a href="https://en.wikipedia.org/wiki/Denial-of-service_attack" target="_blank" rel="external">DDos攻击</a>就已经出现了。因为DDos攻击攻击效果好、易于使用，并且很难追踪，现在依然非常受黑客喜欢。那么我们如何能够防御DDoS攻击呢？在DDOS攻击面前，你能确保为你的web服务器及应用提供高水平的防护么？在本文中我们将讨论如何防止DDoS攻击并介绍一些实践有效的DDoS保护和防御技术。<br><a id="more"></a></p>
-<h2 id="0x01_DDoS攻击的类型和方法">0x01 DDoS攻击的类型和方法</h2><p>分布式拒绝服务攻击，简称DDoS是一种旨在使受害者的资源无法使用的协同攻击技术。它可以由一个团队黑客合作发起攻击，也可以由多个连接到互联网上的受害设备发起。这些受攻击者控制的设备通常也被称为僵尸网络。<br>很多工具都可以发起DDoS攻击，Trinoo, Stacheldraht, Shaft, Knight, Mstream等。有这么多易用的工具也是DDoS攻击如此流行的原因之一。</p>
-<p><div align="center"><br><img src="/img/DDoS-quote-1.jpg" alt align="center"><br></div><br>一次DDoS攻击可能会持续几分钟到几个小时甚至几天。<a href="https://securelist.com/ddos-report-in-q1-2018/85373/" target="_blank" rel="external">卡巴斯基的报告显示</a>,最近几年持续最长的一次DDos攻击发生在2018年1月，总共持续了近300小时。<br>发起DDoS攻击有两种常见的方法：</p>
-<ul>
-<li><strong>利用软件漏洞</strong>:黑客可以对有已知或未知的漏洞的软件发送恶意数据包试图使受害者的系统瘫痪。</li>
-<li><strong>消耗受害者主机资源或则网络带宽资源</strong>：黑客可以发送大量看起来合法的数据包，从而消耗受害者的网络带宽、CPU或内存直至受害系统无法正常处理合法用户的请求。</li>
-</ul>
-<p>尽管没有DDoS的标准分类，但是我们可以将他们分为四大类：</p>
-<ul>
-<li>Volumetric (volume-based)攻击</li>
-<li>Protocol attacks</li>
-<li>Application attacks</li>
-<li>Zero-day attacks<br><div align="center"><br><img src="/img/DDoS-scheme.jpg" alt="DDos攻击常见分类" align="center"><br></div><br>现在我们具体看看每种类型的攻击。</li>
-</ul>
-<h3 id="Volumetric_attacks(大流量攻击)">Volumetric attacks(大流量攻击)</h3><p>Volumetric attacks试图通过大量的数据量大的网络数据包阻止系统正常的网络访问，通常借助僵尸网络及流量放大技术发起攻击，最常见的Volumetric attacks如下：</p>
-<ul>
-<li>UDP flood：黑客伪造UDP数据包中的源地址为受害主机发送到大量主机随机端口，这些主机会生成大量的应答包返回给受害主机。</li>
-<li>ICMP flood：黑客通过大量的ICMP数据包或则ping，试图耗尽受害服务器的带宽。<br>在2018年，<a href="https://www.netscout.com/news/blog/security-17tbps-ddos-attack-makes-history" target="_blank" rel="external">Netscout</a>报告了迄今为止流量最大的一次DDoS攻击，一家美国服务提供商面临1.7 Tbps规模的reflection/amplification攻击。</li>
-</ul>
-<h3 id="Protocol_attacks（协议攻击）">Protocol attacks（协议攻击）</h3><p>根据Versign发布的2018年第一季度<a href="https://blog.verisign.com/security/q1-2018-ddos-trends-report-58-percent-of-attacks-employed-multiple-attack-types/" target="_blank" rel="external">DDoS攻击趋势报告</a>，Protocol attacks是通过利用网络协议工作机制弱点进行攻击的一种方式，是第二常见的DDoS攻击方式。常见的Protocol attacks攻击方式如下：</p>
-<ul>
-<li>SYN flood:黑客利用TCP协议三次握手协议缺陷。客户端发送SYN包给服务端，收到服务端的SYN-ACK包后，不发送ACK包给服务端。这样受害服务器上会留下大量未完成的SYN-ACK请求，从而使得受害服务器资源耗尽（CPU 满负载或内存不足），最终停止服务。</li>
-<li>Ping of death:黑客通过ping命令发送超大的网络数据包导致受害主机系统服务中断或则崩溃。<br>SYN flood攻击是<a href="https://www.scmagazine.com/online-gambling-site-hit-by-five-vector-ddos-attack-peaking-at-100gbps/article/538551/" target="_blank" rel="external">2014年用于摧毁在线赌博网站最常使用的5种攻击向量之一</a>。</li>
-</ul>
-<h3 id="Application_attacks（应用层攻击）">Application attacks（应用层攻击）</h3><p>Application attacks利用了网络协议栈第6、7层中的弱点，针对特定的应用而不是整个服务器进行攻击，他们常见的目标端口和服务是DNS和HTTP服务。最常见的Application attacks攻击如下：</p>
-<ul>
-<li>HTTP flood：攻击者使用僵尸网络发起标准的大流量的GET和POST请求，由于这些请求看起来是合法的流量，因此检测HTTP flood攻击将是一个巨大的考验。</li>
-<li>Slowloris:如名称一样，Slowloris攻击将使受害服务器响应异常缓慢。攻击者通过一定的时间间隔发送HTTP到受害服务器，服务器将一直等待这些请求这些不可能完的请求结束，最终这些不能完成的请求造成受害主机带宽耗尽，合法请求也不能正常到达。<br>2009年大选期间，高级黑客通过Slowloris关闭了伊朗政府网站。</li>
-</ul>
-<h3 id="Zero-day_DDoS_attacks">Zero-day DDoS attacks</h3><p>除了上面这些常见的攻击之外，还存在所谓的Zero-day DDoS attacks，黑客们利用未知的或则未修复的软件漏洞、不常见的攻击向量等完成攻击，因此这种攻击更难检测和防御。例如2016年，攻击者利用Lightweight Directory Access协议(LDAP) 发起了放大系数高达55倍的攻击。<br>下面我们谈谈如何检测DDoS攻击</p>
-<h2 id="0x02_检测DDoS攻击">0x02 检测DDoS攻击</h2><p>虽然无法完全阻止DDoS攻击，但是有一些有效的做法可以帮助您检测并阻止已经在进行的DDoS攻击。</p>
-<ul>
-<li><p>异常检测：基于统计的模型和机器学习算法（如神经网络、决策树、邻近算法）可以用来分析网络流量，将网络流量区分为正常流量和DDoS攻击。同时你也可以通过其他网络性能因素，如CPU使用率/带宽使用等情况发现异常。</p>
-</li>
-<li><p>Knowledge-based方法：使用signature analysis，state transition analysis，expert systems，description scripts及 self-organizing maps方法，可以通过将流量与已知攻击的特定模式进行比较来检测DDoS。</p>
-</li>
-<li><p>访问控制和防火墙规则：除了入口/出口流量过滤之外，访问控制列表（ACL）和防火墙规则可用于增强网络流量的可观察性。特别是，您可以分析ACL日志了解哪些流量通过了你的网络设备。您还可以配置Web应用程序防火墙，以根据特定的规则，签名和模式阻止可疑的流量。</p>
-</li>
-<li><p>入侵检测和报警系统：入侵防御系统（IPS）和入侵检测系统（IDS）也提高的流量的可观察性。尽管误报率很高，但是IPS和IDS警报可以作为异常和潜在恶意流量的早期指示。</p>
-</li>
-</ul>
-<p>尽早检测到正在进行的攻击可以帮助您减轻其后果。这样，你就可以采取适当的预防措施来防御DDoS攻击，使攻击者很难完全使你的服务器宕机。使用有效的反DDoS解决方案是这些措施之一。</p>
-<h2 id="0x03_如何实现一个有效的DDoS对抗方案">0x03 如何实现一个有效的DDoS对抗方案</h2><p>无论您是要创建自己的反DDoS解决方案，还是要为Web应用程序寻求商业化的DDoS攻击防护系统，请牢记下面几点要求：</p>
-<ul>
-<li>混合DDoS检测方法:基于签名和基于异常的检测方法的组合是检测不同类型的DDoS攻击的关键。</li>
-<li>防御网络栈中第3-4层及6-7层的攻击：如果你的防御方案可以检测并缓解所有三种主要的DDoS攻击，则是比较有效的：volumetric, application及protocol。</li>
-<li>有效的流量过滤：DDoS保护的最大难题之一是如何有效区分恶意请求和合法请求。很难创建有效的过滤规则，因为DDoS攻击所涉及的大多数请求看起来都是来自合法用户。如速率限制之类的流行方法通常会产生很多误报，影响合法用户访问你的服务和应用程序。</li>
-<li>SIEM集成:最重要的是您的反DDoS方案必须与SIEM系统很好地集成在一起，以便您可以收集有关攻击的信息，进行分析，然后使用它来改善DDoS防护方案，防止以后的同类攻击。<br>如果满足这些要求对您来说挑战太大，请考虑向专家寻求帮助。您需要一支经验丰富的开发人员团队，对网络安全，云服务和Web应用程序有深刻的了解，才能构建高质量的反DDoS解决方案。像这样的团队可能很难在内部组建团队，但是您始终可以寻求诸如Apriorit之类​​的第三方寻求帮助。<h3 id="阻止DDoS攻击">阻止DDoS攻击</h3><div align="center"><br><img src="/img/DDoS-img-quote-2.jpg" alt align="center"><br></div><br>即使您无法阻止DDoS攻击的发生，但也有能力使攻击者很难使你的应用或则服务宕机。这就是DDoS预防技术开始起作用的地方。您可以使用两种DDoS预防机制：常规防护机制和过滤技术。<br><strong>常规防护机制</strong>是一些常见的措施，可以帮助你的服务或则应用在面对DDoS攻击时更具灵活性，防护机制包括：</li>
-<li>使用防火墙：尽管防火墙无法保护您的应用或服务器免受复杂的DDoS攻击，但它们仍可以有效地处理简单的攻击。</li>
-<li>经常更新安全补丁：大多数攻击都针对特定的软件或硬件漏洞，因此，及时部署所有补丁程序可以帮助您降低遭受攻击的风险。</li>
-<li>关闭不必要的服务：黑客能攻击到的应用和服务越少越好。确保禁用所有不需要和未使用的服务和应用，以提高网络的安全性。<br><strong>过滤技术</strong>使用不同的方法来过滤流量并阻止潜在的危险请求。这些技术包括入口/出口过滤，基于历史的IP过滤和基于路由器的数据包过滤。</li>
-</ul>
-<h2 id="0x04_保护Web应用免受DDoS攻击的最佳实践">0x04 保护Web应用免受DDoS攻击的最佳实践</h2><p>除了特定的DDoS预防机制之外，还有几种实践可以帮助您确保对Web应用程序的附加DDoS保护：</p>
-<ul>
-<li>减少可能被攻击脆弱点个数：除非确实需要，否则不要公开您的应用和资源。这样，您可以减少攻击者可能针对的基础架构中的薄弱环节攻击的风险。您还可以禁止直接访问数据库服务器及基础架构的其他关键资源的操作。</li>
-<li>增加负载：考虑使用负载平衡器和CDN，通过均衡资源负载来减轻攻击的影响，以便即使在攻击过程中也可以保持服务可用状态。</li>
-<li>选择靠谱的云服务提供商：寻找具有DDoS缓解策略的可信赖的云服务提供商。确保他们的策略可确保检测和缓解基于protocol，基于Volume和基于application的攻击。例如，一些云提供商使用anycasting网络在具有相同IP地址的多台计算机之间分配大量请求，缓解负载。</li>
-<li>使用第三方DDoS缓解服务：考虑将Web应用程序的保护委托给第三方供应商。DDoS缓解服务甚至可以在恶意的流量到达受害者的网络之前就将其清除。您可以寻找一种基于DNS的服务，该服务将恶意流量重定向，或者寻找一种基于边界网关协议的解决方案来处理持续的攻击。</li>
-</ul>
-<h2 id="0x05_结论">0x05 结论</h2><p>黑客不断使用和改进DDoS攻击，以干扰某些服务、商业基础设施、大企业设置公共和非盈利组织的工作。攻击的主要目的是耗尽受害者的资源并因此使其提供的服务、应用程序或则网站崩溃。<br>虽然无法完全阻止DDoS攻击的发生，但是有一些有效的DDoS攻击保护技术和方法可以增强您的基础设施抵御DDoS攻击并减轻后果。</p>
-<h2 id="0x06_关于DDoS攻击的其他资料">0x06 关于DDoS攻击的其他资料</h2><p><a href="https://www.apriorit.com/dev-blog/559-ddos-protection-techniques" target="_blank" rel="external">原文Modern DDoS Protection Techniques: An Overview</a><br><a href="https://www.hi-linux.com/posts/50873.html" target="_blank" rel="external">浅谈 DDoS 攻击与防御</a><br><a href="https://zoumiaojiang.com/article/common-web-security/" target="_blank" rel="external">常见 Web 安全攻防总结</a></p>
-]]></content>
-    <summary type="html">
-    <![CDATA[<h2 id="0x00_前言">0x00 前言</h2><p>想象一下有人不停的给你打电话，并且你没办法通过加黑名单的方式阻止他，因为他每次都使用了不同的电话号码。你可能会关掉电话，但是这样其他人也不能联系你了，常见的分布式拒绝服务攻击就和这种情况类似。<br>早在乔布斯推出第一部IPhone之前，<a href="https://en.wikipedia.org/wiki/Denial-of-service_attack">DDos攻击</a>就已经出现了。因为DDos攻击攻击效果好、易于使用，并且很难追踪，现在依然非常受黑客喜欢。那么我们如何能够防御DDoS攻击呢？在DDOS攻击面前，你能确保为你的web服务器及应用提供高水平的防护么？在本文中我们将讨论如何防止DDoS攻击并介绍一些实践有效的DDoS保护和防御技术。<br>]]>
-    
-    </summary>
-    
-      <category term="DDoS" scheme="http://www.youngroe.com/tags/DDoS/"/>
-    
-      <category term="Cybersecurity" scheme="http://www.youngroe.com/categories/Cybersecurity/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[西安周末游]]></title>
-    <link href="http://www.youngroe.com/2018/09/18/Life/xian/"/>
-    <id>http://www.youngroe.com/2018/09/18/Life/xian/</id>
-    <published>2018-09-18T04:11:15.000Z</published>
-    <updated>2020-02-15T07:54:24.205Z</updated>
-    <content type="html"><![CDATA[<p><em>说好的一人一篇游记，3年了，妹子的这篇游记终于出炉了</em><br>自打成都到西安通高铁，周围无数同事到西安打卡，我也是心心念念好久，一直没有机会，趁这次中级会计考完，特想放松放松。周一开会时坐旁边的同事去过西安，心血来潮，跟小哥哥商量去西安可好，小哥哥痛快答应，于是开启了这次断腿的旅程。</p>
-<p><div align="center"><br><img src="/img/xian_1.png" align="center"><br></div><br><a id="more"></a></p>
-<p><div align="center"><br><img src="/img/xian_2.jpg" align="center"><br></div><br>9月14日下午4点和小哥哥在成都东站汇合，坐动车直达华山北，定下了离华山不远的客栈，欢心雀跃，犹如刚从笼子里放出来。虽然晚上10点才到客栈，但客栈老板依然为我们耐心讲解了爬华山的各种途径，并比较优劣。由于整个行程都是提前规划好的，所以我们必须在第二天下午三点前下山，老板便建议我们最好坐缆车北上西下，到了北峰再爬山到东峰、南峰、再到西峰，可以体验爬山乐趣的同时还能轻松观景。当时我就好想像当年爬峨眉那样全靠自己爬个一天多好，缆车多浪费钱啊，还少看了这么多风景，但碍于时间有限，还是作罢，接受了老板中肯的建议。</p>
-<p><div align="center"><br><img src="/img/xian_3.png" align="center"><br></div></p>
-<p><div align="center"><br><img src="/img/xian_4.png" align="center"><br></div><br>9月15日7点半走出客栈看到遍地雨水，心都凉了半截，真想回去接着睡觉！其实周一订票时就看到天气预报说下雨，但我想的是天气预报肯定不准，我来了就会天晴，后来证明我只是想多了。。。。。。打车去北峰下坐大巴时，的士师傅告诉我们可以去买套票，就不用每次都排队，觉得说的有理，我们便买了套票，没有买保险。买票前的士师傅说今天下雨，西峰缆车可能会因为风大而停运，让我们西上北下，我们没听；买票后他说你们这个路线很好，说不定上去后还没有下雨Blablabla……虽然师傅翻脸比翻书还快，我们还是怀着不下雨的希望到了华山脚下。然而天不遂人愿，雨一直下，气氛很不融洽。披上雨衣坐上缆车到达北峰顶时，雨更大了，温度也更低了。周围全是雾，撒都看不到，躲雨时好多人已经放弃继续爬山了，小哥哥没放弃，催促我赶紧起身，不然下山搞不赢了。没有隔雨的鞋套，我的网面运动鞋好可怜。山上唯一的店铺没有鞋套，连塑料袋都没有，我埋怨一句你们怎么什么都没有，他说我这儿这么多东西，你偏要买我没有的。好吧，不理他。不知道哪儿找了两个塑料袋，穿在脚上我们就出发啦！看到了好几个华山论剑的石碑，短暂几分钟撕去雾纱的华山，雨中依然激情的喊山，一群拍抖音的小伙儿，一颗从未见过的大树。。。接着全是雾和雨，没有别的，还有一群披着雨衣坚强爬山的游客。跳过了东峰、南峰，到了西峰后才十一点半，索性听小哥哥的下山去西安吃顿肉，西峰的索道曲折蜿蜒，像是在游乐园，见到小哥哥在索道上紧张的样子，可爱极了，也原谅了他上次不陪我去坐激流勇进。华山，只能说来过。</p>
-<p><div align="center"><br><img src="/img/xian_5.png" align="center"><br></div></p>
-<p><div align="center"><br><img src="/img/xian_6.png" align="center"><br></div></p>
-<p><div align="center"><br><img src="/img/xian_7.png" align="center"><br></div></p>
-<p><div align="center"><br><img src="/img/xian_8.png" align="center"><br></div></p>
-<p><div align="center"><br><img src="/img/xian_9.png" align="center"><br></div><br>下山坐动车到西安已经15:00了。西安地铁不接受微信支付买票，不接受10元以上纸币，纠结了半天，聪明的小哥哥发现支付宝上可以直接用地铁乘车码。找了家串串，是的我们到西安吃川坝子串串，食材很不新鲜，一点也不好吃，决定晚上还是吃西安当地“美食”吧。吃完午饭，准备下一站到回民街，走出地铁口便被古色古香的建筑吸引了，能从城市建设看出西安就是一座古城，拍照拍了好久。回民街特别热闹，和成都的宽窄巷子一样热闹，从这条街便可以看到西安到底有什么美食：肉夹馍、羊肉泡馍、胡辣汤。。。。。。因为整条街都在卖。本来看中了一家排长队的肉夹馍，但小哥哥硬是不让我买，走了一圈，什么没买就走了。不过幸好没买，不然不知等多久。说实话，四川人真的吃不惯西安的食物，肉夹馍感觉是肉  夹   膜，是分离的，胡辣汤好麻，其他的我也没吃了，也没有兴趣吃了。晚上六点半拖着疲惫的身体到了宾馆，不想再动了，腿已断，感觉不是自己的了，但还有大雁塔没去，休息了半个小时，冒着风雨，去了大雁塔。大雁塔感觉是公园，里面的建筑也是古色古香，屋顶全是金灿灿的灯光，一座白色的塔矗立在中间，真的很美，可惜塔被围墙围住进不去。</p>
-<p><div align="center"><br><img src="/img/xian_10.png" align="center"><br></div></p>
-<p><div align="center"><br><img src="/img/xian_11.png" align="center"><br></div></p>
-<p><div align="center"><br><img src="/img/xian_14.jpg" width="600" height="400" align="center"><br></div><br>9月16日又比原定计划起晚了半个小时，火急火燎吃完早饭，生怕到了兵马俑就得坐车回成都了，哈哈哈。打车到火车站，再坐915就到了，很方便。火车站的城墙很美，兵马俑需要解说，听完导游的讲解，感觉兵马俑真是个浩大的工程，心生敬畏。</p>
-<p><div align="center"><br><img src="/img/xian_12.png" align="center"><br></div></p>
-<p><div align="center"><br><img src="/img/xian_13.png" align="center"><br></div><br>总的来说，这次旅行除了把我照成包子脸以外还是很好的，我们突破了自己，冒雨登上华山，靠意念一天走了三个景点，行程安排恰当，没有浪费时间，不仓促。期待我们的下次旅行哦，该你写了哈。。。。。。<br>                                                                                                                2018年9月18日晚<br>                                                                                                                        LU  LU</p>
-]]></content>
-    <summary type="html">
-    <![CDATA[<p><em>说好的一人一篇游记，3年了，妹子的这篇游记终于出炉了</em><br>自打成都到西安通高铁，周围无数同事到西安打卡，我也是心心念念好久，一直没有机会，趁这次中级会计考完，特想放松放松。周一开会时坐旁边的同事去过西安，心血来潮，跟小哥哥商量去西安可好，小哥哥痛快答应，于是开启了这次断腿的旅程。</p>
-<p><div align="center"><br><img src="/img/xian_1.png" align="center"/><br></div><br>]]>
-    
-    </summary>
-    
-      <category term="生活" scheme="http://www.youngroe.com/tags/%E7%94%9F%E6%B4%BB/"/>
-    
-      <category term="西安" scheme="http://www.youngroe.com/tags/%E8%A5%BF%E5%AE%89/"/>
-    
-      <category term="Life" scheme="http://www.youngroe.com/categories/Life/"/>
     
   </entry>
   

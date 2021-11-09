@@ -102,6 +102,222 @@ var _hmt = _hmt || [];
   <div class="post-content">
     <header>
       
+        <time datetime="2018-01-06T04:45:15.000Z"><a href="/2018/01/06/Kernel/WindowsKernel_DebugObject/">2018-01-06</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2018/01/06/Kernel/WindowsKernel_DebugObject/">Windows内核重拾：DebugObject</a></h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+
+	
+    <div class="entry">
+      
+        <h2 id="0x00_什么是DebugObject">0x00 什么是DebugObject</h2><p>在Windows系统中对调试的支持主要在三个模块中，分别为内核执行体（多核处理器一般为ntkrnlmp.exe,以Dbgk为前缀,主要负责注册和监听调试事件、管理调试对象等）、原生系统库ntdll.dll（DbgUi为前缀，负责将底层的调试对象封装起来）、子系统dll（kernelbase.dll）。而调试对象（DebugObject）是一个结构体，支持用户模式调试，由一系列的标志（决定对象的状态）、一个事件、一个调试事件双链表组成。<br>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/2018/01/06/Kernel/WindowsKernel_DebugObject/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+  <div id="container"></div>
+</span>
+</article>
+
+
+
+
+  <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <time datetime="2017-10-23T09:55:21.000Z"><a href="/2017/10/23/Tools/IDA-Pro-ClassInformer-Tutorial/">2017-10-23</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2017/10/23/Tools/IDA-Pro-ClassInformer-Tutorial/">IDA Pro ClassInformer使用指南（翻译）</a></h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+
+	
+    <div class="entry">
+      
+        <h2 id="0x00_介绍">0x00 介绍</h2><p>本文主要针对几乎没有使用IDA Pro经验及逆向水平一般的人。IDA对初学者还是有一定的门槛的，主要是由于IMO没有详细介绍IDA使用环境设置和插件使用的指南。我的目标是展示当我在客户端（这里应该是开发外挂）开发遇到困难的时候，我是如何解决这个问题的方法和策略。在本指南中我将演示如何从SDK中的一个字符串识别出二进制文件中反汇编代码中的函数。目标是将IDA中原始的汇编代码转换为ClientMode::CreateMove函数。<br>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/2017/10/23/Tools/IDA-Pro-ClassInformer-Tutorial/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+  <div id="container"></div>
+</span>
+</article>
+
+
+
+
+  <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <time datetime="2017-05-23T09:55:21.000Z"><a href="/2017/05/23/Windows/Kernel Data and Filtering Support/">2017-05-23</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2017/05/23/Windows/Kernel Data and Filtering Support/">Kernel Data and Filtering Support for Windows Server 2008（翻译）</a></h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+
+	
+    <div class="entry">
+      
+        <h2 id="1-介绍">1.介绍</h2><p>这仅仅是一份供接受审阅和反馈的初稿。收到独立软件开发商的反馈后，一些内容和函数可能会改变。此外，这份文档仅限于适用Microsoft Windows Server® 2008。这些API是根据ISV社区讨论确定的，按照<a href="https://www.microsoft.com/downloads/details.aspx?FamilyId=4C7561E6-6F9D-4125-8A8C-AEAF8E3342B9&amp;displaylang=en">Kernel Evaluation Criteria</a>。<br>很多系统管理安全类应用程序都需要访问内核信息及过滤系统调用的能力，其中一些操作涉及一些进程、线程对象。之前，当第三方软件开发商（ISV）想实现监控/修改/阻断操作时，但操作系统现有提供的过滤回调不支持时，他们一般采用的方式为挂钩在内核服务表（SSDT）中这些内核对象管理（OB）的API。提供官方支持的文档及过滤和访问内核信息的接口有利于操作系统平台，因为挂钩SSDT从来没有官方支持过并且可能会影响操作系统的稳定性。此外，随着在x64平台采用内核补丁保护技术（KPP）,在x64平台，ISV不能像32位x86平台中那样使用SSDT Hook了。<br>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/2017/05/23/Windows/Kernel Data and Filtering Support/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+  <div id="container"></div>
+</span>
+</article>
+
+
+
+
+  <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <time datetime="2016-12-23T11:25:23.000Z"><a href="/2016/12/23/Learning/The-Art-of-Unpacking/">2016-12-23</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2016/12/23/Learning/The-Art-of-Unpacking/">脱壳的艺术（翻译:The Art of Unpacking）</a></h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+
+	
+    <div class="entry">
+      
+        <h2 id="摘要">摘要</h2><p>脱壳是一门艺术，同时也是一种智力挑战，在逆向领域脱壳是最令人头脑兴奋的智力游戏之一。在某些情况下，逆向工作者需要对操作系统内部原理非常熟悉，这样才能识别和绕过壳开发人员的反逆向分析技术，耐心和聪明是成功脱壳的两个主要条件。这些挑战包括壳开发人员开发壳，同时在另一方面也包括逆向工作研究者如何绕过壳的这些保护。<br>这篇文章主要介绍了壳开发人员使用的一些反逆向工程技术，同时也讨论如何绕过和关闭这些保护的技术和一些公开的工具。当遇到被壳保护的恶意代码的时候，这些信息能让逆向工作研究人员尤其是恶意代码分析人员更加容易的去识别这些技术，然后绕过这些反逆向分析技术去进行下一步的分析工作。这篇文章的第二个目的是让一些开发人员能够去使用这些技术在一定程度上减缓被逆向分析的可能，给代码增加更多的保护。当然，遇到逆向分析高手的时候，什么方法都没辙。<br><strong>关键词</strong>：逆向工程，壳，保护，反调试，反逆向分析</p>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/2016/12/23/Learning/The-Art-of-Unpacking/#more" class="more-link">Read More</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+  <div id="container"></div>
+</span>
+</article>
+
+
+
+
+  <article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
         <time datetime="2016-10-02T07:27:11.000Z"><a href="/2016/10/02/Debug/the-reasons-of-Dll-hijiacking-msimg32-fail/">2016-10-02</a></time>
       
       
@@ -549,239 +765,6 @@ var _hmt = _hmt || [];
 
 
 
-  <article class="post">
-  
-    <div class="gallery">
-  <div class="photoset">
-    
-      <img src="">
-    
-  </div>
-  <div class="control">
-    <div class="prev"></div>
-    <div class="next"></div>
-  </div>
-</div>
-  
-  <div class="post-content">
-    <header>
-      
-        <time datetime="2015-12-23T09:25:11.000Z"><a href="/2015/12/23/Tools/Malware-Regulary-Api/">2015-12-23</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2015/12/23/Tools/Malware-Regulary-Api/">病毒木马常用api</a></h1>
-  
-
-    </header>
-	
-<!-- Table of Contents -->
-
-
-	
-    <div class="entry">
-      
-        <p><em>提取自MyMonitor TraceDllReport.dll</em><br><strong>发现了个更好的东西<a href="https://www.bnxnet.com/top-maliciously-used-apis/">top-maliciously-used-apis</a></strong></p>
-<p>Sleep<br>WSAConnect<br>connect<br>bind<br>send<br>SetFileAttributesW<br>ExitProcess<br>MessageBoxW<br>MessageBoxA<br>TerminateProcess<br>WriteProcessMemory<br>ReadProcessMemory<br>AdjustTokenPrivileges<br>OpenProcessToken<br>IsDebuggerPresent<br>
-      
-    </div>
-    <footer>
-      
-        
-          <div class="alignleft">
-            <a href="/2015/12/23/Tools/Malware-Regulary-Api/#more" class="more-link">Read More</a>
-          </div>
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-  <div id="container"></div>
-</span>
-</article>
-
-
-
-
-  <article class="post">
-  
-    <div class="gallery">
-  <div class="photoset">
-    
-      <img src="">
-    
-  </div>
-  <div class="control">
-    <div class="prev"></div>
-    <div class="next"></div>
-  </div>
-</div>
-  
-  <div class="post-content">
-    <header>
-      
-        <time datetime="2015-12-17T10:04:32.000Z"><a href="/2015/12/17/Tools/FLARE-IDA-Pro-msdn/">2015-12-17</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2015/12/17/Tools/FLARE-IDA-Pro-msdn/">火眼（FireEye）实验室FLARE IDA Pro脚本系列：MSDN注释插件----实践</a></h1>
-  
-
-    </header>
-	
-<!-- Table of Contents -->
-
-
-	
-    <div class="entry">
-      
-        <p>主要实践了这篇文章<a href="http://www.freebuf.com/tools/43334.html">火眼（FireEye）实验室FLARE IDA Pro脚本系列：MSDN注释插件</a>,主要是有几个坑需要注意，然后就能实现功能了。</p>
-<p>##原始步骤</p>
-<ul>
-<li><ol>
-<li>下载并安装离线MSDN文档，下载链接：<a href="http://www.microsoft.com/en-us/download/details.aspx?id=18950.尽管不是最新的SDK版本，但是它包含了所需的全部信息，‍‍‍‍‍‍‍‍而且数据可以直接被提取。如图6所示，你可以只选择安装帮助文档，默认的安装目录是C:\ProgramFiles\Microsoft">http://www.microsoft.com/en-us/download/details.aspx?id=18950.尽管不是最新的SDK版本，但是它包含了所需的全部信息，‍‍‍‍‍‍‍‍而且数据可以直接被提取。如图6所示，你可以只选择安装帮助文档，默认的安装目录是C:\ProgramFiles\Microsoft</a> SDKs\Windows\v7.0\Help\1033.‍‍‍‍‍‍‍‍</li>
-</ol>
-</li>
-<li>2.利用解压软件（如7-zip）解压MSDN文档到指定目录。</li>
-<li>3.从Hex-Rays网站上下载tilib.exe，链接如下： <a href="https://www.hex-rays.com/products/ida/support/download.shtml">https://www.hex-rays.com/products/ida/support/download.shtml</a> </li>
-<li>4.运行MSDN_crawler/msdn_crawler.py &lt;已解压的MSDN文件的目录 &gt; &lt; tilib.exe所在的目录&gt; &lt; til文件所在的目录&gt;<br>如果提前条件都满足，你就可以运行位于MSDN_crawler目录中的MSDN_crawler.py脚本。脚本需要TIL文件的目录（通常为%IDADIR%/til/pc/）和已解压的MSDN文档的目录。当脚本运行完之后，最终的XML数据库文件就位于MSDN_data 目录中。‍‍‍‍</li>
-</ul>
-      
-    </div>
-    <footer>
-      
-        
-          <div class="alignleft">
-            <a href="/2015/12/17/Tools/FLARE-IDA-Pro-msdn/#more" class="more-link">Read More</a>
-          </div>
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-  <div id="container"></div>
-</span>
-</article>
-
-
-
-
-  <article class="post">
-  
-    <div class="gallery">
-  <div class="photoset">
-    
-      <img src="">
-    
-  </div>
-  <div class="control">
-    <div class="prev"></div>
-    <div class="next"></div>
-  </div>
-</div>
-  
-  <div class="post-content">
-    <header>
-      
-        <time datetime="2015-11-20T08:12:00.000Z"><a href="/2015/11/20/Learning/windowservices/">2015-11-20</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2015/11/20/Learning/windowservices/">Window服务学习笔记</a></h1>
-  
-
-    </header>
-	
-<!-- Table of Contents -->
-
-
-	
-    <div class="entry">
-      
-        <p>参考资料:<br><a href="http://www.vckbase.com/index.php/wv/1193">用 C 语言编写 Windows 服务程序的五个步骤</a><br><a href="http://blog.csdn.net/zhangpeng_linux/article/details/7001084">如何编写windows服务程序</a><br><a href="https://joway.wang/blog/2015/04/22/WindowsService.html">用C创建并调用Windows服务（守护进程）</a><br><a href="http://www.xfocus.net/articles/200308/601.html">创建SvcHost.exe调用的服务原理与实践</a><br>黑客防线201301</p>
-<div align="center"><br><img src="/img/windows%20Service.png" align="center"/><br></div>
-
-<h2 id="关于Windows服务">关于Windows服务</h2><p>Windows系统中的服务几乎是都是默默无闻的存在的，大部分是一些系统进程，负责电源管理、网络及安全方面等与用户无交互的工作,在客户服务模型中主要是作为服务端存在。</p>
-<div align="center"><br><img src="/img/scm_scp_exe.png" align="center"/><br></div><br>Windows服务主要由3个部分组成，包括服务应用、服务控制程序（scp）及服务控制管理器（scm）。<br>服务应用即运行的服务程序，与普通的Windows可执行程序类似，只是有一些与scm的接口函数，负责与scm通信。<br>服务控制程序（scp）即负责控制服务应用的程序，Windows系统内置了一些scm的功能，比如我们可以sc命令控制服务应用的启动、停止等，有一些服务也自带了scp提供一些自定义的共计功能。服务控制程序就是普通的Windows用户程序。<br>服务控制管理器（scm）就是系统中负责在系统中管理全部服务的应用的，包括安装服务、负责服务自启动。容易和服务控制程序（scp）混淆，scp只是一个工具而scm是一个系统，scp就好比一种方法，scm是一个机构[好吧。。。这个比方不好]。<br>
-      
-    </div>
-    <footer>
-      
-        
-          <div class="alignleft">
-            <a href="/2015/11/20/Learning/windowservices/#more" class="more-link">Read More</a>
-          </div>
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-  <div id="container"></div>
-</span>
-</article>
-
-
-
-
-  <article class="post">
-  
-    <div class="gallery">
-  <div class="photoset">
-    
-      <img src="">
-    
-  </div>
-  <div class="control">
-    <div class="prev"></div>
-    <div class="next"></div>
-  </div>
-</div>
-  
-  <div class="post-content">
-    <header>
-      
-        <time datetime="2015-10-30T11:40:09.000Z"><a href="/2015/10/30/Learning/Http-Protocl-learn/">2015-10-30</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2015/10/30/Learning/Http-Protocl-learn/">Http协议初学</a></h1>
-  
-
-    </header>
-	
-<!-- Table of Contents -->
-
-
-	
-    <div class="entry">
-      
-        <p>参考资料：<br><a href="http://www.cnblogs.com/it-cen/p/4899692.html?utm_source=tuicool&amp;utm_medium=referral">IP、TCP和DNS与HTTP的密切关系</a><br><a href="http://blog.csdn.net/breaksoftware/article/details/45874191">实现HTTP协议Get、Post和文件上传功能——设计和模块</a><br><a href="http://www.cnblogs.com/starstone/p/4890409.html?utm_source=tuicool&amp;utm_medium=referral">HTTP必知必会</a><br><a href="http://www.cnblogs.com/mengdd/archive/2013/05/25/3099240.html">HTTP协议 通信过程介绍</a><br><a href="http://www.cnblogs.com/zhuqil/archive/2012/07/23/2604572.html">图解HTTPS</a><br>&lt;&lt;图解HTTP&gt;&gt; 上野宣<br><em>全抄袭，仅当监督学习。。。。。。。</em></p>
-<p>##Http协议和TCP、IP协议的关系<br>我们都知道http协议是一种应用层协议，应用层协议又是什么意思呢？就是要利用下层协议的然后通过自定义一种格式的方式生成了一坨数据然后丢给下一层协议拿去发送（反正我是这么理解的，应该还是对的）。这里的自定义的一种格式就是HTTP协议格式，这里的下一层协议就是TCP协议。且Http协议是一种无连接、无状态的协议，即没有tcp的长连接请求然后响应后理解断开，对事务无记忆能力。</p>
-<p><div align="center"><br><img src="/img/http_tcp.jpg" alt="Http协议和其他协议关系"  align="center"/><br></div><br>
-      
-    </div>
-    <footer>
-      
-        
-          <div class="alignleft">
-            <a href="/2015/10/30/Learning/Http-Protocl-learn/#more" class="more-link">Read More</a>
-          </div>
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-  <div id="container"></div>
-</span>
-</article>
-
-
-
-
 
 <ul class="page-direction" id="page-direction">
     <li><a class="page-prev icon-chevron-sign-left" href="javascript:;" title="上一页"></a></li>
@@ -809,7 +792,7 @@ var _hmt = _hmt || [];
   
     <li><a href="/categories/Debug/">Debug</a><small>7</small></li>
   
-    <li><a href="/categories/IOT/">IOT</a><small>6</small></li>
+    <li><a href="/categories/IOT/">IOT</a><small>10</small></li>
   
     <li><a href="/categories/Kernel/">Kernel</a><small>4</small></li>
   
@@ -841,7 +824,23 @@ var _hmt = _hmt || [];
       </li>
     
       <li>
-        <a href="/2021/09/22/IOT/iot-security-part-4-bluetooth-low-energy-101/">物联网安全101-4.低功耗蓝牙BLE（翻译）</a>
+        <a href="/2021/09/23/IOT/iot-security-part-8-introduction-to-software-defined-radio-sdr/">物联网安全101-8.软件无线电（Software Defined Radio，SDR）简介（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2021/09/23/IOT/iot-security-part-7-reverse-engineering-an-iot-firmware/">物联网安全101-7.物联网固件逆向（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2021/09/22/IOT/iot-security-part-6-101-zigbee-security-101/">物联网安全101-6.ZigBee安全（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2021/09/22/IOT/iot-security-part-5-101-zigbee-protocol-101/">物联网安全101-5.ZigBee协议（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2021/09/22/IOT/iot-security-part-4-101-bluetooth-low-energy-101/">物联网安全101-4.低功耗蓝牙BLE（翻译）</a>
       </li>
     
       <li>
@@ -866,22 +865,6 @@ var _hmt = _hmt || [];
     
       <li>
         <a href="/2020/10/02/Cybersecurity/art-of-anti-detection-4-art-of-anti-detection-4-self-defense/">反检测的艺术4-自保护（翻译）</a>
-      </li>
-    
-      <li>
-        <a href="/2020/09/10/Cybersecurity/art-of-anti-detection-3-art-of-anti-detection-3-shellcode-alchemy/">反检测的艺术3-shellcode的魔力 （翻译）</a>
-      </li>
-    
-      <li>
-        <a href="/2020/09/04/Cybersecurity/art-of-anti-detection-2-pe-backdoor-manufacturing/">反检测的艺术2-如何制作PE文件后门（翻译）</a>
-      </li>
-    
-      <li>
-        <a href="/2020/09/03/Cybersecurity/art-of-anti-detection-1-introduction-to-av-detection-techniques/">反检测的艺术1-反病毒软件及检测技术概述（翻译）</a>
-      </li>
-    
-      <li>
-        <a href="/2020/08/02/Life/dns_hijacking/">记录一次被DNS劫持及解决方案(非改hosts方式)</a>
       </li>
     
   </ul>

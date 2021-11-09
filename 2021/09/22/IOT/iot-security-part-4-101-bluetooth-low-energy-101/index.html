@@ -101,7 +101,7 @@ var _hmt = _hmt || [];
   <div class="post-content">
     <header>
       
-        <time datetime="2021-09-22T12:50:22.000Z"><a href="/2021/09/22/IOT/iot-security-part-4-bluetooth-low-energy-101/">2021-09-22</a></time>
+        <time datetime="2021-09-22T12:50:22.000Z"><a href="/2021/09/22/IOT/iot-security-part-4-101-bluetooth-low-energy-101/">2021-09-22</a></time>
       
       
   
@@ -121,12 +121,17 @@ var _hmt = _hmt || [];
 	
     <div class="entry">
       
-        <p>如果您还没有通读我们的 IoT 安全博客系列的第 1 部分到第 3 部分，我建议您先阅读它们，除非您已经熟悉 IoT 的基础知识。上一篇博客的链接——<a href="/2021/09/22/IOT/iot-security-part-3-101-iot-top-ten-vulnerabilities/">物联网安全——第 3 部分</a>。<br>蓝牙一直是一个流行词，因为人们希望他们的所有设备都是智能的，这基本上意味着您可以跨设备控制事物而无需携带电线。蓝牙已经进入市场十多年了。如果您是千禧一代，您会使用那些带有蓝牙功能的经典诺基亚手机。蓝牙是由爱立信发明的，其他厂商也开始使用蓝牙。不久之后，所有主要供应商都创建了一个名为<a href="https://en.wikipedia.org/wiki/Bluetooth_Special_Interest_Group" target="_blank" rel="external">蓝牙特别兴趣小组- SIG的联盟</a>，该联盟管理标准应该如何以及不同版本之间的互操作性。<br>我们不打算谈论蓝牙。蓝牙本身就是一个庞大的协议栈，它们的规范大约有2000 多页。在本博客中，我将仅介绍更为著名的 BLE 蓝牙低功耗。<br><a id="more"></a></p>
-<p>随着万物互联时代的到来，随之而来的是能量和资源的问题。正如我之前提到的，蓝牙是一个巨大的协议栈。在像健身手环这样的终端设备中实施它需要更多的能量和资源。因此，在蓝牙 4.0 标准中，他们引入了一种称为 Low energy 的技术，专门针对在内存和功率受限的设备上运行的物联网和智能设备。</p>
+        <p>如果您还没有看我们的物联网安全系列的第 1 部分到第 3 部分，我建议您先阅读它们，除非您已经熟悉 IoT 的基础知识。上一篇博客的链接——<a href="/2021/09/22/IOT/iot-security-part-3-101-iot-top-ten-vulnerabilities/">物联网安全——第 3 部分</a>。<br>蓝牙一直是一个流行词，因为人们希望他们的所有设备都是智能的，这意味着您可以不需要线缆就可以跨设备控制其他设备。蓝牙已经进入市场十多年了。如果您是千禧一代，您可能会使用过那些带有蓝牙功能的经典诺基亚手机。蓝牙是由爱立信发明的，随后其他厂商也开始使用蓝牙。不久之后，主要终端厂商一起都创建了一个名为<a href="https://en.wikipedia.org/wiki/Bluetooth_Special_Interest_Group" target="_blank" rel="external">蓝牙特别兴趣小组- SIG的联盟</a>，该联盟管理制定蓝牙标准以及不同版本之间的互操作性。<br>我们不打算谈论蓝牙。蓝牙本身就是一个庞大的协议栈，它们的规范大约有2000 多页。在本博客中，我将仅介绍更为著名的 BLE 蓝牙低功耗。<br><a id="more"></a></p>
+<p>随着万物互联时代的到来，随之而来的是能量和资源的问题。正如我上面提到的，蓝牙是一个巨大的协议栈。在像健身手环这样的终端设备中实现它需要耗费很多的能量和资源。因此，在蓝牙 4.0 标准中，他们引入了一种称为 Low energy 的技术，专门针对在内存和功率受限的设备上运行的物联网和智能设备。</p>
 <div align="center"><br><img src="/img/2021092150941367.jpg" align><br></div>
 
 <p>Bluetooth SIG 开始将该标准作为 <a href="https://www.laptopmag.com/articles/just-what-is-bluetooth-4-0-anyway" target="_blank" rel="external">Bluetooth Smart</a>进行销售。它有两个组件，Bluetooth Smart设备是只有蓝牙低功耗组件的终端设备，Bluetooth Ready是能够同时执行Bluetooth LE 和 EDR-Bluetooth经典组件的设备，这可能是您的中心设备，如手机或笔记本电脑。<br>现在让我们来看看蓝牙规范的技术细节</p>
-<div align="center"><br><img src="/img/202109212961815527.gif" align><br></div><br>来源：<a href="https://archive.eetindia.co.in/www.eetindia.co.in/STATIC/ARTICLE_IMAGES/201312/EEIOL_2013DEC13_RFD_NET_TA_01Tab1.gif" target="_blank" rel="external">https://archive.eetindia.co.in/www.eetindia.co.in/STATIC/ARTICLE_IMAGES/201312/EEIOL_2013DEC13_RFD_NET_TA_01Tab1.gif</a><br><br>该表本身将使您更好地了解规格、范围和带宽已减少以承受低功耗和低资源。<br>正如我之前提到的，LE 有两种不同类型的设备。<br><br><a href="https://www.digikey.com/Web%20Export/Supplier%20Content/Laird_776/PDF/laird-wireless-bluetooth-smart-ready.pdf" target="_blank" rel="external">Bluetooth Smart Ready</a>- 这是电池供电和高资源的中央设备，能够运行所有蓝牙协议。它们是您的笔记本电脑和手机。<br><br><div align="center"><br><img src="/img/3391617601.jpg" align><br></div>
+<div align="center"><br><img src="/img/202109212961815527.gif" align><br></div>
+
+<p>来源：<a href="https://archive.eetindia.co.in/www.eetindia.co.in/STATIC/ARTICLE_IMAGES/201312/EEIOL_2013DEC13_RFD_NET_TA_01Tab1.gif" target="_blank" rel="external">https://archive.eetindia.co.in/www.eetindia.co.in/STATIC/ARTICLE_IMAGES/201312/EEIOL_2013DEC13_RFD_NET_TA_01Tab1.gif</a></p>
+<p>该表本身将使您更好地了解规格、范围和带宽已减少以承受低功耗和低资源。<br>正如我之前提到的，LE 有两种不同类型的设备。</p>
+<p><a href="https://www.digikey.com/Web%20Export/Supplier%20Content/Laird_776/PDF/laird-wireless-bluetooth-smart-ready.pdf" target="_blank" rel="external">Bluetooth Smart Ready</a>- 这是电池供电和高资源的中央设备，能够运行所有蓝牙协议。它们是您的笔记本电脑和手机。</p>
+<div align="center"><br><img src="/img/3391617601.jpg" align><br></div>
 
 <p><a href="https://www.digikey.com/Web%20Export/Supplier%20Content/Laird_776/PDF/laird-wireless-bluetooth-smart-ready.pdf" target="_blank" rel="external">Bluetooth Smart</a>– 它们是您的终端设备，如健身追踪器、行李追踪器或智能假阳具。他们不必运行整个堆栈，他们需要节省电力和资源。它们仅运行 Bluetooth LE 服务器。它们是中央设备可以连接的外围设备。</p>
 <div align="center"><br><img src="/img/170392843.jpg" align><br></div>
@@ -243,7 +248,7 @@ var _hmt = _hmt || [];
 
         
           <div class="alignleft post-nav">
-            <em>上一篇: </em><a href="/2021/10/20/IOT/using-rasberrypi-as-poor-mans-hardware-hacking-tool/">树莓派-穷人的硬件黑客工具（翻译）</a>
+            <em>上一篇: </em><a href="/2021/09/22/IOT/iot-security-part-5-101-zigbee-protocol-101/">物联网安全101-5.ZigBee协议（翻译）</a>
           </div>
         
         
@@ -261,8 +266,8 @@ var _hmt = _hmt || [];
             
               <span class="from-link">
                 <em>本文链接地址:</em>
-                <a href="/2021/09/22/IOT/iot-security-part-4-bluetooth-low-energy-101/">
-                  http://www.youngroe.com/2021/09/22/IOT/iot-security-part-4-bluetooth-low-energy-101/
+                <a href="/2021/09/22/IOT/iot-security-part-4-101-bluetooth-low-energy-101/">
+                  http://www.youngroe.com/2021/09/22/IOT/iot-security-part-4-101-bluetooth-low-energy-101/
                 </a>
               </span>
             
@@ -358,7 +363,7 @@ gitalk.render('gitalk-container')
   
     <li><a href="/categories/Debug/">Debug</a><small>7</small></li>
   
-    <li><a href="/categories/IOT/">IOT</a><small>6</small></li>
+    <li><a href="/categories/IOT/">IOT</a><small>10</small></li>
   
     <li><a href="/categories/Kernel/">Kernel</a><small>4</small></li>
   
@@ -390,7 +395,23 @@ gitalk.render('gitalk-container')
       </li>
     
       <li>
-        <a href="/2021/09/22/IOT/iot-security-part-4-bluetooth-low-energy-101/">物联网安全101-4.低功耗蓝牙BLE（翻译）</a>
+        <a href="/2021/09/23/IOT/iot-security-part-8-introduction-to-software-defined-radio-sdr/">物联网安全101-8.软件无线电（Software Defined Radio，SDR）简介（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2021/09/23/IOT/iot-security-part-7-reverse-engineering-an-iot-firmware/">物联网安全101-7.物联网固件逆向（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2021/09/22/IOT/iot-security-part-6-101-zigbee-security-101/">物联网安全101-6.ZigBee安全（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2021/09/22/IOT/iot-security-part-5-101-zigbee-protocol-101/">物联网安全101-5.ZigBee协议（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2021/09/22/IOT/iot-security-part-4-101-bluetooth-low-energy-101/">物联网安全101-4.低功耗蓝牙BLE（翻译）</a>
       </li>
     
       <li>
@@ -415,22 +436,6 @@ gitalk.render('gitalk-container')
     
       <li>
         <a href="/2020/10/02/Cybersecurity/art-of-anti-detection-4-art-of-anti-detection-4-self-defense/">反检测的艺术4-自保护（翻译）</a>
-      </li>
-    
-      <li>
-        <a href="/2020/09/10/Cybersecurity/art-of-anti-detection-3-art-of-anti-detection-3-shellcode-alchemy/">反检测的艺术3-shellcode的魔力 （翻译）</a>
-      </li>
-    
-      <li>
-        <a href="/2020/09/04/Cybersecurity/art-of-anti-detection-2-pe-backdoor-manufacturing/">反检测的艺术2-如何制作PE文件后门（翻译）</a>
-      </li>
-    
-      <li>
-        <a href="/2020/09/03/Cybersecurity/art-of-anti-detection-1-introduction-to-av-detection-techniques/">反检测的艺术1-反病毒软件及检测技术概述（翻译）</a>
-      </li>
-    
-      <li>
-        <a href="/2020/08/02/Life/dns_hijacking/">记录一次被DNS劫持及解决方案(非改hosts方式)</a>
       </li>
     
   </ul>

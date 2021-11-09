@@ -1,0 +1,651 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>物联网安全101-6.ZigBee安全（翻译） | Lyon&#39;s blog</title>
+  <meta name="author" content="Lyon">
+  
+  <meta name="description" content="Walk steps step by step">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="物联网安全101-6.ZigBee安全（翻译）"/>
+  <meta property="og:site_name" content="Lyon&#39;s blog"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  #<link href="/favicon.ico" rel="icon">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="alternate" href="/atom.xml" title="Lyon&#39;s blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  <script src="/js/jquery.min.js"></script>
+  <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?1d807422614f63c8de98cdc3b546860c";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+  <script>
+    (function(){
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        }
+        else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+    
+  <script data-ad-client="ca-pub-6317609007693835" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-66542057-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-66542057-1');
+</script>
+
+</head>
+
+
+<body>
+  <!--[if lte IE 8]> <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'> <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0027_Simplified Chinese.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." style='margin-left:auto;margin-right:auto;display: block;'/></a></div> <![endif]-->
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">Lyon&#39;s blog</a></h1>
+  <h2><a href="/">I hear and I forget.I see and I remember.I do and I understand.</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">首页</a></li>
+    
+      <li><a href="/archives">归档</a></li>
+    
+      <li><a href="/about">关于</a></li>
+    
+	<li> <a href="/atom.xml">RSS</a> </li>
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <time datetime="2021-09-22T14:50:22.000Z"><a href="/2021/09/22/IOT/iot-security-part-6-101-zigbee-security-101/">2021-09-22</a></time>
+      
+      
+  
+    <h1 class="title">物联网安全101-6.ZigBee安全（翻译）</h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+  <div id="toc" class="toc-article">
+  <strong class="toc-title">文章目录</strong>
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#ZigBee_安全_101"><span class="toc-number">1.</span> <span class="toc-text">ZigBee 安全 101</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ZigBee_安全架构（开放信任）"><span class="toc-number">2.</span> <span class="toc-text">ZigBee 安全架构（开放信任）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#信任中心"><span class="toc-number">2.1.</span> <span class="toc-text">信任中心</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ZigBee_中的安全模式"><span class="toc-number">3.</span> <span class="toc-text">ZigBee 中的安全模式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ZigBee_安全密钥"><span class="toc-number">4.</span> <span class="toc-text">ZigBee 安全密钥</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#密钥管理"><span class="toc-number">4.1.</span> <span class="toc-text">密钥管理</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ZigBee_协议安全"><span class="toc-number">5.</span> <span class="toc-text">ZigBee 协议安全</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#辅助安全头"><span class="toc-number">5.1.</span> <span class="toc-text">辅助安全头</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#安全控制"><span class="toc-number">5.2.</span> <span class="toc-text">安全控制</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#帧计数器"><span class="toc-number">5.3.</span> <span class="toc-text">帧计数器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#源地址"><span class="toc-number">5.4.</span> <span class="toc-text">源地址</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#密钥序列号"><span class="toc-number">5.5.</span> <span class="toc-text">密钥序列号</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ZigBee_漏洞"><span class="toc-number">6.</span> <span class="toc-text">ZigBee 漏洞</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#实施漏洞"><span class="toc-number">6.1.</span> <span class="toc-text">实施漏洞</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#协议漏洞"><span class="toc-number">6.2.</span> <span class="toc-text">协议漏洞</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#网络干扰漏洞"><span class="toc-number">6.2.1.</span> <span class="toc-text">网络干扰漏洞</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#链接密钥漏洞"><span class="toc-number">6.2.2.</span> <span class="toc-text">链接密钥漏洞</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#未经身份验证的_ACK_帧漏洞"><span class="toc-number">6.2.3.</span> <span class="toc-text">未经身份验证的 ACK 帧漏洞</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#结论"><span class="toc-number">7.</span> <span class="toc-text">结论</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考"><span class="toc-number">8.</span> <span class="toc-text">参考</span></a></li></ol>
+  </div>
+
+
+	
+    <div class="entry">
+      
+        <div align="center"><br><img src="/img/icons8-zigbee-480.png" align><br></div>
+
+<h2 id="ZigBee_安全_101">ZigBee 安全 101</h2><p>该博客是“物联网安全”系列的一部分。如果您还没有阅读本系列之前的博客（第 1 部分到第 5 部分），我强烈建议您先阅读它们，除非您已经熟悉这些概念并且只想阅读当前主题。<br><a href="/2021/09/21/IOT/iot-security-part-1-101-iot-introduction-architecture/">物联网安全 - 第 1 部分（101 - 物联网介绍和架构）</a><br><a href="/2021/09/22/IOT/iot-security-part-5-101-zigbee-protocol-101/">物联网安全 – 第 5 部分（ZigBee 协议 - 101）</a><br>在本文中，我们将讨论 ZigBee 协议的安全架构以及 ZigBee 设备和网络中存在的安全问题。</p>
+<a id="more"></a>
+<h2 id="ZigBee_安全架构（开放信任）">ZigBee 安全架构（开放信任）</h2><p>ZigBee 中的安全架构补充或增强了 IEEE 802.15.4 层的安全服务。它是一种基于某些假设的“开放信任”模型，如下所述：</p>
+<ul>
+<li>在单个设备上运行的不同层和应用程序相互信任。</li>
+<li>同一设备上不同堆栈层之间的通信不加密。</li>
+<li>除非受到保护，否则设备不会有意或无意地将密钥传输到其他设备，例如在密钥传输期间。</li>
+<li>两个设备之间的通信采用密码加密和安全保护。</li>
+<li>随机数生成器按加密引擎的预期工作</li>
+<li>硬件防篡改</li>
+</ul>
+<p><strong>ZigBee安全架构设计原则：</strong></p>
+<ul>
+<li>产生帧的层负责最初保护它。</li>
+<li>只有具有活动网络密钥的设备才能与网络上的多跳通信。</li>
+<li>APS 层和 NWK 层都可以使用相同的活动网络密钥来保护帧。重用密钥有助于减少存储开销。</li>
+<li>端到端消息安全，即只有源设备和目的设备才能解密共享密钥保护的消息，路由机制是出于信任考虑。</li>
+<li>组成网络的设备负责网络中节点的基本安全级别、安全策略和身份验证。如果需要，应用层可以在两个设备之间提供额外的应用级安全性。</li>
+</ul>
+<h3 id="信任中心">信任中心</h3><p>信任中心是在 ZigBee 网络内其他设备信任的设备上运行的应用程序，用于分发网络密钥和潜在的端到端应用程序配置管理。每个网络只能存在一个信任中心，它可以是协调器或协调器指定的设备，所有成员节点都将此设备视为信任中心。信任中心负责 <em> 配置和维护网络安全策略 </em> 建立端到端的应用密钥。* 通过使用一些密钥建立协议来生成密钥</p>
+<h2 id="ZigBee_中的安全模式">ZigBee 中的安全模式</h2><ul>
+<li><p>分布式安全模式<br>网络中不需要分布式安全模式，唯一的信任中心，路由器负责终端设备认证。设备上预先配置了链接密钥，网络密钥在设备加入网络时由路由器发布。网络中所有节点的网络密钥保持不变；这使得分布式安全模式的安全性降低。</p>
+</li>
+<li><p>集中安全模式<br>应用中使用的集中安全模式，一个信任中心控制，维护网络和设备的集中安全策略。在这种模式下，信任中心负责</p>
+</li>
+<li><p>维护整个网络的安全和安全配置</p>
+</li>
+<li>验证设备并维护网络上的设备列表</li>
+<li>维护网络中所有设备的链接密钥和网络密钥</li>
+</ul>
+<h2 id="ZigBee_安全密钥">ZigBee 安全密钥</h2><p>ZigBee 标准定义了两种对称密钥，每种长度为 128 位，用于加密通信。</p>
+<ul>
+<li><p>网络密钥<br>用于广播通信和任何网络层通信的 128 位网络密钥。每个节点都需要网络密钥才能与网络上的其他设备进行安全通信。网络上的设备通过网络上的密钥传递，即key-transport，获取网络密钥。只有一种类型的网络密钥；但是，它可以用于分布式或集中式安全模型。安全模型控制网络密钥的分发方式，并可控制网络帧计数器的初始化方式。安全模型不影响消息的保护方式。</p>
+</li>
+<li><p>链接键<br>两个设备共享的 128 位唯一链接密钥，用于 APL 对等实体之间的单播通信。设备可以通过网络上的密钥传输服务或预安装获取链接密钥。信任中心链接密钥有两种不同类型：全局和唯一。本地设备使用的信任中心链接密钥的类型决定了设备如何处理各种信任中心消息（APS 命令），包括是否应用 APS 加密。每个节点还可能具有以下预配置的链接密钥，用于派生信任中心链接密钥。</p>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>号码</th>
+<th>键名</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>集中安全全球信任中心链接密钥</td>
+<td>用于加入集中式安全网络的链接密钥。集中式安全全球信任中心链接密钥的默认值是ZigBeeAlliance09，即（“5A 69 67 42 99 23 65 65 41 6C 6C 69 61 6E 63 65 30 39”），如果没有其他链接，设备会使用或支持密钥由应用程序在加入时指定</td>
+</tr>
+<tr>
+<td>2</td>
+<td>分布式安全全局链接密钥</td>
+<td>用于加入分布式安全网络的链接密钥</td>
+</tr>
+<tr>
+<td>3</td>
+<td>安装代码链接密钥</td>
+<td>从加入设备的安装代码派生的链接密钥，以创建用于加入的唯一信任中心链接密钥</td>
+</tr>
+<tr>
+<td>4</td>
+<td>应用链接键</td>
+<td>两个设备之间使用的链接密钥用于应用层加密</td>
+</tr>
+<tr>
+<td>5</td>
+<td>设备特定的信任中心链接密钥</td>
+<td>信任中心和网络中的设备之间使用的链接密钥。用于信任中心命令和应用层加密。</td>
+</tr>
+</tbody>
+</table>
+<h3 id="密钥管理">密钥管理</h3><p>ZigBee 规范提到了三种不同的密钥管理机制</p>
+<ul>
+<li>预安装 – 在带外设备上配置或安装密钥</li>
+<li>密钥传输——信任中心通过网络向设备发送安全密钥。</li>
+<li>密钥建立——信任中心和终端设备协商密钥，并且在没有实际通过网络发送任何密钥的情况下建立密钥。此密钥建立基于对称密钥建立 (SKKE) 协议。</li>
+</ul>
+<h2 id="ZigBee_协议安全">ZigBee 协议安全</h2><h3 id="辅助安全头">辅助安全头</h3><p>如果 NWK 帧控制字段中的安全控制位设置为 1，ZigBee NWK 层和 APS 层可以使用 Auxiliary Security Header 进行安全通信。 Auxiliary Security Header 具有以下字段</p>
+<table>
+<thead>
+<tr>
+<th>字节：1</th>
+<th>字节数：4</th>
+<th>八位字节：0 或 8</th>
+<th>八位字节：0 或 1</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>安全控制</td>
+<td>帧计数器</td>
+<td>源地址</td>
+<td>密钥序列号</td>
+</tr>
+</tbody>
+</table>
+<p>下面是 ZigBee 数据包的示例快照，其中 NWK 帧控制中的安全字段设置为 true (1)，安全标头设置了相应的安全控制字段，以及消息完整性代码 (MIC)</p>
+<div align="center"><br><img src="/img/ZigBee_data.png" align><br></div>
+
+<h3 id="安全控制">安全控制</h3><p>8 位安全控制字段由安全级别、密钥标识符和扩展的 nonce 子字段组成，如下所示</p>
+<table>
+<thead>
+<tr>
+<th>少量</th>
+<th>0 - 2</th>
+<th>3 - 4</th>
+<th>5</th>
+<th>6 - 7</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>描述</td>
+<td>安全级别</td>
+<td>密钥标识符</td>
+<td>扩展随机数</td>
+<td>预订的</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>安全级别<br>安全级别标识符指示如何保护传出帧，据称如何保护传入帧。它还指示有效载荷是否被加密以及提供的帧上的数据真实性的程度，如消息完整性代码 (MIC) 的长度所反映的。MIC 的位长可以取值 0、32、64 或 128，并确定 MIC 的随机猜测正确的概率。下面列出的安全级别的安全属性</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>安全级别标识符</th>
+<th>安全属性</th>
+<th>数据加密</th>
+<th>帧完整性（MIC 的长度 M，以八位字节数表示）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0x00</td>
+<td>没有任何</td>
+<td>离开</td>
+<td>否 (M=0)</td>
+</tr>
+<tr>
+<td>0x01</td>
+<td>MIC-32</td>
+<td>离开</td>
+<td>是 (M=4)</td>
+</tr>
+<tr>
+<td>0x02</td>
+<td>MIC-64</td>
+<td>离开</td>
+<td>是 (M=8)</td>
+</tr>
+<tr>
+<td>0x03</td>
+<td>MIC-128</td>
+<td>离开</td>
+<td>是 (M=16)</td>
+</tr>
+<tr>
+<td>0x04</td>
+<td>启动</td>
+<td>不</td>
+<td>(M=0)</td>
+</tr>
+<tr>
+<td>0x05</td>
+<td>ENC-MIC-32</td>
+<td>在</td>
+<td>是 (M=4)</td>
+</tr>
+<tr>
+<td>0x06</td>
+<td>ENC-MIC-64</td>
+<td>在</td>
+<td>是 (M=8)</td>
+</tr>
+<tr>
+<td>0x07</td>
+<td>ENC-MIC-128</td>
+<td>在</td>
+<td>是 (M=16)</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>密钥标识符<br>密钥标识符子字段由两个比特组成，用于标识用于加密帧的密钥。</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>密钥标识符</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0x00</td>
+<td>一个数据键</td>
+</tr>
+<tr>
+<td>0x01</td>
+<td>网络密钥</td>
+</tr>
+<tr>
+<td>0x02</td>
+<td>钥匙传输钥匙</td>
+</tr>
+<tr>
+<td>0x03</td>
+<td>钥匙加载钥匙</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>扩展随机数<br>当设置为 1 时，扩展的 nonce 子字段指示发送方地址字段存在于辅助报头中。否则，它设置为 0。</li>
+</ul>
+<h3 id="帧计数器">帧计数器</h3><p>计数器字段用于提供帧新鲜度并防止处理重复帧。</p>
+<h3 id="源地址">源地址</h3><p>安全控制中的源地址字段是源设备的扩展 64 位地址，当安全控制字段的扩展 nonce 子字段设置为 1 时出现。</p>
+<h3 id="密钥序列号">密钥序列号</h3><p>辅助安全报头中的密钥序列号表示用于保护帧的网络密钥的密钥序列号。来自安全控制字段的密钥标识符子字段，当设置为 1（即网络密钥）时，指示存在于辅助安全报头中的密钥序列号。</p>
+<h2 id="ZigBee_漏洞">ZigBee 漏洞</h2><p><code>设备之间的安全性取决于安全密钥的安全初始化和安装</code></p>
+<p>ZigBee 网络中的漏洞分为两类：协议漏洞和产品开发过程中协议执行不力。下面是一些常见的漏洞：</p>
+<h3 id="实施漏洞">实施漏洞</h3><p><strong>安全密钥存储不安全</strong><br>ZigBee 协议要求所有安全密钥（网络、链接）长期存储在设备上。如果密钥没有安全存储，密钥可以通过对固件二进制文件进行逆向工程来识别密钥的位置。</p>
+<p><strong>无线不安全的密钥传输</strong><br>在一些实现中，当节点第一次加入 ZigBee 网络时，节点通过空中获取其密钥，主要是从协调器以明文格式。因此，嗅探器设备网络狙击手或粗糙设备可以从协调器获取密钥，并可以危及整个网络。</p>
+<p><strong>能量耗尽攻击</strong><br>以下是两种非常常见的能量消耗攻击</p>
+<ul>
+<li><p>无效的安全标头<br>在此类攻击中，攻击者在帧中发送带有无效安全标头的突发数据包，目的是使设备必须花费一些能量来验证帧完整性，从而导致目标设备更快地耗尽电池电量。</p>
+</li>
+<li><p>投票率<br>在此类攻击中，攻击者将数据包发送到终端设备的速度比网络配置的轮询速率更快，从而导致目标设备更快耗尽电池电量。</p>
+</li>
+</ul>
+<h3 id="协议漏洞">协议漏洞</h3><h4 id="网络干扰漏洞">网络干扰漏洞</h4><p>IEEE802.15.4/ZigBee 标准针对无线电和网络干扰提供了一定的保护机制，但是攻击者可以利用某些技术来干扰网络<br>以下是 ZigBee 网络中可能存在的两种类型的干扰攻击：</p>
+<ul>
+<li><p>无线电干扰<br>在此类攻击中，攻击者会增加给定信道的无线电信号发射，导致无线电信道的信噪比降低。</p>
+</li>
+<li><p>链路层干扰<br>在此类攻击中，攻击者通过以随机间隔或针对特定节点的特定间隔在网络上传输带有无用数据的随机 ZigBee 帧突发来瞄准 MAC 层，从而导致网络中的丢包和 DoS 攻击。</p>
+</li>
+</ul>
+<h4 id="链接密钥漏洞">链接密钥漏洞</h4><p>ZigBee 标准具有开放信任的安全模型，低于标准的漏洞会导致链接密钥相关攻击</p>
+<ul>
+<li><p>默认链接键<br>ZigBee 标准为链接密钥提供了默认值，以确保不同制造商的 ZigBee 设备之间的互操作性；因此，攻击者可以使用流氓设备以默认网络密钥加入网络。</p>
+</li>
+<li><p>未加密的链接密钥<br>当没有预配置密钥的设备尝试加入网络时，在这种情况下，信任中心会向设备发送一个未加密的单个密钥（默认链接密钥），攻击者可以通过嗅探导致 ZigBee 网络受损的网络通信来获取。</p>
+</li>
+<li><p>重用链接键<br>ZigBee 标准允许重新使用链接密钥重新加入网络；在这种情况下，攻击者可以克隆合法设备并伪装成之前连接的设备并希望重新加入网络来欺骗信任中心的网络层。因此，信任中心然后发送使用先前使用的链接密钥加密的密钥。</p>
+</li>
+</ul>
+<h4 id="未经身份验证的_ACK_帧漏洞">未经身份验证的 ACK 帧漏洞</h4><p>确认帧是 IEEE 802.15.4/ZigBee 标准中网络层的一部分，但仅限于网络层帧传输的确认，不为确认包提供帧完整性和机密性保护。以下是 ZigBee 网络中一些常见的 ACK 攻击。两者都需要链路层干扰。</p>
+<ul>
+<li><p>ACK欺骗<br>在此类攻击中，攻击者对网络进行干扰，使合法设备收不到帧，然后攻击者向发送方发送带有正确序列号的ACK帧，从而导致网络中的数据丢失。</p>
+</li>
+<li><p>确认丢弃<br>在此类攻击中，攻击者对网络进行干扰，使得只有从接收方到发送方的 ACK 帧被阻塞，迫使发送方重新传输数据，直到达到最大重传次数，从而耗尽网络带宽和设备电池电量。</p>
+</li>
+<li><p>重放保护漏洞<br>IEEE 802.15.4 具有重放保护机制。它提到如果帧序列号等于或小于从同一源节点接收到的前一帧的序列号，则节点可以丢弃接收到的帧。在此类攻击中，攻击者可以向目标节点发送序列号较大的帧，迫使目标节点丢弃序列号较小的帧。</p>
+</li>
+</ul>
+<h2 id="结论">结论</h2><p>我们希望这篇博客能让您简要了解 ZigBee 协议的安全架构。本博客中涵盖的漏洞要么是由于缺乏安全的设计和实现，要么是由于 ZigBee 协议的固有漏洞。</p>
+<p>继续下一部分 -<a href>物联网安全 - 第 7 部分（逆向工程物联网固件）</a></p>
+<h2 id="参考">参考</h2><ul>
+<li><ol>
+<li><a href="https://standards.ieee.org/standard/802_15_4-2020.html" target="_blank" rel="external">802.15.4-2020 - IEEE 批准的低速率无线网络标准草案</a></li>
+</ol>
+</li>
+<li><ol start="2">
+<li><a href="https://zigbeealliance.org/wp-content/uploads/2019/11/docs-05-3474-21-0csg-zigbee-specification.pdf" target="_blank" rel="external">ZigBee 规范 - 05-3474-21，2015 年 8 月 5 日</a></li>
+</ol>
+</li>
+<li><ol start="3">
+<li><a href="http://www.zigbee.org/" target="_blank" rel="external">ZigBee 联盟</a></li>
+</ol>
+</li>
+<li><ol start="4">
+<li><a href="https://en.wikipedia.org/wiki/IEEE_802.15.4" target="_blank" rel="external">IEEE 802.15.4 维基百科</a></li>
+</ol>
+</li>
+<li><ol start="5">
+<li><a href="https://en.wikipedia.org/wiki/Zigbee" target="_blank" rel="external">ZigBee 维基百科</a></li>
+</ol>
+</li>
+</ul>
+<p><em>原文链接：<a href="https://payatu.com/blog/dattatray/zigbee-security-101" target="_blank" rel="external">https://payatu.com/blog/dattatray/zigbee-security-101</a></em></p>
+
+      
+    </div>
+    <footer>
+      
+
+        
+          <div class="alignleft post-nav">
+            <em>上一篇: </em><a href="/2021/09/23/IOT/iot-security-part-7-reverse-engineering-an-iot-firmware/">物联网安全101-7.物联网固件逆向（翻译）</a>
+          </div>
+        
+        
+          <div class="alignright post-nav">
+            <em>下一篇: </em><a href="/2021/09/22/IOT/iot-security-part-5-101-zigbee-protocol-101/">物联网安全101-5.ZigBee协议（翻译）</a>
+          </div>
+          <div class="clearfix"></div>
+        
+
+        
+          <div class="copyright">
+            
+              <span class="claim">转载请注明youngroe.com</span>
+            
+            
+              <span class="from-link">
+                <em>本文链接地址:</em>
+                <a href="/2021/09/22/IOT/iot-security-part-6-101-zigbee-security-101/">
+                  http://www.youngroe.com/2021/09/22/IOT/iot-security-part-6-101-zigbee-security-101/
+                </a>
+              </span>
+            
+          </div>
+        
+        
+  
+  <div class="categories">
+    <a href="/categories/IOT/">IOT</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/IOT安全/">IOT安全</a>
+  </div>
+
+        
+          <! -- 添加捐赠图标 -->
+<div class ="post-donate">
+    <div id="donate_board" class="donate_bar center">
+        <a id="btn_donate" class="btn_donate" href="javascript:;" title="打赏"></a>
+        <span class="donate_txt">
+           ↑<br>
+           欣赏此文？求鼓励，求支持！
+        </span>
+        <br>
+      </div>  
+    <div id="donate_guide" class="donate_bar center hidden" >
+        <!-- 方式一： 
+            ![](/img/Alipay.jpg)
+            ![](/img/WeChatpay.jpg)
+        -->
+        <!-- 方式二；
+            step1：在_config.yml中添加配置
+                Alipay: /img/Alipay.jpg
+                WeChatpay: /img/WeChatpay.jpg
+            step2：此处两张图片的路径分别设置为如下
+                <img src="undefined"
+                <img src="undefined"
+        -->
+        <!-- 支付宝打赏图案 -->
+        <img src="/img/Alipay.png" alt="支付宝打赏">
+        <!-- 微信打赏图案 -->
+        <img src="/img/WeChatpay.png" alt="微信打赏">
+    </div>
+    <script type="text/javascript">
+        document.getElementById('btn_donate').onclick = function(){
+            $('#donate_board').addClass('hidden');
+            $('#donate_guide').removeClass('hidden');
+        }
+    </script>
+</div>
+<! -- 添加捐赠图标 -->
+        
+        <div id="gitalk-container"></div>
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+<script src="https://cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.js"></script>
+<script type="text/javascript">
+    var gitalk = new Gitalk({
+  clientID: '503c39aa3fb2b8c1b734',
+  clientSecret: '65d784ff7a95a9dbf4a4208c9e32166ca29654f2',
+  repo: 'geemion.github.io',
+  owner: 'geemion',
+  admin: 'geemion',
+  pagerDirection:'first',
+  id: md5(window.location.pathname)
+})
+
+gitalk.render('gitalk-container')
+</script>
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+  <div id="container"></div>
+</span>
+</article>
+
+
+<section id="comment">
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+<div class="widget tag">
+  <h3 class="title">分类</h3>
+  <ul class="entry">
+  
+    <li><a href="/categories/Cybersecurity/">Cybersecurity</a><small>6</small></li>
+  
+    <li><a href="/categories/Debug/">Debug</a><small>7</small></li>
+  
+    <li><a href="/categories/IOT/">IOT</a><small>10</small></li>
+  
+    <li><a href="/categories/Kernel/">Kernel</a><small>4</small></li>
+  
+    <li><a href="/categories/Learning/">Learning</a><small>5</small></li>
+  
+    <li><a href="/categories/Life/">Life</a><small>5</small></li>
+  
+    <li><a href="/categories/Others/">Others</a><small>1</small></li>
+  
+    <li><a href="/categories/Tools/">Tools</a><small>5</small></li>
+  
+    <li><a href="/categories/Vulnerabilities/">Vulnerabilities</a><small>0</small></li>
+  
+    <li><a href="/categories/Windows/">Windows</a><small>13</small></li>
+  
+    <li><a href="/categories/life/">life</a><small>0</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2021/10/20/IOT/using-rasberrypi-as-poor-mans-hardware-hacking-tool/">树莓派-穷人的硬件黑客工具（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2021/09/23/IOT/iot-security-part-8-introduction-to-software-defined-radio-sdr/">物联网安全101-8.软件无线电（Software Defined Radio，SDR）简介（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2021/09/23/IOT/iot-security-part-7-reverse-engineering-an-iot-firmware/">物联网安全101-7.物联网固件逆向（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2021/09/22/IOT/iot-security-part-6-101-zigbee-security-101/">物联网安全101-6.ZigBee安全（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2021/09/22/IOT/iot-security-part-5-101-zigbee-protocol-101/">物联网安全101-5.ZigBee协议（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2021/09/22/IOT/iot-security-part-4-101-bluetooth-low-energy-101/">物联网安全101-4.低功耗蓝牙BLE（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2021/09/22/IOT/iot-security-part-3-101-iot-top-ten-vulnerabilities/">物联网安全101-3.物联网10大安全漏洞（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2021/09/21/IOT/iot-security-part-2-101-iot-attack-surface/">物联网安全101-2.物联网攻击面（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2021/09/21/IOT/iot-security-part-1-101-iot-introduction-architecture/">物联网安全101-1.物联网介绍及其架构（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2021/08/20/Cybersecurity/guide-linux-privilege-escalation/">Linux权限提升指南（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2021/03/20/IOT/powerpc_binary_blob_firmware_reverse/">一次嵌入式固件逆向实践</a>
+      </li>
+    
+      <li>
+        <a href="/2020/10/02/Cybersecurity/art-of-anti-detection-4-art-of-anti-detection-4-self-defense/">反检测的艺术4-自保护（翻译）</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget tagcloud">
+  <h3 class="title">标签云</h3>
+  <div class="entry">
+    <a href="/tags/Boost/" style="font-size: 10px;">Boost</a> <a href="/tags/DDoS/" style="font-size: 10px;">DDoS</a> <a href="/tags/DNS-over-HTTPS/" style="font-size: 10px;">DNS-over-HTTPS</a> <a href="/tags/DNS劫持/" style="font-size: 10px;">DNS劫持</a> <a href="/tags/Delphi/" style="font-size: 10px;">Delphi</a> <a href="/tags/Dll劫持/" style="font-size: 10px;">Dll劫持</a> <a href="/tags/GetVersionEx/" style="font-size: 10px;">GetVersionEx</a> <a href="/tags/Http/" style="font-size: 10px;">Http</a> <a href="/tags/IDA-Pro/" style="font-size: 12px;">IDA Pro</a> <a href="/tags/IOT安全/" style="font-size: 18px;">IOT安全</a> <a href="/tags/Linux/" style="font-size: 14px;">Linux</a> <a href="/tags/MSDN/" style="font-size: 12px;">MSDN</a> <a href="/tags/Malware/" style="font-size: 12px;">Malware</a> <a href="/tags/MiniDumpWriteDump/" style="font-size: 10px;">MiniDumpWriteDump</a> <a href="/tags/PEB/" style="font-size: 10px;">PEB</a> <a href="/tags/Procmon/" style="font-size: 10px;">Procmon</a> <a href="/tags/Runtime-Error/" style="font-size: 10px;">Runtime Error</a> <a href="/tags/SEH/" style="font-size: 10px;">SEH</a> <a href="/tags/SysinternalsSuite/" style="font-size: 10px;">SysinternalsSuite</a> <a href="/tags/Tips/" style="font-size: 10px;">Tips</a> <a href="/tags/UAC/" style="font-size: 10px;">UAC</a> <a href="/tags/UAF漏洞/" style="font-size: 10px;">UAF漏洞</a> <a href="/tags/VC/" style="font-size: 10px;">VC</a> <a href="/tags/Visual-Studio/" style="font-size: 12px;">Visual Studio</a> <a href="/tags/Windbg/" style="font-size: 10px;">Windbg</a> <a href="/tags/Windows/" style="font-size: 20px;">Windows</a> <a href="/tags/getaddrinfo/" style="font-size: 10px;">getaddrinfo</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/libeay32/" style="font-size: 10px;">libeay32</a> <a href="/tags/x64/" style="font-size: 10px;">x64</a> <a href="/tags/内核/" style="font-size: 12px;">内核</a> <a href="/tags/内核结构/" style="font-size: 14px;">内核结构</a> <a href="/tags/反病毒/" style="font-size: 16px;">反病毒</a> <a href="/tags/安全机制/" style="font-size: 10px;">安全机制</a> <a href="/tags/异常处理/" style="font-size: 10px;">异常处理</a> <a href="/tags/提权/" style="font-size: 12px;">提权</a> <a href="/tags/服务/" style="font-size: 10px;">服务</a> <a href="/tags/权限/" style="font-size: 12px;">权限</a> <a href="/tags/栈溢出漏洞/" style="font-size: 10px;">栈溢出漏洞</a> <a href="/tags/测试/" style="font-size: 10px;">测试</a> <a href="/tags/漏洞调试/" style="font-size: 12px;">漏洞调试</a> <a href="/tags/生活/" style="font-size: 14px;">生活</a> <a href="/tags/脱壳/" style="font-size: 10px;">脱壳</a> <a href="/tags/西安/" style="font-size: 10px;">西安</a> <a href="/tags/计划/" style="font-size: 10px;">计划</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a> <a href="/tags/调试/" style="font-size: 14px;">调试</a> <a href="/tags/转换/" style="font-size: 10px;">转换</a> <a href="/tags/进程/" style="font-size: 10px;">进程</a> <a href="/tags/逆向/" style="font-size: 10px;">逆向</a> <a href="/tags/重庆/" style="font-size: 10px;">重庆</a> <a href="/tags/驱动/" style="font-size: 14px;">驱动</a>
+  </div>
+</div>
+
+
+  <div class="widget tag">
+<h3 class="title">Links</h3>
+<ul class="entry">
+<li><a href="http://blog.ourren.com/" title="Ourren">Ourren</a></li>
+<li><a href="http://www.hyjal.net/" title="Hyjal">Hyjal</a></li>
+<li><a href="http://www.jianshu.com/users/fa15f4e416ae/latest_articles" title="Daemonceltics">Daemonceltics</a></li>
+<li><a href="http://papap.info/" title="isee">isee</a></li>
+</ul>
+</div>
+
+  <script type="text/javascript" id="clustrmaps" src="//cdn.clustrmaps.com/map_v2.js?u=putG&d=yoFnN6V-ovhL-H4e9_69LvkTiX4uX7rEYJ15yL3G1Wg"></script>
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <div id="go-pg-top"><i class="icon-arrow-up"></i></div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2021 Lyon
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript" charset="utf-8" src="/js/page.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,394 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>物联网安全101-7.物联网固件逆向（翻译） | Lyon&#39;s blog</title>
+  <meta name="author" content="Lyon">
+  
+  <meta name="description" content="Walk steps step by step">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="物联网安全101-7.物联网固件逆向（翻译）"/>
+  <meta property="og:site_name" content="Lyon&#39;s blog"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  #<link href="/favicon.ico" rel="icon">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="alternate" href="/atom.xml" title="Lyon&#39;s blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  <script src="/js/jquery.min.js"></script>
+  <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?1d807422614f63c8de98cdc3b546860c";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+  <script>
+    (function(){
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        }
+        else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+    
+  <script data-ad-client="ca-pub-6317609007693835" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-66542057-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-66542057-1');
+</script>
+
+</head>
+
+
+<body>
+  <!--[if lte IE 8]> <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'> <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0027_Simplified Chinese.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." style='margin-left:auto;margin-right:auto;display: block;'/></a></div> <![endif]-->
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">Lyon&#39;s blog</a></h1>
+  <h2><a href="/">I hear and I forget.I see and I remember.I do and I understand.</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">首页</a></li>
+    
+      <li><a href="/archives">归档</a></li>
+    
+      <li><a href="/about">关于</a></li>
+    
+	<li> <a href="/atom.xml">RSS</a> </li>
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <time datetime="2021-09-23T12:50:22.000Z"><a href="/2021/09/23/IOT/iot-security-part-7-reverse-engineering-an-iot-firmware/">2021-09-23</a></time>
+      
+      
+  
+    <h1 class="title">物联网安全101-7.物联网固件逆向（翻译）</h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+  <div id="toc" class="toc-article">
+  <strong class="toc-title">文章目录</strong>
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#固件逆向工程：简介"><span class="toc-number">1.</span> <span class="toc-text">固件逆向工程：简介</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#裸机固件（Bare_Metal_Firmware）"><span class="toc-number">2.</span> <span class="toc-text">裸机固件（Bare Metal Firmware）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#成熟操作系统固件"><span class="toc-number">3.</span> <span class="toc-text">成熟操作系统固件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#固件分析安全工具"><span class="toc-number">4.</span> <span class="toc-text">固件分析安全工具</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#结论"><span class="toc-number">5.</span> <span class="toc-text">结论</span></a></li></ol>
+  </div>
+
+
+	
+    <div class="entry">
+      
+        <div align="center"><br><img src="/img/motherboard.jpg" align><br></div>
+
+<h2 id="固件逆向工程：简介">固件逆向工程：简介</h2><p>本文是“物联网安全”系列的一部分。如果您还没有阅读本系列之前的文章（第 1 部分到第 6 部分），我强烈建议您先阅读它们，除非您已经熟悉这些概念并且只想阅读当前主题。<br><a href="/2021/09/21/IOT/iot-security-part-1-101-iot-introduction-architecture/">物联网安全 - 第 1 部分（101 - 物联网介绍和架构）</a><br><a href="/2021/09/22/IOT/iot-security-part-6-101-zigbee-security-101/">物联网安全 - 第 6 部分 (ZigBee 安全 - 101)</a>本系列上一篇博客。</p>
+<p>固件是物联网设备的软件部分。构建功能性物联网固件涉及许多技术，有许多厂商为这些技术的开发做出贡献，如 Cisco、Linux、Wind River 等。在这篇文章中，当我说固件时，我将主要是指设备的软件组件。固件具有不同的复杂性，从驱动功能较弱的微型微控制器的裸机固件到基于微处理器的成熟操作系统，如 Linux。后者用于更复杂的设备，如路由器、电视等。</p>
+<a id="more"></a>
+<p>在这篇文章中，我们将研究组成固件所涉及的不同组件，然后我们将讨论如何使用各种开源工具对固件进行逆向工程。逆向是一个重要的步骤，它将帮助您对设备和固件进行进一步的分析。那么让我们开始看看裸机固件是什么？</p>
+<h2 id="裸机固件（Bare_Metal_Firmware）">裸机固件（Bare Metal Firmware）</h2><p>根据设备的需要使用的应用程序，决定设备使用的技术栈。如果一个设备的任务是读取和报告周围温度和湿度，那么它不需要非常复杂的软件，比如 Linux。对于这些情况，就可以使用裸机固件。现在，您可能会问什么是裸机固件？简单来说，这类固件直接与硬件接口直接进行交互，不涉及驱动程序或内核。</p>
+<p>裸机固件不会做太多复杂的事情，它们通常被分配不超过 3 或 4 个任务，这些任务被放入循环中，因为它们被安排在特定的顺序/条件下运行。厂商会为这些设备提供的 SDK 提供了生命周期方法，程序员编写的这些函数在循环中运行。这些 SDK 的一些复杂功能变体是 FreeRTOS、mbed-os，它们是实时操作系统，允许您进行任务调度并对某些中断请求做出非常快速的响应。</p>
+<p>裸机固件是用 C 编写的，因此所有针对C语言的攻击（如缓冲区溢出相关漏洞）也对这些固件有效。这些设备通常收集数据并将其发送到中央服务器或与通过 UART/SPI 总线（其外围设备）与其他设备进行通信。有机会发现通信协议中的漏洞、错误处理数据包、密钥交换、缓冲区溢出等。</p>
+<p>基于裸机固件的微控制器设备不仅用于传感器网络；它们无处不在，从冰箱、微波炉、安全警报系统，您的汽车上有几十个，您的笔记本电脑/电脑也是如此。通常，当您没有此固件的源代码时，您会采用逆向工程的方法。</p>
+<p>逆向这些二进制文件与逆向 Windows EXE 和 Linux ELF 文件有点不同。那么它们就没有预定义的结构。对于裸机二进制文件，您需要芯片组的数据表（data-sheet ）并在您的反汇编工具（如 IDA、Ghidra 等）中创建内存映射，以进行正确的反汇编。另一个非常关键的问题 memory-map 也可以帮助用户回答是什么 GPIO，设备与其他外设进行交互？此信息将有助于了解设备的功能。关于这一点还有很多可以说的，我会在另一篇文章中说明，因此有关更多详细信息，请访问此<a href="https://payatu.com/blog/asmita-jha/--stack-smashing--protection-in-hardware-attack" target="_blank" rel="external">链接</a>。现在让我们看看什么是成熟的基于操作系统的固件。</p>
+<h2 id="成熟操作系统固件">成熟操作系统固件</h2><p>当您看到更复杂的系统（如路由器、智能家居仪表板、无人机和医疗保健设备）时，它们的作用与裸机系统无异。举个例子；典型的无线路由器具有通过局域网和WIFI连接等功能；他们可以将指定的 MAC 地址列入黑名单/白名单，并且一些现代路由器具有防病毒软件和其他保护功能。要实现所有这些功能，您需要一个成熟的操作系统来支持所有这些复杂的功能。</p>
+<p>嵌入式系统有许多不同的操作系统选项，如 Linux、Windows CE、Cisco IOS、Symbian、Android、VxWorks 等。其中一些是专用的，如用于路由器的 Cisco，而大多数是更通用的。一般统计数据表明，嵌入式系统产品中最受欢迎的操作系统选择是 Linux。造成这种情况的原因有很多，其中一些原因是它的开源特性、灵活性，最重要的是，它是免费的。您可以在周围找到 Linux 驱动的设备，例如路由器、信息娱乐系统等。</p>
+<p>这种固件通常至少包含三个组件，引导加载程序 Bootloader、内核 Kernel 和文件系统 file-system。引导加载程序是帮助加载操作系统内核并传递各种信息需求的软件。一旦引导加载程序完成加载，内核就将接管执行。一旦内核开始执行，它就会启动其他用户应用程序以使最终用户可以使用操作系统。这通常涉及在后台启动各种应用程序和服务。完成所有这些后，用户就可以与系统进行交互。所有用户应用程序和应用程序数据都存储在文件系统上。</p>
+<p>这些设备的安全评估通常从审核这些设备上运行的应用程序开始；最有趣的目标是远程应用服务程序。在这些服务程序中发现的漏洞对设备的安全性有很大影响，因为攻击者不需要靠近它就可以破坏它。如果互联网上的任何人可以利用该漏洞，他们都可以控制它。这些服务通常是用于配置和控制设备功能或其他服务（如 UPnP）的 Web 服务器，这些服务有助于其他设备发现该设备。</p>
+<h2 id="固件分析安全工具">固件分析安全工具</h2><p>既然我们对固件的整体有了一个高层次的概述，那么您想到的下一个问题是如何开始剖析固件并开始分析固件。分析大致可以分为静态分析和动态分析。在静态分析中，您阅读代码并查找错误，如果您没有源代码，请开始对二进制文件进行逆向工程并阅读汇编说明以了解其功能。另一方面，动态分析涉及运行应用程序并观察其行为。<br>在分析固件时，我通常结合使用这两种分析技术来实现我的目标。以下是我经常使用的一些工具的列表：</p>
+<ul>
+<li>Binwalk - 这可能是最流行的固件解包工具之一。它是一个固件提取工具，它试图在任何二进制 blob 中提取二进制文件。它通过搜索许多常见二进制文件格式（如 zip、tar、exe、ELF 等）的签名来实现这一点。 Binwalk 拥有二进制文件头签名数据库，可以根据该数据库完成签名匹配。使用此工具的共同目标是提取嵌入在固件二进制文件中的文件系统，如 Squashfs、yaffs2、Cramfs、ext*fs、jffs2 等。文件系统包含将在设备上运行的所有应用程序代码。此工具还有许多参数，您可以调整这些参数以更好地进行提取。您可以访问此<a href="https://github.com/ReFirmLabs/binwalk/wiki/Usage" target="_blank" rel="external">链接</a>以阅读有关什么是不同参数以及如何使用它们的更多详细信息。</li>
+<li>Qemu - 对于在跨架构（如 ARM、MIPS 等）环境中工作的人来说，这是一个有价值的工具，嵌入式开发人员通常就是这种情况。该工具提供了一种在主机系统上模拟不同架构（如 ARM、MIPS 等）的二进制固件的方法，主机系统具有不同的架构，如 x86、amd64。当您想审核固件但没有设备或为该系统设置调试器非常困难时，这种工具非常方便。Qemu 可以帮助您对 Linux 系统和许多不同平台进行全系统仿真或 ELF 文件的单个二进制仿真。您可以查看此<a href="https://www.qemu.org/" target="_blank" rel="external">链接</a>以获取有关该项目的更多详细信息。</li>
+<li>gdb-multiarch - GDB 是一种动态调试工具，用于中断正在运行的进程并检查其内存和寄存器。但是，gdb 只支持编译它的体系结构。但是当你要调试不同架构的应用程序进行跨架构支持时，你会需要它的姊妹项目gdb-multiarch，它可以帮助你进行跨架构调试。</li>
+<li>Firmware ModKit - 此工具可帮助您Patch固件并重新打包。它使用 Binwalk 提取固件，并为您提供一个包含固件文件系统布局的目录。然后，您可以根据需要Patch任何内容，添加/删除文件或修补现有文件，ModKit 可以将其打包备份，以便您可以在设备存储上刷新新固件并启动新修补的固件。您可以从此<a href="https://code.google.com/archive/p/firmware-mod-kit/" target="_blank" rel="external">链接</a>下载此工具的代码。</li>
+</ul>
+<p>我分析固件时的工作流程涉及所有这些工具。第一步通常从使用 Binwalk 解压固件开始。接下来，尝试使用 Qemu 模拟固件中感兴趣的应用程序。如果我无法模拟二进制文件，那么我会通过 gdb 调试并发现问题然后修复，以便 Qemu 可以运行它并查找安全问题。通过这个步骤还帮助我对服务进行模糊测试。</p>
+<h2 id="结论">结论</h2><p>本文阐述了固件是什么，以及在评估 IoT 设备时您会遇到哪些不同类型的 IoT 固件。我向您概述了如何处理不同类型的固件，我们还研究了不同的工具如何帮助我们对固件进行安全分析。</p>
+<p>继续下一部分 -<a href="/2021/09/23/IOT/iot-security-part-8-introduction-to-software-defined-radio-sdr/">物联网安全 - 第 8 部分 软件无线电（Software Defined Radio，SDR）简介</a></p>
+<p><em>原文链接：<a href="https://payatu.com/blog/munawwar/iot-security---part-7-reverse-engineering-an-iot-firmware" target="_blank" rel="external">https://payatu.com/blog/munawwar/iot-security---part-7-reverse-engineering-an-iot-firmware</a></em></p>
+
+      
+    </div>
+    <footer>
+      
+
+        
+          <div class="alignleft post-nav">
+            <em>上一篇: </em><a href="/2021/09/23/IOT/iot-security-part-8-introduction-to-software-defined-radio-sdr/">物联网安全101-8.软件无线电（Software Defined Radio，SDR）简介（翻译）</a>
+          </div>
+        
+        
+          <div class="alignright post-nav">
+            <em>下一篇: </em><a href="/2021/09/22/IOT/iot-security-part-6-101-zigbee-security-101/">物联网安全101-6.ZigBee安全（翻译）</a>
+          </div>
+          <div class="clearfix"></div>
+        
+
+        
+          <div class="copyright">
+            
+              <span class="claim">转载请注明youngroe.com</span>
+            
+            
+              <span class="from-link">
+                <em>本文链接地址:</em>
+                <a href="/2021/09/23/IOT/iot-security-part-7-reverse-engineering-an-iot-firmware/">
+                  http://www.youngroe.com/2021/09/23/IOT/iot-security-part-7-reverse-engineering-an-iot-firmware/
+                </a>
+              </span>
+            
+          </div>
+        
+        
+  
+  <div class="categories">
+    <a href="/categories/IOT/">IOT</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/IOT安全/">IOT安全</a>
+  </div>
+
+        
+          <! -- 添加捐赠图标 -->
+<div class ="post-donate">
+    <div id="donate_board" class="donate_bar center">
+        <a id="btn_donate" class="btn_donate" href="javascript:;" title="打赏"></a>
+        <span class="donate_txt">
+           ↑<br>
+           欣赏此文？求鼓励，求支持！
+        </span>
+        <br>
+      </div>  
+    <div id="donate_guide" class="donate_bar center hidden" >
+        <!-- 方式一： 
+            ![](/img/Alipay.jpg)
+            ![](/img/WeChatpay.jpg)
+        -->
+        <!-- 方式二；
+            step1：在_config.yml中添加配置
+                Alipay: /img/Alipay.jpg
+                WeChatpay: /img/WeChatpay.jpg
+            step2：此处两张图片的路径分别设置为如下
+                <img src="undefined"
+                <img src="undefined"
+        -->
+        <!-- 支付宝打赏图案 -->
+        <img src="/img/Alipay.png" alt="支付宝打赏">
+        <!-- 微信打赏图案 -->
+        <img src="/img/WeChatpay.png" alt="微信打赏">
+    </div>
+    <script type="text/javascript">
+        document.getElementById('btn_donate').onclick = function(){
+            $('#donate_board').addClass('hidden');
+            $('#donate_guide').removeClass('hidden');
+        }
+    </script>
+</div>
+<! -- 添加捐赠图标 -->
+        
+        <div id="gitalk-container"></div>
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+<script src="https://cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.js"></script>
+<script type="text/javascript">
+    var gitalk = new Gitalk({
+  clientID: '503c39aa3fb2b8c1b734',
+  clientSecret: '65d784ff7a95a9dbf4a4208c9e32166ca29654f2',
+  repo: 'geemion.github.io',
+  owner: 'geemion',
+  admin: 'geemion',
+  pagerDirection:'first',
+  id: md5(window.location.pathname)
+})
+
+gitalk.render('gitalk-container')
+</script>
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+  <div id="container"></div>
+</span>
+</article>
+
+
+<section id="comment">
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+<div class="widget tag">
+  <h3 class="title">分类</h3>
+  <ul class="entry">
+  
+    <li><a href="/categories/Cybersecurity/">Cybersecurity</a><small>6</small></li>
+  
+    <li><a href="/categories/Debug/">Debug</a><small>7</small></li>
+  
+    <li><a href="/categories/IOT/">IOT</a><small>10</small></li>
+  
+    <li><a href="/categories/Kernel/">Kernel</a><small>4</small></li>
+  
+    <li><a href="/categories/Learning/">Learning</a><small>5</small></li>
+  
+    <li><a href="/categories/Life/">Life</a><small>5</small></li>
+  
+    <li><a href="/categories/Others/">Others</a><small>1</small></li>
+  
+    <li><a href="/categories/Tools/">Tools</a><small>5</small></li>
+  
+    <li><a href="/categories/Vulnerabilities/">Vulnerabilities</a><small>0</small></li>
+  
+    <li><a href="/categories/Windows/">Windows</a><small>13</small></li>
+  
+    <li><a href="/categories/life/">life</a><small>0</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2021/10/20/IOT/using-rasberrypi-as-poor-mans-hardware-hacking-tool/">树莓派-穷人的硬件黑客工具（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2021/09/23/IOT/iot-security-part-8-introduction-to-software-defined-radio-sdr/">物联网安全101-8.软件无线电（Software Defined Radio，SDR）简介（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2021/09/23/IOT/iot-security-part-7-reverse-engineering-an-iot-firmware/">物联网安全101-7.物联网固件逆向（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2021/09/22/IOT/iot-security-part-6-101-zigbee-security-101/">物联网安全101-6.ZigBee安全（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2021/09/22/IOT/iot-security-part-5-101-zigbee-protocol-101/">物联网安全101-5.ZigBee协议（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2021/09/22/IOT/iot-security-part-4-101-bluetooth-low-energy-101/">物联网安全101-4.低功耗蓝牙BLE（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2021/09/22/IOT/iot-security-part-3-101-iot-top-ten-vulnerabilities/">物联网安全101-3.物联网10大安全漏洞（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2021/09/21/IOT/iot-security-part-2-101-iot-attack-surface/">物联网安全101-2.物联网攻击面（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2021/09/21/IOT/iot-security-part-1-101-iot-introduction-architecture/">物联网安全101-1.物联网介绍及其架构（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2021/08/20/Cybersecurity/guide-linux-privilege-escalation/">Linux权限提升指南（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2021/03/20/IOT/powerpc_binary_blob_firmware_reverse/">一次嵌入式固件逆向实践</a>
+      </li>
+    
+      <li>
+        <a href="/2020/10/02/Cybersecurity/art-of-anti-detection-4-art-of-anti-detection-4-self-defense/">反检测的艺术4-自保护（翻译）</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget tagcloud">
+  <h3 class="title">标签云</h3>
+  <div class="entry">
+    <a href="/tags/Boost/" style="font-size: 10px;">Boost</a> <a href="/tags/DDoS/" style="font-size: 10px;">DDoS</a> <a href="/tags/DNS-over-HTTPS/" style="font-size: 10px;">DNS-over-HTTPS</a> <a href="/tags/DNS劫持/" style="font-size: 10px;">DNS劫持</a> <a href="/tags/Delphi/" style="font-size: 10px;">Delphi</a> <a href="/tags/Dll劫持/" style="font-size: 10px;">Dll劫持</a> <a href="/tags/GetVersionEx/" style="font-size: 10px;">GetVersionEx</a> <a href="/tags/Http/" style="font-size: 10px;">Http</a> <a href="/tags/IDA-Pro/" style="font-size: 12px;">IDA Pro</a> <a href="/tags/IOT安全/" style="font-size: 18px;">IOT安全</a> <a href="/tags/Linux/" style="font-size: 14px;">Linux</a> <a href="/tags/MSDN/" style="font-size: 12px;">MSDN</a> <a href="/tags/Malware/" style="font-size: 12px;">Malware</a> <a href="/tags/MiniDumpWriteDump/" style="font-size: 10px;">MiniDumpWriteDump</a> <a href="/tags/PEB/" style="font-size: 10px;">PEB</a> <a href="/tags/Procmon/" style="font-size: 10px;">Procmon</a> <a href="/tags/Runtime-Error/" style="font-size: 10px;">Runtime Error</a> <a href="/tags/SEH/" style="font-size: 10px;">SEH</a> <a href="/tags/SysinternalsSuite/" style="font-size: 10px;">SysinternalsSuite</a> <a href="/tags/Tips/" style="font-size: 10px;">Tips</a> <a href="/tags/UAC/" style="font-size: 10px;">UAC</a> <a href="/tags/UAF漏洞/" style="font-size: 10px;">UAF漏洞</a> <a href="/tags/VC/" style="font-size: 10px;">VC</a> <a href="/tags/Visual-Studio/" style="font-size: 12px;">Visual Studio</a> <a href="/tags/Windbg/" style="font-size: 10px;">Windbg</a> <a href="/tags/Windows/" style="font-size: 20px;">Windows</a> <a href="/tags/getaddrinfo/" style="font-size: 10px;">getaddrinfo</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/libeay32/" style="font-size: 10px;">libeay32</a> <a href="/tags/x64/" style="font-size: 10px;">x64</a> <a href="/tags/内核/" style="font-size: 12px;">内核</a> <a href="/tags/内核结构/" style="font-size: 14px;">内核结构</a> <a href="/tags/反病毒/" style="font-size: 16px;">反病毒</a> <a href="/tags/安全机制/" style="font-size: 10px;">安全机制</a> <a href="/tags/异常处理/" style="font-size: 10px;">异常处理</a> <a href="/tags/提权/" style="font-size: 12px;">提权</a> <a href="/tags/服务/" style="font-size: 10px;">服务</a> <a href="/tags/权限/" style="font-size: 12px;">权限</a> <a href="/tags/栈溢出漏洞/" style="font-size: 10px;">栈溢出漏洞</a> <a href="/tags/测试/" style="font-size: 10px;">测试</a> <a href="/tags/漏洞调试/" style="font-size: 12px;">漏洞调试</a> <a href="/tags/生活/" style="font-size: 14px;">生活</a> <a href="/tags/脱壳/" style="font-size: 10px;">脱壳</a> <a href="/tags/西安/" style="font-size: 10px;">西安</a> <a href="/tags/计划/" style="font-size: 10px;">计划</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a> <a href="/tags/调试/" style="font-size: 14px;">调试</a> <a href="/tags/转换/" style="font-size: 10px;">转换</a> <a href="/tags/进程/" style="font-size: 10px;">进程</a> <a href="/tags/逆向/" style="font-size: 10px;">逆向</a> <a href="/tags/重庆/" style="font-size: 10px;">重庆</a> <a href="/tags/驱动/" style="font-size: 14px;">驱动</a>
+  </div>
+</div>
+
+
+  <div class="widget tag">
+<h3 class="title">Links</h3>
+<ul class="entry">
+<li><a href="http://blog.ourren.com/" title="Ourren">Ourren</a></li>
+<li><a href="http://www.hyjal.net/" title="Hyjal">Hyjal</a></li>
+<li><a href="http://www.jianshu.com/users/fa15f4e416ae/latest_articles" title="Daemonceltics">Daemonceltics</a></li>
+<li><a href="http://papap.info/" title="isee">isee</a></li>
+</ul>
+</div>
+
+  <script type="text/javascript" id="clustrmaps" src="//cdn.clustrmaps.com/map_v2.js?u=putG&d=yoFnN6V-ovhL-H4e9_69LvkTiX4uX7rEYJ15yL3G1Wg"></script>
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <div id="go-pg-top"><i class="icon-arrow-up"></i></div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2021 Lyon
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript" charset="utf-8" src="/js/page.js"></script>
+
+</body>
+
+</html>

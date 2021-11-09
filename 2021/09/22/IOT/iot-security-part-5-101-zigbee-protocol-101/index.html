@@ -1,0 +1,577 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>物联网安全101-5.ZigBee协议（翻译） | Lyon&#39;s blog</title>
+  <meta name="author" content="Lyon">
+  
+  <meta name="description" content="Walk steps step by step">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="物联网安全101-5.ZigBee协议（翻译）"/>
+  <meta property="og:site_name" content="Lyon&#39;s blog"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  #<link href="/favicon.ico" rel="icon">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="alternate" href="/atom.xml" title="Lyon&#39;s blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  <script src="/js/jquery.min.js"></script>
+  <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?1d807422614f63c8de98cdc3b546860c";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+  <script>
+    (function(){
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        }
+        else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+    
+  <script data-ad-client="ca-pub-6317609007693835" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-66542057-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-66542057-1');
+</script>
+
+</head>
+
+
+<body>
+  <!--[if lte IE 8]> <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'> <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0027_Simplified Chinese.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." style='margin-left:auto;margin-right:auto;display: block;'/></a></div> <![endif]-->
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">Lyon&#39;s blog</a></h1>
+  <h2><a href="/">I hear and I forget.I see and I remember.I do and I understand.</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">首页</a></li>
+    
+      <li><a href="/archives">归档</a></li>
+    
+      <li><a href="/about">关于</a></li>
+    
+	<li> <a href="/atom.xml">RSS</a> </li>
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <time datetime="2021-09-22T14:50:22.000Z"><a href="/2021/09/22/IOT/iot-security-part-5-101-zigbee-protocol-101/">2021-09-22</a></time>
+      
+      
+  
+    <h1 class="title">物联网安全101-5.ZigBee协议（翻译）</h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+  <div id="toc" class="toc-article">
+  <strong class="toc-title">文章目录</strong>
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#ZigBee_协议_101"><span class="toc-number">1.</span> <span class="toc-text">ZigBee 协议 101</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#历史"><span class="toc-number">2.</span> <span class="toc-text">历史</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ZigBee_概述"><span class="toc-number">3.</span> <span class="toc-text">ZigBee 概述</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#IEEE_802-15-4_协议"><span class="toc-number">3.1.</span> <span class="toc-text">IEEE 802.15.4 协议</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#物理层"><span class="toc-number">3.2.</span> <span class="toc-text">物理层</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#MAC层"><span class="toc-number">3.3.</span> <span class="toc-text">MAC层</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#IEEE_802-15-4_网络模型"><span class="toc-number">3.4.</span> <span class="toc-text">IEEE 802.15.4 网络模型</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#节点类型"><span class="toc-number">3.4.1.</span> <span class="toc-text">节点类型</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#拓扑"><span class="toc-number">3.4.2.</span> <span class="toc-text">拓扑</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#节点寻址模式"><span class="toc-number">3.5.</span> <span class="toc-text">节点寻址模式</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ZigBee_协议"><span class="toc-number">4.</span> <span class="toc-text">ZigBee 协议</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#应用层"><span class="toc-number">4.1.</span> <span class="toc-text">应用层</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#应用支持子层_(APS)"><span class="toc-number">4.2.</span> <span class="toc-text">应用支持子层 (APS)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#应用框架"><span class="toc-number">4.3.</span> <span class="toc-text">应用框架</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ZigBee_设备对象_(ZDO)"><span class="toc-number">4.4.</span> <span class="toc-text">ZigBee 设备对象 (ZDO)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#网络层"><span class="toc-number">4.5.</span> <span class="toc-text">网络层</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ZigBee_设备类型"><span class="toc-number">5.</span> <span class="toc-text">ZigBee 设备类型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#网络拓扑结构"><span class="toc-number">6.</span> <span class="toc-text">网络拓扑结构</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ZigBee_中的寻址"><span class="toc-number">7.</span> <span class="toc-text">ZigBee 中的寻址</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#设备寻址"><span class="toc-number">7.1.</span> <span class="toc-text">设备寻址</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ZigBee_网络身份"><span class="toc-number">7.2.</span> <span class="toc-text">ZigBee 网络身份</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#应用级寻址"><span class="toc-number">7.3.</span> <span class="toc-text">应用级寻址</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ZigBee_中的消息传递"><span class="toc-number">8.</span> <span class="toc-text">ZigBee 中的消息传递</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#PAN_间通信"><span class="toc-number">8.1.</span> <span class="toc-text">PAN 间通信</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#结论…"><span class="toc-number">9.</span> <span class="toc-text">结论…</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考"><span class="toc-number">10.</span> <span class="toc-text">参考</span></a></li></ol>
+  </div>
+
+
+	
+    <div class="entry">
+      
+        <h2 id="ZigBee_协议_101">ZigBee 协议 101</h2><p>该博客是“物联网安全”系列的一部分。如果您还没有阅读本系列之前的博客（第 1-4 部分），我建议您先阅读它们，除非您已经熟悉这些概念并且只想阅读当前主题。<br><a href="/2021/09/21/IOT/iot-security-part-1-101-iot-introduction-architecture/">物联网安全 - 第 1 部分（101 - 物联网介绍和架构）</a><br><a href="/2021/09/22/IOT/iot-security-part-4-bluetooth-low-energy-101/">物联网安全 - 第 4 部分（蓝牙低能耗）</a><br>在这篇博客中，我们将详细讨论 ZigBee 规范和 ZigBee 协议架构。下一篇博客将介绍 ZigBee 协议的安全架构以及 ZigBee 设备和网络中存在的安全问题。<br><a id="more"></a></p>
+<h2 id="历史">历史</h2><p>ZigBee – 在 1990 年代作为临时数字无线电网络开发并替代有线网络。与 Wi-Fi 或蓝牙不同，ZigBee 更适用于工业自动化和控制系统 (IACS) 中的应用，在这些应用中，终端节点需要定期传输少量数据，并且功耗低，并且与计算机的传输距离较短，集中监控系统。如今，ZigBee 低速率无线个域网 (LR-WPAN) 广泛用于需要低数据速率、长电池寿命、自愈能力和嘈杂射频环境中安全网络的控制和监控应用。以下是一些在其产品中使用 ZigBee 标准作为网络解决方案的行业</p>
+<ul>
+<li><ol>
+<li>无线传感器网络（WSN）</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>工业自动化</li>
+</ol>
+</li>
+<li><ol start="3">
+<li>楼宇自动化</li>
+</ol>
+</li>
+<li><ol start="4">
+<li>家庭自动化</li>
+</ol>
+</li>
+<li><ol start="5">
+<li>智能电能计量</li>
+</ol>
+</li>
+<li><ol start="6">
+<li>医院和医疗保健自动化</li>
+</ol>
+</li>
+</ul>
+<h2 id="ZigBee_概述">ZigBee 概述</h2><div align="center"><br><img src="/img/zigbeeicon1.png" align><br></div>
+
+<p>2000 年，IEEE 802.15 工作组成立，致力于制定无线个域网 (WPAN) 或无线个域网 (WPAN) 的标准，其特点是短距离、高度简单、允许低成本和低功耗实施。IEEE 802.15.4标准第一版于2003年发布，即IEEE 802.15.4-2003（LR-WPAN），定义了OSI模型的物理层和数据链路层。2002 年 ZigBee 联盟成立并与 IEEE 802.15.4 工作组合作，于 2004 年 12 月宣布 ZigBee v.1.0 草案批准 ZigBee 2004 规范。 ZigBee 标准建立在 IEEE 802.15.4 标准之上，其中 IEEE 802.15.15定义了前两层，即物理（PHY）层、低速率无线个域网（LR-WPAN）的媒体访问控制（MAC）层，ZigBee标准提供了网络层（NWK），<br>以下部分将更详细地说明 ZigBee 标准的不同组件</p>
+<h3 id="IEEE_802-15-4_协议">IEEE 802.15.4 协议</h3><h3 id="物理层">物理层</h3><p>IEEE 802.15.4 物理层提供数据、传输和接收管理服务的调制解调，并在两个独立的频率范围内运行，低频868 ⁄ 915 MHz 和高频 2.4 GHz。物理层层负责无线电控制（启用/禁用）、接收数据包的链路质量指示 (LQI)、能量检测 (ED) 和空闲信道评估 (CCA)</p>
+<table>
+<thead>
+<tr>
+<th>物理层</th>
+<th>频率</th>
+<th>频道</th>
+<th>地区</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>低频物理层</td>
+<td>868.0-868.6 兆赫</td>
+<td>1</td>
+<td>欧洲</td>
+</tr>
+<tr>
+<td>低频物理层</td>
+<td>902-928 兆赫</td>
+<td>30</td>
+<td>美国和澳大利亚</td>
+</tr>
+<tr>
+<td>高频物理层</td>
+<td>2400-2483.5MHZ</td>
+<td>16</td>
+<td>全世界</td>
+</tr>
+</tbody>
+</table>
+<h3 id="MAC层">MAC层</h3><p>IEEE 802.15.4 MAC 层使用 CSMA-CA 机制控制对无线电信道的访问。MAC层负责Beacon传输（当设备为协调器时），实现载波侦听多路访问与冲突避免（CSMA-CA），使用保证时隙（GTS）机制进行同步，为上层提供可靠的传输机制.</p>
+<h3 id="IEEE_802-15-4_网络模型">IEEE 802.15.4 网络模型</h3><h4 id="节点类型">节点类型</h4><p>IEEE 802.15.4 标准定义了两种类型的网络节点</p>
+<ul>
+<li><p>全功能设备 (FFD)<br>FFD 设备能够在 PAN 网络内创建网络、配置和消息路由。FFD 设备能够在 PAN 网络中配置安全模型。FFD 设备可以在三种操作模式下运行，即：PAN 协调器、协调器和终端设备。FFD 设备可以与网络中的任何 RFD 或 FFD 设备进行通信。</p>
+</li>
+<li><p>缩减功能器件 (RFD)<br>RFD 通常是一种电池供电的简单设备，资源和通信要求非常适中。由于缺乏路由能力，RFD 设备只能作为 PAN 网络中的终端设备，并且只能与网络中的 FFD 设备进行通信。</p>
+</li>
+</ul>
+<h4 id="拓扑">拓扑</h4><p>IEEE 802.15.4 标准为 LR-WPAN 设备定义了两种星型或点对点网络拓扑。但是，每个网络都需要至少一个 FFD 作为网络的协调器。</p>
+<div align="center"><br><img src="/img/ieee-topology.png" align><br></div>
+
+<ul>
+<li><p>星型网络<br>星型网络是一种更加结构化的网络，网络中至少有一个 FFD 设备充当整个网络的协调器。任何 FFD 设备都会选择其唯一的 PAN 标识符来创建自己的 PAN 并将自己声明为 PAN 协调器。一旦 PAN 协调器在网络中处于活动状态，其他终端设备就可以加入网络。终端设备只能与中央节点或协调器通信。它主要用于家庭自动化、个人健康监测、玩具和游戏控制。</p>
+</li>
+<li><p>点对点<br>对等网络也需要一个 PAN 协调器，但与星型网络不同，任何设备都可以与网络范围内的任何其他设备进行通信。对等网络可以是能够自组织和自管理的自组织网络。它主要用于工业控制和监控系统、无线传感器网络、库存管理系统。</p>
+</li>
+</ul>
+<h3 id="节点寻址模式">节点寻址模式</h3><p>每个 IEEE 802.15.4 都有两种寻址模式，短（16 位）和扩展（64 位）寻址。符合 IEEE 802.15.4 的设备从制造商处获取其 64 位扩展地址，而当设备与 WPAN 关联时，协调器会分配一个唯一的 16 位 PAN 地址。</p>
+<h2 id="ZigBee_协议">ZigBee 协议</h2><div align="center"><br><img src="/img/zigbee-stack.png" align><br></div>
+
+<p>来源：<a href="https://zigbeealliance.org/wp-content/uploads/2019/11/docs-05-3474-21-0csg-zigbee-specification.pdf" target="_blank" rel="external">ZigBee 规范文档 05-3474-21（docs-05-3474-21-0csg-zigbee-specification）</a></p>
+<h3 id="应用层">应用层</h3><p>如上图所示，APL 层由几个子层组成，即：APS 子层、服务接入点（SAP）和 ZigBee 设备对象（ZDO）以及 ZDO 管理平面，以及制造商定义的应用程序对象。</p>
+<h3 id="应用支持子层_(APS)">应用支持子层 (APS)</h3><p>APS 子层通过 ZDO 和制造商定义的应用程序对象使用的一组通用服务提供 NWK 和 APL 之间的接口。APS 数据实体 (APS-DE) 和 APS 管理实体 (APS-ME) 是两个 APS 实体，提供以下服务：</p>
+<ul>
+<li><strong>APS 数据实体 (APS-DE)</strong></li>
+<li>应用支持子层协议数据单元（APDU）的生成</li>
+<li>设备绑定</li>
+<li>组地址过滤</li>
+<li>可靠的运输</li>
+<li>重复拒绝</li>
+<li><p>碎片化</p>
+</li>
+<li><p><strong>APS 管理实体 (APM-SE)</strong></p>
+</li>
+<li>绑定管理</li>
+<li>应用支持层信息库（AIB）管理</li>
+<li>安全</li>
+<li>集团管理</li>
+</ul>
+<h3 id="应用框架">应用框架</h3><p>应用程序框架提供了一个执行环境，其中托管应用程序对象并可以发送或接收数据，最多可以定义 254 个不同的应用程序对象，每个应用程序对象由一个从 1 到 254 的端点地址标识。端点 0 和端点 255 用作 ZigBee 设备对象（ZDO）地址和广播地址分别由应用支持子层数据实体-服务接入点（APSDE-SAP）端点241至254由ZigBee联盟保留，未经批准不得使用。</p>
+<ul>
+<li><p>应用配置文件<br>应用程序配置文件是消息、消息格式和处理操作的协议，使开发人员能够使用驻留在不同设备上的应用程序实体来创建可互操作的分布式应用程序。ZigBee 联盟已经为家庭自动化、工业自动化等应用发布了大量公共应用配置文件。设备制造商还可以定义适合其最终应用的自定义配置文件。</p>
+</li>
+<li><p>集群<br>集群表示为属性和应用程序消息的集合。簇分为两种类型，即输入簇和输出簇。群集标识符是在特定应用程序配置文件范围内唯一的 16 位数字。</p>
+</li>
+</ul>
+<h3 id="ZigBee_设备对象_(ZDO)">ZigBee 设备对象 (ZDO)</h3><p>位于应用程序框架和 APS 之间的 ZigBee 设备对象 (ZDO) 表示功能的基类，它提供应用程序对象、设备配置文件和 APS 之间的接口。ZDO 负责以下事项：</p>
+<ul>
+<li>初始化应用程序支持子层 (APS)、网络层 (NWK) 和安全服务。</li>
+<li>收集来自终端应用程序的配置信息以确定和实施发现、安全管理（密钥加载、密钥建立、密钥传输和身份验证）、网络管理（网络发现、离开/加入网络、重置网络连接和创建网络） 、绑定、节点和组管理。</li>
+</ul>
+<h3 id="网络层">网络层</h3><p>网络层在 802.15.4 MAC 层和应用层之间提供服务接口。网络层数据实体 (NLDE) 和网络层管理实体 (NLME) 是两个网络层实体，提供以下服务：</p>
+<ul>
+<li><strong>网络层数据实体 (NLDE)</strong></li>
+<li>网络级 PDU (NPDU) 的生成</li>
+<li>特定于拓扑的路由</li>
+<li><p>安全</p>
+</li>
+<li><p><strong>网络层管理实体 (NLME)</strong></p>
+</li>
+<li>配置新设备</li>
+<li>启动网络</li>
+<li>加入、重新加入和离开网络</li>
+<li>寻址：</li>
+<li>邻居发现</li>
+<li>路由发现</li>
+<li>接收控制</li>
+<li>路由</li>
+</ul>
+<h2 id="ZigBee_设备类型">ZigBee 设备类型</h2><p>ZigBee 设备可以在三种不同的模式或节点类型下工作。</p>
+<ul>
+<li><p>ZigBee 协调器 (ZC)<br>ZigBee 协调器是一种 FFD 设备，充当网络中其他节点的中央节点或父节点。每个网络只有一个负责 ZigBee 网络的创建、配置和管理。它维护一个关联设备列表，支持关联、解除关联和孤儿扫描、重新加入等服务。没有 ZC，ZigBee 网络就无法存在；ZC 在网络上始终处于活动状态，不能进入睡眠模式。</p>
+</li>
+<li><p>ZigBee 路由器 (ZR)<br>ZigBee 路由器是一个中间 FFD 设备，负责在终端设备之间或终端设备与协调器之间中继数据包。终端设备也可以通过路由器加入网络，ZR 充当该网络段的父节点。</p>
+</li>
+<li><p>ZigBee 终端设备 (ZED)<br>任何 FFD 或 RFD 设备都可以成为 ZigBee 网络上的终端设备，ZigBee 终端设备是一个简单的设备，如传感器，负责监控和收集数据，或根据用户的特定操作执行命令。没有任何消息路由能力的 ZED 只能从父节点发送和接收数据。通常，ZED 是低功率电池供电设备，可以将其置于睡眠状态以节省功耗。</p>
+</li>
+</ul>
+<h2 id="网络拓扑结构">网络拓扑结构</h2><p>ZigBee 网络层 (NWK) 支持星形、树形和网状拓扑。</p>
+<div align="center"><br><img src="/img/zigbee-topology.png" align><br></div>
+
+<ul>
+<li><p>星形<br>每个网络的单个 ZigBee 协调器设备，控制网络，并负责启动和维护 ZigBee 网络。所有其他设备，称为终端设备，通过 ZigBee 协调器直接与 ZigBee 协调器或其他终端设备通信。在星型网络中，协调器成为消息路由的瓶颈，协调器故障导致网络关闭。</p>
+</li>
+<li><p>树形<br>在树形拓扑结构中，ZigBee 协调器负责启动网络并选择特定的关键网络参数，但网络可以通过 ZigBee 路由器进行扩展。在树形网络中，路由器使用树形路由策略通过网络路由数据和控制消息。在 Tree 网络中，路由器故障会导致受影响路由器下的网段关闭。</p>
+</li>
+<li><p>网状拓扑<br>在网状拓扑中，ZigBee 协调器负责创建和配置，但网络可以使用 ZigBee 路由器进行扩展。网状网络允许完全对等通信。网状网络，也称为自愈网络，即协调器故障不会导致网络故障，因为终端设备相互通信以及与路由器通信。<br>网状网络很复杂，并且会在网络中产生消息传递开销。</p>
+</li>
+</ul>
+<h2 id="ZigBee_中的寻址">ZigBee 中的寻址</h2><h3 id="设备寻址">设备寻址</h3><p>ZigBee 网络中的每个 ZigBee 设备都有两种类型的地址 - IEEE 地址和网络地址。</p>
+<ul>
+<li><p>IEEE 地址<br>全球唯一的 64 位地址，由设备制造商在生产期间分配。作为 IEEE 802.15.4 标准的一部分，该地址也被称为“扩展地址”，被 IEEE 802.15.4 层用于低级数据包传递，除了绑定映射需要在两者之间创建绑定外，ZigBee 层很少使用IEEE 地址和网络地址。</p>
+</li>
+<li><p>网络地址<br>ZigBee 网络中唯一的 16 位网络地址是 ZigBee 层的一部分，也称为“短地址”。网络地址分配给终端设备，并由网络层用于在设备之间路由消息。</p>
+</li>
+</ul>
+<h3 id="ZigBee_网络身份">ZigBee 网络身份</h3><p>ZigBee 网络中的每个 ZigBee 设备都获得两种类型的标识符 (ID) - 个人区域网络标识符 (PAN ID) 和扩展 PAN ID (EPID)。</p>
+<ul>
+<li><p>PAN 标识符（PAN ID）<br>作为 IEEE 802.15.4 标准的一部分，PAN 标识符 (PAN ID) 是一个 16 位标识符，由 PAN 协调器在设置网络并与终端设备通信时选择。MAC 层过滤掉来自其他网络的数据包，这些网络不是由特定 PANID 标识的同一网络的一部分。</p>
+</li>
+<li><p>扩展 PAN ID (EPID)<br>ZigBee 网络的全球唯一 64 位标识符，EPID 标识符在给定区域内重叠的 PAN 中应该是唯一的，用于避免不同网络之间的 PAN ID 冲突。有关 PAN ID、EPAN 和短地址的更多信息，请参阅下面的 ZigBee 数据包快照</p>
+</li>
+</ul>
+<div align="center"><br><img src="/img/zigbee-node-addressing.png" align><br></div>
+
+<h3 id="应用级寻址">应用级寻址</h3><ul>
+<li><p>端点地址<br>每个 ZigBee 节点可以支持一个或多个应用程序或端点。要将直接消息发送到特定应用程序，使用编号为 1 到 240 的端点 - 还有一个广播端点 255，它允许将消息发送到给定节点上的所有应用程序。</p>
+</li>
+<li><p>集群标识符（集群 ID）<br>集群标识符是在每个应用程序配置文件范围内唯一的 16 位数字，用于标识特定的集群。请参阅下面的 ZigBee 数据包快照，以进一步了解端点地址和集群 ID</p>
+<div align="center"><br><img src="/img/zb-application-addressing.png" align><br></div>
+
+</li>
+</ul>
+<h2 id="ZigBee_中的消息传递">ZigBee 中的消息传递</h2><p>ZigBee 支持广播、单播、组多播和跨 PAN 消息传递。</p>
+<ul>
+<li><p>广播<br>由 PAN 协调器发起的消息，用于 PAN 网络中的所有设备和路由器设备，路由器将其转发给属于同一 PAN 网络的终端节点。</p>
+</li>
+<li><p>单播<br>消息指向网络中的单个终端节点，通常通过多个节点路由到达目的地节点。单播消息需要从最终目标设备到源设备的网络级确认，而如果消息路由通过不同的节点，则在 MAC 层之间发送 MAC 级确认。</p>
+</li>
+<li><p>组播<br>用于特定 PAN 网络中的每个设备的消息，属于以跳数为单位的给定传输半径内动态定义的多播组。</p>
+</li>
+</ul>
+<h3 id="PAN_间通信">PAN 间通信</h3><p>此消息适用于来自具有不同 PANID 的不同 PAN 网络的设备。ZigBee 规范将跨泛通信定义为一种机制，通过这种机制，ZigBee 设备可以与本地区域内的设备进行信息交换，而无需形成或加入相同的 ZigBee 网络。</p>
+<h2 id="结论…">结论…</h2><p>我们希望这能让您对 ZigBee 协议进行介绍和简要了解。在下一篇博客中，我们将介绍 ZigBee 协议和设备的安全性。<br>继续阅读本系列的下一部分 -<a href="/2021/09/22/IOT/iot-security-part-6-101-zigbee-security-101/">物联网安全第 6 部分（ZigBee 安全 - 101）</a></p>
+<h2 id="参考">参考</h2><ul>
+<li><ol>
+<li><a href="https://standards.ieee.org/standard/802_15_4-2020.html" target="_blank" rel="external">802.15.4-2020 - IEEE 批准的低速率无线网络标准草案</a></li>
+</ol>
+</li>
+<li><ol start="2">
+<li><a href="https://zigbeealliance.org/wp-content/uploads/2019/11/docs-05-3474-21-0csg-zigbee-specification.pdf" target="_blank" rel="external">ZigBee 规范 - 05-3474-21，2015 年 8 月 5 日</a></li>
+</ol>
+</li>
+<li><ol start="3">
+<li><a href="http://www.zigbee.org/" target="_blank" rel="external">ZigBee 联盟</a></li>
+</ol>
+</li>
+<li><ol start="4">
+<li><a href="https://en.wikipedia.org/wiki/IEEE_802.15.4" target="_blank" rel="external">IEEE 802.15.4 维基百科</a></li>
+</ol>
+</li>
+<li><ol start="5">
+<li><a href="https://en.wikipedia.org/wiki/Zigbee" target="_blank" rel="external">ZigBee 维基百科</a></li>
+</ol>
+</li>
+</ul>
+<p><em>原文链接：<a href="https://payatu.com/blog/dattatray/zigbee-protocol-101" target="_blank" rel="external">https://payatu.com/blog/dattatray/zigbee-protocol-101</a></em></p>
+
+      
+    </div>
+    <footer>
+      
+
+        
+          <div class="alignleft post-nav">
+            <em>上一篇: </em><a href="/2021/09/22/IOT/iot-security-part-6-101-zigbee-security-101/">物联网安全101-6.ZigBee安全（翻译）</a>
+          </div>
+        
+        
+          <div class="alignright post-nav">
+            <em>下一篇: </em><a href="/2021/09/22/IOT/iot-security-part-4-101-bluetooth-low-energy-101/">物联网安全101-4.低功耗蓝牙BLE（翻译）</a>
+          </div>
+          <div class="clearfix"></div>
+        
+
+        
+          <div class="copyright">
+            
+              <span class="claim">转载请注明youngroe.com</span>
+            
+            
+              <span class="from-link">
+                <em>本文链接地址:</em>
+                <a href="/2021/09/22/IOT/iot-security-part-5-101-zigbee-protocol-101/">
+                  http://www.youngroe.com/2021/09/22/IOT/iot-security-part-5-101-zigbee-protocol-101/
+                </a>
+              </span>
+            
+          </div>
+        
+        
+  
+  <div class="categories">
+    <a href="/categories/IOT/">IOT</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/IOT安全/">IOT安全</a>
+  </div>
+
+        
+          <! -- 添加捐赠图标 -->
+<div class ="post-donate">
+    <div id="donate_board" class="donate_bar center">
+        <a id="btn_donate" class="btn_donate" href="javascript:;" title="打赏"></a>
+        <span class="donate_txt">
+           ↑<br>
+           欣赏此文？求鼓励，求支持！
+        </span>
+        <br>
+      </div>  
+    <div id="donate_guide" class="donate_bar center hidden" >
+        <!-- 方式一： 
+            ![](/img/Alipay.jpg)
+            ![](/img/WeChatpay.jpg)
+        -->
+        <!-- 方式二；
+            step1：在_config.yml中添加配置
+                Alipay: /img/Alipay.jpg
+                WeChatpay: /img/WeChatpay.jpg
+            step2：此处两张图片的路径分别设置为如下
+                <img src="undefined"
+                <img src="undefined"
+        -->
+        <!-- 支付宝打赏图案 -->
+        <img src="/img/Alipay.png" alt="支付宝打赏">
+        <!-- 微信打赏图案 -->
+        <img src="/img/WeChatpay.png" alt="微信打赏">
+    </div>
+    <script type="text/javascript">
+        document.getElementById('btn_donate').onclick = function(){
+            $('#donate_board').addClass('hidden');
+            $('#donate_guide').removeClass('hidden');
+        }
+    </script>
+</div>
+<! -- 添加捐赠图标 -->
+        
+        <div id="gitalk-container"></div>
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+<script src="https://cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.js"></script>
+<script type="text/javascript">
+    var gitalk = new Gitalk({
+  clientID: '503c39aa3fb2b8c1b734',
+  clientSecret: '65d784ff7a95a9dbf4a4208c9e32166ca29654f2',
+  repo: 'geemion.github.io',
+  owner: 'geemion',
+  admin: 'geemion',
+  pagerDirection:'first',
+  id: md5(window.location.pathname)
+})
+
+gitalk.render('gitalk-container')
+</script>
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+  <div id="container"></div>
+</span>
+</article>
+
+
+<section id="comment">
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+<div class="widget tag">
+  <h3 class="title">分类</h3>
+  <ul class="entry">
+  
+    <li><a href="/categories/Cybersecurity/">Cybersecurity</a><small>6</small></li>
+  
+    <li><a href="/categories/Debug/">Debug</a><small>7</small></li>
+  
+    <li><a href="/categories/IOT/">IOT</a><small>10</small></li>
+  
+    <li><a href="/categories/Kernel/">Kernel</a><small>4</small></li>
+  
+    <li><a href="/categories/Learning/">Learning</a><small>5</small></li>
+  
+    <li><a href="/categories/Life/">Life</a><small>5</small></li>
+  
+    <li><a href="/categories/Others/">Others</a><small>1</small></li>
+  
+    <li><a href="/categories/Tools/">Tools</a><small>5</small></li>
+  
+    <li><a href="/categories/Vulnerabilities/">Vulnerabilities</a><small>0</small></li>
+  
+    <li><a href="/categories/Windows/">Windows</a><small>13</small></li>
+  
+    <li><a href="/categories/life/">life</a><small>0</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2021/10/20/IOT/using-rasberrypi-as-poor-mans-hardware-hacking-tool/">树莓派-穷人的硬件黑客工具（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2021/09/23/IOT/iot-security-part-8-introduction-to-software-defined-radio-sdr/">物联网安全101-8.软件无线电（Software Defined Radio，SDR）简介（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2021/09/23/IOT/iot-security-part-7-reverse-engineering-an-iot-firmware/">物联网安全101-7.物联网固件逆向（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2021/09/22/IOT/iot-security-part-6-101-zigbee-security-101/">物联网安全101-6.ZigBee安全（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2021/09/22/IOT/iot-security-part-5-101-zigbee-protocol-101/">物联网安全101-5.ZigBee协议（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2021/09/22/IOT/iot-security-part-4-101-bluetooth-low-energy-101/">物联网安全101-4.低功耗蓝牙BLE（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2021/09/22/IOT/iot-security-part-3-101-iot-top-ten-vulnerabilities/">物联网安全101-3.物联网10大安全漏洞（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2021/09/21/IOT/iot-security-part-2-101-iot-attack-surface/">物联网安全101-2.物联网攻击面（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2021/09/21/IOT/iot-security-part-1-101-iot-introduction-architecture/">物联网安全101-1.物联网介绍及其架构（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2021/08/20/Cybersecurity/guide-linux-privilege-escalation/">Linux权限提升指南（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2021/03/20/IOT/powerpc_binary_blob_firmware_reverse/">一次嵌入式固件逆向实践</a>
+      </li>
+    
+      <li>
+        <a href="/2020/10/02/Cybersecurity/art-of-anti-detection-4-art-of-anti-detection-4-self-defense/">反检测的艺术4-自保护（翻译）</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget tagcloud">
+  <h3 class="title">标签云</h3>
+  <div class="entry">
+    <a href="/tags/Boost/" style="font-size: 10px;">Boost</a> <a href="/tags/DDoS/" style="font-size: 10px;">DDoS</a> <a href="/tags/DNS-over-HTTPS/" style="font-size: 10px;">DNS-over-HTTPS</a> <a href="/tags/DNS劫持/" style="font-size: 10px;">DNS劫持</a> <a href="/tags/Delphi/" style="font-size: 10px;">Delphi</a> <a href="/tags/Dll劫持/" style="font-size: 10px;">Dll劫持</a> <a href="/tags/GetVersionEx/" style="font-size: 10px;">GetVersionEx</a> <a href="/tags/Http/" style="font-size: 10px;">Http</a> <a href="/tags/IDA-Pro/" style="font-size: 12px;">IDA Pro</a> <a href="/tags/IOT安全/" style="font-size: 18px;">IOT安全</a> <a href="/tags/Linux/" style="font-size: 14px;">Linux</a> <a href="/tags/MSDN/" style="font-size: 12px;">MSDN</a> <a href="/tags/Malware/" style="font-size: 12px;">Malware</a> <a href="/tags/MiniDumpWriteDump/" style="font-size: 10px;">MiniDumpWriteDump</a> <a href="/tags/PEB/" style="font-size: 10px;">PEB</a> <a href="/tags/Procmon/" style="font-size: 10px;">Procmon</a> <a href="/tags/Runtime-Error/" style="font-size: 10px;">Runtime Error</a> <a href="/tags/SEH/" style="font-size: 10px;">SEH</a> <a href="/tags/SysinternalsSuite/" style="font-size: 10px;">SysinternalsSuite</a> <a href="/tags/Tips/" style="font-size: 10px;">Tips</a> <a href="/tags/UAC/" style="font-size: 10px;">UAC</a> <a href="/tags/UAF漏洞/" style="font-size: 10px;">UAF漏洞</a> <a href="/tags/VC/" style="font-size: 10px;">VC</a> <a href="/tags/Visual-Studio/" style="font-size: 12px;">Visual Studio</a> <a href="/tags/Windbg/" style="font-size: 10px;">Windbg</a> <a href="/tags/Windows/" style="font-size: 20px;">Windows</a> <a href="/tags/getaddrinfo/" style="font-size: 10px;">getaddrinfo</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/libeay32/" style="font-size: 10px;">libeay32</a> <a href="/tags/x64/" style="font-size: 10px;">x64</a> <a href="/tags/内核/" style="font-size: 12px;">内核</a> <a href="/tags/内核结构/" style="font-size: 14px;">内核结构</a> <a href="/tags/反病毒/" style="font-size: 16px;">反病毒</a> <a href="/tags/安全机制/" style="font-size: 10px;">安全机制</a> <a href="/tags/异常处理/" style="font-size: 10px;">异常处理</a> <a href="/tags/提权/" style="font-size: 12px;">提权</a> <a href="/tags/服务/" style="font-size: 10px;">服务</a> <a href="/tags/权限/" style="font-size: 12px;">权限</a> <a href="/tags/栈溢出漏洞/" style="font-size: 10px;">栈溢出漏洞</a> <a href="/tags/测试/" style="font-size: 10px;">测试</a> <a href="/tags/漏洞调试/" style="font-size: 12px;">漏洞调试</a> <a href="/tags/生活/" style="font-size: 14px;">生活</a> <a href="/tags/脱壳/" style="font-size: 10px;">脱壳</a> <a href="/tags/西安/" style="font-size: 10px;">西安</a> <a href="/tags/计划/" style="font-size: 10px;">计划</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a> <a href="/tags/调试/" style="font-size: 14px;">调试</a> <a href="/tags/转换/" style="font-size: 10px;">转换</a> <a href="/tags/进程/" style="font-size: 10px;">进程</a> <a href="/tags/逆向/" style="font-size: 10px;">逆向</a> <a href="/tags/重庆/" style="font-size: 10px;">重庆</a> <a href="/tags/驱动/" style="font-size: 14px;">驱动</a>
+  </div>
+</div>
+
+
+  <div class="widget tag">
+<h3 class="title">Links</h3>
+<ul class="entry">
+<li><a href="http://blog.ourren.com/" title="Ourren">Ourren</a></li>
+<li><a href="http://www.hyjal.net/" title="Hyjal">Hyjal</a></li>
+<li><a href="http://www.jianshu.com/users/fa15f4e416ae/latest_articles" title="Daemonceltics">Daemonceltics</a></li>
+<li><a href="http://papap.info/" title="isee">isee</a></li>
+</ul>
+</div>
+
+  <script type="text/javascript" id="clustrmaps" src="//cdn.clustrmaps.com/map_v2.js?u=putG&d=yoFnN6V-ovhL-H4e9_69LvkTiX4uX7rEYJ15yL3G1Wg"></script>
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <div id="go-pg-top"><i class="icon-arrow-up"></i></div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2021 Lyon
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript" charset="utf-8" src="/js/page.js"></script>
+
+</body>
+
+</html>
