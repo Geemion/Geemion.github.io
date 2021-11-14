@@ -1,0 +1,466 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>物联网安全101-9.软件无线电简介（Software Defined Radio，SDR）:软件部分（翻译） | Lyon&#39;s blog</title>
+  <meta name="author" content="Lyon">
+  
+  <meta name="description" content="Walk steps step by step">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="物联网安全101-9.软件无线电简介（Software Defined Radio，SDR）:软件部分（翻译）"/>
+  <meta property="og:site_name" content="Lyon&#39;s blog"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  #<link href="/favicon.ico" rel="icon">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="alternate" href="/atom.xml" title="Lyon&#39;s blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  <script src="/js/jquery.min.js"></script>
+  <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?1d807422614f63c8de98cdc3b546860c";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+  <script>
+    (function(){
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        }
+        else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+    
+  <script data-ad-client="ca-pub-6317609007693835" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-66542057-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-66542057-1');
+</script>
+
+</head>
+
+
+<body>
+  <!--[if lte IE 8]> <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'> <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0027_Simplified Chinese.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." style='margin-left:auto;margin-right:auto;display: block;'/></a></div> <![endif]-->
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">Lyon&#39;s blog</a></h1>
+  <h2><a href="/">I hear and I forget.I see and I remember.I do and I understand.</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">首页</a></li>
+    
+      <li><a href="/archives">归档</a></li>
+    
+      <li><a href="/about">关于</a></li>
+    
+	<li> <a href="/atom.xml">RSS</a> </li>
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+    <div class="gallery">
+  <div class="photoset">
+    
+      <img src="">
+    
+  </div>
+  <div class="control">
+    <div class="prev"></div>
+    <div class="next"></div>
+  </div>
+</div>
+  
+  <div class="post-content">
+    <header>
+      
+        <time datetime="2021-09-23T14:50:22.000Z"><a href="/2021/09/23/IOT/iot-security-part-9-introduction-to-software-defined-radio/">2021-09-23</a></time>
+      
+      
+  
+    <h1 class="title">物联网安全101-9.软件无线电简介（Software Defined Radio，SDR）:软件部分（翻译）</h1>
+  
+
+    </header>
+	
+<!-- Table of Contents -->
+
+  <div id="toc" class="toc-article">
+  <strong class="toc-title">文章目录</strong>
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#介绍"><span class="toc-number">1.</span> <span class="toc-text">介绍</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#软件"><span class="toc-number">2.</span> <span class="toc-text">软件</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#侦察工具："><span class="toc-number">2.1.</span> <span class="toc-text">侦察工具：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#基本评估："><span class="toc-number">2.2.</span> <span class="toc-text">基本评估：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#高级评估："><span class="toc-number">2.3.</span> <span class="toc-text">高级评估：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#其他："><span class="toc-number">2.4.</span> <span class="toc-text">其他：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#如何接近目标："><span class="toc-number">3.</span> <span class="toc-text">如何接近目标：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1)_侦察"><span class="toc-number">3.1.</span> <span class="toc-text">1) 侦察</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2)_获取信号"><span class="toc-number">3.2.</span> <span class="toc-text">2) 获取信号</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3)_记录"><span class="toc-number">3.3.</span> <span class="toc-text">3) 记录</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4)_解调"><span class="toc-number">3.4.</span> <span class="toc-text">4) 解调</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5)_流程"><span class="toc-number">3.5.</span> <span class="toc-text">5) 流程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6)_解码"><span class="toc-number">3.6.</span> <span class="toc-text">6) 解码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7）攻击"><span class="toc-number">3.7.</span> <span class="toc-text">7）攻击</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#结论："><span class="toc-number">4.</span> <span class="toc-text">结论：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#资源："><span class="toc-number">5.</span> <span class="toc-text">资源：</span></a></li></ol>
+  </div>
+
+
+	
+    <div class="entry">
+      
+        <div align="center"><br><img src="/img/sdr.png" align><br></div>
+
+<h2 id="介绍">介绍</h2><p>本文是“物联网安全”系列的一部分。如果您还没有阅读本系列之前的博客（第 1 - 7 部分），我建议您先阅读它们，除非您已经熟悉这些概念并且只想阅读当前主题。<br><a href="/2021/09/21/IOT/iot-security-part-1-101-iot-introduction-architecture/">物联网安全 - 第 1 部分（101 - 物联网介绍和架构）</a><br><a href="/2021/09/23/IOT/iot-security-part-8-introduction-to-software-defined-radio-sdr/">物联网安全 - 第 8 部分（软件定义无线电简介）</a>本系列的前一篇博客。<br>这篇博客将是上一篇博客的延续。在此，我们将研究一些可用的软件 SDR 工具。我们还将定义一种关于如何处理 RF 目标的方法。</p>
+<a id="more"></a>
+<h2 id="软件">软件</h2><p>凭借强大的开源社区，SDR 拥有各种软件工具，可提供所有信号处理功能。让我们来看看一些广泛使用的 SDR 软件以及它们的不同之处。这里主要介绍的工具大部分适用于Linux平台。</p>
+<h3 id="侦察工具：">侦察工具：</h3><ul>
+<li><p>GQRX<br>GQRX 是一种频谱分析仪，用于浏览频段和寻找目标的工作频率。它带有常见的解调器，如 AM、CW、FM。由于具有解调功能，可以记录解调的信号流，在下一阶段的评估中可以在 Audacity 和 Inspectrum 等工具中进一步分析。GQRX 与大部分的 SDR 硬件兼容。GQRX 的其他替代品具有或多或少相同的功能，如下所述：</p>
+</li>
+<li><p><a href="http://www.hdsdr.de/" target="_blank" rel="external">HDSDR</a> / <a href="https://airspy.com/download/" target="_blank" rel="external">SDR# (SDR-Sharp)</a> [适用于 Windows]</p>
+</li>
+<li><p><a href="https://github.com/xmikos/qspectrumanalyzer" target="_blank" rel="external">Qspectrum 分析仪</a>（带自动峰值检测）</p>
+</li>
+<li><p><a href="https://osmocom.org/projects/gr-osmosdr/wiki" target="_blank" rel="external">Osmocom-FFT</a>（包含在 Osmocom GNU Radio 模块中的频谱分析仪）</p>
+</li>
+</ul>
+<h3 id="基本评估：">基本评估：</h3><ul>
+<li>Universal Radio Hacker(URH)：<br>URH 是一个完整的无线协议调查套件，原生支持主要 SDR 硬件。几乎一切都在这里自动化，从频谱分析到甚至发送操纵信号。人们可以毫不费力地识别调制类型并自动解码信号。对于手动检查，还提供接收比特流的差分视图，这对于解释信号数据非常有用。其他主要功能包括协议分析器（自动和手动）。这就是它变得有趣的地方，它有一个用于有状态攻击的模拟环境和一个针对无状态协议的模糊测试元素！</li>
+</ul>
+<div align="center"><br><img src="/img/urh.png" align><br></div>
+
+<p>来源：<a href="https://github.com/jopohl/urh" target="_blank" rel="external">https://github.com/jopohl/urh</a></p>
+<p>URH 的另一个替代方案是 <a href="https://github.com/miek/inspectrum" target="_blank" rel="external">Inspectrum</a>。</p>
+<ul>
+<li>Audacity：<br>Audacity 是一种多声道音频编辑工具，但与 GQRX 结合使用时，它会变成无线电信号分析仪。Audacity 是开源的，可用于所有常见的操作系统。它只接受记录的信号，但信号必须被解调，就像来自 GQRX 的记录信号一样。</li>
+</ul>
+<h3 id="高级评估：">高级评估：</h3><ul>
+<li><p>GNU Radio<br>GNU Radio 是一个开源工具包，用于实现 SDR。它提供了执行不同信号处理步骤的基本模块，例如滤波器、解码器、解调器等等。它适用于所有主要的 SDR 硬件。主要的好处是框架的巨大可扩展性。可以用 C++ 或 Python 编写块。</p>
+</li>
+<li><p>GNURadio Companion (GRC)<br>GNU Radio Companion (GRC) 是一个前端可视化工具，它是 Gnu radio 框架的一部分。我们应该记住，GRC 的创建是为了简化 GNU Radio 的使用，允许我们以图形方式创建 python 文件，而不是单独在代码中创建它们。它允许人们简单地拖动、修改参数并开始处理信号。随着我们的进行，我们将更加关注它。</p>
+</li>
+</ul>
+<div align="center"><br><img src="/img/GRC.png" align><br></div>
+
+<h3 id="其他：">其他：</h3><ul>
+<li><p>Android<br>随着移动设备的处理能力随着时间的推移显着增加，Android SDR 正在进入移动设备。虽然仍然非常有限，但只需加载设备的一些库，通过 OTG 电缆将您的 SDR 硬件连接到您的 android 即可完成这项工作。RTL-SDR 加密狗、Lime SDR mini 和 HackRF 等设备以及其他一些设备与 android 设备配合良好。</p>
+</li>
+<li><p>SDR touch：<br>类似于 GQRX，用作移动设备的频谱分析仪。</p>
+</li>
+<li><p>GNU Radio Android：<br>最近 GNU Radio for android 出现了。这是您移动设备中的所有 SDR 解决方案。尽管截至目前，它支持的移动设备有限，但随着时间的推移，预计主要设备将覆盖。</p>
+</li>
+<li><p>Scapy-radio：<br>Scapy-radio 是 Scapy 的扩展，Scapy 是一种用 Python 编写的开源网络数据包操作工具。此扩展使用 Scapy 作为无线电数据包操作的后端。作为从 Scapy 到 SDR 设备的网关，使用了 GNU Radio。</p>
+</li>
+</ul>
+<h2 id="如何接近目标：">如何接近目标：</h2><p>我们将分解您如何接近 RF 目标、捕获它、对其进行逆向工程并发起攻击！</p>
+<ul>
+<li>SDR 硬件：HackRF One</li>
+<li>SDR 软件：GQRX、GNURadio Companion</li>
+<li>Target：为此，我们选择了一个本地制造的 6 美元无线门铃，结果证明它是模拟的。让我们看看我们是怎么做的……</li>
+</ul>
+<div align="center"><br><img src="/img/sdr_target.png" align><br></div>
+
+<p>IMG标签图片来源：<a href="https://xkcd.com/1457/" target="_blank" rel="external">https://xkcd.com/1457/</a></p>
+<h3 id="1)_侦察">1) 侦察</h3><p>如果您拥有该设备，则大部分任务已完成，因为您可以从此处简单地查找该设备的 FCC ID ，这将为您提供有关该设备的许多详细信息，即工作频率、设备内部结构等等等，这将减轻很多评估。<br>在我们的例子中，由于它是本地制造的设备，它没有任何 FCC ID :(</p>
+<h3 id="2)_获取信号">2) 获取信号</h3><p>您需要分析频谱以找出正在传输的信号的位置。您可以使用任何您熟悉的频谱分析仪。以下是可帮助您找到目标频率的常用工作频率列表：</p>
+<ul>
+<li>300MHz</li>
+<li>433Mhz</li>
+<li>868Mhz</li>
+<li>915Mhz<br>所有这些都是常用的 ISM 和免许可证频段。WPC（印度政府电信部 (DOT) 和美国联邦通信委员会 (FCC) 的无线规划和协调部门）等机构允许此类频段免许可，前提是这些频段仅用于低功率无线设备具有为带宽、输出功率和最大有效辐射功率定义的细节。</li>
+</ul>
+<div align="center"><br><img src="/img/gqrx_fren.png" align><br></div>
+
+<p>在我们的例子中，我们在这一步中使用了 GQRX。我们观察到 302MHz 的峰值，这对于任何操作设备来说都有些不寻常。</p>
+<h3 id="3)_记录">3) 记录</h3><p>捕获信号是保存信号以供分析的好方法。人们可以轻松地对记录的信号运行信号处理操作，而无需任何 RF 目标产生实时信号。在我们的例子中，我们使用下面的 GRC 流程图。我们将信号保存在 .cfile 中。</p>
+<div align="center"><br><img src="/img/79f57116cbf.png" align><br></div>
+
+<p>记录模拟门铃信号（流程图）</p>
+<h3 id="4)_解调">4) 解调</h3><p>最好的方法就是简单地查看信号。如果您精通调制技术，则可以轻松理解所使用的调制类型，即 FSK 中的压缩和解压缩。下面是一些常用的调制：</p>
+<ul>
+<li>FSK（频移键控）</li>
+<li>ASK（幅移键控）</li>
+<li>OOK（开关键控）</li>
+<li>PSK（相移键控）</li>
+</ul>
+<h3 id="5)_流程">5) 流程</h3><p>一旦我们确定了调制和工作频率，我们就可以开始使用 GRC 块处理信号并创建流程图。这通常包括解调实时/捕获的信号、放大信号、将其移植到 Wireshark 等。随着我们继续介绍处理特定信号所需的 GRC 块的使用等内容，我们将更详细地讨论 GRC。</p>
+<h3 id="6)_解码">6) 解码</h3><p>所以一旦你掌握了比特/比特流，你就可以开始解码它。常用的编码技术有</p>
+<ul>
+<li>NRZ</li>
+<li>NRZI</li>
+<li>Bipolar AMI</li>
+<li>Manchester</li>
+</ul>
+<p>仅举几例。您会发现它们已经存在并且可以在 Universal Radio Hacker (URH) 中使用。</p>
+<h3 id="7）攻击">7）攻击</h3><p>完成逆向信号后，即弄清楚调制、编码、数据字节和其他细节等内容。您现在可以发起攻击了！最常见的一种是重放攻击，其中发送回捕获的信号。</p>
+<p>第 3 步和第 5 步不适用于我们的目标（因为它是模拟的）但是我们对目标进行了攻击，我们将使用 GRC 进行重放攻击。下面是相应的 GRC 流程图。我们重放了捕获的信号 .cfile。</p>
+<div align="center"><br><img src="/img/2a031803073.png" align><br></div>
+
+<p>重放模拟门铃信号（流程图）</p>
+<h2 id="结论：">结论：</h2><p>我们希望您清楚地了解可用的主要 SDR 软件工具有哪些，以及为什么一个比另一个更好。此外，了解如何接近 RF 目标会让您了解使用 SDR 进行 RF 目标评估所涉及的步骤。</p>
+<p>继续下一部分 - <a href="https://payatu.com/blog/aseem/iot-security---part-10-introduction-to-mqtt-protocol-and-security" target="_blank" rel="external">IoT 安全性 - 第 10 部分（MQTT 协议和安全性介绍）</a></p>
+<h2 id="资源：">资源：</h2><p><a href="https://github.com/bastibl/gnuradio-android" target="_blank" rel="external">GNURadio-Android</a></p>
+<p><em>原文链接：<a href="https://payatu.com/blog/appar/iot-security-%E2%80%93-part-9-introduction-to-software-defined-radio" target="_blank" rel="external">https://payatu.com/blog/appar/iot-security-%E2%80%93-part-9-introduction-to-software-defined-radio</a></em></p>
+
+      
+    </div>
+    <footer>
+      
+
+        
+          <div class="alignleft post-nav">
+            <em>上一篇: </em><a href="/2021/10/20/IOT/using-rasberrypi-as-poor-mans-hardware-hacking-tool/">树莓派-穷人的硬件黑客工具（翻译）</a>
+          </div>
+        
+        
+          <div class="alignright post-nav">
+            <em>下一篇: </em><a href="/2021/09/23/IOT/iot-security-part-8-introduction-to-software-defined-radio-sdr/">物联网安全101-8.软件无线电（Software Defined Radio，SDR）简介（翻译）</a>
+          </div>
+          <div class="clearfix"></div>
+        
+
+        
+          <div class="copyright">
+            
+              <span class="claim">转载请注明youngroe.com</span>
+            
+            
+              <span class="from-link">
+                <em>本文链接地址:</em>
+                <a href="/2021/09/23/IOT/iot-security-part-9-introduction-to-software-defined-radio/">
+                  http://www.youngroe.com/2021/09/23/IOT/iot-security-part-9-introduction-to-software-defined-radio/
+                </a>
+              </span>
+            
+          </div>
+        
+        
+  
+  <div class="categories">
+    <a href="/categories/IOT/">IOT</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/IOT安全/">IOT安全</a>
+  </div>
+
+        
+          <! -- 添加捐赠图标 -->
+<div class ="post-donate">
+    <div id="donate_board" class="donate_bar center">
+        <a id="btn_donate" class="btn_donate" href="javascript:;" title="打赏"></a>
+        <span class="donate_txt">
+           ↑<br>
+           欣赏此文？求鼓励，求支持！
+        </span>
+        <br>
+      </div>  
+    <div id="donate_guide" class="donate_bar center hidden" >
+        <!-- 方式一： 
+            ![](/img/Alipay.jpg)
+            ![](/img/WeChatpay.jpg)
+        -->
+        <!-- 方式二；
+            step1：在_config.yml中添加配置
+                Alipay: /img/Alipay.jpg
+                WeChatpay: /img/WeChatpay.jpg
+            step2：此处两张图片的路径分别设置为如下
+                <img src="undefined"
+                <img src="undefined"
+        -->
+        <!-- 支付宝打赏图案 -->
+        <img src="/img/Alipay.png" alt="支付宝打赏">
+        <!-- 微信打赏图案 -->
+        <img src="/img/WeChatpay.png" alt="微信打赏">
+    </div>
+    <script type="text/javascript">
+        document.getElementById('btn_donate').onclick = function(){
+            $('#donate_board').addClass('hidden');
+            $('#donate_guide').removeClass('hidden');
+        }
+    </script>
+</div>
+<! -- 添加捐赠图标 -->
+        
+        <div id="gitalk-container"></div>
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+<script src="https://cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.js"></script>
+<script type="text/javascript">
+    var gitalk = new Gitalk({
+  clientID: '503c39aa3fb2b8c1b734',
+  clientSecret: '65d784ff7a95a9dbf4a4208c9e32166ca29654f2',
+  repo: 'geemion.github.io',
+  owner: 'geemion',
+  admin: 'geemion',
+  pagerDirection:'first',
+  id: md5(window.location.pathname)
+})
+
+gitalk.render('gitalk-container')
+</script>
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+  <div id="container"></div>
+</span>
+</article>
+
+
+<section id="comment">
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+<div class="widget tag">
+  <h3 class="title">分类</h3>
+  <ul class="entry">
+  
+    <li><a href="/categories/Cybersecurity/">Cybersecurity</a><small>6</small></li>
+  
+    <li><a href="/categories/Debug/">Debug</a><small>7</small></li>
+  
+    <li><a href="/categories/IOT/">IOT</a><small>11</small></li>
+  
+    <li><a href="/categories/Kernel/">Kernel</a><small>4</small></li>
+  
+    <li><a href="/categories/Learning/">Learning</a><small>5</small></li>
+  
+    <li><a href="/categories/Life/">Life</a><small>5</small></li>
+  
+    <li><a href="/categories/Others/">Others</a><small>1</small></li>
+  
+    <li><a href="/categories/Tools/">Tools</a><small>5</small></li>
+  
+    <li><a href="/categories/Vulnerabilities/">Vulnerabilities</a><small>0</small></li>
+  
+    <li><a href="/categories/Windows/">Windows</a><small>13</small></li>
+  
+    <li><a href="/categories/life/">life</a><small>0</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2021/10/20/IOT/using-rasberrypi-as-poor-mans-hardware-hacking-tool/">树莓派-穷人的硬件黑客工具（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2021/09/23/IOT/iot-security-part-9-introduction-to-software-defined-radio/">物联网安全101-9.软件无线电简介（Software Defined Radio，SDR）:软件部分（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2021/09/23/IOT/iot-security-part-8-introduction-to-software-defined-radio-sdr/">物联网安全101-8.软件无线电（Software Defined Radio，SDR）简介（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2021/09/23/IOT/iot-security-part-7-reverse-engineering-an-iot-firmware/">物联网安全101-7.物联网固件逆向（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2021/09/22/IOT/iot-security-part-5-101-zigbee-protocol-101/">物联网安全101-5.ZigBee协议（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2021/09/22/IOT/iot-security-part-6-101-zigbee-security-101/">物联网安全101-6.ZigBee安全（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2021/09/22/IOT/iot-security-part-4-101-bluetooth-low-energy-101/">物联网安全101-4.低功耗蓝牙BLE（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2021/09/22/IOT/iot-security-part-3-101-iot-top-ten-vulnerabilities/">物联网安全101-3.物联网10大安全漏洞（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2021/09/21/IOT/iot-security-part-2-101-iot-attack-surface/">物联网安全101-2.物联网攻击面（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2021/09/21/IOT/iot-security-part-1-101-iot-introduction-architecture/">物联网安全101-1.物联网介绍及其架构（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2021/08/20/Cybersecurity/guide-linux-privilege-escalation/">Linux权限提升指南（翻译）</a>
+      </li>
+    
+      <li>
+        <a href="/2021/03/20/IOT/powerpc_binary_blob_firmware_reverse/">一次嵌入式固件逆向实践</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget tagcloud">
+  <h3 class="title">标签云</h3>
+  <div class="entry">
+    <a href="/tags/Boost/" style="font-size: 10px;">Boost</a> <a href="/tags/DDoS/" style="font-size: 10px;">DDoS</a> <a href="/tags/DNS-over-HTTPS/" style="font-size: 10px;">DNS-over-HTTPS</a> <a href="/tags/DNS劫持/" style="font-size: 10px;">DNS劫持</a> <a href="/tags/Delphi/" style="font-size: 10px;">Delphi</a> <a href="/tags/Dll劫持/" style="font-size: 10px;">Dll劫持</a> <a href="/tags/GetVersionEx/" style="font-size: 10px;">GetVersionEx</a> <a href="/tags/Http/" style="font-size: 10px;">Http</a> <a href="/tags/IDA-Pro/" style="font-size: 12px;">IDA Pro</a> <a href="/tags/IOT安全/" style="font-size: 18px;">IOT安全</a> <a href="/tags/Linux/" style="font-size: 14px;">Linux</a> <a href="/tags/MSDN/" style="font-size: 12px;">MSDN</a> <a href="/tags/Malware/" style="font-size: 12px;">Malware</a> <a href="/tags/MiniDumpWriteDump/" style="font-size: 10px;">MiniDumpWriteDump</a> <a href="/tags/PEB/" style="font-size: 10px;">PEB</a> <a href="/tags/Procmon/" style="font-size: 10px;">Procmon</a> <a href="/tags/Runtime-Error/" style="font-size: 10px;">Runtime Error</a> <a href="/tags/SEH/" style="font-size: 10px;">SEH</a> <a href="/tags/SysinternalsSuite/" style="font-size: 10px;">SysinternalsSuite</a> <a href="/tags/Tips/" style="font-size: 10px;">Tips</a> <a href="/tags/UAC/" style="font-size: 10px;">UAC</a> <a href="/tags/UAF漏洞/" style="font-size: 10px;">UAF漏洞</a> <a href="/tags/VC/" style="font-size: 10px;">VC</a> <a href="/tags/Visual-Studio/" style="font-size: 12px;">Visual Studio</a> <a href="/tags/Windbg/" style="font-size: 10px;">Windbg</a> <a href="/tags/Windows/" style="font-size: 20px;">Windows</a> <a href="/tags/getaddrinfo/" style="font-size: 10px;">getaddrinfo</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/libeay32/" style="font-size: 10px;">libeay32</a> <a href="/tags/x64/" style="font-size: 10px;">x64</a> <a href="/tags/内核/" style="font-size: 12px;">内核</a> <a href="/tags/内核结构/" style="font-size: 14px;">内核结构</a> <a href="/tags/反病毒/" style="font-size: 16px;">反病毒</a> <a href="/tags/安全机制/" style="font-size: 10px;">安全机制</a> <a href="/tags/异常处理/" style="font-size: 10px;">异常处理</a> <a href="/tags/提权/" style="font-size: 12px;">提权</a> <a href="/tags/服务/" style="font-size: 10px;">服务</a> <a href="/tags/权限/" style="font-size: 12px;">权限</a> <a href="/tags/栈溢出漏洞/" style="font-size: 10px;">栈溢出漏洞</a> <a href="/tags/测试/" style="font-size: 10px;">测试</a> <a href="/tags/漏洞调试/" style="font-size: 12px;">漏洞调试</a> <a href="/tags/生活/" style="font-size: 14px;">生活</a> <a href="/tags/脱壳/" style="font-size: 10px;">脱壳</a> <a href="/tags/西安/" style="font-size: 10px;">西安</a> <a href="/tags/计划/" style="font-size: 10px;">计划</a> <a href="/tags/读书/" style="font-size: 10px;">读书</a> <a href="/tags/调试/" style="font-size: 14px;">调试</a> <a href="/tags/转换/" style="font-size: 10px;">转换</a> <a href="/tags/进程/" style="font-size: 10px;">进程</a> <a href="/tags/逆向/" style="font-size: 10px;">逆向</a> <a href="/tags/重庆/" style="font-size: 10px;">重庆</a> <a href="/tags/驱动/" style="font-size: 14px;">驱动</a>
+  </div>
+</div>
+
+
+  
+  <div class="widget-wrap">
+   <a href="https://curl.qcloud.com/MpoJ5iCM"> <img src="/img/ad.jpg" /> </a>
+  </div>
+
+
+  <div class="widget tag">
+<h3 class="title">Links</h3>
+<ul class="entry">
+<li><a href="http://blog.ourren.com/" title="Ourren">Ourren</a></li>
+<li><a href="http://www.hyjal.net/" title="Hyjal">Hyjal</a></li>
+<li><a href="http://www.jianshu.com/users/fa15f4e416ae/latest_articles" title="Daemonceltics">Daemonceltics</a></li>
+<li><a href="http://papap.info/" title="isee">isee</a></li>
+</ul>
+</div>
+
+  <script type="text/javascript" id="clustrmaps" src="//cdn.clustrmaps.com/map_v2.js?u=putG&d=yoFnN6V-ovhL-H4e9_69LvkTiX4uX7rEYJ15yL3G1Wg"></script>
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <div id="go-pg-top"><i class="icon-arrow-up"></i></div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2021 Lyon
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript" charset="utf-8" src="/js/page.js"></script>
+
+</body>
+
+</html>

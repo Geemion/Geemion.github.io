@@ -74,11 +74,123 @@
   </entry>
   
   <entry>
+    <title><![CDATA[物联网安全101-9.软件无线电简介（Software Defined Radio，SDR）:软件部分（翻译）]]></title>
+    <link href="http://www.youngroe.com/2021/09/23/IOT/iot-security-part-9-introduction-to-software-defined-radio/"/>
+    <id>http://www.youngroe.com/2021/09/23/IOT/iot-security-part-9-introduction-to-software-defined-radio/</id>
+    <published>2021-09-23T14:50:22.000Z</published>
+    <updated>2021-11-14T05:48:26.730Z</updated>
+    <content type="html"><![CDATA[<div align="center"><br><img src="/img/sdr.png" align><br></div>
+
+<h2 id="介绍">介绍</h2><p>本文是“物联网安全”系列的一部分。如果您还没有阅读本系列之前的博客（第 1 - 7 部分），我建议您先阅读它们，除非您已经熟悉这些概念并且只想阅读当前主题。<br><a href="/2021/09/21/IOT/iot-security-part-1-101-iot-introduction-architecture/">物联网安全 - 第 1 部分（101 - 物联网介绍和架构）</a><br><a href="/2021/09/23/IOT/iot-security-part-8-introduction-to-software-defined-radio-sdr/">物联网安全 - 第 8 部分（软件定义无线电简介）</a>本系列的前一篇博客。<br>这篇博客将是上一篇博客的延续。在此，我们将研究一些可用的软件 SDR 工具。我们还将定义一种关于如何处理 RF 目标的方法。</p>
+<a id="more"></a>
+<h2 id="软件">软件</h2><p>凭借强大的开源社区，SDR 拥有各种软件工具，可提供所有信号处理功能。让我们来看看一些广泛使用的 SDR 软件以及它们的不同之处。这里主要介绍的工具大部分适用于Linux平台。</p>
+<h3 id="侦察工具：">侦察工具：</h3><ul>
+<li><p>GQRX<br>GQRX 是一种频谱分析仪，用于浏览频段和寻找目标的工作频率。它带有常见的解调器，如 AM、CW、FM。由于具有解调功能，可以记录解调的信号流，在下一阶段的评估中可以在 Audacity 和 Inspectrum 等工具中进一步分析。GQRX 与大部分的 SDR 硬件兼容。GQRX 的其他替代品具有或多或少相同的功能，如下所述：</p>
+</li>
+<li><p><a href="http://www.hdsdr.de/" target="_blank" rel="external">HDSDR</a> / <a href="https://airspy.com/download/" target="_blank" rel="external">SDR# (SDR-Sharp)</a> [适用于 Windows]</p>
+</li>
+<li><p><a href="https://github.com/xmikos/qspectrumanalyzer" target="_blank" rel="external">Qspectrum 分析仪</a>（带自动峰值检测）</p>
+</li>
+<li><p><a href="https://osmocom.org/projects/gr-osmosdr/wiki" target="_blank" rel="external">Osmocom-FFT</a>（包含在 Osmocom GNU Radio 模块中的频谱分析仪）</p>
+</li>
+</ul>
+<h3 id="基本评估：">基本评估：</h3><ul>
+<li>Universal Radio Hacker(URH)：<br>URH 是一个完整的无线协议调查套件，原生支持主要 SDR 硬件。几乎一切都在这里自动化，从频谱分析到甚至发送操纵信号。人们可以毫不费力地识别调制类型并自动解码信号。对于手动检查，还提供接收比特流的差分视图，这对于解释信号数据非常有用。其他主要功能包括协议分析器（自动和手动）。这就是它变得有趣的地方，它有一个用于有状态攻击的模拟环境和一个针对无状态协议的模糊测试元素！</li>
+</ul>
+<div align="center"><br><img src="/img/urh.png" align><br></div>
+
+<p>来源：<a href="https://github.com/jopohl/urh" target="_blank" rel="external">https://github.com/jopohl/urh</a></p>
+<p>URH 的另一个替代方案是 <a href="https://github.com/miek/inspectrum" target="_blank" rel="external">Inspectrum</a>。</p>
+<ul>
+<li>Audacity：<br>Audacity 是一种多声道音频编辑工具，但与 GQRX 结合使用时，它会变成无线电信号分析仪。Audacity 是开源的，可用于所有常见的操作系统。它只接受记录的信号，但信号必须被解调，就像来自 GQRX 的记录信号一样。</li>
+</ul>
+<h3 id="高级评估：">高级评估：</h3><ul>
+<li><p>GNU Radio<br>GNU Radio 是一个开源工具包，用于实现 SDR。它提供了执行不同信号处理步骤的基本模块，例如滤波器、解码器、解调器等等。它适用于所有主要的 SDR 硬件。主要的好处是框架的巨大可扩展性。可以用 C++ 或 Python 编写块。</p>
+</li>
+<li><p>GNURadio Companion (GRC)<br>GNU Radio Companion (GRC) 是一个前端可视化工具，它是 Gnu radio 框架的一部分。我们应该记住，GRC 的创建是为了简化 GNU Radio 的使用，允许我们以图形方式创建 python 文件，而不是单独在代码中创建它们。它允许人们简单地拖动、修改参数并开始处理信号。随着我们的进行，我们将更加关注它。</p>
+</li>
+</ul>
+<div align="center"><br><img src="/img/GRC.png" align><br></div>
+
+<h3 id="其他：">其他：</h3><ul>
+<li><p>Android<br>随着移动设备的处理能力随着时间的推移显着增加，Android SDR 正在进入移动设备。虽然仍然非常有限，但只需加载设备的一些库，通过 OTG 电缆将您的 SDR 硬件连接到您的 android 即可完成这项工作。RTL-SDR 加密狗、Lime SDR mini 和 HackRF 等设备以及其他一些设备与 android 设备配合良好。</p>
+</li>
+<li><p>SDR touch：<br>类似于 GQRX，用作移动设备的频谱分析仪。</p>
+</li>
+<li><p>GNU Radio Android：<br>最近 GNU Radio for android 出现了。这是您移动设备中的所有 SDR 解决方案。尽管截至目前，它支持的移动设备有限，但随着时间的推移，预计主要设备将覆盖。</p>
+</li>
+<li><p>Scapy-radio：<br>Scapy-radio 是 Scapy 的扩展，Scapy 是一种用 Python 编写的开源网络数据包操作工具。此扩展使用 Scapy 作为无线电数据包操作的后端。作为从 Scapy 到 SDR 设备的网关，使用了 GNU Radio。</p>
+</li>
+</ul>
+<h2 id="如何接近目标：">如何接近目标：</h2><p>我们将分解您如何接近 RF 目标、捕获它、对其进行逆向工程并发起攻击！</p>
+<ul>
+<li>SDR 硬件：HackRF One</li>
+<li>SDR 软件：GQRX、GNURadio Companion</li>
+<li>Target：为此，我们选择了一个本地制造的 6 美元无线门铃，结果证明它是模拟的。让我们看看我们是怎么做的……</li>
+</ul>
+<div align="center"><br><img src="/img/sdr_target.png" align><br></div>
+
+<p>IMG标签图片来源：<a href="https://xkcd.com/1457/" target="_blank" rel="external">https://xkcd.com/1457/</a></p>
+<h3 id="1)_侦察">1) 侦察</h3><p>如果您拥有该设备，则大部分任务已完成，因为您可以从此处简单地查找该设备的 FCC ID ，这将为您提供有关该设备的许多详细信息，即工作频率、设备内部结构等等等，这将减轻很多评估。<br>在我们的例子中，由于它是本地制造的设备，它没有任何 FCC ID :(</p>
+<h3 id="2)_获取信号">2) 获取信号</h3><p>您需要分析频谱以找出正在传输的信号的位置。您可以使用任何您熟悉的频谱分析仪。以下是可帮助您找到目标频率的常用工作频率列表：</p>
+<ul>
+<li>300MHz</li>
+<li>433Mhz</li>
+<li>868Mhz</li>
+<li>915Mhz<br>所有这些都是常用的 ISM 和免许可证频段。WPC（印度政府电信部 (DOT) 和美国联邦通信委员会 (FCC) 的无线规划和协调部门）等机构允许此类频段免许可，前提是这些频段仅用于低功率无线设备具有为带宽、输出功率和最大有效辐射功率定义的细节。</li>
+</ul>
+<div align="center"><br><img src="/img/gqrx_fren.png" align><br></div>
+
+<p>在我们的例子中，我们在这一步中使用了 GQRX。我们观察到 302MHz 的峰值，这对于任何操作设备来说都有些不寻常。</p>
+<h3 id="3)_记录">3) 记录</h3><p>捕获信号是保存信号以供分析的好方法。人们可以轻松地对记录的信号运行信号处理操作，而无需任何 RF 目标产生实时信号。在我们的例子中，我们使用下面的 GRC 流程图。我们将信号保存在 .cfile 中。</p>
+<div align="center"><br><img src="/img/79f57116cbf.png" align><br></div>
+
+<p>记录模拟门铃信号（流程图）</p>
+<h3 id="4)_解调">4) 解调</h3><p>最好的方法就是简单地查看信号。如果您精通调制技术，则可以轻松理解所使用的调制类型，即 FSK 中的压缩和解压缩。下面是一些常用的调制：</p>
+<ul>
+<li>FSK（频移键控）</li>
+<li>ASK（幅移键控）</li>
+<li>OOK（开关键控）</li>
+<li>PSK（相移键控）</li>
+</ul>
+<h3 id="5)_流程">5) 流程</h3><p>一旦我们确定了调制和工作频率，我们就可以开始使用 GRC 块处理信号并创建流程图。这通常包括解调实时/捕获的信号、放大信号、将其移植到 Wireshark 等。随着我们继续介绍处理特定信号所需的 GRC 块的使用等内容，我们将更详细地讨论 GRC。</p>
+<h3 id="6)_解码">6) 解码</h3><p>所以一旦你掌握了比特/比特流，你就可以开始解码它。常用的编码技术有</p>
+<ul>
+<li>NRZ</li>
+<li>NRZI</li>
+<li>Bipolar AMI</li>
+<li>Manchester</li>
+</ul>
+<p>仅举几例。您会发现它们已经存在并且可以在 Universal Radio Hacker (URH) 中使用。</p>
+<h3 id="7）攻击">7）攻击</h3><p>完成逆向信号后，即弄清楚调制、编码、数据字节和其他细节等内容。您现在可以发起攻击了！最常见的一种是重放攻击，其中发送回捕获的信号。</p>
+<p>第 3 步和第 5 步不适用于我们的目标（因为它是模拟的）但是我们对目标进行了攻击，我们将使用 GRC 进行重放攻击。下面是相应的 GRC 流程图。我们重放了捕获的信号 .cfile。</p>
+<div align="center"><br><img src="/img/2a031803073.png" align><br></div>
+
+<p>重放模拟门铃信号（流程图）</p>
+<h2 id="结论：">结论：</h2><p>我们希望您清楚地了解可用的主要 SDR 软件工具有哪些，以及为什么一个比另一个更好。此外，了解如何接近 RF 目标会让您了解使用 SDR 进行 RF 目标评估所涉及的步骤。</p>
+<p>继续下一部分 - <a href="https://payatu.com/blog/aseem/iot-security---part-10-introduction-to-mqtt-protocol-and-security" target="_blank" rel="external">IoT 安全性 - 第 10 部分（MQTT 协议和安全性介绍）</a></p>
+<h2 id="资源：">资源：</h2><p><a href="https://github.com/bastibl/gnuradio-android" target="_blank" rel="external">GNURadio-Android</a></p>
+<p><em>原文链接：<a href="https://payatu.com/blog/appar/iot-security-%E2%80%93-part-9-introduction-to-software-defined-radio" target="_blank" rel="external">https://payatu.com/blog/appar/iot-security-%E2%80%93-part-9-introduction-to-software-defined-radio</a></em></p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<div align="center"><br><img src="/img/sdr.png" align=""/><br></div>
+
+<h2 id="介绍">介绍</h2><p>本文是“物联网安全”系列的一部分。如果您还没有阅读本系列之前的博客（第 1 - 7 部分），我建议您先阅读它们，除非您已经熟悉这些概念并且只想阅读当前主题。<br><a href="/2021/09/21/IOT/iot-security-part-1-101-iot-introduction-architecture/">物联网安全 - 第 1 部分（101 - 物联网介绍和架构）</a><br><a href="/2021/09/23/IOT/iot-security-part-8-introduction-to-software-defined-radio-sdr/">物联网安全 - 第 8 部分（软件定义无线电简介）</a>本系列的前一篇博客。<br>这篇博客将是上一篇博客的延续。在此，我们将研究一些可用的软件 SDR 工具。我们还将定义一种关于如何处理 RF 目标的方法。</p>]]>
+    
+    </summary>
+    
+      <category term="IOT安全" scheme="http://www.youngroe.com/tags/IOT%E5%AE%89%E5%85%A8/"/>
+    
+      <category term="IOT" scheme="http://www.youngroe.com/categories/IOT/"/>
+    
+  </entry>
+  
+  <entry>
     <title><![CDATA[物联网安全101-8.软件无线电（Software Defined Radio，SDR）简介（翻译）]]></title>
     <link href="http://www.youngroe.com/2021/09/23/IOT/iot-security-part-8-introduction-to-software-defined-radio-sdr/"/>
     <id>http://www.youngroe.com/2021/09/23/IOT/iot-security-part-8-introduction-to-software-defined-radio-sdr/</id>
     <published>2021-09-23T13:50:22.000Z</published>
-    <updated>2021-11-09T15:09:27.703Z</updated>
+    <updated>2021-11-14T05:38:22.652Z</updated>
     <content type="html"><![CDATA[<div align="center"><br><img src="/img/sdr.png" align><br></div>
 
 <h2 id="介绍">介绍</h2><p>本文是“物联网安全”系列的一部分。如果您还没有阅读本系列之前的博客（第 1 - 7 部分），我建议您先阅读它们，除非您已经熟悉这些概念并且只想阅读当前主题。<br><a href="/2021/09/21/IOT/iot-security-part-1-101-iot-introduction-architecture/">物联网安全 - 第 1 部分（101 - 物联网介绍和架构）</a><br><a href="/2021/09/23/IOT/iot-security-part-7-reverse-engineering-an-iot-firmware/">物联网安全 - 第 7 部分（对 IoT 固件进行逆向工程）</a>本系列的前一篇博客。</p>
@@ -206,7 +318,7 @@
 <li>Yagi-Uda</li>
 </ul>
 <h2 id="结论">结论</h2><p>我们希望这能让您了解 RF 和 SDR 的世界。在这一部分中，我们涵盖了 SDR 评估所需的所有基础知识和硬件工具。在下一篇博客中，我们将介绍可用的软件工具，并了解实现目标的经典方法。</p>
-<p><a href>继续下一部分 - 物联网安全 - 第 9 部分（软件无线电简介:软件部分）</a></p>
+<p><a href="/2021/09/23/IOT/iot-security-part-9-introduction-to-software-defined-radio/">继续下一部分 - 物联网安全 - 第 9 部分（软件无线电简介:软件部分）</a></p>
 <h2 id="资源：">资源：</h2><p><a href="https://payatu.com/blog/Nitesh-Malviya/getting-started-with-radio-waves-hacking" target="_blank" rel="external">Getting started with Radio Hacking – Part 1 – Radio Frequency basics and theory</a><br><a href="https://payatu.com/blog/Nitesh-Malviya/getting-started-radio-hacking-part-2-listening-fm-using-rtl-sdr-gqrx" target="_blank" rel="external">Getting Started with Radio Hacking – Part 2 – Listening to FM using RTL-SDR and GQRX</a><br><a href="https://greatscottgadgets.com/sdr/" target="_blank" rel="external">SDR with HackRF by Michael ossmann</a><br><a href="https://www.youtube.com/user/IllinoisDSP/videos" target="_blank" rel="external">University of Illinois Digital signal processing series</a></p>
 <p><em>原文链接：<a href="https://payatu.com/blog/appar/iot-security-%E2%80%93-part-8-introduction-to-software-defined-radio-sdr" target="_blank" rel="external">https://payatu.com/blog/appar/iot-security-%E2%80%93-part-8-introduction-to-software-defined-radio-sdr</a></em></p>
 ]]></content>
@@ -261,6 +373,233 @@
 
 <h2 id="固件逆向工程：简介">固件逆向工程：简介</h2><p>本文是“物联网安全”系列的一部分。如果您还没有阅读本系列之前的文章（第 1 部分到第 6 部分），我强烈建议您先阅读它们，除非您已经熟悉这些概念并且只想阅读当前主题。<br><a href="/2021/09/21/IOT/iot-security-part-1-101-iot-introduction-architecture/">物联网安全 - 第 1 部分（101 - 物联网介绍和架构）</a><br><a href="/2021/09/22/IOT/iot-security-part-6-101-zigbee-security-101/">物联网安全 - 第 6 部分 (ZigBee 安全 - 101)</a>本系列上一篇博客。</p>
 <p>固件是物联网设备的软件部分。构建功能性物联网固件涉及许多技术，有许多厂商为这些技术的开发做出贡献，如 Cisco、Linux、Wind River 等。在这篇文章中，当我说固件时，我将主要是指设备的软件组件。固件具有不同的复杂性，从驱动功能较弱的微型微控制器的裸机固件到基于微处理器的成熟操作系统，如 Linux。后者用于更复杂的设备，如路由器、电视等。</p>]]>
+    
+    </summary>
+    
+      <category term="IOT安全" scheme="http://www.youngroe.com/tags/IOT%E5%AE%89%E5%85%A8/"/>
+    
+      <category term="IOT" scheme="http://www.youngroe.com/categories/IOT/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[物联网安全101-5.ZigBee协议（翻译）]]></title>
+    <link href="http://www.youngroe.com/2021/09/22/IOT/iot-security-part-5-101-zigbee-protocol-101/"/>
+    <id>http://www.youngroe.com/2021/09/22/IOT/iot-security-part-5-101-zigbee-protocol-101/</id>
+    <published>2021-09-22T14:50:22.000Z</published>
+    <updated>2021-11-07T13:37:47.701Z</updated>
+    <content type="html"><![CDATA[<h2 id="ZigBee_协议_101">ZigBee 协议 101</h2><p>该博客是“物联网安全”系列的一部分。如果您还没有阅读本系列之前的博客（第 1-4 部分），我建议您先阅读它们，除非您已经熟悉这些概念并且只想阅读当前主题。<br><a href="/2021/09/21/IOT/iot-security-part-1-101-iot-introduction-architecture/">物联网安全 - 第 1 部分（101 - 物联网介绍和架构）</a><br><a href="/2021/09/22/IOT/iot-security-part-4-bluetooth-low-energy-101/">物联网安全 - 第 4 部分（蓝牙低能耗）</a><br>在这篇博客中，我们将详细讨论 ZigBee 规范和 ZigBee 协议架构。下一篇博客将介绍 ZigBee 协议的安全架构以及 ZigBee 设备和网络中存在的安全问题。<br><a id="more"></a></p>
+<h2 id="历史">历史</h2><p>ZigBee – 在 1990 年代作为临时数字无线电网络开发并替代有线网络。与 Wi-Fi 或蓝牙不同，ZigBee 更适用于工业自动化和控制系统 (IACS) 中的应用，在这些应用中，终端节点需要定期传输少量数据，并且功耗低，并且与计算机的传输距离较短，集中监控系统。如今，ZigBee 低速率无线个域网 (LR-WPAN) 广泛用于需要低数据速率、长电池寿命、自愈能力和嘈杂射频环境中安全网络的控制和监控应用。以下是一些在其产品中使用 ZigBee 标准作为网络解决方案的行业</p>
+<ul>
+<li><ol>
+<li>无线传感器网络（WSN）</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>工业自动化</li>
+</ol>
+</li>
+<li><ol start="3">
+<li>楼宇自动化</li>
+</ol>
+</li>
+<li><ol start="4">
+<li>家庭自动化</li>
+</ol>
+</li>
+<li><ol start="5">
+<li>智能电能计量</li>
+</ol>
+</li>
+<li><ol start="6">
+<li>医院和医疗保健自动化</li>
+</ol>
+</li>
+</ul>
+<h2 id="ZigBee_概述">ZigBee 概述</h2><div align="center"><br><img src="/img/zigbeeicon1.png" align><br></div>
+
+<p>2000 年，IEEE 802.15 工作组成立，致力于制定无线个域网 (WPAN) 或无线个域网 (WPAN) 的标准，其特点是短距离、高度简单、允许低成本和低功耗实施。IEEE 802.15.4标准第一版于2003年发布，即IEEE 802.15.4-2003（LR-WPAN），定义了OSI模型的物理层和数据链路层。2002 年 ZigBee 联盟成立并与 IEEE 802.15.4 工作组合作，于 2004 年 12 月宣布 ZigBee v.1.0 草案批准 ZigBee 2004 规范。 ZigBee 标准建立在 IEEE 802.15.4 标准之上，其中 IEEE 802.15.15定义了前两层，即物理（PHY）层、低速率无线个域网（LR-WPAN）的媒体访问控制（MAC）层，ZigBee标准提供了网络层（NWK），<br>以下部分将更详细地说明 ZigBee 标准的不同组件</p>
+<h3 id="IEEE_802-15-4_协议">IEEE 802.15.4 协议</h3><h3 id="物理层">物理层</h3><p>IEEE 802.15.4 物理层提供数据、传输和接收管理服务的调制解调，并在两个独立的频率范围内运行，低频868 ⁄ 915 MHz 和高频 2.4 GHz。物理层层负责无线电控制（启用/禁用）、接收数据包的链路质量指示 (LQI)、能量检测 (ED) 和空闲信道评估 (CCA)</p>
+<table>
+<thead>
+<tr>
+<th>物理层</th>
+<th>频率</th>
+<th>频道</th>
+<th>地区</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>低频物理层</td>
+<td>868.0-868.6 兆赫</td>
+<td>1</td>
+<td>欧洲</td>
+</tr>
+<tr>
+<td>低频物理层</td>
+<td>902-928 兆赫</td>
+<td>30</td>
+<td>美国和澳大利亚</td>
+</tr>
+<tr>
+<td>高频物理层</td>
+<td>2400-2483.5MHZ</td>
+<td>16</td>
+<td>全世界</td>
+</tr>
+</tbody>
+</table>
+<h3 id="MAC层">MAC层</h3><p>IEEE 802.15.4 MAC 层使用 CSMA-CA 机制控制对无线电信道的访问。MAC层负责Beacon传输（当设备为协调器时），实现载波侦听多路访问与冲突避免（CSMA-CA），使用保证时隙（GTS）机制进行同步，为上层提供可靠的传输机制.</p>
+<h3 id="IEEE_802-15-4_网络模型">IEEE 802.15.4 网络模型</h3><h4 id="节点类型">节点类型</h4><p>IEEE 802.15.4 标准定义了两种类型的网络节点</p>
+<ul>
+<li><p>全功能设备 (FFD)<br>FFD 设备能够在 PAN 网络内创建网络、配置和消息路由。FFD 设备能够在 PAN 网络中配置安全模型。FFD 设备可以在三种操作模式下运行，即：PAN 协调器、协调器和终端设备。FFD 设备可以与网络中的任何 RFD 或 FFD 设备进行通信。</p>
+</li>
+<li><p>缩减功能器件 (RFD)<br>RFD 通常是一种电池供电的简单设备，资源和通信要求非常适中。由于缺乏路由能力，RFD 设备只能作为 PAN 网络中的终端设备，并且只能与网络中的 FFD 设备进行通信。</p>
+</li>
+</ul>
+<h4 id="拓扑">拓扑</h4><p>IEEE 802.15.4 标准为 LR-WPAN 设备定义了两种星型或点对点网络拓扑。但是，每个网络都需要至少一个 FFD 作为网络的协调器。</p>
+<div align="center"><br><img src="/img/ieee-topology.png" align><br></div>
+
+<ul>
+<li><p>星型网络<br>星型网络是一种更加结构化的网络，网络中至少有一个 FFD 设备充当整个网络的协调器。任何 FFD 设备都会选择其唯一的 PAN 标识符来创建自己的 PAN 并将自己声明为 PAN 协调器。一旦 PAN 协调器在网络中处于活动状态，其他终端设备就可以加入网络。终端设备只能与中央节点或协调器通信。它主要用于家庭自动化、个人健康监测、玩具和游戏控制。</p>
+</li>
+<li><p>点对点<br>对等网络也需要一个 PAN 协调器，但与星型网络不同，任何设备都可以与网络范围内的任何其他设备进行通信。对等网络可以是能够自组织和自管理的自组织网络。它主要用于工业控制和监控系统、无线传感器网络、库存管理系统。</p>
+</li>
+</ul>
+<h3 id="节点寻址模式">节点寻址模式</h3><p>每个 IEEE 802.15.4 都有两种寻址模式，短（16 位）和扩展（64 位）寻址。符合 IEEE 802.15.4 的设备从制造商处获取其 64 位扩展地址，而当设备与 WPAN 关联时，协调器会分配一个唯一的 16 位 PAN 地址。</p>
+<h2 id="ZigBee_协议">ZigBee 协议</h2><div align="center"><br><img src="/img/zigbee-stack.png" align><br></div>
+
+<p>来源：<a href="https://zigbeealliance.org/wp-content/uploads/2019/11/docs-05-3474-21-0csg-zigbee-specification.pdf" target="_blank" rel="external">ZigBee 规范文档 05-3474-21（docs-05-3474-21-0csg-zigbee-specification）</a></p>
+<h3 id="应用层">应用层</h3><p>如上图所示，APL 层由几个子层组成，即：APS 子层、服务接入点（SAP）和 ZigBee 设备对象（ZDO）以及 ZDO 管理平面，以及制造商定义的应用程序对象。</p>
+<h3 id="应用支持子层_(APS)">应用支持子层 (APS)</h3><p>APS 子层通过 ZDO 和制造商定义的应用程序对象使用的一组通用服务提供 NWK 和 APL 之间的接口。APS 数据实体 (APS-DE) 和 APS 管理实体 (APS-ME) 是两个 APS 实体，提供以下服务：</p>
+<ul>
+<li><strong>APS 数据实体 (APS-DE)</strong></li>
+<li>应用支持子层协议数据单元（APDU）的生成</li>
+<li>设备绑定</li>
+<li>组地址过滤</li>
+<li>可靠的运输</li>
+<li>重复拒绝</li>
+<li><p>碎片化</p>
+</li>
+<li><p><strong>APS 管理实体 (APM-SE)</strong></p>
+</li>
+<li>绑定管理</li>
+<li>应用支持层信息库（AIB）管理</li>
+<li>安全</li>
+<li>集团管理</li>
+</ul>
+<h3 id="应用框架">应用框架</h3><p>应用程序框架提供了一个执行环境，其中托管应用程序对象并可以发送或接收数据，最多可以定义 254 个不同的应用程序对象，每个应用程序对象由一个从 1 到 254 的端点地址标识。端点 0 和端点 255 用作 ZigBee 设备对象（ZDO）地址和广播地址分别由应用支持子层数据实体-服务接入点（APSDE-SAP）端点241至254由ZigBee联盟保留，未经批准不得使用。</p>
+<ul>
+<li><p>应用配置文件<br>应用程序配置文件是消息、消息格式和处理操作的协议，使开发人员能够使用驻留在不同设备上的应用程序实体来创建可互操作的分布式应用程序。ZigBee 联盟已经为家庭自动化、工业自动化等应用发布了大量公共应用配置文件。设备制造商还可以定义适合其最终应用的自定义配置文件。</p>
+</li>
+<li><p>集群<br>集群表示为属性和应用程序消息的集合。簇分为两种类型，即输入簇和输出簇。群集标识符是在特定应用程序配置文件范围内唯一的 16 位数字。</p>
+</li>
+</ul>
+<h3 id="ZigBee_设备对象_(ZDO)">ZigBee 设备对象 (ZDO)</h3><p>位于应用程序框架和 APS 之间的 ZigBee 设备对象 (ZDO) 表示功能的基类，它提供应用程序对象、设备配置文件和 APS 之间的接口。ZDO 负责以下事项：</p>
+<ul>
+<li>初始化应用程序支持子层 (APS)、网络层 (NWK) 和安全服务。</li>
+<li>收集来自终端应用程序的配置信息以确定和实施发现、安全管理（密钥加载、密钥建立、密钥传输和身份验证）、网络管理（网络发现、离开/加入网络、重置网络连接和创建网络） 、绑定、节点和组管理。</li>
+</ul>
+<h3 id="网络层">网络层</h3><p>网络层在 802.15.4 MAC 层和应用层之间提供服务接口。网络层数据实体 (NLDE) 和网络层管理实体 (NLME) 是两个网络层实体，提供以下服务：</p>
+<ul>
+<li><strong>网络层数据实体 (NLDE)</strong></li>
+<li>网络级 PDU (NPDU) 的生成</li>
+<li>特定于拓扑的路由</li>
+<li><p>安全</p>
+</li>
+<li><p><strong>网络层管理实体 (NLME)</strong></p>
+</li>
+<li>配置新设备</li>
+<li>启动网络</li>
+<li>加入、重新加入和离开网络</li>
+<li>寻址：</li>
+<li>邻居发现</li>
+<li>路由发现</li>
+<li>接收控制</li>
+<li>路由</li>
+</ul>
+<h2 id="ZigBee_设备类型">ZigBee 设备类型</h2><p>ZigBee 设备可以在三种不同的模式或节点类型下工作。</p>
+<ul>
+<li><p>ZigBee 协调器 (ZC)<br>ZigBee 协调器是一种 FFD 设备，充当网络中其他节点的中央节点或父节点。每个网络只有一个负责 ZigBee 网络的创建、配置和管理。它维护一个关联设备列表，支持关联、解除关联和孤儿扫描、重新加入等服务。没有 ZC，ZigBee 网络就无法存在；ZC 在网络上始终处于活动状态，不能进入睡眠模式。</p>
+</li>
+<li><p>ZigBee 路由器 (ZR)<br>ZigBee 路由器是一个中间 FFD 设备，负责在终端设备之间或终端设备与协调器之间中继数据包。终端设备也可以通过路由器加入网络，ZR 充当该网络段的父节点。</p>
+</li>
+<li><p>ZigBee 终端设备 (ZED)<br>任何 FFD 或 RFD 设备都可以成为 ZigBee 网络上的终端设备，ZigBee 终端设备是一个简单的设备，如传感器，负责监控和收集数据，或根据用户的特定操作执行命令。没有任何消息路由能力的 ZED 只能从父节点发送和接收数据。通常，ZED 是低功率电池供电设备，可以将其置于睡眠状态以节省功耗。</p>
+</li>
+</ul>
+<h2 id="网络拓扑结构">网络拓扑结构</h2><p>ZigBee 网络层 (NWK) 支持星形、树形和网状拓扑。</p>
+<div align="center"><br><img src="/img/zigbee-topology.png" align><br></div>
+
+<ul>
+<li><p>星形<br>每个网络的单个 ZigBee 协调器设备，控制网络，并负责启动和维护 ZigBee 网络。所有其他设备，称为终端设备，通过 ZigBee 协调器直接与 ZigBee 协调器或其他终端设备通信。在星型网络中，协调器成为消息路由的瓶颈，协调器故障导致网络关闭。</p>
+</li>
+<li><p>树形<br>在树形拓扑结构中，ZigBee 协调器负责启动网络并选择特定的关键网络参数，但网络可以通过 ZigBee 路由器进行扩展。在树形网络中，路由器使用树形路由策略通过网络路由数据和控制消息。在 Tree 网络中，路由器故障会导致受影响路由器下的网段关闭。</p>
+</li>
+<li><p>网状拓扑<br>在网状拓扑中，ZigBee 协调器负责创建和配置，但网络可以使用 ZigBee 路由器进行扩展。网状网络允许完全对等通信。网状网络，也称为自愈网络，即协调器故障不会导致网络故障，因为终端设备相互通信以及与路由器通信。<br>网状网络很复杂，并且会在网络中产生消息传递开销。</p>
+</li>
+</ul>
+<h2 id="ZigBee_中的寻址">ZigBee 中的寻址</h2><h3 id="设备寻址">设备寻址</h3><p>ZigBee 网络中的每个 ZigBee 设备都有两种类型的地址 - IEEE 地址和网络地址。</p>
+<ul>
+<li><p>IEEE 地址<br>全球唯一的 64 位地址，由设备制造商在生产期间分配。作为 IEEE 802.15.4 标准的一部分，该地址也被称为“扩展地址”，被 IEEE 802.15.4 层用于低级数据包传递，除了绑定映射需要在两者之间创建绑定外，ZigBee 层很少使用IEEE 地址和网络地址。</p>
+</li>
+<li><p>网络地址<br>ZigBee 网络中唯一的 16 位网络地址是 ZigBee 层的一部分，也称为“短地址”。网络地址分配给终端设备，并由网络层用于在设备之间路由消息。</p>
+</li>
+</ul>
+<h3 id="ZigBee_网络身份">ZigBee 网络身份</h3><p>ZigBee 网络中的每个 ZigBee 设备都获得两种类型的标识符 (ID) - 个人区域网络标识符 (PAN ID) 和扩展 PAN ID (EPID)。</p>
+<ul>
+<li><p>PAN 标识符（PAN ID）<br>作为 IEEE 802.15.4 标准的一部分，PAN 标识符 (PAN ID) 是一个 16 位标识符，由 PAN 协调器在设置网络并与终端设备通信时选择。MAC 层过滤掉来自其他网络的数据包，这些网络不是由特定 PANID 标识的同一网络的一部分。</p>
+</li>
+<li><p>扩展 PAN ID (EPID)<br>ZigBee 网络的全球唯一 64 位标识符，EPID 标识符在给定区域内重叠的 PAN 中应该是唯一的，用于避免不同网络之间的 PAN ID 冲突。有关 PAN ID、EPAN 和短地址的更多信息，请参阅下面的 ZigBee 数据包快照</p>
+</li>
+</ul>
+<div align="center"><br><img src="/img/zigbee-node-addressing.png" align><br></div>
+
+<h3 id="应用级寻址">应用级寻址</h3><ul>
+<li><p>端点地址<br>每个 ZigBee 节点可以支持一个或多个应用程序或端点。要将直接消息发送到特定应用程序，使用编号为 1 到 240 的端点 - 还有一个广播端点 255，它允许将消息发送到给定节点上的所有应用程序。</p>
+</li>
+<li><p>集群标识符（集群 ID）<br>集群标识符是在每个应用程序配置文件范围内唯一的 16 位数字，用于标识特定的集群。请参阅下面的 ZigBee 数据包快照，以进一步了解端点地址和集群 ID</p>
+<div align="center"><br><img src="/img/zb-application-addressing.png" align><br></div>
+
+</li>
+</ul>
+<h2 id="ZigBee_中的消息传递">ZigBee 中的消息传递</h2><p>ZigBee 支持广播、单播、组多播和跨 PAN 消息传递。</p>
+<ul>
+<li><p>广播<br>由 PAN 协调器发起的消息，用于 PAN 网络中的所有设备和路由器设备，路由器将其转发给属于同一 PAN 网络的终端节点。</p>
+</li>
+<li><p>单播<br>消息指向网络中的单个终端节点，通常通过多个节点路由到达目的地节点。单播消息需要从最终目标设备到源设备的网络级确认，而如果消息路由通过不同的节点，则在 MAC 层之间发送 MAC 级确认。</p>
+</li>
+<li><p>组播<br>用于特定 PAN 网络中的每个设备的消息，属于以跳数为单位的给定传输半径内动态定义的多播组。</p>
+</li>
+</ul>
+<h3 id="PAN_间通信">PAN 间通信</h3><p>此消息适用于来自具有不同 PANID 的不同 PAN 网络的设备。ZigBee 规范将跨泛通信定义为一种机制，通过这种机制，ZigBee 设备可以与本地区域内的设备进行信息交换，而无需形成或加入相同的 ZigBee 网络。</p>
+<h2 id="结论…">结论…</h2><p>我们希望这能让您对 ZigBee 协议进行介绍和简要了解。在下一篇博客中，我们将介绍 ZigBee 协议和设备的安全性。<br>继续阅读本系列的下一部分 -<a href="/2021/09/22/IOT/iot-security-part-6-101-zigbee-security-101/">物联网安全第 6 部分（ZigBee 安全 - 101）</a></p>
+<h2 id="参考">参考</h2><ul>
+<li><ol>
+<li><a href="https://standards.ieee.org/standard/802_15_4-2020.html" target="_blank" rel="external">802.15.4-2020 - IEEE 批准的低速率无线网络标准草案</a></li>
+</ol>
+</li>
+<li><ol start="2">
+<li><a href="https://zigbeealliance.org/wp-content/uploads/2019/11/docs-05-3474-21-0csg-zigbee-specification.pdf" target="_blank" rel="external">ZigBee 规范 - 05-3474-21，2015 年 8 月 5 日</a></li>
+</ol>
+</li>
+<li><ol start="3">
+<li><a href="http://www.zigbee.org/" target="_blank" rel="external">ZigBee 联盟</a></li>
+</ol>
+</li>
+<li><ol start="4">
+<li><a href="https://en.wikipedia.org/wiki/IEEE_802.15.4" target="_blank" rel="external">IEEE 802.15.4 维基百科</a></li>
+</ol>
+</li>
+<li><ol start="5">
+<li><a href="https://en.wikipedia.org/wiki/Zigbee" target="_blank" rel="external">ZigBee 维基百科</a></li>
+</ol>
+</li>
+</ul>
+<p><em>原文链接：<a href="https://payatu.com/blog/dattatray/zigbee-protocol-101" target="_blank" rel="external">https://payatu.com/blog/dattatray/zigbee-protocol-101</a></em></p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<h2 id="ZigBee_协议_101">ZigBee 协议 101</h2><p>该博客是“物联网安全”系列的一部分。如果您还没有阅读本系列之前的博客（第 1-4 部分），我建议您先阅读它们，除非您已经熟悉这些概念并且只想阅读当前主题。<br><a href="/2021/09/21/IOT/iot-security-part-1-101-iot-introduction-architecture/">物联网安全 - 第 1 部分（101 - 物联网介绍和架构）</a><br><a href="/2021/09/22/IOT/iot-security-part-4-bluetooth-low-energy-101/">物联网安全 - 第 4 部分（蓝牙低能耗）</a><br>在这篇博客中，我们将详细讨论 ZigBee 规范和 ZigBee 协议架构。下一篇博客将介绍 ZigBee 协议的安全架构以及 ZigBee 设备和网络中存在的安全问题。<br>]]>
     
     </summary>
     
@@ -564,233 +903,6 @@
     <![CDATA[<div align="center"><br><img src="/img/icons8-zigbee-480.png" align=""/><br></div>
 
 <h2 id="ZigBee_安全_101">ZigBee 安全 101</h2><p>该博客是“物联网安全”系列的一部分。如果您还没有阅读本系列之前的博客（第 1 部分到第 5 部分），我强烈建议您先阅读它们，除非您已经熟悉这些概念并且只想阅读当前主题。<br><a href="/2021/09/21/IOT/iot-security-part-1-101-iot-introduction-architecture/">物联网安全 - 第 1 部分（101 - 物联网介绍和架构）</a><br><a href="/2021/09/22/IOT/iot-security-part-5-101-zigbee-protocol-101/">物联网安全 – 第 5 部分（ZigBee 协议 - 101）</a><br>在本文中，我们将讨论 ZigBee 协议的安全架构以及 ZigBee 设备和网络中存在的安全问题。</p>]]>
-    
-    </summary>
-    
-      <category term="IOT安全" scheme="http://www.youngroe.com/tags/IOT%E5%AE%89%E5%85%A8/"/>
-    
-      <category term="IOT" scheme="http://www.youngroe.com/categories/IOT/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[物联网安全101-5.ZigBee协议（翻译）]]></title>
-    <link href="http://www.youngroe.com/2021/09/22/IOT/iot-security-part-5-101-zigbee-protocol-101/"/>
-    <id>http://www.youngroe.com/2021/09/22/IOT/iot-security-part-5-101-zigbee-protocol-101/</id>
-    <published>2021-09-22T14:50:22.000Z</published>
-    <updated>2021-11-07T13:37:47.701Z</updated>
-    <content type="html"><![CDATA[<h2 id="ZigBee_协议_101">ZigBee 协议 101</h2><p>该博客是“物联网安全”系列的一部分。如果您还没有阅读本系列之前的博客（第 1-4 部分），我建议您先阅读它们，除非您已经熟悉这些概念并且只想阅读当前主题。<br><a href="/2021/09/21/IOT/iot-security-part-1-101-iot-introduction-architecture/">物联网安全 - 第 1 部分（101 - 物联网介绍和架构）</a><br><a href="/2021/09/22/IOT/iot-security-part-4-bluetooth-low-energy-101/">物联网安全 - 第 4 部分（蓝牙低能耗）</a><br>在这篇博客中，我们将详细讨论 ZigBee 规范和 ZigBee 协议架构。下一篇博客将介绍 ZigBee 协议的安全架构以及 ZigBee 设备和网络中存在的安全问题。<br><a id="more"></a></p>
-<h2 id="历史">历史</h2><p>ZigBee – 在 1990 年代作为临时数字无线电网络开发并替代有线网络。与 Wi-Fi 或蓝牙不同，ZigBee 更适用于工业自动化和控制系统 (IACS) 中的应用，在这些应用中，终端节点需要定期传输少量数据，并且功耗低，并且与计算机的传输距离较短，集中监控系统。如今，ZigBee 低速率无线个域网 (LR-WPAN) 广泛用于需要低数据速率、长电池寿命、自愈能力和嘈杂射频环境中安全网络的控制和监控应用。以下是一些在其产品中使用 ZigBee 标准作为网络解决方案的行业</p>
-<ul>
-<li><ol>
-<li>无线传感器网络（WSN）</li>
-</ol>
-</li>
-<li><ol start="2">
-<li>工业自动化</li>
-</ol>
-</li>
-<li><ol start="3">
-<li>楼宇自动化</li>
-</ol>
-</li>
-<li><ol start="4">
-<li>家庭自动化</li>
-</ol>
-</li>
-<li><ol start="5">
-<li>智能电能计量</li>
-</ol>
-</li>
-<li><ol start="6">
-<li>医院和医疗保健自动化</li>
-</ol>
-</li>
-</ul>
-<h2 id="ZigBee_概述">ZigBee 概述</h2><div align="center"><br><img src="/img/zigbeeicon1.png" align><br></div>
-
-<p>2000 年，IEEE 802.15 工作组成立，致力于制定无线个域网 (WPAN) 或无线个域网 (WPAN) 的标准，其特点是短距离、高度简单、允许低成本和低功耗实施。IEEE 802.15.4标准第一版于2003年发布，即IEEE 802.15.4-2003（LR-WPAN），定义了OSI模型的物理层和数据链路层。2002 年 ZigBee 联盟成立并与 IEEE 802.15.4 工作组合作，于 2004 年 12 月宣布 ZigBee v.1.0 草案批准 ZigBee 2004 规范。 ZigBee 标准建立在 IEEE 802.15.4 标准之上，其中 IEEE 802.15.15定义了前两层，即物理（PHY）层、低速率无线个域网（LR-WPAN）的媒体访问控制（MAC）层，ZigBee标准提供了网络层（NWK），<br>以下部分将更详细地说明 ZigBee 标准的不同组件</p>
-<h3 id="IEEE_802-15-4_协议">IEEE 802.15.4 协议</h3><h3 id="物理层">物理层</h3><p>IEEE 802.15.4 物理层提供数据、传输和接收管理服务的调制解调，并在两个独立的频率范围内运行，低频868 ⁄ 915 MHz 和高频 2.4 GHz。物理层层负责无线电控制（启用/禁用）、接收数据包的链路质量指示 (LQI)、能量检测 (ED) 和空闲信道评估 (CCA)</p>
-<table>
-<thead>
-<tr>
-<th>物理层</th>
-<th>频率</th>
-<th>频道</th>
-<th>地区</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>低频物理层</td>
-<td>868.0-868.6 兆赫</td>
-<td>1</td>
-<td>欧洲</td>
-</tr>
-<tr>
-<td>低频物理层</td>
-<td>902-928 兆赫</td>
-<td>30</td>
-<td>美国和澳大利亚</td>
-</tr>
-<tr>
-<td>高频物理层</td>
-<td>2400-2483.5MHZ</td>
-<td>16</td>
-<td>全世界</td>
-</tr>
-</tbody>
-</table>
-<h3 id="MAC层">MAC层</h3><p>IEEE 802.15.4 MAC 层使用 CSMA-CA 机制控制对无线电信道的访问。MAC层负责Beacon传输（当设备为协调器时），实现载波侦听多路访问与冲突避免（CSMA-CA），使用保证时隙（GTS）机制进行同步，为上层提供可靠的传输机制.</p>
-<h3 id="IEEE_802-15-4_网络模型">IEEE 802.15.4 网络模型</h3><h4 id="节点类型">节点类型</h4><p>IEEE 802.15.4 标准定义了两种类型的网络节点</p>
-<ul>
-<li><p>全功能设备 (FFD)<br>FFD 设备能够在 PAN 网络内创建网络、配置和消息路由。FFD 设备能够在 PAN 网络中配置安全模型。FFD 设备可以在三种操作模式下运行，即：PAN 协调器、协调器和终端设备。FFD 设备可以与网络中的任何 RFD 或 FFD 设备进行通信。</p>
-</li>
-<li><p>缩减功能器件 (RFD)<br>RFD 通常是一种电池供电的简单设备，资源和通信要求非常适中。由于缺乏路由能力，RFD 设备只能作为 PAN 网络中的终端设备，并且只能与网络中的 FFD 设备进行通信。</p>
-</li>
-</ul>
-<h4 id="拓扑">拓扑</h4><p>IEEE 802.15.4 标准为 LR-WPAN 设备定义了两种星型或点对点网络拓扑。但是，每个网络都需要至少一个 FFD 作为网络的协调器。</p>
-<div align="center"><br><img src="/img/ieee-topology.png" align><br></div>
-
-<ul>
-<li><p>星型网络<br>星型网络是一种更加结构化的网络，网络中至少有一个 FFD 设备充当整个网络的协调器。任何 FFD 设备都会选择其唯一的 PAN 标识符来创建自己的 PAN 并将自己声明为 PAN 协调器。一旦 PAN 协调器在网络中处于活动状态，其他终端设备就可以加入网络。终端设备只能与中央节点或协调器通信。它主要用于家庭自动化、个人健康监测、玩具和游戏控制。</p>
-</li>
-<li><p>点对点<br>对等网络也需要一个 PAN 协调器，但与星型网络不同，任何设备都可以与网络范围内的任何其他设备进行通信。对等网络可以是能够自组织和自管理的自组织网络。它主要用于工业控制和监控系统、无线传感器网络、库存管理系统。</p>
-</li>
-</ul>
-<h3 id="节点寻址模式">节点寻址模式</h3><p>每个 IEEE 802.15.4 都有两种寻址模式，短（16 位）和扩展（64 位）寻址。符合 IEEE 802.15.4 的设备从制造商处获取其 64 位扩展地址，而当设备与 WPAN 关联时，协调器会分配一个唯一的 16 位 PAN 地址。</p>
-<h2 id="ZigBee_协议">ZigBee 协议</h2><div align="center"><br><img src="/img/zigbee-stack.png" align><br></div>
-
-<p>来源：<a href="https://zigbeealliance.org/wp-content/uploads/2019/11/docs-05-3474-21-0csg-zigbee-specification.pdf" target="_blank" rel="external">ZigBee 规范文档 05-3474-21（docs-05-3474-21-0csg-zigbee-specification）</a></p>
-<h3 id="应用层">应用层</h3><p>如上图所示，APL 层由几个子层组成，即：APS 子层、服务接入点（SAP）和 ZigBee 设备对象（ZDO）以及 ZDO 管理平面，以及制造商定义的应用程序对象。</p>
-<h3 id="应用支持子层_(APS)">应用支持子层 (APS)</h3><p>APS 子层通过 ZDO 和制造商定义的应用程序对象使用的一组通用服务提供 NWK 和 APL 之间的接口。APS 数据实体 (APS-DE) 和 APS 管理实体 (APS-ME) 是两个 APS 实体，提供以下服务：</p>
-<ul>
-<li><strong>APS 数据实体 (APS-DE)</strong></li>
-<li>应用支持子层协议数据单元（APDU）的生成</li>
-<li>设备绑定</li>
-<li>组地址过滤</li>
-<li>可靠的运输</li>
-<li>重复拒绝</li>
-<li><p>碎片化</p>
-</li>
-<li><p><strong>APS 管理实体 (APM-SE)</strong></p>
-</li>
-<li>绑定管理</li>
-<li>应用支持层信息库（AIB）管理</li>
-<li>安全</li>
-<li>集团管理</li>
-</ul>
-<h3 id="应用框架">应用框架</h3><p>应用程序框架提供了一个执行环境，其中托管应用程序对象并可以发送或接收数据，最多可以定义 254 个不同的应用程序对象，每个应用程序对象由一个从 1 到 254 的端点地址标识。端点 0 和端点 255 用作 ZigBee 设备对象（ZDO）地址和广播地址分别由应用支持子层数据实体-服务接入点（APSDE-SAP）端点241至254由ZigBee联盟保留，未经批准不得使用。</p>
-<ul>
-<li><p>应用配置文件<br>应用程序配置文件是消息、消息格式和处理操作的协议，使开发人员能够使用驻留在不同设备上的应用程序实体来创建可互操作的分布式应用程序。ZigBee 联盟已经为家庭自动化、工业自动化等应用发布了大量公共应用配置文件。设备制造商还可以定义适合其最终应用的自定义配置文件。</p>
-</li>
-<li><p>集群<br>集群表示为属性和应用程序消息的集合。簇分为两种类型，即输入簇和输出簇。群集标识符是在特定应用程序配置文件范围内唯一的 16 位数字。</p>
-</li>
-</ul>
-<h3 id="ZigBee_设备对象_(ZDO)">ZigBee 设备对象 (ZDO)</h3><p>位于应用程序框架和 APS 之间的 ZigBee 设备对象 (ZDO) 表示功能的基类，它提供应用程序对象、设备配置文件和 APS 之间的接口。ZDO 负责以下事项：</p>
-<ul>
-<li>初始化应用程序支持子层 (APS)、网络层 (NWK) 和安全服务。</li>
-<li>收集来自终端应用程序的配置信息以确定和实施发现、安全管理（密钥加载、密钥建立、密钥传输和身份验证）、网络管理（网络发现、离开/加入网络、重置网络连接和创建网络） 、绑定、节点和组管理。</li>
-</ul>
-<h3 id="网络层">网络层</h3><p>网络层在 802.15.4 MAC 层和应用层之间提供服务接口。网络层数据实体 (NLDE) 和网络层管理实体 (NLME) 是两个网络层实体，提供以下服务：</p>
-<ul>
-<li><strong>网络层数据实体 (NLDE)</strong></li>
-<li>网络级 PDU (NPDU) 的生成</li>
-<li>特定于拓扑的路由</li>
-<li><p>安全</p>
-</li>
-<li><p><strong>网络层管理实体 (NLME)</strong></p>
-</li>
-<li>配置新设备</li>
-<li>启动网络</li>
-<li>加入、重新加入和离开网络</li>
-<li>寻址：</li>
-<li>邻居发现</li>
-<li>路由发现</li>
-<li>接收控制</li>
-<li>路由</li>
-</ul>
-<h2 id="ZigBee_设备类型">ZigBee 设备类型</h2><p>ZigBee 设备可以在三种不同的模式或节点类型下工作。</p>
-<ul>
-<li><p>ZigBee 协调器 (ZC)<br>ZigBee 协调器是一种 FFD 设备，充当网络中其他节点的中央节点或父节点。每个网络只有一个负责 ZigBee 网络的创建、配置和管理。它维护一个关联设备列表，支持关联、解除关联和孤儿扫描、重新加入等服务。没有 ZC，ZigBee 网络就无法存在；ZC 在网络上始终处于活动状态，不能进入睡眠模式。</p>
-</li>
-<li><p>ZigBee 路由器 (ZR)<br>ZigBee 路由器是一个中间 FFD 设备，负责在终端设备之间或终端设备与协调器之间中继数据包。终端设备也可以通过路由器加入网络，ZR 充当该网络段的父节点。</p>
-</li>
-<li><p>ZigBee 终端设备 (ZED)<br>任何 FFD 或 RFD 设备都可以成为 ZigBee 网络上的终端设备，ZigBee 终端设备是一个简单的设备，如传感器，负责监控和收集数据，或根据用户的特定操作执行命令。没有任何消息路由能力的 ZED 只能从父节点发送和接收数据。通常，ZED 是低功率电池供电设备，可以将其置于睡眠状态以节省功耗。</p>
-</li>
-</ul>
-<h2 id="网络拓扑结构">网络拓扑结构</h2><p>ZigBee 网络层 (NWK) 支持星形、树形和网状拓扑。</p>
-<div align="center"><br><img src="/img/zigbee-topology.png" align><br></div>
-
-<ul>
-<li><p>星形<br>每个网络的单个 ZigBee 协调器设备，控制网络，并负责启动和维护 ZigBee 网络。所有其他设备，称为终端设备，通过 ZigBee 协调器直接与 ZigBee 协调器或其他终端设备通信。在星型网络中，协调器成为消息路由的瓶颈，协调器故障导致网络关闭。</p>
-</li>
-<li><p>树形<br>在树形拓扑结构中，ZigBee 协调器负责启动网络并选择特定的关键网络参数，但网络可以通过 ZigBee 路由器进行扩展。在树形网络中，路由器使用树形路由策略通过网络路由数据和控制消息。在 Tree 网络中，路由器故障会导致受影响路由器下的网段关闭。</p>
-</li>
-<li><p>网状拓扑<br>在网状拓扑中，ZigBee 协调器负责创建和配置，但网络可以使用 ZigBee 路由器进行扩展。网状网络允许完全对等通信。网状网络，也称为自愈网络，即协调器故障不会导致网络故障，因为终端设备相互通信以及与路由器通信。<br>网状网络很复杂，并且会在网络中产生消息传递开销。</p>
-</li>
-</ul>
-<h2 id="ZigBee_中的寻址">ZigBee 中的寻址</h2><h3 id="设备寻址">设备寻址</h3><p>ZigBee 网络中的每个 ZigBee 设备都有两种类型的地址 - IEEE 地址和网络地址。</p>
-<ul>
-<li><p>IEEE 地址<br>全球唯一的 64 位地址，由设备制造商在生产期间分配。作为 IEEE 802.15.4 标准的一部分，该地址也被称为“扩展地址”，被 IEEE 802.15.4 层用于低级数据包传递，除了绑定映射需要在两者之间创建绑定外，ZigBee 层很少使用IEEE 地址和网络地址。</p>
-</li>
-<li><p>网络地址<br>ZigBee 网络中唯一的 16 位网络地址是 ZigBee 层的一部分，也称为“短地址”。网络地址分配给终端设备，并由网络层用于在设备之间路由消息。</p>
-</li>
-</ul>
-<h3 id="ZigBee_网络身份">ZigBee 网络身份</h3><p>ZigBee 网络中的每个 ZigBee 设备都获得两种类型的标识符 (ID) - 个人区域网络标识符 (PAN ID) 和扩展 PAN ID (EPID)。</p>
-<ul>
-<li><p>PAN 标识符（PAN ID）<br>作为 IEEE 802.15.4 标准的一部分，PAN 标识符 (PAN ID) 是一个 16 位标识符，由 PAN 协调器在设置网络并与终端设备通信时选择。MAC 层过滤掉来自其他网络的数据包，这些网络不是由特定 PANID 标识的同一网络的一部分。</p>
-</li>
-<li><p>扩展 PAN ID (EPID)<br>ZigBee 网络的全球唯一 64 位标识符，EPID 标识符在给定区域内重叠的 PAN 中应该是唯一的，用于避免不同网络之间的 PAN ID 冲突。有关 PAN ID、EPAN 和短地址的更多信息，请参阅下面的 ZigBee 数据包快照</p>
-</li>
-</ul>
-<div align="center"><br><img src="/img/zigbee-node-addressing.png" align><br></div>
-
-<h3 id="应用级寻址">应用级寻址</h3><ul>
-<li><p>端点地址<br>每个 ZigBee 节点可以支持一个或多个应用程序或端点。要将直接消息发送到特定应用程序，使用编号为 1 到 240 的端点 - 还有一个广播端点 255，它允许将消息发送到给定节点上的所有应用程序。</p>
-</li>
-<li><p>集群标识符（集群 ID）<br>集群标识符是在每个应用程序配置文件范围内唯一的 16 位数字，用于标识特定的集群。请参阅下面的 ZigBee 数据包快照，以进一步了解端点地址和集群 ID</p>
-<div align="center"><br><img src="/img/zb-application-addressing.png" align><br></div>
-
-</li>
-</ul>
-<h2 id="ZigBee_中的消息传递">ZigBee 中的消息传递</h2><p>ZigBee 支持广播、单播、组多播和跨 PAN 消息传递。</p>
-<ul>
-<li><p>广播<br>由 PAN 协调器发起的消息，用于 PAN 网络中的所有设备和路由器设备，路由器将其转发给属于同一 PAN 网络的终端节点。</p>
-</li>
-<li><p>单播<br>消息指向网络中的单个终端节点，通常通过多个节点路由到达目的地节点。单播消息需要从最终目标设备到源设备的网络级确认，而如果消息路由通过不同的节点，则在 MAC 层之间发送 MAC 级确认。</p>
-</li>
-<li><p>组播<br>用于特定 PAN 网络中的每个设备的消息，属于以跳数为单位的给定传输半径内动态定义的多播组。</p>
-</li>
-</ul>
-<h3 id="PAN_间通信">PAN 间通信</h3><p>此消息适用于来自具有不同 PANID 的不同 PAN 网络的设备。ZigBee 规范将跨泛通信定义为一种机制，通过这种机制，ZigBee 设备可以与本地区域内的设备进行信息交换，而无需形成或加入相同的 ZigBee 网络。</p>
-<h2 id="结论…">结论…</h2><p>我们希望这能让您对 ZigBee 协议进行介绍和简要了解。在下一篇博客中，我们将介绍 ZigBee 协议和设备的安全性。<br>继续阅读本系列的下一部分 -<a href="/2021/09/22/IOT/iot-security-part-6-101-zigbee-security-101/">物联网安全第 6 部分（ZigBee 安全 - 101）</a></p>
-<h2 id="参考">参考</h2><ul>
-<li><ol>
-<li><a href="https://standards.ieee.org/standard/802_15_4-2020.html" target="_blank" rel="external">802.15.4-2020 - IEEE 批准的低速率无线网络标准草案</a></li>
-</ol>
-</li>
-<li><ol start="2">
-<li><a href="https://zigbeealliance.org/wp-content/uploads/2019/11/docs-05-3474-21-0csg-zigbee-specification.pdf" target="_blank" rel="external">ZigBee 规范 - 05-3474-21，2015 年 8 月 5 日</a></li>
-</ol>
-</li>
-<li><ol start="3">
-<li><a href="http://www.zigbee.org/" target="_blank" rel="external">ZigBee 联盟</a></li>
-</ol>
-</li>
-<li><ol start="4">
-<li><a href="https://en.wikipedia.org/wiki/IEEE_802.15.4" target="_blank" rel="external">IEEE 802.15.4 维基百科</a></li>
-</ol>
-</li>
-<li><ol start="5">
-<li><a href="https://en.wikipedia.org/wiki/Zigbee" target="_blank" rel="external">ZigBee 维基百科</a></li>
-</ol>
-</li>
-</ul>
-<p><em>原文链接：<a href="https://payatu.com/blog/dattatray/zigbee-protocol-101" target="_blank" rel="external">https://payatu.com/blog/dattatray/zigbee-protocol-101</a></em></p>
-]]></content>
-    <summary type="html">
-    <![CDATA[<h2 id="ZigBee_协议_101">ZigBee 协议 101</h2><p>该博客是“物联网安全”系列的一部分。如果您还没有阅读本系列之前的博客（第 1-4 部分），我建议您先阅读它们，除非您已经熟悉这些概念并且只想阅读当前主题。<br><a href="/2021/09/21/IOT/iot-security-part-1-101-iot-introduction-architecture/">物联网安全 - 第 1 部分（101 - 物联网介绍和架构）</a><br><a href="/2021/09/22/IOT/iot-security-part-4-bluetooth-low-energy-101/">物联网安全 - 第 4 部分（蓝牙低能耗）</a><br>在这篇博客中，我们将详细讨论 ZigBee 规范和 ZigBee 协议架构。下一篇博客将介绍 ZigBee 协议的安全架构以及 ZigBee 设备和网络中存在的安全问题。<br>]]>
     
     </summary>
     
@@ -2522,102 +2634,6 @@
       <category term="驱动" scheme="http://www.youngroe.com/tags/%E9%A9%B1%E5%8A%A8/"/>
     
       <category term="Kernel" scheme="http://www.youngroe.com/categories/Kernel/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[如何正确的对Windows软件进行逆向工程（翻译/转载）]]></title>
-    <link href="http://www.youngroe.com/2019/04/06/Windows/how-to-reverse-engineer-software-windows-in-a-right-way/"/>
-    <id>http://www.youngroe.com/2019/04/06/Windows/how-to-reverse-engineer-software-windows-in-a-right-way/</id>
-    <published>2019-04-06T04:45:15.000Z</published>
-    <updated>2020-02-15T07:54:24.201Z</updated>
-    <content type="html"><![CDATA[<h2 id="0x00_前言">0x00 前言</h2><p>你有没有想过要拆开某个机械装置了解它的工作原理呢？嗯，谁没有呢。这种欲望也是是逆向工程的主导力量，逆向对于分析产品安全性、在不运行可疑的.exe文件的情况下查明其用途、恢复丢失的文档、开发基于旧软件的新解决方案等非常有用。<br><a id="more"></a><br>在本文中，我们讨论执行逆向工程所需的知识结构、逆向工程的基本原理、Windows软件、反汇编器和工具。我们还提供了对一个程序进行逆向工程的步骤示例。</p>
-<h2 id="0x01_什么是逆向工程？">0x01 什么是逆向工程？</h2><p>逆向工程是发现硬件或软件背后的原理（例如其体系结构和内部结构）的过程。简单来说逆向工程就是搞清楚程序是如何工作的。<br>显然，如果您有文档，那么整个过程将变得更加简单。但是经常会发生这样的情况：没有文档，您需要通过另外的途径来学习某个软件的工作方式。<br>您什么时候需要对软件进行逆向工程，逆向工程对你有什么帮助？<br>逆向工程在计算机科学领域有许多用途，包括：</p>
-<ul>
-<li>研究网络通讯协议</li>
-<li>查找恶意软件中使用的算法，例如计算机病毒，特洛伊木马，勒索软件等。</li>
-<li>研究用于存储任何类型信息的文件格式，例如电子邮件数据库和磁盘映像</li>
-<li>检查您自己的软件抵抗逆向工程的能力</li>
-<li>改善软件与系统和第三方软件的兼容性</li>
-<li>使用未文档化的系统功能<br>逆向工程的合法性取决于其目的以及软件的使用方式。假设您已合法获得该软件的副本，则上述所有目的都是完全合法的。但是，例如，如果您打算对软件某些闭源功能进行逆向工程，然后在另一个软件中使用，则可能会遇到麻烦。</li>
-</ul>
-<p>关于<a href="https://en.wikibooks.org/wiki/Reverse_Engineering/Legal_Aspects" target="_blank" rel="external">法律文件</a>，最终用户许可协议（EULA）通常禁止进行逆向工程。但是美国<a href="https://www.law.cornell.edu/uscode/text/17/1201" target="_blank" rel="external">数字千年版权法案</a>规定，如果为了提高与其他产品的兼容性而逆向某个软件是合法的。<br>法律要求因国家/地区而异，因此请在开始之前花点时间研究一下。<br>现在，让我们看看如何对软件进行逆向工程。</p>
-<h2 id="0x01_逆向工程需要什么？">0x01 逆向工程需要什么？</h2><p>要开始逆向软件，您需要：</p>
-<ul>
-<li>1.您想要使用逆向工程领域的知识</li>
-<li>2.一些能够再反汇编一个软件时应用你专业知识的工具<br>让我们考虑一个与软件不相关的例子。假设您有一只手表，想确定它是机械的、石英的还是自动的。<br>拥有该领域的知识意味着您应该知道有三种类型的手表。此外，您应该知道，如果有电池，它应该在手表内部，打开手表就可以看到它。您还应该了解手表的内部结构，电池的外观以及打开表壳所需的工具的基本知识。拥有可以验证知识的工具，意味着您需要一把螺丝起子或其他专用工具，才能打开手表。<br>就像对手表进行逆向工程需要特定的技能和工具一样，逆向工程软件也需要其自身在特定领域的知识和工具。</li>
-</ul>
-<h2 id="0x02_理论知识-软件逆向工程过程">0x02 理论知识-软件逆向工程过程</h2><p>对于不同的软件逆向工程任务，您需要不同类型的知识。当然，有一些常识可以帮助您完成大多数逆向工程任务：常见的应用程序结构，编程语言，编译器等知识。但是，如果没有特定的理论知识，就无法完成具体的逆向工程任务。</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:left">逆向任务</th>
-<th style="text-align:left">你需要的基础知识</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">对有网络行为的软件进行逆向工程</td>
-<td style="text-align:left">进程间通信、网络的结构、连接、网络数据包等</td>
-</tr>
-<tr>
-<td style="text-align:left">逆向加密算法</td>
-<td style="text-align:left">密码学及最常使用的密码学相关算法</td>
-</tr>
-<tr>
-<td style="text-align:left">逆向文件结构</td>
-<td style="text-align:left">基本文件概念以及不同的系统或组件如何使用文件</td>
-</tr>
-</tbody>
-</table>
-<p>在逆向分析某些软件时使用一些技巧可以节省大量时间。对于有文件交互的软件，可以输入一些比较特殊的数据，然后记录实际存储时候的数据的大小和偏移，这些信息有助于你发现这些文件的内部结构。<br>进行逆向工程过程时，软件开发人员通常使用反汇编程序来查找适当的算法和程序逻辑。有许多不同的可执行文件格式，编译器（提供不同的输出）和操作系统，因为这种多样性，很难通过单一的技术去逆向各种类型的软件。<br>要理解反编译的代码，您需要一些有关汇编语言，函数调用约定，栈结构，堆栈框架等方知识。<br>了解不同语言的汇编程序输出可能有助于您发现原始功能。让我们来看一些Windows x86平台的示例。<br>假设我们有以下代码：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> count = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; ++i)</span><br><span class="line">&#123;</span><br><span class="line">count++;</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; count;</span><br></pre></td></tr></table></figure>
-<p>如果我们将此代码编译为可执行文件，则会在反汇编程序中看到以下内容：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">004113</span>DE loc_4113DE:</span><br><span class="line"><span class="number">004113</span>DE     mov     eax, [ebp-<span class="number">14</span>h]</span><br><span class="line"><span class="number">004113E1</span>     add     eax, <span class="number">1</span></span><br><span class="line"><span class="number">004113E4</span>     mov     [ebp-<span class="number">14</span>h], eax</span><br><span class="line"><span class="number">004113E7</span> loc_4113E7:</span><br><span class="line"><span class="number">004113E7</span>     cmp     [ebp-<span class="number">14</span>h], <span class="number">0</span>Ah</span><br><span class="line"><span class="number">004113</span>EB     jge     <span class="keyword">short</span> loc_4113F8</span><br><span class="line"><span class="number">004113</span>ED     mov     eax, [ebp-<span class="number">8</span>]</span><br><span class="line"><span class="number">004113F</span>0     add     eax, <span class="number">1</span></span><br><span class="line"><span class="number">004113F</span>3     mov     [ebp-<span class="number">8</span>], eax</span><br><span class="line"><span class="number">004113F</span>6     jmp     <span class="keyword">short</span> loc_4113DE</span><br><span class="line"><span class="number">004113F</span>8 loc_4113F8:</span><br><span class="line"><span class="number">004113F</span>8     mov     ecx, ds:?<span class="built_in">cout</span>@<span class="built_in">std</span></span><br><span class="line"><span class="number">004113F</span>E     push    eax</span><br><span class="line"><span class="number">00411400</span>     call    ds:basic_ostream@<span class="keyword">operator</span>&lt;&lt;(<span class="keyword">int</span>)</span><br><span class="line"><span class="number">00411404</span>     xor     eax, eax</span><br><span class="line"><span class="number">00411406</span>     retn</span><br></pre></td></tr></table></figure>
-<p>如上，for循环最后变成了由比较和跳转语句组成的汇编代码，注意这里的汇编代码并未使用ecx作为循环计数器，另外这里的局部变量时[ebp-14h]和[ebp-8]。<br>让我们看看使用release模式编译会汇编代码会有什么变化:</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">00401000</span> main     proc near</span><br><span class="line"><span class="number">00401000</span>     mov     ecx, ds:?<span class="built_in">cout</span>@<span class="built_in">std</span></span><br><span class="line"><span class="number">00401006</span>     push    <span class="number">0</span>Ah</span><br><span class="line"><span class="number">00401008</span>     call    ds:basic_ostream@<span class="keyword">operator</span>&lt;&lt;(<span class="keyword">int</span>)</span><br><span class="line"><span class="number">0040100</span>E     xor     eax, eax</span><br><span class="line"><span class="number">00401010</span>     retn</span><br><span class="line"><span class="number">00401010</span> main     endp</span><br></pre></td></tr></table></figure>
-<p>这段代码看起来与之前的代码完全不同。这是因为代码被优化了。删除了该循环，因为除了将count变量增加到10之外，循环没有做任何其他事情，因此优化程序决定仅保留count变量的最终值，并将该值直接作为count输出运算符的参数。<br>目前，我们使用的编译器非常擅长优化代码。这就是为什么在进行逆向工程时，最好理解代码背后的思想（代码原理），而不是尝试获取原始代码本身。如果您了解代码背后的原理，则只需编写适合原始任务的原型即可。<br>如果您编译不同的运算符，结构和其他语言构造，那么你就知道汇编代码将非常有用。了解最终的汇编代码是开始C++逆向工程过程的一种好方法，但是我们在这里不介绍它的技术细节。</p>
-<h2 id="0x03_逆向工程Windows软件的实用工具">0x03 逆向工程Windows软件的实用工具</h2><p>在我们的<a href="https://www.apriorit.com/dev-blog/173-application-architecture-research" target="_blank" rel="external">应用程序架构研究中</a>，我们已经描述了几种逆向工程工具，包括ProcessMonitor和ProcessExplorer。这些工具对于逆向工程绝对是必不可少的。<br>在本节中，我们将回顾最受欢迎的反汇编程序以及用于逆向工程项目的其他一些工具。<br>您可以在有关<a href="https://www.apriorit.com/dev-blog/366-software-reverse-engineering-tools" target="_blank" rel="external">最佳软件逆向工程工具的文章</a>中获得更多详细信息和用法示例。</p>
-<h3 id="反汇编工具">反汇编工具</h3><p>反汇编程序是将可执行文件转换为汇编语言的程序。最受欢迎的是<a href="https://www.hex-rays.com/products/ida/" target="_blank" rel="external">IDA Pro</a><br><strong>IDA Pro</strong></p>
-<div align="center"><br><img src="/img/reverse_idapro.png" alt="IDA Pro" align="center"><br></div><br>IDA Pro是一种方便而强大的反汇编工具。由很多功能，可让您快速反汇编一个软件。它可以显示函数调用树，解析可执行文件的导入和导出，并显示有关它们的信息。它甚至可以用C语言显示代码。它还支持多种CPU架构，因此可以使用IDA Pro对ARM，AVR，M68k和许多其他架构进行逆向工程。<br><br><strong>Radare</strong><br><div align="center"><br><img src="/img/reverse_radare.jpg" alt="Radare" align="center"><br></div>
-
-<p><a href="https://rada.re/r/" target="_blank" rel="external">Radare</a>反汇编工具是IDA的替代产品。它基本上具有IDA的所有功能。虽然没有那么强大和稳定。但是它是免费和开源的。Radare本身是一个控制台工具，但是它具有Cutter前端，这使其成为IDA的可选替代。</p>
-<h3 id="Windows_Sysinternals">Windows Sysinternals</h3><p><a href="https://docs.microsoft.com/en-us/sysinternals/" target="_blank" rel="external">Windows Sysinternals</a>实用程序通常用于Microsoft Windows环境的管理，诊断，故障排除和监视。但它们也适用于逆向Windows软件。<br><strong>TCPView</strong>是一个网络嗅探器，它显示来自所有进程的有关TCP/UDP数据包的所有信息。该工具对于逆向网络协议很有用。<br><strong>PortMon</strong>是一个物理系统端口监视器。它监视串行和并行端口以及通过它们的所有流量。<br><strong>WinObj</strong>以分层结构显示系统中的所有全局对象。当逆向使用同步对象（例如互斥量和信号量）的应用程序以及内核模式驱动程序时，此工具很有用。</p>
-<h3 id="网络监控工具">网络监控工具</h3><p><strong>Wireshark</strong></p>
-<div align="center"><br><img src="/img/reverse_Wireshark.jpg" alt="Wireshark" align="center"><br></div>
-
-<p><a href="https://www.wireshark.org/" target="_blank" rel="external">Wireshark</a>是功能最强大的网络嗅探器之一。它不仅允许您捕获网络流量，而且还包含针对各种网络协议的解析器，这些解析器从诸如以太网，TCP和IP的真正底层开始，到诸如WebSockets和XMPP的特定于应用程序的协议。</p>
-<p><strong>Fiddler</strong></p>
-<div align="center"><br><img src="/img/reverse_Fiddler.jpg" alt="Fiddler" align="center"><br></div><br>Fiddler是一个Web代理，它记录来自浏览器的流量，并允许您分析HTTP/HTTPS请求。与Wireshark不同，它显示HTTP会话而不是单独的网络数据包。Fiddler还允许您在监视SOAP，REST和AJAX请求时分析通过HTTP发送的压缩数据，并分析JSON和XML数据(译者注:搭配proxifier使用更强大)。<br><br><strong>API Monitor</strong><br><br><div align="center"><br><img src="/img/reverse_apimonitor.png" alt="API Monitor" align="center"><br></div>
-
-<p><a href="http://www.rohitab.com/apimonitor" target="_blank" rel="external">API Monitor</a>是非常实用的工具，用于发现应用程序调用了哪些API以及应用程序从这些API期望的行为。该工具具有功能强大的数据库，可让您看到对不仅是kernel32和ntdll的大量API函数的调用，而且还包括对COM，托管环境等的调用。此外，API Monitor提供了方便的过滤机制。</p>
-<h3 id="调试器">调试器</h3><p>对于任何开发人员来说，调试器对于查看程序现在正在做什么时无可替代的。逆向应用程序时从调试中获得的好处与调试实时应用程序时获得的好处相同。<br>最受欢迎的调试器是OllyDbg，WinDbg和Windbg Preview。</p>
-<p><strong>OllyDbg</strong></p>
-<div align="center"><br><img src="/img/reverse_ollydbg.png" alt="OllyDbg" align="center"><br></div><br>当涉及软件逆向工程时，OllyDbg（及其后继x64dbg）可能是最好的调试器。它是专门为满足逆向需求而开发的，并具有用于此目的的所有功能：<br><br>- 内置的反汇编程序，能够分析和识别关键数据结构<br>- 导入和导出分析功能<br>- 内置的assembling和patching引擎<br>解析API函数及其参数的能力使逆向系统的交互变得容易。堆栈视图提供了大量有关调用堆栈的信息。另一个重要的优点是，可以实用OllyDbg调试有调试保护的应用程序，而普通的调试器却无能为力。<br><br><strong>WinDbg</strong><br><div align="center"><br><img src="/img/reverse_Windbg.png" alt="Windbg" align="center"><br></div>
-
-<p>尽管界面简单，但<a href="http://www.windbg.org/" target="_blank" rel="external">WinDbg</a>具有强大的调试工具。它具有内置的反汇编程序，各种命令，可让您几乎了解要调试的进程/系统的所有内容，并具有内核模式调试的能力，这可能是最有价值的功能。对于逆向驱动程序，尤其是内核模式驱动程序，这是一个很大的优势。</p>
-<p><strong>Windbg Preview</strong></p>
-<div align="center"><br><img src="/img/reverse_Windbg_Preview.jpg" alt="Windbg Preview" align="center"><br></div><br>Windbg Preview是Microsoft开发的Windbg的新版本。它仅通过Windows应用商店分发。它具有经典Windbg的所有功能以及新的UI和一些新功能。这些新功能之一是Time Travel Debugging，它使您可以记录一段程序执行时间，然后根据需要重复调试多次。这样您可以通过逐步执行代码中所关心的部分，而不必担心意外运行某些代码并丢失上下文或所有数据。<br><br>## 0x04 现实中的软件逆向工程示例<br><br>现在，我们将看到一个示例，说明如何对软件进行逆向工程。假设您有一个可疑的可执行文件。您需要了解该程序的功能以及对用户而言是否安全。考虑到这种情况，最好不要在工作计算机上运行此可执行文件，而要使用虚拟机。让我们在虚拟机中启动应用程序。<br><div align="center"><br><img src="/img/reverse_CreateService.png" alt="Process creates a service" align="center"><br></div><br>如我们所见，该文件创建一个名为TestDriver的Windows服务，为内核类型，因此我们知道它是一个驱动程序。但是从哪里获取驱动程序文件才能运行？我们可以使用Sysinternals Suite中的ProcessMonitor进行查找。打开ProcessMonitor时，我们可以设置过滤器以仅向我们显示感兴趣的文件活动。其活动日志如下所示：<br><div align="center"><br><img src="/img/reverse_filemon.png" alt="FileMon information" align="center"><br></div>
-
-<p>驱动程序文件是由我们所要进行的逆向的程序创建的，该程序将该文件放置在用户的temp目录中。无需在temp文件夹中查找文件，因为我们发现该过程会在使用后立即将其删除。那么该文件干了什么呢？如果将文件解压缩，我们可能会尝试在流程的资源部分中找到它，因为这是存储此类数据的常用位置。让我们看看那里。我们将使用另一个工具-<a href="http://www.angusj.com/resourcehacker/" target="_blank" rel="external">Resource Hacker</a>-检查资源。运行它：</p>
-<p><div align="center"><br><img src="/img/reverse_reshack.png" alt="使用Resource Hacker检查资源" align="center"><br></div><br>找到了，我们在资源文件中找到了，这可能是Windows可执行文件，因为它以MZ签名开头并且具有字符串“This program cannot be run in DOS mode”。让我们检查一下它是否是我们的驱动程序文件。为此，我们使用Resource Hacker提取资源，然后在反汇编程序中将其打开。</p>
-<p><div align="center"><br><img src="/img/reverse_disdrv.png" alt align="center"><br></div><br>众所周知，DriverEntry是Windows系统中内核模式驱动程序的入口点。似乎我们找到的时一个驱动程序文件，因此我们可以继续进行研究。</p>
-<h2 id="0x05_如何对驱动程序进行反向工程">0x05 如何对驱动程序进行反向工程</h2><p>要开始对驱动程序进行逆向工程，我们逐一检查从DriverEntry调用的函数。转到sub_14005，没有发现任何有趣的事情，因此我们继续进行sub_110F0并找到以下代码：</p>
-<p><div align="center"><br><img src="/img/reverse_assdiver.png" alt align="center"><br></div><br>为了简单起见，此处省略了一些信息。<br>在第一个代码清单中，创建了一个unicode字符串，该字符串指向路径C:\hello.txt。之后，结构OBJECT_ATTRIBUTES填充了常规值；我们知道在调用ZwCreateFile之类的函数时通常需要此结构。<br>在第二个清单中，我们看到确实调用了ZwCreateFile，这使我们非常确定驱动程序已创建文件-并且我们知道该文件在创建之后的位置。<br>从第三和第四代码清单中可以看到，驱动程序采用unicode字符串并将其写入缓冲区（这在sub_11150函数中发生），然后将使用ZwWriteFile函数将缓冲区写入文件。最后，驱动程序使用ZwClose API关闭文件。<br>让我们总结一下。我们发现原始程序从其资源中提取了驱动程序文件，并将其放入当前用户的临时文件夹中，为此驱动程序创建Windows服务并运行它。之后，程序将停止并从temp目录中删除服务和原始驱动程序文件。从这种行为和对反汇编的分析来看，驱动程序除了在C盘中创建一个名为hello.txt的文件并写入字符串“Hello from driver”外，什么都不做。</p>
-<p><div align="center"><br><img src="/img/htre-win-13.png" alt align="center"><br></div><br>精彩！我们已经对该简单程序进行了逆向工程，现在我们知道它可以安全使用。我们可以通过许多不同的方式实现此结果-使用调试或API Mon，编写测试等。您可以找到自己的方式来对适合您的软件进行逆向工程。</p>
-<h2 id="0x06_结论">0x06 结论</h2><p>Windows软件逆向工程需要扎实的教育背景和编程经验。为了开始逆向工程，您需要结合汇编，网络监控，调试，API集成，多种程序语言，编译器等方面的技能。在逆转软件时还必须非常小心，以免违反版权法或损害版权及你的操作系统。</p>
-<p><em>原文地址：<a href="https://www.apriorit.com/dev-blog/364-how-to-reverse-engineer-software-windows-in-a-right-way" target="_blank" rel="external">https://www.apriorit.com/dev-blog/364-how-to-reverse-engineer-software-windows-in-a-right-way</a></em></p>
-]]></content>
-    <summary type="html">
-    <![CDATA[<h2 id="0x00_前言">0x00 前言</h2><p>你有没有想过要拆开某个机械装置了解它的工作原理呢？嗯，谁没有呢。这种欲望也是是逆向工程的主导力量，逆向对于分析产品安全性、在不运行可疑的.exe文件的情况下查明其用途、恢复丢失的文档、开发基于旧软件的新解决方案等非常有用。<br>]]>
-    
-    </summary>
-    
-      <category term="Windows" scheme="http://www.youngroe.com/tags/Windows/"/>
-    
-      <category term="逆向" scheme="http://www.youngroe.com/tags/%E9%80%86%E5%90%91/"/>
-    
-      <category term="Windows" scheme="http://www.youngroe.com/categories/Windows/"/>
     
   </entry>
   
